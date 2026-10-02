@@ -26,18 +26,21 @@
 │   ├── App.tsx              # 屏幕状态机：landing → quiz → report
 │   ├── index.css            # Tailwind + 字体（fonts.googleapis.cn）+ 纸纹/组件类
 │   ├── components/
-│   │   ├── Landing.tsx      # 首页：Hero/痛点/流程/深色城市带/CTA
+│   │   ├── Landing.tsx      # 首页：Hero/快速体验演示档案/痛点/流程/深色城市带/CTA
 │   │   ├── Quiz.tsx         # 测评：分页/进度条/回退/三类题型
-│   │   ├── Report.tsx       # 报告：人格解读/Top5 卡片/复制/免责声明
+│   │   ├── Report.tsx       # 报告：人格解读/权重环图/Top5 卡片/徽标/复制/免责声明
+│   │   ├── report/          # 报告增强模块：WeightDonut（评分构成环图）、BreakdownSection（兴趣+偏好细分）、CityAnalysisSection（人格×城市）、TrialSection（试住行动卡）、SemBar（语义色数据条：moss≥75/sea 50-74/clay-deep<50）
 │   │   ├── RadarChart.tsx   # 六维雷达图
 │   │   ├── RouteChart.tsx   # 世界航线图（内含城市经纬度）
 │   │   └── CompassMark.tsx  # 罗盘花品牌符号
 │   ├── lib/
-│   │   └── engine.ts        # MBTI 判定 + 加权匹配引擎 + 格式化工具
+│   │   ├── engine.ts        # MBTI 判定 + 加权匹配引擎 + 格式化工具（WEIGHTS 权重唯一事实源）
+│   │   └── analysis.ts      # 报告增强规则层：优劣势/定居徽标/人格×城市/试住计划/兴趣与偏好细分（纯规则，无外部 LLM）
 │   └── data/
 │       ├── types.ts         # City / ClimateType 等类型
 │       ├── index.ts         # 合并四个区域 JSON
-│       ├── questions.ts     # 20 MBTI 情境题 + 8 生活偏好题
+│       ├── questions.ts     # 32 MBTI 七级双极题（OEJTS 1.2 结构）+ 8 生活偏好情景题
+│       ├── demoProfiles.ts  # 3 个演示档案预设答案（INTJ/ENTP/ESFJ，经 verify-iter1 校验）
 │       ├── interests.ts     # 16 个兴趣标签池（与城市 tags 同 id）
 │       ├── mbtiProfiles.ts  # 16 型人格游民视角解读
 │       └── cities/          # europe/americas/africa/asia.json（共 39 城）

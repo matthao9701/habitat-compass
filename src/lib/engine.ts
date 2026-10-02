@@ -41,6 +41,8 @@ export interface CityMatch {
   personalityFit: number;
   preferenceFit: number;
   interestFit: number;
+  /** 8 个生活偏好维度的单项得分（0-100），键与 lifestyleQuestions 的 id 对应 */
+  fitDetails: Record<string, number>;
   scores: DimensionScores;
   reasons: string[];
 }
@@ -67,7 +69,7 @@ const POLE_SIGN: Record<Pole, number> = {
   E: 1, I: -1, N: 1, S: -1, F: 1, T: -1, P: 1, J: -1,
 };
 
-const WEIGHTS = {
+export const WEIGHTS = {
   personality: 0.3,
   preference: 0.48,
   interest: 0.22,
@@ -414,6 +416,16 @@ export function assess(answers: UserAnswers): AssessmentResult {
       personalityFit: Math.round(personalityFit),
       preferenceFit: Math.round(preferenceFit),
       interestFit: Math.round(interestsFitScore),
+      fitDetails: {
+        budget: Math.round(fitValues.budget),
+        climate: Math.round(fitValues.climate),
+        pace: Math.round(fitValues.pace),
+        size: Math.round(fitValues.size),
+        social: Math.round(fitValues.social),
+        language: Math.round(fitValues.language),
+        visa: Math.round(fitValues.visa),
+        remote: Math.round(fitValues.remote),
+      },
       scores,
       reasons,
     };

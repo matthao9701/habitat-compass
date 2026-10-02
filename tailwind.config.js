@@ -19,6 +19,8 @@ export default {
         },
         ochre: '#B08544',
         teal: '#466F66',
+        moss: '#4E7A5A',
+        sea: '#52708A',
       },
       fontFamily: {
         serif: ['"Fraunces"', '"Noto Serif SC"', 'Georgia', 'serif'],

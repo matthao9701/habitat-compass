@@ -2,10 +2,12 @@ import { motion } from 'framer-motion';
 import CompassMark from './CompassMark';
 import RouteChart from './RouteChart';
 import { cities } from '../data';
+import { DEMO_PROFILES } from '../data/demoProfiles';
 import { formatCost } from '../lib/engine';
 
 interface LandingProps {
   onStart: () => void;
+  onDemo: (profileId: string) => void;
 }
 
 const fadeUp = {
@@ -53,7 +55,7 @@ const STEPS = [
   },
 ];
 
-export default function Landing({ onStart }: LandingProps) {
+export default function Landing({ onStart, onDemo }: LandingProps) {
   const marqueeList = [...cities, ...cities];
 
   return (
@@ -157,6 +159,52 @@ export default function Landing({ onStart }: LandingProps) {
               ))}
             </div>
           </motion.div>
+        </div>
+      </section>
+
+      {/* 快速体验 · 演示档案 */}
+      <section className="border-y hairline bg-card/50">
+        <div className="mx-auto max-w-almanac px-6 py-14 md:px-10 md:py-16">
+          <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
+            <div>
+              <p className="eyebrow mb-3">quick preview · 10 seconds</p>
+              <h2 className="font-serif text-2xl font-medium md:text-3xl">
+                还没准备好答题？先看一份演示报告
+              </h2>
+            </div>
+            <p className="font-mono text-[11px] text-ink-soft">
+              预设档案 · 即刻生成 · 含完整分析模块
+            </p>
+          </div>
+          <div className="grid gap-4 md:grid-cols-3">
+            {DEMO_PROFILES.map((profile, index) => (
+              <motion.button
+                key={profile.id}
+                type="button"
+                onClick={() => onDemo(profile.id)}
+                whileTap={{ scale: 0.985 }}
+                className="group rounded-[10px] border hairline bg-card p-5 text-left transition-all duration-300 hover:border-clay/55 hover:shadow-[0_6px_24px_rgba(31,45,40,0.08)] md:p-6"
+              >
+                <div className="mb-4 flex items-center justify-between">
+                  <span className="font-mono text-[10px] uppercase tracking-eyebrow text-ink-soft">
+                    demo {String(index + 1).padStart(2, '0')}
+                  </span>
+                  <span className="font-mono text-xs text-clay opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                    查看示例 →
+                  </span>
+                </div>
+                <p className="font-serif text-lg font-medium text-ink">{profile.label}</p>
+                <p className="mt-1.5 font-mono text-[11px] text-ochre">{profile.tagline}</p>
+                <p className="mt-3 text-[13px] leading-relaxed text-ink-soft">{profile.desc}</p>
+                <div className="mt-4 flex items-center justify-between border-t hairline pt-3">
+                  <span className="font-mono text-[10px] uppercase tracking-eyebrow text-ink-soft">
+                    预计 {profile.expectedType}
+                  </span>
+                  <span className="font-mono text-[10px] text-ink-soft">≈ 10 秒</span>
+                </div>
+              </motion.button>
+            ))}
+          </div>
         </div>
       </section>
 

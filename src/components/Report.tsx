@@ -10,11 +10,19 @@ import {
   CLIMATE_LABEL,
   INTERNET_LABEL,
 } from '../lib/engine';
+import { cityPros, cityCons, settlementBadge, type BadgeLevel } from '../lib/analysis';
+import WeightDonut from './report/WeightDonut';
+import BreakdownSection from './report/BreakdownSection';
+import CityAnalysisSection from './report/CityAnalysisSection';
+import TrialSection from './report/TrialSection';
 import { MBTI_SOURCE } from '../data/questions';
 
 interface ReportProps {
   result: AssessmentResult;
   onRestart: () => void;
+  /** 演示档案模式：顶部徽标 + 底部引导 CTA */
+  isDemo?: boolean;
+  onStartQuiz?: () => void;
 }
 
 const RADAR_AXES = ['成本', '网络', '安全', '社区', '英语', '签证'];
@@ -23,9 +31,10 @@ const RADAR_COLORS = ['#BE5A38', '#335043', '#B08544'];
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
-export default function Report({ result, onRestart }: ReportProps) {
+export default function Report({ result, onRestart, isDemo = false, onStartQuiz }: ReportProps) {
   const profile = mbtiProfiles[result.typeCode];
   const [copied, setCopied] = useState(false);
+  const top = result.matches[0];
 
   const radarSeries = result.matches.slice(0, 3).map((m, i) => ({
     id: m.city.id,
@@ -83,8 +92,13 @@ export default function Report({ result, onRestart }: ReportProps) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
-            className="font-mono text-[10px] uppercase tracking-eyebrow text-paper/55"
+            className="flex flex-wrap items-center gap-3 font-mono text-[10px] uppercase tracking-eyebrow text-paper/55"
           >
+            {isDemo ? (
+              <span className="rounded-full border border-clay bg-clay px-3 py-1 text-paper">
+                演示档案 · demo
+              </span>
+            ) : null}
             assessment complete · 56 answers
           </motion.p>
           <div className="mt-8 flex flex-col gap-10 md:flex-row md:items-end md:justify-between">
@@ -145,6 +159,23 @@ export default function Report({ result, onRestart }: ReportProps) {
               ))}
             </div>
           </div>
+
+          {/* 评分构成分析：权重环图 + 实际得分 */}
+          {top ? (
+            <div className="mt-10 border-t border-paper/15 pt-8">
+              <p className="font-mono text-[9.5px] uppercase tracking-eyebrow text-paper/45">
+                score composition · 评分构成
+              </p>
+              <div className="mt-6">
+                <WeightDonut
+                  personality={top.personalityFit}
+                  lifestyle={top.preferenceFit}
+                  interest={top.interestFit}
+                  total={top.match}
+                />
+              </div>
+            </div>
+          ) : null}
         </div>
       </section>
 
@@ -168,6 +199,9 @@ export default function Report({ result, onRestart }: ReportProps) {
         </motion.div>
       </section>
 
+      {/* 细分拆解：兴趣 6 类 + 生活偏好 8 维（Top 1） */}
+      {top ? <BreakdownSection top={top} userInterests={result.interests} /> : null}
+
       {/* Top 5 卡片 */}
       <section className="mx-auto max-w-almanac px-6 pb-16 md:px-10 md:pb-24">
         <p className="eyebrow mb-3">your top 5</p>
@@ -185,6 +219,32 @@ export default function Report({ result, onRestart }: ReportProps) {
         </p>
       </section>
 
+      {/* 人格 × 城市 定性分析（Top 1） */}
+      {top ? <CityAnalysisSection top={top} axisScores={result.axisScores} /> : null}
+
+      {/* 先试住再决定（Top 1） */}
+      {top ? <TrialSection top={top} /> : null}
+
+      {/* 演示档案引导 CTA */}
+      {isDemo ? (
+        <section className="border-y border-clay/40 bg-clay/[0.07]">
+          <div className="mx-auto flex max-w-almanac flex-col items-center justify-between gap-5 px-6 py-9 text-center md:flex-row md:px-10 md:text-left">
+            <div>
+              <p className="font-serif text-lg font-medium text-ink">
+                这是示例报告 —— 你的答案，可能指向完全不同的城市。
+              </p>
+              <p className="mt-1 text-[13px] text-ink-soft">
+                三段测评约 12 分钟：MBTI 七级量表、生活情景选择、兴趣标签，无需注册。
+              </p>
+            </div>
+            <button type="button" onClick={onStartQuiz} className="btn-clay shrink-0">
+              开始我的正式测试
+              <span className="font-mono text-xs opacity-80">→</span>
+            </button>
+          </div>
+        </section>
+      ) : null}
+
       {/* 操作区 */}
       <section className="border-t hairline bg-paper-deep/60">
         <div className="mx-auto flex max-w-almanac flex-col items-center gap-5 px-6 py-14 text-center md:px-10">
@@ -196,9 +256,15 @@ export default function Report({ result, onRestart }: ReportProps) {
             <button type="button" onClick={copySummary} className="btn-clay">
               {copied ? '已复制到剪贴板' : '一键复制报告摘要'}
             </button>
-            <button type="button" onClick={onRestart} className="btn-ghost">
-              重新测评
-            </button>
+            {isDemo && onStartQuiz ? (
+              <button type="button" onClick={onStartQuiz} className="btn-ghost !border-clay/60 !text-clay hover:!bg-clay hover:!text-paper">
+                开始我的正式测试
+              </button>
+            ) : (
+              <button type="button" onClick={onRestart} className="btn-ghost">
+                重新测评
+              </button>
+            )}
           </div>
         </div>
       </section>
@@ -249,6 +315,15 @@ function CityCard({ match, rank }: CityCardProps) {
   const cityInterests = city.tags
     .map((t) => interestLabelById.get(t) ?? t)
     .slice(0, 5);
+  const badge = settlementBadge(match.match);
+  const pros = cityPros(city);
+  const cons = cityCons(city);
+
+  const BADGE_STYLE: Record<BadgeLevel, string> = {
+    good: 'border-moss/55 bg-moss/10 text-moss',
+    mid: 'border-sea/55 bg-sea/10 text-sea',
+    low: 'border-ink/25 bg-ink/[0.04] text-ink-soft',
+  };
 
   return (
     <motion.article
@@ -267,6 +342,12 @@ function CityCard({ match, rank }: CityCardProps) {
             </p>
             <CountUp value={match.match} />
           </div>
+          <span
+            title={badge.hint}
+            className={`mt-3 inline-block rounded-full border px-3 py-1 font-mono text-[10.5px] ${BADGE_STYLE[badge.level]}`}
+          >
+            {badge.label}
+          </span>
           <h3 className="mt-4 font-serif text-[26px] font-semibold leading-tight">
             {city.nameZh}
           </h3>
@@ -322,6 +403,36 @@ function CityCard({ match, rank }: CityCardProps) {
                 {label}
               </span>
             ))}
+          </div>
+
+          {/* 优势 / 注意事项：由城市库真实数据规则生成 */}
+          <div className="mt-6 grid gap-x-8 gap-y-4 border-t hairline pt-5 sm:grid-cols-2">
+            <div>
+              <p className="mb-2.5 font-mono text-[9.5px] uppercase tracking-eyebrow text-moss">
+                优势 · pros
+              </p>
+              <ul className="space-y-2">
+                {pros.map((pro, i) => (
+                  <li key={i} className="flex gap-2 text-[12px] leading-[1.7] text-ink">
+                    <span className="shrink-0 font-mono text-moss">+</span>
+                    {pro}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <p className="mb-2.5 font-mono text-[9.5px] uppercase tracking-eyebrow text-clay-deep">
+                注意 · cautions
+              </p>
+              <ul className="space-y-2">
+                {cons.map((con, i) => (
+                  <li key={i} className="flex gap-2 text-[12px] leading-[1.7] text-ink">
+                    <span className="shrink-0 font-mono text-clay-deep">!</span>
+                    {con}
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         </div>
       </div>
@@ -383,15 +494,21 @@ function AxisBar({ left, right, percent, delay }: AxisBarProps) {
 }
 
 function DimensionBar({ label, value }: { label: string; value: number }) {
+  const tone =
+    value >= 75
+      ? { bar: 'bg-moss', text: 'text-moss' }
+      : value >= 50
+        ? { bar: 'bg-sea', text: 'text-sea' }
+        : { bar: 'bg-clay-deep', text: 'text-clay-deep' };
   return (
     <div>
       <div className="mb-1 flex items-baseline justify-between">
         <span className="text-[11.5px] text-ink-soft">{label}</span>
-        <span className="font-mono text-[10.5px] text-ink">{value}</span>
+        <span className={`font-mono text-[10.5px] ${tone.text}`}>{value}</span>
       </div>
       <div className="h-[4px] overflow-hidden rounded-full bg-ink/10">
         <motion.div
-          className="h-full rounded-full bg-pine"
+          className={`h-full rounded-full ${tone.bar}`}
           initial={{ width: 0 }}
           whileInView={{ width: `${value}%` }}
           viewport={{ once: true }}
