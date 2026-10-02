@@ -1,0 +1,42 @@
+[
+  {
+    "id": "marrakech",
+    "nameZh": "马拉喀什",
+    "nameEn": "Marrakech",
+    "countryZh": "摩洛哥",
+    "region": "africa",
+    "cost": [900, 1800],
+    "visaScore": 3,
+    "visaLabel": "多数护照可免签停留 90 天；长期居留需办理居留卡并提供财力证明",
+    "internet": 2,
+    "safety": 55,
+    "climate": "desert",
+    "tempC": 20,
+    "community": 3,
+    "english": 2,
+    "pace": 2,
+    "size": 2,
+    "tags": ["history", "food", "arts", "nature", "wellness", "outdoor"],
+    "traits": { "ei": 20, "sn": 45, "tf": 20, "jp": 25 }
+  },
+  {
+    "id": "cape-town",
+    "nameZh": "开普敦",
+    "nameEn": "Cape Town",
+    "countryZh": "南非",
+    "region": "africa",
+    "cost": [1100, 2100],
+    "visaScore": 2,
+    "visaLabel": "远程工作签证最长 12 个月、不可续签；需满足月收入与最低资金证明",
+    "internet": 3,
+    "safety": 37,
+    "climate": "mediterranean",
+    "tempC": 17,
+    "community": 3,
+    "english": 4,
+    "pace": 2,
+    "size": 3,
+    "tags": ["outdoor", "nature", "watersports", "beach", "food", "startup", "fitness", "arts"],
+    "traits": { "ei": 25, "sn": 40, "tf": 25, "jp": 20 }
+  }
+]
