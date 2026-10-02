@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import CompassMark from './CompassMark';
 import {
@@ -10,6 +10,21 @@ import {
 } from '../data/questions';
 import { interestTags } from '../data/interests';
 import type { UserAnswers } from '../lib/engine';
+import * as storage from '../lib/storage';
+
+/** 草稿恢复：跳到第一个含未答题的数据页 */
+function firstIncompletePage(pages: Page[], draft: UserAnswers | null): number {
+  if (!draft) return 0;
+  const idx = pages.findIndex((p) => {
+    if (p.kind === 'transition') return false;
+    return p.items.some((item) => {
+      if (item.kind === 'mbti') return typeof draft.mbti[item.question.id] !== 'number';
+      if (item.kind === 'lifestyle') return !draft.lifestyle[item.question.id];
+      return false;
+    });
+  });
+  return idx === -1 ? 0 : idx;
+}
 
 // ---------------------------------------------------------------------------
 // 页面模型：数据页 + 阶段过渡引导页
@@ -118,13 +133,12 @@ interface QuizProps {
 
 export default function Quiz({ onComplete, onExit }: QuizProps) {
   const pages = useMemo(buildPages, []);
-  const [pageIndex, setPageIndex] = useState(0);
+  const [draft, setDraft] = useState<UserAnswers | null>(() => storage.loadDraft());
+  const [pageIndex, setPageIndex] = useState(() => firstIncompletePage(pages, draft));
   const [direction, setDirection] = useState<1 | -1>(1);
-  const [answers, setAnswers] = useState<UserAnswers>({
-    mbti: {},
-    lifestyle: {},
-    interests: [],
-  });
+  const [answers, setAnswers] = useState<UserAnswers>(
+    () => draft ?? { mbti: {}, lifestyle: {}, interests: [] },
+  );
 
   const page = pages[pageIndex];
   const isLast = pageIndex === pages.length - 1;
@@ -146,6 +160,23 @@ export default function Quiz({ onComplete, onExit }: QuizProps) {
     if (item.kind === 'lifestyle') return Boolean(answers.lifestyle[item.question.id]);
     return true;
   });
+
+  // ---- 草稿自动保存（中途退出后可恢复） ----
+  useEffect(() => {
+    const hasAny =
+      Object.keys(answers.mbti).length > 0 ||
+      Object.keys(answers.lifestyle).length > 0 ||
+      answers.interests.length > 0;
+    if (hasAny) storage.saveDraft(answers);
+  }, [answers]);
+
+  function resetDraft(): void {
+    storage.clearDraft();
+    setDraft(null);
+    setAnswers({ mbti: {}, lifestyle: {}, interests: [] });
+    setPageIndex(0);
+    setDirection(1);
+  }
 
   // ---- 分段进度：每个阶段的填充比例 ----
   const currentDataPageNo =
@@ -225,6 +256,25 @@ export default function Quiz({ onComplete, onExit }: QuizProps) {
             {String(pageIndex + 1).padStart(2, '0')} / {String(pages.length).padStart(2, '0')}
           </p>
         </div>
+        {/* 草稿恢复提示 */}
+        {draft && (
+          <div className="mx-auto flex max-w-[860px] items-center justify-between gap-3 px-6 pt-3 md:px-8">
+            <p className="font-mono text-[10.5px] text-ochre">
+              已恢复上次答题进度（
+              {Object.keys(draft.mbti).length +
+                Object.keys(draft.lifestyle).length +
+                draft.interests.length}{' '}
+              / {totalAnswerable}）
+            </p>
+            <button
+              type="button"
+              onClick={resetDraft}
+              className="font-mono text-[10.5px] text-ink-soft underline underline-offset-2 transition-colors hover:text-clay"
+            >
+              清空重答
+            </button>
+          </div>
+        )}
         {/* 三段式进度条 */}
         <div className="mx-auto max-w-[860px] px-6 md:px-8">
           <div className="flex gap-[3px]">

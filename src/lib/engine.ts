@@ -75,7 +75,7 @@ export const WEIGHTS = {
   interest: 0.22,
 };
 
-const PREFERENCE_WEIGHTS: Record<string, number> = {
+export const PREFERENCE_WEIGHTS: Record<string, number> = {
   budget: 0.22,
   climate: 0.14,
   pace: 0.12,
@@ -339,6 +339,55 @@ export function buildProfileTags(result: {
 }
 
 // ---------------------------------------------------------------------------
+// 单城契合分（纯函数，供 assess 循环与城市对比页复用；返回未取整原始分）
+// ---------------------------------------------------------------------------
+
+export interface CityFits {
+  personalityFit: number;
+  preferenceFit: number;
+  interestFit: number;
+  fitValues: Record<string, number>;
+}
+
+export function computeCityFits(city: City, answers: UserAnswers): CityFits {
+  const { traitVector } = derivePersonality(answers.mbti);
+  const preferenceInputs = answers.lifestyle;
+
+  const axisKeys: AxisName[] = ['EI', 'SN', 'TF', 'JP'];
+  const personalityFit =
+    axisKeys.reduce((sum: number, axis) => {
+      const key = axis.toLowerCase() as 'ei' | 'sn' | 'tf' | 'jp';
+      const dist = Math.abs(traitVector[key] - city.traits[key]);
+      return sum + clamp(100 - dist / 2, 0, 100);
+    }, 0) / axisKeys.length;
+
+  const fitValues: Record<string, number> = {
+    budget: costFit(city, preferenceInputs.budget ?? ''),
+    climate: climateFit(city, preferenceInputs.climate ?? 'any'),
+    pace: ordinalFit(ORDINAL_MAP.pace[preferenceInputs.pace ?? 'balanced'] ?? 3, city.pace),
+    size: ordinalFit(ORDINAL_MAP.size[preferenceInputs.size ?? 'mid'] ?? 3, city.size),
+    social: ordinalFit(ORDINAL_MAP.social[preferenceInputs.social ?? 'mid'] ?? 3, city.community),
+    language: ordinalFit(
+      ORDINAL_MAP.language[preferenceInputs.language ?? 'basic'] ?? 3,
+      city.english,
+    ),
+    visa: ordinalFit(ORDINAL_MAP.visa[preferenceInputs.visa ?? 'mid'] ?? 3, city.visaScore),
+    remote: ordinalFit(ORDINAL_MAP.remote[preferenceInputs.remote ?? 'mid'] ?? 3, city.internet),
+  };
+
+  const weightSum = Object.keys(PREFERENCE_WEIGHTS).reduce((s, k) => s + PREFERENCE_WEIGHTS[k], 0);
+  const preferenceFit =
+    Object.keys(PREFERENCE_WEIGHTS).reduce(
+      (sum, k) => sum + fitValues[k] * PREFERENCE_WEIGHTS[k],
+      0,
+    ) / weightSum;
+
+  const interestFitScore = interestFit(answers.interests, city.tags);
+
+  return { personalityFit, preferenceFit, interestFit: interestFitScore, fitValues };
+}
+
+// ---------------------------------------------------------------------------
 // 主入口：计算整份报告
 // ---------------------------------------------------------------------------
 
@@ -348,42 +397,9 @@ export function assess(answers: UserAnswers): AssessmentResult {
   const preferenceInputs = answers.lifestyle;
 
   const matches: CityMatch[] = cities.map((city: City) => {
-    // ---- 人格契合：四轴相似度均值 ----
-    const axisKeys: AxisName[] = ['EI', 'SN', 'TF', 'JP'];
-    const personalityFit =
-      axisKeys.reduce((sum: number, axis) => {
-        const key = axis.toLowerCase() as 'ei' | 'sn' | 'tf' | 'jp';
-        const dist = Math.abs(traitVector[key] - city.traits[key]);
-        return sum + clamp(100 - dist / 2, 0, 100);
-      }, 0) / axisKeys.length;
-
-    // ---- 偏好契合：加权均值 ----
-    const fitValues: Record<string, number> = {
-      budget: costFit(city, preferenceInputs.budget ?? ''),
-      climate: climateFit(city, preferenceInputs.climate ?? 'any'),
-      pace: ordinalFit(ORDINAL_MAP.pace[preferenceInputs.pace ?? 'balanced'] ?? 3, city.pace),
-      size: ordinalFit(ORDINAL_MAP.size[preferenceInputs.size ?? 'mid'] ?? 3, city.size),
-      social: ordinalFit(ORDINAL_MAP.social[preferenceInputs.social ?? 'mid'] ?? 3, city.community),
-      language: ordinalFit(
-        ORDINAL_MAP.language[preferenceInputs.language ?? 'basic'] ?? 3,
-        city.english,
-      ),
-      visa: ordinalFit(ORDINAL_MAP.visa[preferenceInputs.visa ?? 'mid'] ?? 3, city.visaScore),
-      remote: ordinalFit(ORDINAL_MAP.remote[preferenceInputs.remote ?? 'mid'] ?? 3, city.internet),
-    };
-
-    const weightSum = Object.keys(PREFERENCE_WEIGHTS).reduce(
-      (s, k) => s + PREFERENCE_WEIGHTS[k],
-      0,
-    );
-    const preferenceFit =
-      Object.keys(PREFERENCE_WEIGHTS).reduce(
-        (sum, k) => sum + fitValues[k] * PREFERENCE_WEIGHTS[k],
-        0,
-      ) / weightSum;
-
-    // ---- 兴趣重合 ----
-    const interestsFitScore = interestFit(answers.interests, city.tags);
+    const fits = computeCityFits(city, answers);
+    const { personalityFit, preferenceFit, fitValues } = fits;
+    const interestsFitScore = fits.interestFit;
 
     const raw =
       personalityFit * WEIGHTS.personality +
