@@ -51,4 +51,12 @@ export interface City {
   /** 生活方式标签（取自兴趣标签池） */
   tags: string[];
   traits: CityTraitVector;
+  /** 月均综合生活成本（USD，含市区一居室租金；Numbeo/公开榜单口径估算值） */
+  monthlyCostUSD: number;
+  /** 固定宽带中位速度（Mbps；Ookla / Cable.co.uk 公开口径转录） */
+  internetMbps: number;
+  /** 生活成本指数（Numbeo 口径，NYC = 100） */
+  costIndex: number;
+  /** 是否提供数字游民 / 远程工作者签证（2026 年初政策快照） */
+  digitalNomadVisa: boolean;
 }

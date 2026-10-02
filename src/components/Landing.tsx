@@ -39,7 +39,7 @@ const STEPS = [
   {
     no: '01',
     title: '完成三维测评',
-    desc: '约 10 分钟，29 道题：MBTI 情境二选一、生活方式偏好、兴趣标签多选。可随时回退修改。',
+    desc: '约 12 分钟，56 道题：MBTI 七级量表（OEJTS 结构）、生活情景选择、兴趣标签多选。分三个阶段推进，可随时回退修改。',
   },
   {
     no: '02',
@@ -123,7 +123,7 @@ export default function Landing({ onStart }: LandingProps) {
                 <span className="font-mono text-xs opacity-80">→</span>
               </button>
               <p className="font-mono text-[11px] text-ink-soft">
-                约 10 分钟 · 29 题 · 无需注册
+                约 12 分钟 · 56 题 · 无需注册
               </p>
             </motion.div>
           </div>

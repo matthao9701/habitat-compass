@@ -5,7 +5,10 @@
     "nameEn": "Lisbon",
     "countryZh": "葡萄牙",
     "region": "europe",
-    "cost": [1500, 2600],
+    "cost": [
+      1500,
+      2600
+    ],
     "visaScore": 5,
     "visaLabel": "D8 数字游民签证，月收入门槛约 3,480 欧元，可续签并转入长期居留",
     "internet": 4,
@@ -16,8 +19,26 @@
     "english": 4,
     "pace": 3,
     "size": 3,
-    "tags": ["startup", "coffee", "food", "arts", "nightlife", "beach", "lgbtq", "festivals"],
-    "traits": { "ei": 35, "sn": 20, "tf": 35, "jp": 25 }
+    "tags": [
+      "startup",
+      "coffee",
+      "food",
+      "arts",
+      "nightlife",
+      "beach",
+      "lgbtq",
+      "festivals"
+    ],
+    "traits": {
+      "ei": 35,
+      "sn": 20,
+      "tf": 35,
+      "jp": 25
+    },
+    "monthlyCostUSD": 1850,
+    "internetMbps": 175,
+    "costIndex": 52,
+    "digitalNomadVisa": true
   },
   {
     "id": "porto",
@@ -25,7 +46,10 @@
     "nameEn": "Porto",
     "countryZh": "葡萄牙",
     "region": "europe",
-    "cost": [1300, 2200],
+    "cost": [
+      1300,
+      2200
+    ],
     "visaScore": 5,
     "visaLabel": "同享葡萄牙 D8 数字游民签证与居留路径，生活成本低于里斯本",
     "internet": 4,
@@ -36,8 +60,24 @@
     "english": 4,
     "pace": 2,
     "size": 3,
-    "tags": ["food", "coffee", "arts", "history", "nightlife", "lgbtq"],
-    "traits": { "ei": 10, "sn": 10, "tf": 30, "jp": 10 }
+    "tags": [
+      "food",
+      "coffee",
+      "arts",
+      "history",
+      "nightlife",
+      "lgbtq"
+    ],
+    "traits": {
+      "ei": 10,
+      "sn": 10,
+      "tf": 30,
+      "jp": 10
+    },
+    "monthlyCostUSD": 1550,
+    "internetMbps": 180,
+    "costIndex": 47,
+    "digitalNomadVisa": true
   },
   {
     "id": "madeira",
@@ -45,7 +85,10 @@
     "nameEn": "Funchal, Madeira",
     "countryZh": "葡萄牙",
     "region": "europe",
-    "cost": [1400, 2300],
+    "cost": [
+      1400,
+      2300
+    ],
     "visaScore": 5,
     "visaLabel": "葡萄牙 D8 签证；海岛有官方数字游民村项目，社区组织成熟",
     "internet": 4,
@@ -56,8 +99,22 @@
     "english": 4,
     "pace": 1,
     "size": 1,
-    "tags": ["outdoor", "nature", "wellness", "beach"],
-    "traits": { "ei": -10, "sn": 35, "tf": 30, "jp": 15 }
+    "tags": [
+      "outdoor",
+      "nature",
+      "wellness",
+      "beach"
+    ],
+    "traits": {
+      "ei": -10,
+      "sn": 35,
+      "tf": 30,
+      "jp": 15
+    },
+    "monthlyCostUSD": 1650,
+    "internetMbps": 130,
+    "costIndex": 45,
+    "digitalNomadVisa": true
   },
   {
     "id": "barcelona",
@@ -65,7 +122,10 @@
     "nameEn": "Barcelona",
     "countryZh": "西班牙",
     "region": "europe",
-    "cost": [1800, 3200],
+    "cost": [
+      1800,
+      3200
+    ],
     "visaScore": 4,
     "visaLabel": "2023 年推出数字游民签证，月收入约 2,762 欧元，1 年起可续 3 年",
     "internet": 4,
@@ -76,8 +136,26 @@
     "english": 4,
     "pace": 4,
     "size": 4,
-    "tags": ["beach", "startup", "arts", "nightlife", "food", "lgbtq", "festivals", "fitness"],
-    "traits": { "ei": 55, "sn": 30, "tf": 20, "jp": 30 }
+    "tags": [
+      "beach",
+      "startup",
+      "arts",
+      "nightlife",
+      "food",
+      "lgbtq",
+      "festivals",
+      "fitness"
+    ],
+    "traits": {
+      "ei": 55,
+      "sn": 30,
+      "tf": 20,
+      "jp": 30
+    },
+    "monthlyCostUSD": 2250,
+    "internetMbps": 215,
+    "costIndex": 58,
+    "digitalNomadVisa": true
   },
   {
     "id": "mallorca",
@@ -85,7 +163,10 @@
     "nameEn": "Palma de Mallorca",
     "countryZh": "西班牙",
     "region": "europe",
-    "cost": [1700, 2900],
+    "cost": [
+      1700,
+      2900
+    ],
     "visaScore": 4,
     "visaLabel": "适用西班牙数字游民签证；淡季安静、旺季欧洲度假客流涌入",
     "internet": 4,
@@ -96,8 +177,24 @@
     "english": 4,
     "pace": 2,
     "size": 2,
-    "tags": ["beach", "watersports", "outdoor", "food", "nightlife", "lgbtq"],
-    "traits": { "ei": 25, "sn": 25, "tf": 25, "jp": 35 }
+    "tags": [
+      "beach",
+      "watersports",
+      "outdoor",
+      "food",
+      "nightlife",
+      "lgbtq"
+    ],
+    "traits": {
+      "ei": 25,
+      "sn": 25,
+      "tf": 25,
+      "jp": 35
+    },
+    "monthlyCostUSD": 2050,
+    "internetMbps": 170,
+    "costIndex": 54,
+    "digitalNomadVisa": true
   },
   {
     "id": "valencia",
@@ -105,7 +202,10 @@
     "nameEn": "Valencia",
     "countryZh": "西班牙",
     "region": "europe",
-    "cost": [1400, 2400],
+    "cost": [
+      1400,
+      2400
+    ],
     "visaScore": 4,
     "visaLabel": "适用西班牙数字游民签证；海滨城市性价比在西欧属第一梯队",
     "internet": 4,
@@ -116,8 +216,24 @@
     "english": 3,
     "pace": 3,
     "size": 3,
-    "tags": ["beach", "food", "arts", "nightlife", "fitness", "festivals"],
-    "traits": { "ei": 25, "sn": 10, "tf": 30, "jp": 20 }
+    "tags": [
+      "beach",
+      "food",
+      "arts",
+      "nightlife",
+      "fitness",
+      "festivals"
+    ],
+    "traits": {
+      "ei": 25,
+      "sn": 10,
+      "tf": 30,
+      "jp": 20
+    },
+    "monthlyCostUSD": 1700,
+    "internetMbps": 205,
+    "costIndex": 46,
+    "digitalNomadVisa": true
   },
   {
     "id": "madrid",
@@ -125,7 +241,10 @@
     "nameEn": "Madrid",
     "countryZh": "西班牙",
     "region": "europe",
-    "cost": [1600, 2800],
+    "cost": [
+      1600,
+      2800
+    ],
     "visaScore": 4,
     "visaLabel": "适用西班牙数字游民签证；作为首都居留与商业资源最集中",
     "internet": 4,
@@ -136,8 +255,26 @@
     "english": 3,
     "pace": 4,
     "size": 5,
-    "tags": ["startup", "arts", "food", "nightlife", "shopping", "lgbtq", "fitness", "festivals"],
-    "traits": { "ei": 50, "sn": 5, "tf": 15, "jp": 10 }
+    "tags": [
+      "startup",
+      "arts",
+      "food",
+      "nightlife",
+      "shopping",
+      "lgbtq",
+      "fitness",
+      "festivals"
+    ],
+    "traits": {
+      "ei": 50,
+      "sn": 5,
+      "tf": 15,
+      "jp": 10
+    },
+    "monthlyCostUSD": 2050,
+    "internetMbps": 220,
+    "costIndex": 56,
+    "digitalNomadVisa": true
   },
   {
     "id": "split",
@@ -145,7 +282,10 @@
     "nameEn": "Split",
     "countryZh": "克罗地亚",
     "region": "europe",
-    "cost": [1300, 2300],
+    "cost": [
+      1300,
+      2300
+    ],
     "visaScore": 4,
     "visaLabel": "数字游民居留最长 12 个月且免征境内所得税；欧盟护照自由居住",
     "internet": 3,
@@ -156,8 +296,24 @@
     "english": 3,
     "pace": 2,
     "size": 2,
-    "tags": ["beach", "watersports", "history", "food", "nightlife", "outdoor"],
-    "traits": { "ei": 20, "sn": 30, "tf": 20, "jp": 30 }
+    "tags": [
+      "beach",
+      "watersports",
+      "history",
+      "food",
+      "nightlife",
+      "outdoor"
+    ],
+    "traits": {
+      "ei": 20,
+      "sn": 30,
+      "tf": 20,
+      "jp": 30
+    },
+    "monthlyCostUSD": 1600,
+    "internetMbps": 95,
+    "costIndex": 45,
+    "digitalNomadVisa": true
   },
   {
     "id": "zagreb",
@@ -165,7 +321,10 @@
     "nameEn": "Zagreb",
     "countryZh": "克罗地亚",
     "region": "europe",
-    "cost": [1100, 1900],
+    "cost": [
+      1100,
+      1900
+    ],
     "visaScore": 4,
     "visaLabel": "数字游民居留最长 12 个月；内陆首都，咖啡馆文化浓厚",
     "internet": 4,
@@ -176,8 +335,24 @@
     "english": 3,
     "pace": 3,
     "size": 2,
-    "tags": ["coffee", "arts", "history", "food", "fitness", "festivals"],
-    "traits": { "ei": -5, "sn": -10, "tf": 20, "jp": 0 }
+    "tags": [
+      "coffee",
+      "arts",
+      "history",
+      "food",
+      "fitness",
+      "festivals"
+    ],
+    "traits": {
+      "ei": -5,
+      "sn": -10,
+      "tf": 20,
+      "jp": 0
+    },
+    "monthlyCostUSD": 1350,
+    "internetMbps": 110,
+    "costIndex": 40,
+    "digitalNomadVisa": true
   },
   {
     "id": "athens",
@@ -185,7 +360,10 @@
     "nameEn": "Athens",
     "countryZh": "希腊",
     "region": "europe",
-    "cost": [1300, 2300],
+    "cost": [
+      1300,
+      2300
+    ],
     "visaScore": 4,
     "visaLabel": "数字游民签证要求月收入约 3,500 欧元，有效期 1-2 年",
     "internet": 4,
@@ -196,8 +374,24 @@
     "english": 3,
     "pace": 3,
     "size": 4,
-    "tags": ["history", "food", "nightlife", "arts", "beach", "startup"],
-    "traits": { "ei": 20, "sn": 15, "tf": 15, "jp": 15 }
+    "tags": [
+      "history",
+      "food",
+      "nightlife",
+      "arts",
+      "beach",
+      "startup"
+    ],
+    "traits": {
+      "ei": 20,
+      "sn": 15,
+      "tf": 15,
+      "jp": 15
+    },
+    "monthlyCostUSD": 1600,
+    "internetMbps": 110,
+    "costIndex": 46,
+    "digitalNomadVisa": true
   },
   {
     "id": "budapest",
@@ -205,7 +399,10 @@
     "nameEn": "Budapest",
     "countryZh": "匈牙利",
     "region": "europe",
-    "cost": [1100, 2000],
+    "cost": [
+      1100,
+      2000
+    ],
     "visaScore": 3,
     "visaLabel": "数字游民白卡（White Card），月收入约 2,100 欧元，最长停留 2 年",
     "internet": 4,
@@ -216,8 +413,26 @@
     "english": 3,
     "pace": 3,
     "size": 3,
-    "tags": ["nightlife", "startup", "food", "arts", "history", "fitness", "lgbtq", "coffee"],
-    "traits": { "ei": 30, "sn": 10, "tf": 10, "jp": 10 }
+    "tags": [
+      "nightlife",
+      "startup",
+      "food",
+      "arts",
+      "history",
+      "fitness",
+      "lgbtq",
+      "coffee"
+    ],
+    "traits": {
+      "ei": 30,
+      "sn": 10,
+      "tf": 10,
+      "jp": 10
+    },
+    "monthlyCostUSD": 1400,
+    "internetMbps": 150,
+    "costIndex": 40,
+    "digitalNomadVisa": true
   },
   {
     "id": "prague",
@@ -225,7 +440,10 @@
     "nameEn": "Prague",
     "countryZh": "捷克",
     "region": "europe",
-    "cost": [1400, 2500],
+    "cost": [
+      1400,
+      2500
+    ],
     "visaScore": 2,
     "visaLabel": "非欧盟居民多走 živnostenský 自雇营业许可，手续繁琐；欧盟公民自由居住",
     "internet": 4,
@@ -236,8 +454,25 @@
     "english": 3,
     "pace": 3,
     "size": 3,
-    "tags": ["arts", "history", "coffee", "startup", "nightlife", "food", "fitness"],
-    "traits": { "ei": 15, "sn": 5, "tf": 15, "jp": -10 }
+    "tags": [
+      "arts",
+      "history",
+      "coffee",
+      "startup",
+      "nightlife",
+      "food",
+      "fitness"
+    ],
+    "traits": {
+      "ei": 15,
+      "sn": 5,
+      "tf": 15,
+      "jp": -10
+    },
+    "monthlyCostUSD": 1700,
+    "internetMbps": 130,
+    "costIndex": 48,
+    "digitalNomadVisa": false
   },
   {
     "id": "berlin",
@@ -245,7 +480,10 @@
     "nameEn": "Berlin",
     "countryZh": "德国",
     "region": "europe",
-    "cost": [1700, 3000],
+    "cost": [
+      1700,
+      3000
+    ],
     "visaScore": 3,
     "visaLabel": "自由职业者居留（Freiberufler）需客户与资质证明；英语工作环境成熟",
     "internet": 4,
@@ -256,8 +494,25 @@
     "english": 4,
     "pace": 3,
     "size": 5,
-    "tags": ["startup", "arts", "nightlife", "lgbtq", "fitness", "history", "coffee"],
-    "traits": { "ei": 45, "sn": 25, "tf": 25, "jp": 5 }
+    "tags": [
+      "startup",
+      "arts",
+      "nightlife",
+      "lgbtq",
+      "fitness",
+      "history",
+      "coffee"
+    ],
+    "traits": {
+      "ei": 45,
+      "sn": 25,
+      "tf": 25,
+      "jp": 5
+    },
+    "monthlyCostUSD": 2150,
+    "internetMbps": 145,
+    "costIndex": 60,
+    "digitalNomadVisa": true
   },
   {
     "id": "tbilisi",
@@ -265,7 +520,10 @@
     "nameEn": "Tbilisi",
     "countryZh": "格鲁吉亚",
     "region": "europe",
-    "cost": [900, 1700],
+    "cost": [
+      900,
+      1700
+    ],
     "visaScore": 5,
     "visaLabel": "多数护照免签停留最长 1 年，另有 Remotely from Georgia 计划，税负极低",
     "internet": 4,
@@ -276,8 +534,25 @@
     "english": 3,
     "pace": 2,
     "size": 2,
-    "tags": ["startup", "outdoor", "food", "nightlife", "history", "arts", "wellness"],
-    "traits": { "ei": 25, "sn": 25, "tf": 25, "jp": 35 }
+    "tags": [
+      "startup",
+      "outdoor",
+      "food",
+      "nightlife",
+      "history",
+      "arts",
+      "wellness"
+    ],
+    "traits": {
+      "ei": 25,
+      "sn": 25,
+      "tf": 25,
+      "jp": 35
+    },
+    "monthlyCostUSD": 1050,
+    "internetMbps": 75,
+    "costIndex": 33,
+    "digitalNomadVisa": false
   },
   {
     "id": "istanbul",
@@ -285,7 +560,10 @@
     "nameEn": "Istanbul",
     "countryZh": "土耳其",
     "region": "europe",
-    "cost": [900, 1800],
+    "cost": [
+      900,
+      1800
+    ],
     "visaScore": 2,
     "visaLabel": "多数护照可办电子签短期停留；长期居留许可近年政策收紧",
     "internet": 3,
@@ -296,8 +574,24 @@
     "english": 2,
     "pace": 4,
     "size": 5,
-    "tags": ["history", "food", "arts", "nightlife", "shopping", "coffee"],
-    "traits": { "ei": 40, "sn": 20, "tf": 30, "jp": 20 }
+    "tags": [
+      "history",
+      "food",
+      "arts",
+      "nightlife",
+      "shopping",
+      "coffee"
+    ],
+    "traits": {
+      "ei": 40,
+      "sn": 20,
+      "tf": 30,
+      "jp": 20
+    },
+    "monthlyCostUSD": 1100,
+    "internetMbps": 70,
+    "costIndex": 34,
+    "digitalNomadVisa": false
   },
   {
     "id": "florence",
@@ -305,7 +599,10 @@
     "nameEn": "Florence",
     "countryZh": "意大利",
     "region": "europe",
-    "cost": [1600, 2800],
+    "cost": [
+      1600,
+      2800
+    ],
     "visaScore": 3,
     "visaLabel": "2024 年起数字游民签证（年入约 2.8 万欧起），符合条件可享税收减免",
     "internet": 3,
@@ -316,8 +613,24 @@
     "english": 3,
     "pace": 2,
     "size": 2,
-    "tags": ["arts", "history", "food", "coffee", "outdoor", "shopping"],
-    "traits": { "ei": -10, "sn": 35, "tf": 25, "jp": 10 }
+    "tags": [
+      "arts",
+      "history",
+      "food",
+      "coffee",
+      "outdoor",
+      "shopping"
+    ],
+    "traits": {
+      "ei": -10,
+      "sn": 35,
+      "tf": 25,
+      "jp": 10
+    },
+    "monthlyCostUSD": 2000,
+    "internetMbps": 130,
+    "costIndex": 55,
+    "digitalNomadVisa": true
   },
   {
     "id": "tallinn",
@@ -325,7 +638,10 @@
     "nameEn": "Tallinn",
     "countryZh": "爱沙尼亚",
     "region": "europe",
-    "cost": [1400, 2400],
+    "cost": [
+      1400,
+      2400
+    ],
     "visaScore": 4,
     "visaLabel": "首批数字游民签证国之一，月收入门槛约 4,500 欧元，最长停留 12 个月",
     "internet": 5,
@@ -336,7 +652,22 @@
     "english": 4,
     "pace": 3,
     "size": 2,
-    "tags": ["startup", "coffee", "history", "nature", "wellness"],
-    "traits": { "ei": -5, "sn": 15, "tf": -10, "jp": -15 }
+    "tags": [
+      "startup",
+      "coffee",
+      "history",
+      "nature",
+      "wellness"
+    ],
+    "traits": {
+      "ei": -5,
+      "sn": 15,
+      "tf": -10,
+      "jp": -15
+    },
+    "monthlyCostUSD": 1750,
+    "internetMbps": 130,
+    "costIndex": 50,
+    "digitalNomadVisa": true
   }
 ]

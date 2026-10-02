@@ -4,13 +4,13 @@ import CompassMark from './CompassMark';
 import RadarChart from './RadarChart';
 import { mbtiProfiles } from '../data/mbtiProfiles';
 import { interestLabelById } from '../data/interests';
-import type { AssessmentResult, CityMatch } from '../lib/engine';
+import type { AssessmentResult, AxisName, CityMatch } from '../lib/engine';
 import {
   formatCost,
   CLIMATE_LABEL,
-  INTERNET_SPEED,
   INTERNET_LABEL,
 } from '../lib/engine';
+import { MBTI_SOURCE } from '../data/questions';
 
 interface ReportProps {
   result: AssessmentResult;
@@ -85,7 +85,7 @@ export default function Report({ result, onRestart }: ReportProps) {
             transition={{ duration: 0.5 }}
             className="font-mono text-[10px] uppercase tracking-eyebrow text-paper/55"
           >
-            assessment complete · 29 answers
+            assessment complete · 56 answers
           </motion.p>
           <div className="mt-8 flex flex-col gap-10 md:flex-row md:items-end md:justify-between">
             <div>
@@ -127,6 +127,24 @@ export default function Report({ result, onRestart }: ReportProps) {
               </motion.span>
             ))}
           </div>
+
+          {/* 四轴偏好百分比 */}
+          <div className="mt-10 border-t border-paper/15 pt-8">
+            <p className="font-mono text-[9.5px] uppercase tracking-eyebrow text-paper/45">
+              axis preference · 四轴偏好
+            </p>
+            <div className="mt-5 grid gap-x-10 gap-y-4 sm:grid-cols-2">
+              {AXIS_ROWS.map((row, i) => (
+                <AxisBar
+                  key={row.key}
+                  left={row.left}
+                  right={row.right}
+                  percent={result.axisScores[row.key]}
+                  delay={0.3 + i * 0.08}
+                />
+              ))}
+            </div>
+          </div>
         </div>
       </section>
 
@@ -159,6 +177,12 @@ export default function Report({ result, onRestart }: ReportProps) {
             <CityCard key={m.city.id} match={m} rank={i + 1} />
           ))}
         </div>
+
+        <p className="mt-8 border-t hairline pt-5 font-mono text-[9.5px] leading-[1.9] text-ink-soft/80">
+          数据口径 · 月均综合生活成本为「市区一居室租金 + 水电网 + 餐饮 + 交通」的估算值（USD），
+          成本指数采用 Numbeo 口径（NYC=100），宽带速度为固定宽带中位数——均转录自 2026 年初公开榜单，
+          生活成本因个人生活方式而异；数字游民签证为 2026 年初政策快照，出行前请以官方最新信息为准。
+        </p>
       </section>
 
       {/* 操作区 */}
@@ -187,7 +211,10 @@ export default function Report({ result, onRestart }: ReportProps) {
           </p>
           <p className="mt-3 max-w-3xl text-[12.5px] leading-[1.9] text-paper/60">
             本报告中的月生活成本、签证与居留政策均为参考快照，受汇率、季节、政策周期影响会发生变动；
+            月均综合生活成本与成本指数（Numbeo 口径，NYC=100）为估算值，因个人生活方式而异；
             数字游民签证的收入门槛、停留时长与税务处理请以目的地官方移民机构及使领馆发布的最新信息为准。
+            MBTI 测评题目基于 {MBTI_SOURCE.base}（{MBTI_SOURCE.publisher}）改编，
+            以 {MBTI_SOURCE.license} 许可使用，人格类型仅供自我探索参考，不构成临床或职业建议。
             NomadMatch 提供决策参考，不构成移民、税务或法律建议。
           </p>
           <p className="mt-6 font-mono text-[10px] text-paper/35">
@@ -247,14 +274,17 @@ function CityCard({ match, rank }: CityCardProps) {
             {city.nameEn} · {city.countryZh}
           </p>
 
-          <dl className="mt-6 space-y-3 text-[12.5px]">
+          <dl className="mt-6 space-y-2.5 text-[12.5px]">
             <Stat label="月生活成本" value={formatCost(city)} />
+            <Stat label="综合月均" value={`~$${city.monthlyCostUSD.toLocaleString('en-US')}`} />
+            <Stat label="成本指数" value={`${city.costIndex} · NYC=100`} />
             <Stat
-              label="网络质量"
-              value={`${INTERNET_LABEL[city.internet]} · 约 ${INTERNET_SPEED[city.internet]} Mbps`}
+              label="宽带中位"
+              value={`${city.internetMbps} Mbps · ${INTERNET_LABEL[city.internet]}`}
             />
             <Stat label="气候" value={`${CLIMATE_LABEL[city.climate]} · 年均 ${city.tempC}°C`} />
             <Stat label="安全指数" value={`${city.safety} / 100`} />
+            <Stat label="数字游民签证" value={city.digitalNomadVisa ? '有' : '—'} />
             <Stat label="游民社区" value={`${city.community} / 5`} />
           </dl>
         </div>
@@ -304,6 +334,50 @@ function Stat({ label, value }: { label: string; value: string }) {
     <div className="flex items-baseline justify-between gap-4">
       <dt className="shrink-0 text-ink-soft">{label}</dt>
       <dd className="text-right font-mono text-[11.5px] text-ink">{value}</dd>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// 四轴偏好条（深色头部）
+// ---------------------------------------------------------------------------
+
+const AXIS_ROWS: { key: AxisName; left: string; right: string }[] = [
+  { key: 'EI', left: 'E', right: 'I' },
+  { key: 'SN', left: 'N', right: 'S' },
+  { key: 'TF', left: 'F', right: 'T' },
+  { key: 'JP', left: 'P', right: 'J' },
+];
+
+interface AxisBarProps {
+  left: string;
+  right: string;
+  /** 偏向 left 字母的百分比（0-100） */
+  percent: number;
+  delay: number;
+}
+
+function AxisBar({ left, right, percent, delay }: AxisBarProps) {
+  const leftStrong = percent >= 50;
+  return (
+    <div>
+      <div className="flex items-baseline justify-between font-mono text-[10.5px]">
+        <span className={leftStrong ? 'text-clay' : 'text-paper/40'}>
+          {left} · {Math.round(percent)}%
+        </span>
+        <span className={!leftStrong ? 'text-clay' : 'text-paper/40'}>
+          {right} · {Math.round(100 - percent)}%
+        </span>
+      </div>
+      <div className="relative mt-1.5 h-[3px] rounded-full bg-paper/15">
+        <span className="absolute left-1/2 top-[-2px] h-[7px] w-px bg-paper/30" aria-hidden="true" />
+        <motion.div
+          className={`h-full rounded-full bg-clay ${leftStrong ? '' : 'ml-auto'}`}
+          initial={{ width: 0 }}
+          animate={{ width: `${leftStrong ? percent : 100 - percent}%` }}
+          transition={{ duration: 0.9, delay, ease }}
+        />
+      </div>
     </div>
   );
 }
@@ -363,9 +437,14 @@ function CountUp({ value }: { value: number }) {
 
 function buildSummaryText(result: AssessmentResult): string {
   const profile = mbtiProfiles[result.typeCode];
+  const axisText = AXIS_ROWS.map(
+    (row) =>
+      `${row.left} ${Math.round(result.axisScores[row.key])}% / ${row.right} ${Math.round(100 - result.axisScores[row.key])}%`,
+  ).join(' · ');
   const lines: string[] = [
     '【NomadMatch · 我的海外定居测评报告】',
     `MBTI：${result.typeCode} ${profile?.name ?? ''} — ${profile?.motto ?? ''}`,
+    `四轴偏好：${axisText}`,
     `游民风格：${profile?.nomadStyle ?? ''}`,
     `用户画像：${result.profileTags.join(' / ')}`,
     '',
@@ -374,10 +453,16 @@ function buildSummaryText(result: AssessmentResult): string {
   result.matches.forEach((m, i) => {
     lines.push(
       `${i + 1}. ${m.city.nameZh}（${m.city.countryZh}）匹配度 ${m.match}%` +
-        `｜月成本 ${formatCost(m.city)}｜${m.reasons[0]}`,
+        `｜综合月均 ~$${m.city.monthlyCostUSD.toLocaleString('en-US')}` +
+        `｜宽带 ${m.city.internetMbps} Mbps` +
+        `｜数字游民签证 ${m.city.digitalNomadVisa ? '有' : '—'}｜${m.reasons[0]}`,
     );
   });
-  lines.push('', '生活成本与签证政策为参考快照，实际以官方最新信息为准。');
+  lines.push(
+    '',
+    '月均综合生活成本为估算值（Numbeo 口径，NYC=100），因个人生活方式而异；',
+    '生活成本与签证政策为参考快照，实际以官方最新信息为准。',
+  );
   return lines.join('\n');
 }
 

@@ -1,14 +1,28 @@
-// 测评题目：MBTI 情境二选一 + 生活偏好
+// 测评题目：阶段一 MBTI 七级双极量表（OEJTS 结构）+ 阶段二 生活偏好情景选择题
+//
+// 题目来源与许可（IMPORTANT）：
+// 阶段一题目结构基于 OEJTS 1.2（Open Extended Jungian Type Scales 1.2，
+// Open Psychometrics 出品，https://openpsychometrics.org），原作许可
+// CC BY-NC-SA 4.0。本文件在保留其双极特征对（bipolar item pairs）与
+// 四维度（EI/SN/TF/JP）结构的基础上选取、改编并译为简体中文，
+// 部分题目为按原结构补充的同型题目；本产品为非商业用途，署名共享。
 
 export type Pole = 'E' | 'I' | 'S' | 'N' | 'T' | 'F' | 'J' | 'P';
 export type Axis = 'EI' | 'SN' | 'TF' | 'JP';
 
+export const MBTI_SOURCE = {
+  base: 'OEJTS 1.2 · Open Extended Jungian Type Scales',
+  publisher: 'Open Psychometrics',
+  license: 'CC BY-NC-SA 4.0',
+  note: '题目依据 OEJTS 1.2 双极量表结构改编并译为简体中文（非商业用途）',
+};
+
+/** 七级双极量表题：value = 1 完全符合左特征，4 中立，7 完全符合右特征 */
 export interface MBTIQuestion {
   id: string;
   axis: Axis;
-  scenario: string;
-  a: { text: string; pole: Pole };
-  b: { text: string; pole: Pole };
+  left: { text: string; pole: Pole };
+  right: { text: string; pole: Pole };
 }
 
 export interface LifestyleOption {
@@ -25,165 +39,61 @@ export interface LifestyleQuestion {
 }
 
 // ---------------------------------------------------------------------------
-// MBTI：每个维度 5 题，共 20 题
+// 阶段一 · MBTI：四维度各 8 题，共 32 题（页面内按 EI→SN→TF→JP 轮转交错排列）
 // ---------------------------------------------------------------------------
 
 export const mbtiQuestions: MBTIQuestion[] = [
-  // E / I
-  {
-    id: 'ei1',
-    axis: 'EI',
-    scenario: '抵达一座新城市的第一周，你更可能：',
-    a: { text: '先去参加本地数字游民聚会，尽快认识一群人', pole: 'E' },
-    b: { text: '独自摸清附近的咖啡馆、超市与路线，慢慢熟悉', pole: 'I' },
-  },
-  {
-    id: 'ei2',
-    axis: 'EI',
-    scenario: '公寓楼下正好有一场热闹的街区派对，你会：',
-    a: { text: '直接加入，享受不期而遇的热闹', pole: 'E' },
-    b: { text: '戴上耳机在家看书，至多约一两个朋友小聚', pole: 'I' },
-  },
-  {
-    id: 'ei3',
-    axis: 'EI',
-    scenario: '连续几天深度工作后，你恢复精力的方式是：',
-    a: { text: '约人吃饭、参加活动，在交流中回血', pole: 'E' },
-    b: { text: '独处、散步、看电影，安静地充电', pole: 'I' },
-  },
-  {
-    id: 'ei4',
-    axis: 'EI',
-    scenario: '在联合办公空间里，你通常：',
-    a: { text: '很快和周围人聊起来，还常组织午饭局', pole: 'E' },
-    b: { text: '专注工作，只和熟悉的少数人寒暄', pole: 'I' },
-  },
-  {
-    id: 'ei5',
-    axis: 'EI',
-    scenario: '安排一次周末短途旅行，你更倾向：',
-    a: { text: '约上一群新朋友，热热闹闹地出发', pole: 'E' },
-    b: { text: '自己或与一位密友，轻松安静地出行', pole: 'I' },
-  },
-  // S / N
-  {
-    id: 'sn1',
-    axis: 'SN',
-    scenario: '研究一座候选城市时，你更看重：',
-    a: { text: '明确的数据：物价、交通、签证与成熟配套', pole: 'S' },
-    b: { text: '城市的气质、可能性与想象空间', pole: 'N' },
-  },
-  {
-    id: 'sn2',
-    axis: 'SN',
-    scenario: '周末探索城市，你喜欢：',
-    a: { text: '按收藏清单打卡具体的店、市场和景点', pole: 'S' },
-    b: { text: '无目的地漫游，在小巷里偶遇惊喜', pole: 'N' },
-  },
-  {
-    id: 'sn3',
-    axis: 'SN',
-    scenario: '向朋友描述一个喜欢的地方，你会先讲：',
-    a: { text: '天气、物价、网速这些实际细节', pole: 'S' },
-    b: { text: '那里给人的感觉、气味与故事', pole: 'N' },
-  },
-  {
-    id: 'sn4',
-    axis: 'SN',
-    scenario: '工作之余的空闲时间，你更愿意：',
-    a: { text: '打磨可落地的技能，把日常流程理顺', pole: 'S' },
-    b: { text: '构思新项目、新点子和未来的可能性', pole: 'N' },
-  },
-  {
-    id: 'sn5',
-    axis: 'SN',
-    scenario: '面对一个完全陌生的环境，你的心态是：',
-    a: { text: '依赖已验证的经验和信息，求稳', pole: 'S' },
-    b: { text: '被未知吸引，越不确定越兴奋', pole: 'N' },
-  },
-  // T / F
-  {
-    id: 'tf1',
-    axis: 'TF',
-    scenario: '两座城市客观条件相近，让你最终拍板的是：',
-    a: { text: '性价比、效率与长期收益的比较', pole: 'T' },
-    b: { text: '哪里的人更友善、让你更有归属感', pole: 'F' },
-  },
-  {
-    id: 'tf2',
-    axis: 'TF',
-    scenario: '朋友就迁居计划征求你的意见，你会先：',
-    a: { text: '帮他分析预算、签证和风险点', pole: 'T' },
-    b: { text: '理解他的感受和他真正想要的生活', pole: 'F' },
-  },
-  {
-    id: 'tf3',
-    axis: 'TF',
-    scenario: '评价一个社区，你更在意：',
-    a: { text: '规则清晰、运转高效、不内耗', pole: 'T' },
-    b: { text: '氛围温暖、彼此关照、有人情味', pole: 'F' },
-  },
-  {
-    id: 'tf4',
-    axis: 'TF',
-    scenario: '做重大决定时，你更倾向：',
-    a: { text: '用数据和逻辑排除情绪干扰', pole: 'T' },
-    b: { text: '权衡决定对自己和身边人的影响', pole: 'F' },
-  },
-  {
-    id: 'tf5',
-    axis: 'TF',
-    scenario: '在异国遇到纠纷，你的第一反应是：',
-    a: { text: '讲道理、查规则、维护自身权益', pole: 'T' },
-    b: { text: '顾及对方处境，尽量温和地化解', pole: 'F' },
-  },
-  // J / P
-  {
-    id: 'jp1',
-    axis: 'JP',
-    scenario: '你的旅行风格更接近：',
-    a: { text: '提前订好住宿与行程，按计划走', pole: 'J' },
-    b: { text: '只定大方向，随兴留下或改道', pole: 'P' },
-  },
-  {
-    id: 'jp2',
-    axis: 'JP',
-    scenario: '面对日常作息与待办事项，你：',
-    a: { text: '有固定节奏和清单，完成才安心', pole: 'J' },
-    b: { text: '灵活随性，灵感来了再冲刺', pole: 'P' },
-  },
-  {
-    id: 'jp3',
-    axis: 'JP',
-    scenario: '选择签证与住宿时，你偏好：',
-    a: { text: '手续明确、长期稳定的安排', pole: 'J' },
-    b: { text: '灵活短租，随时可以变动', pole: 'P' },
-  },
-  {
-    id: 'jp4',
-    axis: 'JP',
-    scenario: '你的周末计划通常是：',
-    a: { text: '几天前就安排妥当', pole: 'J' },
-    b: { text: '当天看心情再决定', pole: 'P' },
-  },
-  {
-    id: 'jp5',
-    axis: 'JP',
-    scenario: '在一座城市停留多久，你倾向：',
-    a: { text: '确定明确的租期、目标与截止时间', pole: 'J' },
-    b: { text: '不设限，喜欢就继续待下去', pole: 'P' },
-  },
+  // ---- 第 1 轮：每维 1 题 ----
+  { id: 'ei1', axis: 'EI', left: { text: '热闹的聚会让我越待越有劲', pole: 'E' }, right: { text: '安静的小圈子让我最自在', pole: 'I' } },
+  { id: 'sn1', axis: 'SN', left: { text: '我更容易注意到具体的细节与事实', pole: 'S' }, right: { text: '我更容易联想到背后的模式与可能', pole: 'N' } },
+  { id: 'tf1', axis: 'TF', left: { text: '做决定时，我先看逻辑和效率', pole: 'T' }, right: { text: '做决定时，我先看人的感受和价值', pole: 'F' } },
+  { id: 'jp1', axis: 'JP', left: { text: '制定清单，按部就班', pole: 'J' }, right: { text: '依靠记忆，随遇而安', pole: 'P' } },
+  // ---- 第 2 轮 ----
+  { id: 'ei2', axis: 'EI', left: { text: '和陌生人也能很快聊开', pole: 'E' }, right: { text: '只在熟人面前才放得开', pole: 'I' } },
+  { id: 'sn2', axis: 'SN', left: { text: '我先讲它让我联想到什么', pole: 'N' }, right: { text: '我先讲实际发生了什么', pole: 'S' } },
+  { id: 'tf2', axis: 'TF', left: { text: '朋友倾诉烦恼，我先安慰和共情', pole: 'F' }, right: { text: '朋友倾诉烦恼，我先帮他分析问题', pole: 'T' } },
+  { id: 'jp2', axis: 'JP', left: { text: '我的生活随兴致自然展开', pole: 'P' }, right: { text: '我的生活按日程表运转', pole: 'J' } },
+  // ---- 第 3 轮 ----
+  { id: 'ei3', axis: 'EI', left: { text: '想清楚了再说出口', pole: 'I' }, right: { text: '边说边想，越聊越清楚', pole: 'E' } },
+  { id: 'sn3', axis: 'SN', left: { text: '我更信任验证过的经验', pole: 'S' }, right: { text: '我更信任自己的直觉', pole: 'N' } },
+  { id: 'tf3', axis: 'TF', left: { text: '更糟糕的是冷漠无情', pole: 'F' }, right: { text: '更糟糕的是评判苛刻', pole: 'T' } },
+  { id: 'jp3', axis: 'JP', left: { text: '出发前把住宿与行程订好', pole: 'J' }, right: { text: '只订大交通，其余随缘', pole: 'P' } },
+  // ---- 第 4 轮 ----
+  { id: 'ei4', axis: 'EI', left: { text: '工作之余总想约人一起', pole: 'E' }, right: { text: '工作之余只想一个人待着', pole: 'I' } },
+  { id: 'sn4', axis: 'SN', left: { text: '学新东西，我从具体步骤入手', pole: 'S' }, right: { text: '学新东西，我先抓整体概念', pole: 'N' } },
+  { id: 'tf4', axis: 'TF', left: { text: '先看方案是否合理', pole: 'T' }, right: { text: '先看它会如何影响人', pole: 'F' } },
+  { id: 'jp4', axis: 'JP', left: { text: '截止日期前我会提前完成', pole: 'J' }, right: { text: '最后关头我的效率最高', pole: 'P' } },
+  // ---- 第 5 轮 ----
+  { id: 'ei5', axis: 'EI', left: { text: '长时间安静会让我憋得慌', pole: 'E' }, right: { text: '长时间热闹会让我累垮', pole: 'I' } },
+  { id: 'sn5', axis: 'SN', left: { text: '忽略现实条件更让我惋惜', pole: 'S' }, right: { text: '错过新的可能性更让我惋惜', pole: 'N' } },
+  { id: 'tf5', axis: 'TF', left: { text: '辩论时我更在意关系有没有受伤', pole: 'F' }, right: { text: '辩论时我更在意论点站不站得住', pole: 'T' } },
+  { id: 'jp5', axis: 'JP', left: { text: '计划被打乱，我顺势换方案', pole: 'P' }, right: { text: '计划被打乱，我想尽快恢复秩序', pole: 'J' } },
+  // ---- 第 6 轮 ----
+  { id: 'ei6', axis: 'EI', left: { text: '在团队里我更多是倾听者', pole: 'I' }, right: { text: '在团队里我常是发起话题的人', pole: 'E' } },
+  { id: 'sn6', axis: 'SN', left: { text: '看说明书，大概扫一眼就动手试', pole: 'N' }, right: { text: '看说明书，我逐条照做', pole: 'S' } },
+  { id: 'tf6', axis: 'TF', left: { text: '朋友说我客观理性', pole: 'T' }, right: { text: '朋友说我温暖体贴', pole: 'F' } },
+  { id: 'jp6', axis: 'JP', left: { text: '我更享受事情收尾完结的踏实', pole: 'J' }, right: { text: '我更享受保留多种可能的余地', pole: 'P' } },
+  // ---- 第 7 轮 ----
+  { id: 'ei7', axis: 'EI', left: { text: '周末喜欢呼朋唤友出门', pole: 'E' }, right: { text: '周末喜欢留给自己或一两个密友', pole: 'I' } },
+  { id: 'sn7', axis: 'SN', left: { text: '我的念头大多关于当下的实际事务', pole: 'S' }, right: { text: '我的念头大多关于未来与关联', pole: 'N' } },
+  { id: 'tf7', axis: 'TF', left: { text: '最打动我的是人物的情感与命运', pole: 'F' }, right: { text: '最打动我的是缜密的结构与逻辑', pole: 'T' } },
+  { id: 'jp7', axis: 'JP', left: { text: '我的桌面有点乱，但自己找得到', pole: 'P' }, right: { text: '我的桌面整洁有序', pole: 'J' } },
+  // ---- 第 8 轮 ----
+  { id: 'ei8', axis: 'EI', left: { text: '朋友常说我沉静内敛', pole: 'I' }, right: { text: '朋友常说我热情外向', pole: 'E' } },
+  { id: 'sn8', axis: 'SN', left: { text: '朋友说我天马行空', pole: 'N' }, right: { text: '朋友说我脚踏实地', pole: 'S' } },
+  { id: 'tf8', axis: 'TF', left: { text: '夸人时我常夸能力强', pole: 'T' }, right: { text: '夸人时我常夸用心善良', pole: 'F' } },
+  { id: 'jp8', axis: 'JP', left: { text: '要做的事尽早敲定', pole: 'J' }, right: { text: '要做的决定再等等看', pole: 'P' } },
 ];
 
 // ---------------------------------------------------------------------------
-// 生活偏好：8 题
+// 阶段二 · 生活偏好：8 道情景选择题（选项 value 供匹配引擎使用，勿改）
 // ---------------------------------------------------------------------------
 
 export const lifestyleQuestions: LifestyleQuestion[] = [
   {
     id: 'budget',
-    title: '你计划的月度生活预算区间是？',
-    hint: '含房租、餐饮、交通与日常开销，不含大额一次性支出（USD）',
+    title: '账单时刻：一居室租金、水电网、餐饮与通勤加总——你的月度生活总预算大约是多少？',
+    hint: '不含大额一次性支出（USD）',
     options: [
       { value: 'lt1000', label: '1,000 美元以内', desc: '极致性价比优先' },
       { value: '1000-1500', label: '1,000 – 1,500 美元', desc: '舒适但仍要精打细算' },
@@ -194,67 +104,67 @@ export const lifestyleQuestions: LifestyleQuestion[] = [
   },
   {
     id: 'climate',
-    title: '你最理想的气候是？',
+    title: '清晨推开出租屋的窗，你希望迎面而来的是？',
     options: [
-      { value: 'tropical', label: '热带海岛', desc: '常年盛夏，短裤拖鞋' },
-      { value: 'mediterranean', label: '晴朗地中海', desc: '干爽阳光、四季温和' },
-      { value: 'temperate', label: '四季分明', desc: '春夏秋冬各有风景' },
-      { value: 'cool', label: '凉爽偏冷', desc: '怕热，需要冬天' },
+      { value: 'tropical', label: '热带海岛的湿暖海风', desc: '常年盛夏，短裤拖鞋' },
+      { value: 'mediterranean', label: '地中海的干爽阳光', desc: '四季温和、晴天很多' },
+      { value: 'temperate', label: '四季分明的凉风', desc: '春夏秋冬各有风景' },
+      { value: 'cool', label: '偏冷地带的清冽空气', desc: '怕热，需要真正的冬天' },
       { value: 'any', label: '无所谓', desc: '气候不影响我的选择' },
     ],
   },
   {
     id: 'pace',
-    title: '你期待的生活节奏是？',
+    title: '你理想中的一周，更接近哪幅画面？',
     options: [
-      { value: 'slow', label: '慢而悠闲', desc: '午休、散步、不赶时间' },
-      { value: 'balanced', label: '张弛有度', desc: '高效工作，也认真生活' },
-      { value: 'fast', label: '快节奏高能', desc: '机会密度与刺激感' },
+      { value: 'slow', label: '午后才真正醒来的小城', desc: '午休、散步、不赶时间' },
+      { value: 'balanced', label: '工作与生活各有节拍', desc: '高效工作，也认真生活' },
+      { value: 'fast', label: '会议与活动连轴转', desc: '机会密度与刺激感' },
     ],
   },
   {
     id: 'size',
-    title: '你偏好的城市规模是？',
+    title: '傍晚出门散步，你更想走进哪种街区？',
     options: [
-      { value: 'small', label: '小镇 / 小城', desc: '步行可达、邻里相熟' },
-      { value: 'mid', label: '中型城市', desc: '配套齐全又不压迫' },
-      { value: 'metro', label: '国际大都市', desc: '地铁网络、24 小时灯火' },
+      { value: 'small', label: '十分钟步行到田野的小城', desc: '步行可达、邻里相熟' },
+      { value: 'mid', label: '咖啡馆与超市密集的中型城市', desc: '配套齐全又不压迫' },
+      { value: 'metro', label: '地铁纵横、霓虹不熄的都会', desc: '国际大都市的资源密度' },
     ],
   },
   {
     id: 'social',
-    title: '你希望的社交活跃度是？',
+    title: '搬进新城市的第一个月，你理想中的社交状态是？',
     options: [
-      { value: 'low', label: '低', desc: '独处为主，社交随缘' },
-      { value: 'mid', label: '中', desc: '有固定小圈子，偶尔聚会' },
-      { value: 'high', label: '高', desc: '经常活动，持续认识新朋友' },
+      { value: 'low', label: '独来独往，把城市泡熟', desc: '独处为主，社交随缘' },
+      { value: 'mid', label: '认识三五熟人，偶尔小聚', desc: '有固定小圈子' },
+      { value: 'high', label: '周周有局，持续认识新朋友', desc: '社交密度拉满' },
     ],
   },
   {
     id: 'language',
-    title: '你对语言障碍的顾虑程度？',
+    title: '在一家只有当地语菜单的餐厅点菜，你的期望是？',
     options: [
-      { value: 'high-english', label: '需要英语高度友好', desc: '办事、就医都希望能用英语' },
-      { value: 'basic', label: '可以学基础当地语', desc: '日常打招呼没问题' },
-      { value: 'no-barrier', label: '基本不介意', desc: '翻译软件加肢体语言足够' },
+      { value: 'high-english', label: '最好全程英语无障碍', desc: '办事、就医都希望能用英语' },
+      { value: 'basic', label: '愿意学几句基本用语', desc: '日常打招呼没问题' },
+      { value: 'no-barrier', label: '翻译软件加手势就够', desc: '基本不介意语言障碍' },
     ],
   },
   {
     id: 'visa',
-    title: '你对签证 / 居留灵活性的需求？',
+    title: '研究签证政策时，哪句话最让你安心？',
     options: [
-      { value: 'high', label: '很高', desc: '免签、落地签或数字游民签证优先' },
-      { value: 'mid', label: '中等', desc: '手续清晰即可接受' },
-      { value: 'low', label: '较低', desc: '愿意为理想城市办理长期签证' },
+      { value: 'high', label: '「有现成的数字游民签证」', desc: '免签、落地签或游民签证优先' },
+      { value: 'mid', label: '「材料清晰，流程顺畅」', desc: '手续明确即可接受' },
+      { value: 'low', label: '「为理想城市折腾长签也值」', desc: '愿意为居留投入时间' },
     ],
   },
   {
     id: 'remote',
-    title: '你对远程办公环境的要求？',
+    title: '视频会议突然卡成幻灯片——你的底线是？',
     options: [
-      { value: 'high', label: '很高', desc: '稳定高速网络与成熟联合办公' },
-      { value: 'mid', label: '中等', desc: '视频会议不卡即可' },
-      { value: 'basic', label: '基础即可', desc: '能发消息、查资料就行' },
+      { value: 'high', label: '完全不能忍', desc: '稳定高速网络与成熟联合办公' },
+      { value: 'mid', label: '偶尔卡顿可以接受', desc: '视频会议不卡即可' },
+      { value: 'basic', label: '能发消息查资料就行', desc: '基础网络即可' },
     ],
   },
 ];

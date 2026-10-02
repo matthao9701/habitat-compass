@@ -4,26 +4,36 @@ import CompassMark from './CompassMark';
 import {
   mbtiQuestions,
   lifestyleQuestions,
+  MBTI_SOURCE,
   type MBTIQuestion,
   type LifestyleQuestion,
 } from '../data/questions';
 import { interestTags } from '../data/interests';
-import type { UserAnswers, Choice } from '../lib/engine';
+import type { UserAnswers } from '../lib/engine';
 
 // ---------------------------------------------------------------------------
-// 页面模型
+// 页面模型：数据页 + 阶段过渡引导页
 // ---------------------------------------------------------------------------
+
+type ModuleId = 'mbti' | 'lifestyle' | 'interests';
 
 type PageItem =
   | { kind: 'mbti'; question: MBTIQuestion }
   | { kind: 'lifestyle'; question: LifestyleQuestion }
   | { kind: 'interests'; ids: string[] };
 
-interface Page {
-  module: 'mbti' | 'lifestyle' | 'interests';
+type DataPage = {
+  kind: 'data';
+  module: ModuleId;
   eyebrow: string;
   items: PageItem[];
-}
+  /** 数据页序号（0..11），用于分段进度计算 */
+  dataPageNo: number;
+};
+
+type TransitionPage = { kind: 'transition'; to: 'lifestyle' | 'interests' };
+
+type Page = DataPage | TransitionPage;
 
 const MBTI_CHUNK = 4;
 const LIFESTYLE_CHUNK = 4;
@@ -31,40 +41,71 @@ const INTEREST_CHUNK = 8;
 
 function buildPages(): Page[] {
   const pages: Page[] = [];
+  let dataPageNo = 0;
 
   for (let i = 0; i < mbtiQuestions.length; i += MBTI_CHUNK) {
     pages.push({
+      kind: 'data',
       module: 'mbti',
-      eyebrow: `PART 01 · 人格倾向 MBTI`,
+      eyebrow: `STAGE 01 · 人格倾向 MBTI（七级量表）`,
+      dataPageNo: dataPageNo++,
       items: mbtiQuestions
         .slice(i, i + MBTI_CHUNK)
         .map((question) => ({ kind: 'mbti' as const, question })),
     });
   }
 
+  pages.push({ kind: 'transition', to: 'lifestyle' });
+
   for (let i = 0; i < lifestyleQuestions.length; i += LIFESTYLE_CHUNK) {
     pages.push({
+      kind: 'data',
       module: 'lifestyle',
-      eyebrow: 'PART 02 · 生活偏好',
+      eyebrow: `STAGE 02 · 生活偏好（情景选择）`,
+      dataPageNo: dataPageNo++,
       items: lifestyleQuestions
         .slice(i, i + LIFESTYLE_CHUNK)
         .map((question) => ({ kind: 'lifestyle' as const, question })),
     });
   }
 
+  pages.push({ kind: 'transition', to: 'interests' });
+
   for (let i = 0; i < interestTags.length; i += INTEREST_CHUNK) {
     pages.push({
+      kind: 'data',
       module: 'interests',
-      eyebrow: 'PART 03 · 兴趣爱好（多选）',
-      items: [{ kind: 'interests', ids: interestTags.slice(i, i + INTEREST_CHUNK).map((t) => t.id) }],
+      eyebrow: `STAGE 03 · 兴趣爱好（多选）`,
+      dataPageNo: dataPageNo++,
+      items: [
+        { kind: 'interests', ids: interestTags.slice(i, i + INTEREST_CHUNK).map((t) => t.id) },
+      ],
     });
   }
 
   return pages;
 }
 
-const TOTAL_ANSWERABLE =
-  mbtiQuestions.length + lifestyleQuestions.length + interestTags.length;
+const TRANSITION_META = {
+  lifestyle: {
+    no: '02',
+    title: '生活偏好',
+    desc: '接下来是 8 道情景选择题：预算、气候、节奏、社交与远程办公——把你的生活方式描摹出来。',
+    remaining: '8 题 · 约 2 分钟',
+  },
+  interests: {
+    no: '03',
+    title: '兴趣爱好',
+    desc: '最后一站：从 16 个兴趣标签里勾选你真实想做的。它们会直接影响城市与你的契合度。',
+    remaining: '16 个标签 · 约 1 分钟',
+  },
+} as const;
+
+const PHASE_LABEL: Record<ModuleId, string> = {
+  mbti: '人格 MBTI',
+  lifestyle: '生活偏好',
+  interests: '兴趣爱好',
+};
 
 // ---------------------------------------------------------------------------
 // 组件
@@ -87,22 +128,43 @@ export default function Quiz({ onComplete, onExit }: QuizProps) {
 
   const page = pages[pageIndex];
   const isLast = pageIndex === pages.length - 1;
+  const dataPages = useMemo(
+    () => pages.filter((p): p is DataPage => p.kind === 'data'),
+    [pages],
+  );
 
   const answeredCount =
     Object.keys(answers.mbti).length +
     Object.keys(answers.lifestyle).length +
     answers.interests.length;
-  const progress = Math.round((answeredCount / TOTAL_ANSWERABLE) * 100);
+  const totalAnswerable = mbtiQuestions.length + lifestyleQuestions.length + interestTags.length;
+  const progress = Math.round((answeredCount / totalAnswerable) * 100);
 
   // 当前页是否全部作答（兴趣页允许 0 选择，因此始终可通过）
-  const pageReady = page.items.every((item) => {
-    if (item.kind === 'mbti') return Boolean(answers.mbti[item.question.id]);
+  const pageReady = page.kind === 'transition' || page.items.every((item) => {
+    if (item.kind === 'mbti') return typeof answers.mbti[item.question.id] === 'number';
     if (item.kind === 'lifestyle') return Boolean(answers.lifestyle[item.question.id]);
     return true;
   });
 
-  function setMBTIAnswer(id: string, choice: Choice): void {
-    setAnswers((prev) => ({ ...prev, mbti: { ...prev.mbti, [id]: choice } }));
+  // ---- 分段进度：每个阶段的填充比例 ----
+  const currentDataPageNo =
+    page.kind === 'data' ? page.dataPageNo : dataPages.length; // 过渡页视为“上一阶段已完结”
+  const phaseFill = (module: ModuleId): number => {
+    const ofPhase = dataPages.filter((p) => p.module === module);
+    const passed = ofPhase.filter((p) => {
+      if (p.dataPageNo < currentDataPageNo) return true;
+      return (
+        p.dataPageNo === currentDataPageNo && page.kind === 'data' && pageReady
+      );
+    }).length;
+    return ofPhase.length === 0 ? 0 : passed / ofPhase.length;
+  };
+  const activePhase: ModuleId | null =
+    page.kind === 'data' ? page.module : null;
+
+  function setMBTIAnswer(id: string, value: number): void {
+    setAnswers((prev) => ({ ...prev, mbti: { ...prev.mbti, [id]: value } }));
   }
 
   function setLifestyleAnswer(id: string, value: string): void {
@@ -148,7 +210,7 @@ export default function Quiz({ onComplete, onExit }: QuizProps) {
 
   return (
     <div className="grain flex min-h-screen flex-col bg-paper text-ink">
-      {/* 顶栏 + 进度 */}
+      {/* 顶栏 + 分段进度 */}
       <header className="border-b hairline">
         <div className="mx-auto flex max-w-[860px] items-center justify-between px-6 py-5 md:px-8">
           <button
@@ -163,17 +225,51 @@ export default function Quiz({ onComplete, onExit }: QuizProps) {
             {String(pageIndex + 1).padStart(2, '0')} / {String(pages.length).padStart(2, '0')}
           </p>
         </div>
-        <div className="h-[3px] w-full bg-ink/10">
-          <motion.div
-            className="h-full bg-clay"
-            initial={false}
-            animate={{ width: `${progress}%` }}
-            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-          />
+        {/* 三段式进度条 */}
+        <div className="mx-auto max-w-[860px] px-6 md:px-8">
+          <div className="flex gap-[3px]">
+            {(['mbti', 'lifestyle', 'interests'] as ModuleId[]).map((module) => {
+              const pagesOfPhase = dataPages.filter((p) => p.module === module).length;
+              const fill = phaseFill(module);
+              const isActive = activePhase === module;
+              return (
+                <div
+                  key={module}
+                  className="relative h-[3px] bg-ink/10"
+                  style={{ width: `${(pagesOfPhase / dataPages.length) * 100}%` }}
+                >
+                  <motion.div
+                    className={`h-full ${isActive ? 'bg-clay' : 'bg-pine'}`}
+                    initial={false}
+                    animate={{ width: `${Math.round(fill * 100)}%` }}
+                    transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                  />
+                </div>
+              );
+            })}
+          </div>
+          <div className="mt-1.5 flex gap-[3px] pb-3">
+            {(['mbti', 'lifestyle', 'interests'] as ModuleId[]).map((module) => {
+              const pagesOfPhase = dataPages.filter((p) => p.module === module).length;
+              const isActive = activePhase === module;
+              const done = phaseFill(module) >= 1;
+              return (
+                <p
+                  key={module}
+                  style={{ width: `${(pagesOfPhase / dataPages.length) * 100}%` }}
+                  className={`truncate font-mono text-[9px] uppercase tracking-wider transition-colors ${
+                    isActive ? 'text-clay' : done ? 'text-pine' : 'text-ink-soft/60'
+                  }`}
+                >
+                  {PHASE_LABEL[module]}
+                </p>
+              );
+            })}
+          </div>
         </div>
       </header>
 
-      {/* 题目区 */}
+      {/* 页面主体 */}
       <main className="mx-auto flex w-full max-w-[860px] flex-1 flex-col px-6 py-8 md:px-8 md:py-12">
         <AnimatePresence mode="wait" custom={direction}>
           <motion.div
@@ -186,46 +282,59 @@ export default function Quiz({ onComplete, onExit }: QuizProps) {
             transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
             className="flex-1"
           >
-            <p className="eyebrow mb-2">{page.eyebrow}</p>
-            <div className="mb-8 mt-3 flex items-center gap-4">
-              <div className="h-px flex-1 bg-ink/15" />
-              <p className="font-mono text-[10px] text-ink-soft">
-                {page.module === 'interests' ? 'MULTI-SELECT' : 'CHOOSE ONE'}
-              </p>
-            </div>
+            {page.kind === 'transition' ? (
+              <TransitionStage to={page.to} />
+            ) : (
+              <>
+                <p className="eyebrow mb-2">{page.eyebrow}</p>
+                <div className="mb-8 mt-3 flex items-center gap-4">
+                  <div className="h-px flex-1 bg-ink/15" />
+                  <p className="font-mono text-[10px] text-ink-soft">
+                    {page.module === 'interests' ? 'MULTI-SELECT' : 'CHOOSE ONE'}
+                  </p>
+                </div>
 
-            <div className="space-y-7">
-              {page.items.map((item) => {
-                if (item.kind === 'mbti') {
-                  return (
-                    <MBTIItem
-                      key={item.question.id}
-                      question={item.question}
-                      value={answers.mbti[item.question.id]}
-                      onSelect={(choice) => setMBTIAnswer(item.question.id, choice)}
-                    />
-                  );
-                }
-                if (item.kind === 'lifestyle') {
-                  return (
-                    <LifestyleItem
-                      key={item.question.id}
-                      question={item.question}
-                      value={answers.lifestyle[item.question.id]}
-                      onSelect={(v) => setLifestyleAnswer(item.question.id, v)}
-                    />
-                  );
-                }
-                return (
-                  <InterestItem
-                    key="interests"
-                    ids={item.ids}
-                    selected={answers.interests}
-                    onToggle={toggleInterest}
-                  />
-                );
-              })}
-            </div>
+                <div className="space-y-6">
+                  {page.items.map((item) => {
+                    if (item.kind === 'mbti') {
+                      return (
+                        <MBTIItem
+                          key={item.question.id}
+                          question={item.question}
+                          value={answers.mbti[item.question.id]}
+                          onSelect={(value) => setMBTIAnswer(item.question.id, value)}
+                        />
+                      );
+                    }
+                    if (item.kind === 'lifestyle') {
+                      return (
+                        <LifestyleItem
+                          key={item.question.id}
+                          question={item.question}
+                          value={answers.lifestyle[item.question.id]}
+                          onSelect={(v) => setLifestyleAnswer(item.question.id, v)}
+                        />
+                      );
+                    }
+                    return (
+                      <InterestItem
+                        key="interests"
+                        ids={item.ids}
+                        selected={answers.interests}
+                        onToggle={toggleInterest}
+                      />
+                    );
+                  })}
+                </div>
+
+                {page.module === 'mbti' && page.dataPageNo === 0 && (
+                  <p className="mt-8 font-mono text-[9.5px] leading-relaxed text-ink-soft/80">
+                    量表结构基于 {MBTI_SOURCE.base}（{MBTI_SOURCE.publisher}），
+                    以 {MBTI_SOURCE.license} 许可改编译制，非商业使用。
+                  </p>
+                )}
+              </>
+            )}
           </motion.div>
         </AnimatePresence>
       </main>
@@ -251,51 +360,95 @@ export default function Quiz({ onComplete, onExit }: QuizProps) {
 }
 
 // ---------------------------------------------------------------------------
-// MBTI 二选一
+// 阶段过渡引导页
 // ---------------------------------------------------------------------------
+
+function TransitionStage({ to }: { to: 'lifestyle' | 'interests' }) {
+  const meta = TRANSITION_META[to];
+  return (
+    <div className="flex flex-1 flex-col items-center justify-center py-14 text-center md:py-20">
+      <div className="mb-6 flex items-center gap-3 text-ink-soft">
+        <span className="h-px w-10 bg-ink/20" />
+        <CompassMark size={30} />
+        <span className="h-px w-10 bg-ink/20" />
+      </div>
+      <p className="eyebrow">stage {meta.no} / 03 · 即将开始</p>
+      <h2 className="mt-4 font-serif text-3xl font-medium md:text-4xl">{meta.title}</h2>
+      <p className="mt-5 max-w-md text-[14px] leading-[1.9] text-ink-soft">{meta.desc}</p>
+      <p className="mt-6 rounded-full border hairline px-4 py-1.5 font-mono text-[10.5px] text-ink-soft">
+        还剩 {meta.remaining}
+      </p>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// MBTI 七级双极量表
+// ---------------------------------------------------------------------------
+
+const SCALE = [1, 2, 3, 4, 5, 6, 7] as const;
 
 interface MBTIItemProps {
   question: MBTIQuestion;
-  value?: Choice;
-  onSelect: (choice: Choice) => void;
+  value?: number;
+  onSelect: (value: number) => void;
 }
 
 function MBTIItem({ question, value, onSelect }: MBTIItemProps) {
+  const leftActive = typeof value === 'number' && value < 4;
+  const rightActive = typeof value === 'number' && value > 4;
   return (
-    <div>
-      <p className="mb-3 font-serif text-[17px] font-medium leading-relaxed md:text-lg">
-        {question.scenario}
-      </p>
-      <div className="grid gap-3 md:grid-cols-2">
-        {(['a', 'b'] as const).map((choice) => {
-          const text = choice === 'a' ? question.a.text : question.b.text;
-          const selected = value === choice;
+    <div className="rounded-[8px] border hairline bg-card/70 px-4 py-5 md:px-6">
+      <div className="mb-4 flex items-start justify-between gap-4">
+        <p
+          className={`max-w-[47%] text-[13.5px] leading-[1.65] transition-colors ${
+            leftActive ? 'font-medium text-ink' : 'text-ink-soft'
+          }`}
+        >
+          {question.left.text}
+        </p>
+        <p
+          className={`max-w-[47%] text-right text-[13.5px] leading-[1.65] transition-colors ${
+            rightActive ? 'font-medium text-ink' : 'text-ink-soft'
+          }`}
+        >
+          {question.right.text}
+        </p>
+      </div>
+
+      <div className="flex items-center justify-between gap-1 md:gap-1.5">
+        {SCALE.map((v) => {
+          const selected = value === v;
           return (
             <button
-              key={choice}
+              key={v}
               type="button"
-              onClick={() => onSelect(choice)}
+              aria-label={`左侧「${question.left.text}」到右侧「${question.right.text}」的符合程度：${v} / 7`}
+              onClick={() => onSelect(v)}
               data-selected={selected}
-              className="chip-choice group flex items-start gap-3 !py-4"
+              className={`h-8 w-8 shrink-0 rounded-[7px] border font-mono text-[11px] transition-all duration-200 active:scale-95 md:h-9 md:w-9 ${
+                selected
+                  ? 'border-clay bg-clay text-paper shadow-[0_2px_10px_rgba(190,90,56,0.35)]'
+                  : 'border-ink/20 bg-transparent text-ink-soft hover:border-ink/50 hover:text-ink'
+              }`}
             >
-              <span
-                className={`mt-0.5 font-mono text-[11px] transition-colors ${
-                  selected ? 'text-clay' : 'text-ink-soft group-hover:text-ink'
-                }`}
-              >
-                {choice.toUpperCase()}
-              </span>
-              <span className="text-[14px] leading-[1.7]">{text}</span>
+              {v}
             </button>
           );
         })}
+      </div>
+
+      <div className="mt-2 flex items-center justify-between font-mono text-[9px] uppercase tracking-wider text-ink-soft/70">
+        <span>完全符合左</span>
+        <span>4 · 中立</span>
+        <span>完全符合右</span>
       </div>
     </div>
   );
 }
 
 // ---------------------------------------------------------------------------
-// 生活偏好单选
+// 生活偏好单选（情景选择题）
 // ---------------------------------------------------------------------------
 
 interface LifestyleItemProps {

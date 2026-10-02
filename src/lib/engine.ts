@@ -8,11 +8,14 @@ import { mbtiQuestions, lifestyleQuestions } from '../data/questions';
 // 用户答案与测评结果类型
 // ---------------------------------------------------------------------------
 
-export type Choice = 'a' | 'b';
+export type AxisName = 'EI' | 'SN' | 'TF' | 'JP';
 
 export interface UserAnswers {
-  mbti: Record<string, Choice>;
+  /** 阶段一：OEJTS 结构七级双极量表作答（1 = 完全符合左特征，4 = 中立，7 = 完全符合右特征） */
+  mbti: Record<string, number>;
+  /** 阶段二：生活偏好情景选择题作答 */
   lifestyle: Record<string, string>;
+  /** 阶段三：兴趣标签多选 */
   interests: string[];
 }
 
@@ -46,6 +49,8 @@ export interface AssessmentResult {
   typeCode: string;
   /** 四个维度的位置：正为 E/N/F/P，负为 I/S/T/J（-100..100） */
   traitVector: CityTraitVector;
+  /** 七级量表换算的偏好百分比（0-100，朝正向字母 E/N/F/P） */
+  axisScores: Record<AxisName, number>;
   preferences: UserAnswers['lifestyle'];
   interests: string[];
   profileTags: string[];
@@ -57,7 +62,6 @@ export interface AssessmentResult {
 // ---------------------------------------------------------------------------
 
 const AXES = ['EI', 'SN', 'TF', 'JP'] as const;
-type AxisName = (typeof AXES)[number];
 
 const POLE_SIGN: Record<Pole, number> = {
   E: 1, I: -1, N: 1, S: -1, F: 1, T: -1, P: 1, J: -1,
@@ -178,27 +182,32 @@ function axisQuestionCount(axis: AxisName): number {
   return mbtiQuestions.filter((q: MBTIQuestion) => q.axis === axis).length;
 }
 
-export function derivePersonality(mbtiAnswers: Record<string, Choice>): {
+/**
+ * 阶段一计分（OEJTS 七级双极量表）：
+ * 每题 1-7（1 = 完全符合左特征，4 = 中立，7 = 完全符合右特征），
+ * 每维度 8 题求和换算为 8~56 的维度分与偏好百分比，得出 16 型。
+ *
+ * 口径：先把每题作答按「正向字母 = E/N/F/P」对齐——
+ *   alignedPlus = (value - 4) * POLE_SIGN[right.pole] ∈ [-3, 3]，
+ * 求和 rawPlus ∈ [-24, 24]，plusSum = rawPlus + 24 ∈ [0, 48]，
+ * 维度 8~56 分 = plusSum + 8；偏好百分比 = plusSum / 48。
+ */
+export function derivePersonality(mbtiAnswers: Record<string, number>): {
   typeCode: string;
   traitVector: CityTraitVector;
+  axisScores: Record<AxisName, number>;
 } {
-  const counts: Record<AxisName, { plus: number; minus: number }> = {
-    EI: { plus: 0, minus: 0 },
-    SN: { plus: 0, minus: 0 },
-    TF: { plus: 0, minus: 0 },
-    JP: { plus: 0, minus: 0 },
-  };
+  const rawPlus: Record<AxisName, number> = { EI: 0, SN: 0, TF: 0, JP: 0 };
 
   for (const q of mbtiQuestions) {
-    const choice = mbtiAnswers[q.id];
-    if (!choice) continue;
-    const pole = choice === 'a' ? q.a.pole : q.b.pole;
-    const bucket = counts[q.axis];
-    if (POLE_SIGN[pole] > 0) bucket.plus += 1;
-    else bucket.minus += 1;
+    const value = mbtiAnswers[q.id];
+    if (typeof value !== 'number') continue;
+    const v = clamp(Math.round(value), 1, 7);
+    rawPlus[q.axis] += (v - 4) * POLE_SIGN[q.right.pole];
   }
 
   const vector: CityTraitVector = { ei: 0, sn: 0, tf: 0, jp: 0 };
+  const axisScores: Record<AxisName, number> = { EI: 0, SN: 0, TF: 0, JP: 0 };
   const letters: string[] = [];
   const positiveLetter: Record<AxisName, [string, string]> = {
     EI: ['E', 'I'],
@@ -208,14 +217,20 @@ export function derivePersonality(mbtiAnswers: Record<string, Choice>): {
   };
 
   for (const axis of AXES) {
-    const { plus, minus } = counts[axis];
-    const total = axisQuestionCount(axis);
-    vector[axis.toLowerCase() as 'ei' | 'sn' | 'tf' | 'jp'] =
-      Math.round(((plus - minus) / total) * 100);
-    letters.push(plus >= minus ? positiveLetter[axis][0] : positiveLetter[axis][1]);
+    const count = axisQuestionCount(axis);
+    const halfRange = count * 3; // 每题最大偏移 3
+    const plusSum = rawPlus[axis] + halfRange; // 0 .. 2*halfRange
+    axisScores[axis] = Math.round((plusSum / (halfRange * 2)) * 100);
+    vector[axis.toLowerCase() as 'ei' | 'sn' | 'tf' | 'jp'] = Math.round(
+      ((plusSum - halfRange) / halfRange) * 100,
+    );
+    // 恰好中立（plusSum == halfRange）时归入正向字母，向量取 0
+    letters.push(
+      plusSum >= halfRange ? positiveLetter[axis][0] : positiveLetter[axis][1],
+    );
   }
 
-  return { typeCode: letters.join(''), traitVector: vector };
+  return { typeCode: letters.join(''), traitVector: vector, axisScores };
 }
 
 // ---------------------------------------------------------------------------
@@ -326,7 +341,7 @@ export function buildProfileTags(result: {
 // ---------------------------------------------------------------------------
 
 export function assess(answers: UserAnswers): AssessmentResult {
-  const { typeCode, traitVector } = derivePersonality(answers.mbti);
+  const { typeCode, traitVector, axisScores } = derivePersonality(answers.mbti);
 
   const preferenceInputs = answers.lifestyle;
 
@@ -415,6 +430,7 @@ export function assess(answers: UserAnswers): AssessmentResult {
   return {
     typeCode,
     traitVector,
+    axisScores,
     preferences: answers.lifestyle,
     interests: answers.interests,
     profileTags,
