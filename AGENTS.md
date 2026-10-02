@@ -72,7 +72,8 @@
 
 **仅允许使用 pnpm**，严禁 npm / yarn。
 - 安装依赖：`pnpm add <pkg>`；开发依赖：`pnpm add -D <pkg>`。
-- 注意：`@vitejs/plugin-react` 锁定 v5（v6 与 Vite 7 存在 `./internal` 导出不兼容问题）。
+- 注意：`@vitejs/plugin-react` 锁定 v4.7（v6 与 Vite 7 存在 `./internal` 导出不兼容问题）。
+- 重要：`server/vite.ts` 创建 Vite 中间件时必须带 `configFile: false`——inline config 已 spread 整个 `vite.config`（含 plugins），若不禁用，Vite 会再次加载配置文件并合并出两份 `react()` 插件，导致 react-refresh 重复注入、所有组件模块 500（页面白屏）。
 
 ## 编码规范
 

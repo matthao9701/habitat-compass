@@ -16,6 +16,10 @@ const isDev = process.env.COZE_PROJECT_ENV !== 'PROD';
 export async function setupViteMiddleware(app: Application) {
   const vite = await createViteServer({
     ...viteConfig,
+    // inline config 已包含 vite.config 的全部内容（含 plugins），
+    // 必须禁用 configFile，避免 Vite 再次加载 vite.config.ts 并合并出两份 react() 插件，
+    // 导致 react-refresh 代码被重复注入（Duplicate declaration）而使所有组件模块 500。
+    configFile: false,
     server: {
       ...viteConfig.server,
       middlewareMode: true,
