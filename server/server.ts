@@ -36,14 +36,20 @@ async function startServer(): Promise<Server> {
   // 集成 Vite（开发模式）或静态文件服务（生产模式）
   await setupVite(app);
 
-  // 全局错误处理
-  app.use((err: Error, req: express.Request, res: express.Response) => {
-    console.error('Server error:', err);
-    const status = 'status' in err ? (err as { status?: number }).status ?? 500 : 500;
-    res.status(status).json({
-      error: err.message || 'Internal server error',
-    });
-  });
+  // 全局错误处理（Express 按 4 参数 arity 识别 error handler，缺参会被当普通中间件）
+  app.use(
+    (err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
+      if (res.headersSent) {
+        next(err);
+        return;
+      }
+      console.error('Server error:', err);
+      const status = 'status' in err ? (err as { status?: number }).status ?? 500 : 500;
+      res.status(status).json({
+        error: err.message || 'Internal server error',
+      });
+    },
+  );
 
   server.once('error', err => {
     console.error('Server error:', err);
