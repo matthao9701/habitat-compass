@@ -13,6 +13,7 @@ import * as storage from './lib/storage';
 import { applyHardConstraints, applyOverBudgetPenalty, hasAnyConstraint, type HardConstraints } from './lib/constraints';
 import { track, trackStage } from './lib/telemetry';
 import { cities as CITIES } from './data';
+import { I18nProvider } from './i18n';
 
 type Screen = 'landing' | 'quiz' | 'report' | 'compare' | 'profile' | 'pro-intro';
 
@@ -131,51 +132,53 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-paper">
-      {TAB_SCREENS.includes(screen) && (
-        <TabBar active={screen as TabId} onChange={openTab} />
-      )}
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={screen}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-        >
-          {screen === 'landing' && (
-            <Landing onStart={startQuiz} onDemo={openDemo} onProIntro={openProIntro} />
-          )}
-          {screen === 'pro-intro' && (
-            <ProIntro
-              onStartPro={() => startQuiz('pro')}
-              onExit={exitQuiz}
-            />
-          )}
-          {screen === 'quiz' && (
-            <Quiz onComplete={completeQuiz} onExit={exitQuiz} version={quizVersion} />
-          )}
-          {screen === 'report' && result && (
-            <Report result={result} onRestart={restart} isDemo={isDemo} onStartQuiz={startQuiz} />
-          )}
-          {screen === 'compare' && (
-            <CompareScreen
-              result={result}
-              answers={answers}
-              seedCities={compareSeed}
-              onOpenQuiz={startQuiz}
-            />
-          )}
-          {screen === 'profile' && (
-            <ProfileScreen
-              onOpenQuiz={startQuiz}
-              onOpenHistory={openHistory}
-              onOpenCompare={openCompare}
-              onProIntro={openProIntro}
-            />
-          )}
-        </motion.div>
-      </AnimatePresence>
-    </div>
+    <I18nProvider>
+      <div className="min-h-screen bg-paper">
+        {TAB_SCREENS.includes(screen) && (
+          <TabBar active={screen as TabId} onChange={openTab} />
+        )}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={screen}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+          >
+            {screen === 'landing' && (
+              <Landing onStart={startQuiz} onDemo={openDemo} onProIntro={openProIntro} />
+            )}
+            {screen === 'pro-intro' && (
+              <ProIntro
+                onStartPro={() => startQuiz('pro')}
+                onExit={exitQuiz}
+              />
+            )}
+            {screen === 'quiz' && (
+              <Quiz onComplete={completeQuiz} onExit={exitQuiz} version={quizVersion} />
+            )}
+            {screen === 'report' && result && (
+              <Report result={result} onRestart={restart} isDemo={isDemo} onStartQuiz={startQuiz} />
+            )}
+            {screen === 'compare' && (
+              <CompareScreen
+                result={result}
+                answers={answers}
+                seedCities={compareSeed}
+                onOpenQuiz={startQuiz}
+              />
+            )}
+            {screen === 'profile' && (
+              <ProfileScreen
+                onOpenQuiz={startQuiz}
+                onOpenHistory={openHistory}
+                onOpenCompare={openCompare}
+                onProIntro={openProIntro}
+              />
+            )}
+          </motion.div>
+        </AnimatePresence>
+      </div>
+    </I18nProvider>
   );
 }

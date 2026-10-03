@@ -24,6 +24,7 @@ import { interestTagsPro, interestSubs } from '../data/interestsPro';
 import type { InterestTag } from '../data/interests';
 import type { UserAnswers, QuizVersion } from '../lib/engine';
 import * as storage from '../lib/storage';
+import { useI18n, translate, getCurrentLang } from '../i18n';
 
 /** 草稿恢复：跳到第一个含未答题的数据页 */
 function firstIncompletePage(pages: Page[], draft: UserAnswers | null): number {
@@ -76,6 +77,7 @@ const PRO_LIFESTYLE_CHUNK = 4;
 const PRO_INTEREST_CHUNK = 10;
 
 function buildPages(version: QuizVersion): Page[] {
+  const L = (k: string): string => translate(getCurrentLang(), k);
   const pages: Page[] = [];
   let dataPageNo = 0;
   const isPro = version === 'pro';
@@ -85,7 +87,7 @@ function buildPages(version: QuizVersion): Page[] {
       pages.push({
         kind: 'data',
         module: 'mbti',
-        eyebrow: `STAGE 01 · Big Five 人格（五级量表）`,
+        eyebrow: L('quiz.stage.ipip.eyebrow'),
         dataPageNo: dataPageNo++,
         items: ipipQuestions
           .slice(i, i + IPIP_CHUNK)
@@ -97,7 +99,7 @@ function buildPages(version: QuizVersion): Page[] {
       pages.push({
         kind: 'data',
         module: 'mbti',
-        eyebrow: `STAGE 01 · 人格倾向 MBTI（七级量表）`,
+        eyebrow: L('quiz.stage.mbti.eyebrow'),
         dataPageNo: dataPageNo++,
         items: mbtiQuestions
           .slice(i, i + MBTI_CHUNK)
@@ -113,7 +115,7 @@ function buildPages(version: QuizVersion): Page[] {
       pages.push({
         kind: 'data',
         module: 'lifestyle',
-        eyebrow: `STAGE 02 · 生活偏好（混编题型）`,
+        eyebrow: L('quiz.stage.pro.eyebrow'),
         dataPageNo: dataPageNo++,
         items: proLifestyleQuestions
           .slice(i, i + PRO_LIFESTYLE_CHUNK)
@@ -125,7 +127,7 @@ function buildPages(version: QuizVersion): Page[] {
       pages.push({
         kind: 'data',
         module: 'lifestyle',
-        eyebrow: `STAGE 02 · 生活偏好（情景选择）`,
+        eyebrow: L('quiz.stage.ls.eyebrow'),
         dataPageNo: dataPageNo++,
         items: lifestyleQuestions
           .slice(i, i + LIFESTYLE_CHUNK)
@@ -141,7 +143,7 @@ function buildPages(version: QuizVersion): Page[] {
       pages.push({
         kind: 'data',
         module: 'interests',
-        eyebrow: `STAGE 03 · 兴趣爱好（多选 + 细化）`,
+        eyebrow: L('quiz.stage.interestsPro.eyebrow'),
         dataPageNo: dataPageNo++,
         items: [
           {
@@ -156,7 +158,7 @@ function buildPages(version: QuizVersion): Page[] {
       pages.push({
         kind: 'data',
         module: 'interests',
-        eyebrow: `STAGE 03 · 兴趣爱好（多选）`,
+        eyebrow: L('quiz.stage.interests.eyebrow'),
         dataPageNo: dataPageNo++,
         items: [
           { kind: 'interests', ids: interestTags.slice(i, i + INTEREST_CHUNK).map((t) => t.id) },
@@ -168,41 +170,50 @@ function buildPages(version: QuizVersion): Page[] {
   return pages;
 }
 
-const TRANSITION_META = {
-  lifestyle: {
-    no: '02',
-    title: '生活偏好',
-    desc: '接下来是 8 道情景选择题：预算、气候、节奏、社交与远程办公——把你的生活方式描摹出来。',
-    remaining: '8 题 · 约 2 分钟',
-  },
-  interests: {
-    no: '03',
-    title: '兴趣爱好',
-    desc: '最后一站：从 16 个兴趣标签里勾选你真实想做的。它们会直接影响城市与你的契合度。',
-    remaining: '16 个标签 · 约 1 分钟',
-  },
-} as const;
+/** 阶段过渡页元信息（工厂：渲染期取当前语言） */
+function getTransitionMeta(isPro: boolean): TransitionMeta {
+  const L = (k: string): string => translate(getCurrentLang(), k);
+  if (isPro) {
+    return {
+      lifestyle: {
+        no: '02',
+        title: L('quiz.transition.ls'),
+        desc: L('quiz.transition.pro.desc'),
+        remaining: L('quiz.transition.pro.meta'),
+      },
+      interests: {
+        no: '03',
+        title: L('quiz.transition.interests'),
+        desc: L('quiz.transition.interestsPro.desc'),
+        remaining: L('quiz.transition.interestsPro.meta'),
+      },
+    };
+  }
+  return {
+    lifestyle: {
+      no: '02',
+      title: L('quiz.transition.ls'),
+      desc: L('quiz.transition.ls.desc'),
+      remaining: L('quiz.transition.ls.meta'),
+    },
+    interests: {
+      no: '03',
+      title: L('quiz.transition.interests'),
+      desc: L('quiz.transition.interests.desc'),
+      remaining: L('quiz.transition.interests.meta'),
+    },
+  };
+}
 
-const TRANSITION_META_PRO: TransitionMeta = {
-  lifestyle: {
-    no: '02',
-    title: '生活偏好',
-    desc: '接下来是 20 道混编题：情景选择、两难二选一、100 点权重滑杆与四选一排序，从更多角度描摹你的定居偏好。',
-    remaining: '20 题 · 约 6 分钟',
-  },
-  interests: {
-    no: '03',
-    title: '兴趣爱好',
-    desc: '最后一站：从 28 个兴趣标签里勾选你真实想做的，还能展开二级细化，让城市匹配更懂你。',
-    remaining: '28 个标签 · 约 3 分钟',
-  },
-} as const;
-
-const PHASE_LABEL: Record<ModuleId, string> = {
-  mbti: '人格',
-  lifestyle: '生活偏好',
-  interests: '兴趣爱好',
-};
+/** 进度条阶段名（工厂：渲染期取当前语言） */
+function phaseLabels(): Record<ModuleId, string> {
+  const L = (k: string): string => translate(getCurrentLang(), k);
+  return {
+    mbti: L('quiz.phase.personality'),
+    lifestyle: L('quiz.transition.ls'),
+    interests: L('quiz.transition.interests'),
+  };
+}
 
 /** 埋点阶段序号与名称（漏斗：1 人格 → 2 偏好 → 3 兴趣 → 4 quiz 完成） */
 const STAGE_INDEX: Record<ModuleId, number> = { mbti: 1, lifestyle: 2, interests: 3 };
@@ -245,6 +256,7 @@ interface QuizProps {
 }
 
 export default function Quiz({ onComplete, onExit, version = 'lite' }: QuizProps) {
+  const { t } = useI18n();
   const isPro = version === 'pro';
   const pages = useMemo(() => buildPages(version), [version]);
   const [draft, setDraft] = useState<UserAnswers | null>(() =>
@@ -454,7 +466,7 @@ export default function Quiz({ onComplete, onExit, version = 'lite' }: QuizProps
     center: { opacity: 1, x: 0 },
     exit: (dir: number) => ({ opacity: 0, x: dir * -28 }),
   };
-  const transitionMeta = isPro ? TRANSITION_META_PRO : TRANSITION_META;
+  const transitionMeta = getTransitionMeta(isPro);
   const pageMarker =
     isPro && page.kind === 'data' && page.items[0]?.kind === 'ipip' ? 'RATE 1-5' : null;
 
@@ -476,7 +488,7 @@ export default function Quiz({ onComplete, onExit, version = 'lite' }: QuizProps
                 onClick={onExit}
                 className="font-mono text-[10px] text-ink-soft underline-offset-4 transition-colors hover:text-ink hover:underline"
               >
-                ← 返回首页
+                {t('quiz.backHome')}
               </button>
             ) : (
               <div className="flex items-center gap-4">
@@ -485,7 +497,7 @@ export default function Quiz({ onComplete, onExit, version = 'lite' }: QuizProps
                   onClick={() => setStage('constraints')}
                   className="font-mono text-[10px] text-ink-soft underline-offset-4 transition-colors hover:text-clay hover:underline"
                 >
-                  硬性条件{hasAnyConstraint(appliedConstraints) ? ' ✓' : ''}
+                  {t('cons.nav.title')}{hasAnyConstraint(appliedConstraints) ? ' ✓' : ''}
                 </button>
                 <p className="font-mono text-[10px] text-ink-soft">
                   {answeredCount} / {totalAnswerable}
@@ -512,7 +524,7 @@ export default function Quiz({ onComplete, onExit, version = 'lite' }: QuizProps
                     isActive ? 'text-clay' : done ? 'text-pine' : 'text-ink-soft/60'
                   }`}
                 >
-                  {PHASE_LABEL[module]}
+                  {phaseLabels()[module]}
                 </p>
               );
             })}
@@ -622,8 +634,8 @@ export default function Quiz({ onComplete, onExit, version = 'lite' }: QuizProps
                 {page.module === 'mbti' && page.dataPageNo === 0 && (
                   <p className="mt-8 font-mono text-[9.5px] leading-relaxed text-ink-soft/80">
                     {isPro
-                      ? '人格量表译自 IPIP 国际人格项目池（公有领域），引用：IPIP (Goldberg, 1999) / IPIP-NEO 120 (Johnson, 2014)。'
-                      : `量表结构基于 ${MBTI_SOURCE.base}（${MBTI_SOURCE.publisher}），以 ${MBTI_SOURCE.license} 许可改编译制，非商业使用。`}
+                      ? t('quiz.ipip.source')
+                      : t('quiz.foot.source', { base: MBTI_SOURCE.base, publisher: MBTI_SOURCE.publisher, license: MBTI_SOURCE.license })}
                   </p>
                 )}
               </>
@@ -639,7 +651,7 @@ export default function Quiz({ onComplete, onExit, version = 'lite' }: QuizProps
         <div className="mx-auto flex max-w-[860px] items-center justify-between gap-4 px-6 py-4 md:px-8">
           <button type="button" onClick={goBack} className="btn-ghost !px-5 !py-3 text-sm">
             <span className="font-mono text-xs">←</span>
-            {pageIndex === 0 ? '返回首页' : '上一步'}
+            {pageIndex === 0 ? t('common.backHome') : t('common.prev')}
           </button>
           <div className="hidden items-center gap-3 sm:flex">
             {isPro && (
@@ -659,7 +671,7 @@ export default function Quiz({ onComplete, onExit, version = 'lite' }: QuizProps
             disabled={!pageReady}
             className="btn-clay !px-7 !py-3 text-sm disabled:opacity-40"
           >
-            {isLast ? '生成我的报告' : '继续'}
+            {isLast ? t('common.finish') : t('common.next')}
             <span className="font-mono text-xs opacity-80">→</span>
           </button>
         </div>
@@ -677,6 +689,7 @@ type StageMeta = { no: string; title: string; desc: string; remaining: string };
 type TransitionMeta = Record<'lifestyle' | 'interests', StageMeta>;
 
 function TransitionStage({ to, meta }: { to: 'lifestyle' | 'interests'; meta: TransitionMeta }) {
+  const { t } = useI18n();
   const m = meta[to];
   return (
     <div className="flex flex-1 flex-col items-center justify-center py-14 text-center md:py-20">
@@ -685,13 +698,13 @@ function TransitionStage({ to, meta }: { to: 'lifestyle' | 'interests'; meta: Tr
         <CompassMark size={30} />
         <span className="h-px w-10 bg-ink/20" />
       </div>
-      <p className="eyebrow">stage {m.no} / 03 · 即将开始</p>
+      <p className="eyebrow">{t('quiz.transition.eyebrow', { no: m.no })}</p>
       <h2 className="mt-4 font-display text-3xl font-bold tracking-tight md:text-4xl">
         {m.title}
       </h2>
       <p className="mt-5 max-w-md text-[14px] leading-[1.9] text-ink-soft">{m.desc}</p>
       <p className="mt-6 rounded-full border hairline px-4 py-1.5 font-mono text-[10.5px] text-ink-soft">
-        还剩 {m.remaining}
+        {t('quiz.transition.remaining', { count: m.remaining })}
       </p>
     </div>
   );
@@ -710,6 +723,7 @@ interface MBTIItemProps {
 }
 
 function MBTIItem({ question, value, onSelect }: MBTIItemProps) {
+  const { t } = useI18n();
   const leftActive = typeof value === 'number' && value < 4;
   const rightActive = typeof value === 'number' && value > 4;
 
@@ -739,7 +753,7 @@ function MBTIItem({ question, value, onSelect }: MBTIItemProps) {
             <button
               key={v}
               type="button"
-              aria-label={`左侧「${question.left.text}」到右侧「${question.right.text}」的符合程度：${v} / 7`}
+              aria-label={t('quiz.mbti.aria', { left: question.left.text, right: question.right.text, v })}
               onClick={() => onSelect(v)}
               data-selected={selected}
               className={`h-8 w-8 shrink-0 rounded-[7px] border font-mono text-[11px] transition-all duration-200 active:scale-95 md:h-9 md:w-9 ${
@@ -755,9 +769,9 @@ function MBTIItem({ question, value, onSelect }: MBTIItemProps) {
       </div>
 
       <div className="mt-2 flex items-center justify-between font-mono text-[9px] uppercase tracking-wider text-ink-soft/70">
-        <span>完全符合左</span>
-        <span>4 · 中立</span>
-        <span>完全符合右</span>
+        <span>{t('quiz.mbti.left')}</span>
+        <span>{t('quiz.mbti.mid')}</span>
+        <span>{t('quiz.mbti.right')}</span>
       </div>
     </div>
   );
@@ -767,13 +781,12 @@ function MBTIItem({ question, value, onSelect }: MBTIItemProps) {
 // 标准版：IPIP-NEO 五点量表
 // ---------------------------------------------------------------------------
 
-const IPIP_SCALE_HINT: Record<number, string> = {
-  1: '非常不符合',
-  2: '较不符合',
-  3: '不确定',
-  4: '较为符合',
-  5: '非常符合',
-};
+/** IPIP 五点量表两端提示（工厂：渲染期取当前语言） */
+function ipipScaleHint(): Record<number, string> {
+  const { t } = useI18n();
+  const L = (k: string): string => translate(getCurrentLang(), k);
+  return { 1: L('quiz.ipip.1'), 2: L('quiz.ipip.2'), 3: L('quiz.ipip.3'), 4: L('quiz.ipip.4'), 5: L('quiz.ipip.5') };
+}
 
 interface IPIPItemProps {
   question: IpipQuestion;
@@ -782,25 +795,28 @@ interface IPIPItemProps {
 }
 
 function IPIPItem({ question, value, onSelect }: IPIPItemProps) {
+  const { t, lang } = useI18n();
+  const stem = lang === 'en' ? question.ref : question.text;
   return (
     <div className="rounded-[8px] border hairline bg-card/70 px-4 py-5 md:px-6">
       <p className="mb-4 flex items-start gap-3 text-[14px] leading-[1.75]">
         <span className="mt-0.5 shrink-0 font-mono text-[10px] text-ochre">
           {question.domain}
         </span>
-        <span className="text-ink">{question.text}</span>
+        <span className="text-ink">{stem}</span>
       </p>
       <div className="flex items-center justify-between gap-1.5 md:gap-2.5">
         {IPIP_SCALE.map((opt) => {
           const selected = value === opt.value;
+          const scaleLabel = t(`quiz.ipip.${opt.value}`);
           return (
             <button
               key={opt.value}
               type="button"
-              aria-label={`「${question.text}」符合程度：${opt.label}`}
+              aria-label={t('quiz.ipip.aria', { text: stem, label: scaleLabel })}
               onClick={() => onSelect(opt.value)}
               data-selected={selected}
-              title={opt.label}
+              title={scaleLabel}
               className={`flex h-10 flex-1 items-center justify-center rounded-[7px] border font-mono text-[12px] transition-all duration-200 active:scale-95 ${
                 selected
                   ? 'border-clay bg-clay text-paper shadow-[0_2px_10px_rgba(190,90,56,0.35)]'
@@ -813,9 +829,9 @@ function IPIPItem({ question, value, onSelect }: IPIPItemProps) {
         })}
       </div>
       <div className="mt-2 flex items-center justify-between text-[10px] text-ink-soft/80">
-        <span>{IPIP_SCALE_HINT[1]}</span>
-        <span className="font-mono text-[9px]">{value ? IPIP_SCALE_HINT[value] : ''}</span>
-        <span>{IPIP_SCALE_HINT[5]}</span>
+        <span>{ipipScaleHint()[1]}</span>
+        <span className="font-mono text-[9px]">{value ? ipipScaleHint()[value] : ''}</span>
+        <span>{ipipScaleHint()[5]}</span>
       </div>
     </div>
   );
@@ -832,13 +848,14 @@ interface LifestyleItemProps {
 }
 
 function LifestyleItem({ question, value, onSelect }: LifestyleItemProps) {
+  const { t } = useI18n();
   return (
     <div>
       <p className="mb-1 font-heading text-[17px] font-bold leading-relaxed md:text-lg">
-        {question.title}
+        {t(question.title)}
       </p>
       {question.hint && (
-        <p className="mb-4 font-mono text-[10.5px] text-ink-soft">{question.hint}</p>
+        <p className="mb-4 font-mono text-[10.5px] text-ink-soft">{t(question.hint)}</p>
       )}
       <div className={`grid gap-2.5 ${question.options.length > 3 ? 'md:grid-cols-2' : ''}`}>
         {question.options.map((option) => {
@@ -852,9 +869,9 @@ function LifestyleItem({ question, value, onSelect }: LifestyleItemProps) {
               className="chip-choice flex items-center justify-between gap-4 !py-3.5"
             >
               <span className="flex flex-col">
-                <span className="text-[14px] font-medium">{option.label}</span>
+                <span className="text-[14px] font-medium">{t(option.label)}</span>
                 {option.desc && (
-                  <span className="mt-0.5 text-[12px] text-ink-soft">{option.desc}</span>
+                  <span className="mt-0.5 text-[12px] text-ink-soft">{t(option.desc)}</span>
                 )}
               </span>
               <span
@@ -881,6 +898,7 @@ interface InterestItemProps {
 }
 
 function InterestItem({ ids, selected, onToggle }: InterestItemProps) {
+  const { t } = useI18n();
   return (
     <div className="grid gap-2.5 md:grid-cols-2">
       {ids.map((id) => {
@@ -919,12 +937,12 @@ function InterestItem({ ids, selected, onToggle }: InterestItemProps) {
 // 标准版：生活偏好混编题型（choice / forced / slider / rank）
 // ---------------------------------------------------------------------------
 
-const PRO_KIND_LABEL: Record<ProLifestyleQuestion['kind'], string> = {
-  choice: '情景选择',
-  forced: '两难二选一',
-  slider: '权重分配',
-  rank: '偏好排序',
-};
+/** 混编题型标签（工厂：渲染期取当前语言） */
+function proKindLabel(): Record<ProLifestyleQuestion['kind'], string> {
+  const { t } = useI18n();
+  const L = (k: string): string => translate(getCurrentLang(), k);
+  return { choice: L('quiz.type.choice'), forced: L('quiz.type.forced'), slider: L('quiz.type.slider'), rank: L('quiz.type.rank') };
+}
 
 interface ProLifestyleItemProps {
   question: ProLifestyleQuestion;
@@ -937,7 +955,7 @@ function ProLifestyleItem({ question, value, onChange }: ProLifestyleItemProps) 
     <div className="rounded-[8px] border hairline bg-card/70 px-4 py-5 md:px-6">
       <div className="mb-3 flex items-center gap-2">
         <span className="rounded border border-ochre/60 px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-wider text-ochre">
-          {PRO_KIND_LABEL[question.kind]}
+          {proKindLabel()[question.kind]}
         </span>
       </div>
       <p className="mb-1 font-heading text-[16px] font-bold leading-relaxed md:text-[17px]">
@@ -956,6 +974,7 @@ function ProLifestyleBody({
   value,
   onChange,
 }: ProLifestyleItemProps) {
+  const { t } = useI18n();
   // ---- 情景选择 / 强迫二选一：单选 ----
   if (question.kind === 'choice' || question.kind === 'forced') {
     const options =
@@ -1031,7 +1050,7 @@ function ProLifestyleBody({
               <div className="flex shrink-0 items-center gap-1.5">
                 <button
                   type="button"
-                  aria-label={`减少 ${d.label}`}
+                  aria-label={t('quiz.interest.dec', { name: d.label })}
                   onClick={() => setPart(i, parts[i] - 5)}
                   className="h-7 w-7 rounded-md border border-ink/20 font-mono text-[13px] text-ink-soft transition-colors hover:border-ink/50 hover:text-ink"
                 >
@@ -1042,7 +1061,7 @@ function ProLifestyleBody({
                 </span>
                 <button
                   type="button"
-                  aria-label={`增加 ${d.label}`}
+                  aria-label={t('quiz.interest.inc', { name: d.label })}
                   onClick={() => setPart(i, parts[i] + 5)}
                   className="h-7 w-7 rounded-md border border-ink/20 font-mono text-[13px] text-ink-soft transition-colors hover:border-ink/50 hover:text-ink"
                 >
@@ -1057,7 +1076,7 @@ function ProLifestyleBody({
             full ? 'text-pine' : 'text-clay'
           }`}
         >
-          已分配 {sum} / {q.total} 点{full ? ' · 已配满' : ` · 还剩 ${q.total - sum} 点`}
+          {t('quiz.rank.allocated', { sum, total: q.total })}{full ? t('quiz.rank.full') : t('quiz.rank.left', { n: q.total - sum })}
         </p>
       </div>
     );
@@ -1095,7 +1114,7 @@ function ProLifestyleBody({
             <span className="flex shrink-0 gap-1">
               <button
                 type="button"
-                aria-label={`上移「${item.label}」`}
+                aria-label={t('quiz.rank.up', { name: item.label })}
                 disabled={idx === 0}
                 onClick={() => move(itemValue, -1)}
                 className="h-7 w-7 rounded-md border border-ink/20 font-mono text-[11px] text-ink-soft transition-colors hover:border-ink/50 hover:text-ink disabled:opacity-30"
@@ -1104,7 +1123,7 @@ function ProLifestyleBody({
               </button>
               <button
                 type="button"
-                aria-label={`下移「${item.label}」`}
+                aria-label={t('quiz.rank.down', { name: item.label })}
                 disabled={idx === order.length - 1}
                 onClick={() => move(itemValue, 1)}
                 className="h-7 w-7 rounded-md border border-ink/20 font-mono text-[11px] text-ink-soft transition-colors hover:border-ink/50 hover:text-ink disabled:opacity-30"
@@ -1115,7 +1134,7 @@ function ProLifestyleBody({
           </div>
         );
       })}
-      <p className="font-data text-[11px] text-ink-soft">点 ↑ ↓ 调整顺序，越靠前越在意</p>
+      <p className="font-data text-[11px] text-ink-soft">{t('quiz.rank.hint')}</p>
     </div>
   );
 }
@@ -1133,6 +1152,7 @@ interface InterestItemProProps {
 }
 
 function InterestItemPro({ ids, selected, subs, onToggle, onToggleSub }: InterestItemProProps) {
+  const { t } = useI18n();
   return (
     <div className="grid gap-2.5 md:grid-cols-2">
       {ids.map((id) => {
@@ -1171,7 +1191,7 @@ function InterestItemPro({ ids, selected, subs, onToggle, onToggleSub }: Interes
             {isSelected && subItems.length > 0 && (
               <div className="border-t border-clay/20 px-4 py-3">
                 <p className="mb-2 font-mono text-[9.5px] uppercase tracking-wider text-ink-soft">
-                  细化 · 选中子项将强化该兴趣权重
+                  {t('quiz.interest.refine')}
                 </p>
                 <div className="flex flex-wrap gap-1.5">
                   {subItems.map((sub) => {

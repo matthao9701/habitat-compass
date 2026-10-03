@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { WEIGHTS } from '../../lib/engine';
+import { useI18n } from '../../i18n';
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
@@ -22,10 +23,11 @@ interface Segment {
 
 /** 模块一：评分构成分析——三段环形图，段宽 = 引擎权重，段深 = 实际得分 */
 export default function WeightDonut({ personality, lifestyle, interest, total }: WeightDonutProps) {
+  const { t } = useI18n();
   const segments: Segment[] = [
-    { key: 'personality', label: 'MBTI 人格', weight: Math.round(WEIGHTS.personality * 100), score: personality, color: '#BE5A38' },
-    { key: 'lifestyle', label: '生活偏好', weight: Math.round(WEIGHTS.preference * 100), score: lifestyle, color: '#335043' },
-    { key: 'interest', label: '兴趣爱好', weight: Math.round(WEIGHTS.interest * 100), score: interest, color: '#B08544' },
+    { key: 'personality', label: t('report.donut.personality'), weight: Math.round(WEIGHTS.personality * 100), score: personality, color: '#E76F51' },
+    { key: 'lifestyle', label: t('quiz.transition.ls'), weight: Math.round(WEIGHTS.preference * 100), score: lifestyle, color: '#0A4D68' },
+    { key: 'interest', label: t('quiz.transition.interests'), weight: Math.round(WEIGHTS.interest * 100), score: interest, color: '#D9A441' },
   ];
 
   const r = 52;
@@ -64,7 +66,7 @@ export default function WeightDonut({ personality, lifestyle, interest, total }:
           })}
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <p className="font-mono text-[9px] uppercase tracking-eyebrow text-paper/50">top 1 总分</p>
+          <p className="font-mono text-[9px] uppercase tracking-eyebrow text-paper/50">{t('report.donut.total')}</p>
           <p className="font-mono text-[30px] font-semibold leading-tight text-paper">
             {total}
             <span className="text-[13px]">%</span>
@@ -90,7 +92,7 @@ export default function WeightDonut({ personality, lifestyle, interest, total }:
                 />
                 {seg.label}
               </span>
-              <span className="font-mono text-[10.5px] text-paper/55">权重 {seg.weight}%</span>
+              <span className="font-mono text-[10.5px] text-paper/55">{t('wd.segWeight', { pct: seg.weight })}</span>
             </div>
             <div className="mt-1 flex items-center gap-2">
               <div className="h-[3px] flex-1 overflow-hidden rounded-full bg-paper/10">
@@ -113,7 +115,7 @@ export default function WeightDonut({ personality, lifestyle, interest, total }:
           </motion.div>
         ))}
         <p className="border-t border-paper/15 pt-3 font-mono text-[9.5px] leading-[1.8] text-paper/45">
-          分段宽度 = 引擎权重（人格 30 / 偏好 48 / 兴趣 22）；段内进度 = 该维度与 Top 1 城市的实际得分。
+          {t('wd.note')}
         </p>
       </div>
     </div>

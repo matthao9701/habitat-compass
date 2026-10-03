@@ -1,14 +1,17 @@
+import { useI18n } from '../i18n';
+import LangSwitch from './LangSwitch';
+
 export type TabId = 'landing' | 'compare' | 'profile';
 
-const TABS: { id: TabId; label: string }[] = [
-  { id: 'landing', label: '首页' },
-  { id: 'compare', label: '城市对比' },
-  { id: 'profile', label: '我的' },
+const TAB_KEYS: { id: TabId; key: string }[] = [
+  { id: 'landing', key: 'nav.home' },
+  { id: 'compare', key: 'nav.compare' },
+  { id: 'profile', key: 'nav.profile' },
 ];
 
 /** 纯几何符号图标（无 emoji） */
 function TabIcon({ id, active }: { id: TabId; active: boolean }) {
-  const c = active ? '#BE5A38' : '#4A5950';
+  const c = active ? '#E76F51' : '#5A7A8A';
   if (id === 'landing') {
     return (
       <svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true">
@@ -39,19 +42,20 @@ function TabIcon({ id, active }: { id: TabId; active: boolean }) {
   );
 }
 
-/** 顶部导航：只保留三个 Tab（品牌名由首页 Hero 承载），居中排布、加大留白 */
+/** 顶部导航：三 Tab + 语言切换（品牌名由首页 Hero 承载） */
 export default function TabBar({ active, onChange }: { active: TabId; onChange: (t: TabId) => void }) {
+  const { t } = useI18n();
   return (
     <header className="sticky top-0 z-40 border-b border-ink/10 bg-paper/95 backdrop-blur-sm">
-      <div className="mx-auto flex h-16 max-w-almanac items-center justify-center px-5 md:px-10">
-        <nav className="flex items-center gap-2 md:gap-8" aria-label="主导航">
-          {TABS.map((t) => {
-            const isActive = t.id === active;
+      <div className="mx-auto flex h-16 max-w-almanac items-center px-5 md:px-10">
+        <nav className="mx-auto flex items-center gap-2 md:gap-8" aria-label={t('nav.ariaLabel')}>
+          {TAB_KEYS.map((tb) => {
+            const isActive = tb.id === active;
             return (
               <button
-                key={t.id}
+                key={tb.id}
                 type="button"
-                onClick={() => onChange(t.id)}
+                onClick={() => onChange(tb.id)}
                 aria-current={isActive ? 'page' : undefined}
                 className={`flex items-center gap-2 rounded-[7px] px-4 py-2 font-heading text-[13px] font-medium tracking-wide transition-colors duration-200 ${
                   isActive
@@ -59,12 +63,15 @@ export default function TabBar({ active, onChange }: { active: TabId; onChange: 
                     : 'text-ink-soft hover:bg-ink/5 hover:text-ink'
                 }`}
               >
-                <TabIcon id={t.id} active={isActive} />
-                {t.label}
+                <TabIcon id={tb.id} active={isActive} />
+                {t(tb.key)}
               </button>
             );
           })}
         </nav>
+        <div className="absolute right-5 md:right-10">
+          <LangSwitch />
+        </div>
       </div>
     </header>
   );

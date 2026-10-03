@@ -2,19 +2,25 @@ import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { createProOrder, PRO_PRICE_CNY, type PayChannel, type ProOrder } from '../../lib/storage';
 import { track } from '../../lib/telemetry';
+import { useI18n, translate, getCurrentLang } from '../../i18n';
 
 /**
  * 模拟支付确认弹窗：渠道选择 → 2 秒虚拟处理动画 → 解锁成功。
  * 演示环境 · 虚拟计费，不产生真实扣款。
  */
 
-const CHANNELS: { value: PayChannel; label: string; hint: string }[] = [
-  { value: 'alipay', label: '支付宝', hint: '模拟扫码' },
-  { value: 'wechat', label: '微信支付', hint: '模拟拉起收银台' },
-  { value: 'card', label: '银行卡', hint: '模拟快捷支付' },
-];
+/** 支付渠道清单（工厂：渲染期取当前语言） */
+function channels(): { value: PayChannel; label: string; hint: string }[] {
+  const L = (k: string): string => translate(getCurrentLang(), k);
+  return [
+    { value: 'alipay', label: L('bill.channel.alipay'), hint: L('bill.pay.scanning') },
+    { value: 'wechat', label: L('bill.channel.wechat'), hint: L('bill.pay.checkout') },
+    { value: 'card', label: L('bill.channel.card'), hint: L('bill.pay.quick') },
+  ];
+}
 
 function ChannelGlyph({ channel }: { channel: PayChannel }) {
+  const { t } = useI18n();
   if (channel === 'alipay') {
     return (
       <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.6">
@@ -46,6 +52,7 @@ interface PayModalProps {
 }
 
 export default function PayModal({ open, onClose, onSuccess }: PayModalProps) {
+  const { t } = useI18n();
   const [channel, setChannel] = useState<PayChannel>('alipay');
   const [phase, setPhase] = useState<'select' | 'processing' | 'done'>('select');
   const [order, setOrder] = useState<ProOrder | null>(null);
@@ -91,7 +98,7 @@ export default function PayModal({ open, onClose, onSuccess }: PayModalProps) {
             <div className="flex items-center justify-between border-b border-line px-5 py-4">
               <div>
                 <p className="eyebrow text-[10px]">checkout · demo</p>
-                <h3 className="font-heading text-lg font-bold text-ink">解锁标准版测评</h3>
+                <h3 className="font-heading text-lg font-bold text-ink">{t('bill.pay.title')}</h3>
               </div>
               <span className="font-data text-xl font-semibold text-clay">
                 ¥{PRO_PRICE_CNY.toFixed(1)}
@@ -100,9 +107,9 @@ export default function PayModal({ open, onClose, onSuccess }: PayModalProps) {
 
             {phase === 'select' && (
               <div className="px-5 py-4">
-                <p className="mb-3 text-sm text-ink-soft">选择虚拟支付渠道</p>
+                <p className="mb-3 text-sm text-ink-soft">{t('bill.pay.channel')}</p>
                 <div className="mb-4 space-y-2">
-                  {CHANNELS.map((c) => (
+                  {channels().map((c) => (
                     <button
                       key={c.value}
                       type="button"
@@ -133,10 +140,10 @@ export default function PayModal({ open, onClose, onSuccess }: PayModalProps) {
                   onClick={confirmPay}
                   className="w-full rounded-lg bg-clay px-4 py-3 text-sm font-medium text-paper transition-colors hover:bg-clay-deep"
                 >
-                  确认支付 ¥{PRO_PRICE_CNY.toFixed(1)}
+                  {t('bill.pay.confirm', { price: PRO_PRICE_CNY.toFixed(1) })}
                 </button>
                 <p className="mt-3 text-center text-xs text-ink-soft">
-                  演示环境 · 虚拟计费，不产生真实扣款
+                  {t('bill.demoNotice')}
                 </p>
               </div>
             )}
@@ -148,8 +155,8 @@ export default function PayModal({ open, onClose, onSuccess }: PayModalProps) {
                   animate={{ rotate: 360 }}
                   transition={{ repeat: Infinity, duration: 0.9, ease: 'linear' }}
                 />
-                <p className="font-data text-sm text-ink-soft">正在处理虚拟支付…</p>
-                <p className="mt-1 text-xs text-ink-soft">演示环境 · 不产生真实扣款</p>
+                <p className="font-data text-sm text-ink-soft">{t('bill.pay.processing')}</p>
+                <p className="mt-1 text-xs text-ink-soft">{t('bill.pay.demo')}</p>
               </div>
             )}
 
@@ -159,16 +166,16 @@ export default function PayModal({ open, onClose, onSuccess }: PayModalProps) {
                   <circle cx="12" cy="12" r="9.5" />
                   <path d="M7.5 12.5l3 3 6-6.5" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
-                <h4 className="font-heading text-lg font-bold text-ink">标准版已解锁</h4>
+                <h4 className="font-heading text-lg font-bold text-ink">{t('bill.pay.done')}</h4>
                 <p className="mt-1 font-data text-xs text-ink-soft">
-                  订单号 {order.id} · ¥{order.amountCny.toFixed(1)} · 永久有效
+                  {t('bill.pay.orderLine', { id: order.id, amount: order.amountCny.toFixed(1) })}
                 </p>
                 <button
                   type="button"
                   onClick={() => onSuccess(order)}
                   className="mt-5 w-full rounded-lg bg-clay px-4 py-3 text-sm font-medium text-paper transition-colors hover:bg-clay-deep"
                 >
-                  开始标准版测评
+                  {t('bill.pay.startPro')}
                 </button>
               </div>
             )}

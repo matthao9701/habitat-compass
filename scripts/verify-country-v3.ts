@@ -60,8 +60,21 @@ check('cpi 取值 0-100（非空者）', COUNTRIES.every((c) => c.cpi == null ||
 check('taxTopRatePct 取值 0-60（非空者）', COUNTRIES.every((c) => c.taxTopRatePct == null || (c.taxTopRatePct >= 0 && c.taxTopRatePct <= 60)));
 check('GDP/人口为正数（非空者）', COUNTRIES.every((c) => (c.gdpPerCapitaUSD == null || c.gdpPerCapitaUSD > 0) && (c.population == null || c.population > 0)));
 check('updatedAt 格式 YYYY-MM-DD', COUNTRIES.every((c) => /^\d{4}-\d{2}-\d{2}$/.test(c.updatedAt)));
-check('GPI 全 null（源站不可达，待补录）', COUNTRIES.every((c) => c.gpi == null));
-check('固定宽带网速全 null（源站不可达，待补录）', COUNTRIES.every((c) => c.internetMbpsFixed == null));
+// 第七轮：GPI / 网速手工快照补录后的断言（覆盖率 + 合理性 + 来源标注 + 地区豁免）
+const NOT_IN_GPI_CODES = new Set(['HK', 'PR', 'FJ']);
+check('GPI 快照覆盖率 ≥ 90%（除榜单不含地区）', (() => {
+  const eligible = COUNTRIES.filter((c) => !NOT_IN_GPI_CODES.has(c.code));
+  return eligible.filter((c) => c.gpi != null).length / eligible.length >= 0.9;
+})());
+check('GPI 榜单不含地区显式标注且为 null', COUNTRIES.filter((c) => NOT_IN_GPI_CODES.has(c.code)).every((c) => c.gpi == null && (c.sources.gpi ?? '').includes('GPI 榜单不含')));
+check('GPI 分数 1-5 / 排名 1-163（非空者）', COUNTRIES.every((c) => c.gpi == null || (c.gpi.score >= 1 && c.gpi.score <= 5 && c.gpi.rank >= 1 && c.gpi.rank <= 163)));
+check('固定宽带网速快照覆盖率 ≥ 90%', COUNTRIES.filter((c) => c.internetMbpsFixed != null).length / COUNTRIES.length >= 0.9);
+check('网速取值合理 5-500 Mbps（非空者）', COUNTRIES.every((c) => c.internetMbpsFixed == null || (c.internetMbpsFixed >= 5 && c.internetMbpsFixed <= 500)));
+check('GPI / 网速来源标注为手工快照口径', COUNTRIES.every((c) => {
+  const g = c.gpi == null || (c.sources.gpi ?? '').includes('GPI');
+  const n = c.internetMbpsFixed == null || (c.sources.internetMbpsFixed ?? '').includes('Speedtest');
+  return g && n;
+}));
 check(
   '非空字段均有来源标注',
   COUNTRIES.every((c) => {

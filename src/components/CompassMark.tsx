@@ -39,7 +39,7 @@ export default function CompassMark({ size = 36, className }: CompassMarkProps) 
         );
       })}
       {/* 南北指针：陶土/墨色 */}
-      <path d="M24 7 L28.2 24 L24 21.4 L19.8 24 Z" fill="#BE5A38" />
+      <path d="M24 7 L28.2 24 L24 21.4 L19.8 24 Z" fill="#E76F51" />
       <path d="M24 41 L19.8 24 L24 26.6 L28.2 24 Z" fill="currentColor" opacity="0.82" />
       <circle cx="24" cy="24" r="2.1" fill="currentColor" />
     </svg>

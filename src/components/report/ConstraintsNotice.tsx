@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import type { ExcludedEntry } from '../../lib/constraints';
+import { useI18n } from '../../i18n';
+import { cityNameById } from '../../lib/format';
 
 /**
  * ConstraintsNotice — 报告页顶部的硬性条件过滤说明（第六轮）
@@ -14,6 +16,7 @@ export default function ConstraintsNotice({
   relaxed: boolean;
   overBudgetCount: number;
 }) {
+  const { t } = useI18n();
   const [open, setOpen] = useState(false);
 
   return (
@@ -27,13 +30,13 @@ export default function ConstraintsNotice({
             </svg>
             <div>
               <p className="text-[13.5px] font-medium leading-snug text-ink">
-                已按你的硬性条件排除 <span className="font-data text-clay">{excluded.length}</span> 座城市
+                {t('cn.head1')} <span className="font-data text-clay">{excluded.length}</span> {t('cn.head2')}
                 {overBudgetCount > 0 ? (
-                  <>，其中 <span className="font-data text-ochre">{overBudgetCount}</span> 座因剩余城市不足放宽保留（降权标注「超预算」）</>
+                  <>{t('cn.relaxed1')} <span className="font-data text-ochre">{overBudgetCount}</span> {t('cn.relaxed2')}</>
                 ) : null}
               </p>
               <p className="mt-1 font-mono text-[10px] leading-relaxed text-ink-soft">
-                硬性条件在打分之前一票否决，不参与 30/48/22 权重；可返回测评前的「硬性条件」步骤修改后重算。
+                {t('cn.rule')}
               </p>
             </div>
           </div>
@@ -42,7 +45,7 @@ export default function ConstraintsNotice({
             onClick={() => setOpen((v) => !v)}
             className="shrink-0 font-mono text-[10.5px] text-clay underline-offset-4 hover:underline"
           >
-            {open ? '收起明细 −' : '查看被排除原因 +'}
+            {open ? t('repnot.collapse') : t('repnot.expand')}
           </button>
         </div>
 
@@ -50,7 +53,7 @@ export default function ConstraintsNotice({
           <ul className="mt-4 grid gap-x-8 gap-y-2 border-t hairline pt-4 sm:grid-cols-2">
             {excluded.map((e) => (
               <li key={e.cityId} className="flex items-baseline gap-2 text-[12px] leading-[1.7]">
-                <span className="shrink-0 font-medium text-ink">{e.nameZh}</span>
+                <span className="shrink-0 font-medium text-ink">{cityNameById(e.cityId, e.nameZh)}</span>
                 <span className="font-mono text-[10px] text-ink-soft">{e.countryZh}</span>
                 <span className="text-ink-soft">— {e.reason}</span>
               </li>
@@ -60,7 +63,7 @@ export default function ConstraintsNotice({
 
         {relaxed ? (
           <p className="mt-3 font-mono text-[10px] leading-relaxed text-ink-soft">
-            放宽规则：预算过滤后剩余城市不足 5 座时，「超上限但差距 &lt; 15%」的城市保留进入打分，并在匹配分上扣减 3 分、标注「超预算」。
+            {t('cn.relaxedRule')}
           </p>
         ) : null}
       </div>

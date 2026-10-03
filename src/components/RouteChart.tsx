@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import type { City } from '../data/types';
+import { useI18n } from '../i18n';
 
 // 经纬度（近似，用于示意性海图，非精确投影）
 const COORDS: Record<string, [number, number]> = {
@@ -75,6 +76,7 @@ export default function RouteChart({
   routes = DEFAULT_ROUTES,
   compact = false,
 }: RouteChartProps) {
+  const { t } = useI18n();
   const { points, paths } = useMemo(() => {
     const byId = new Map(cities.map((c) => [c.id, c]));
     const points = cities
@@ -119,7 +121,7 @@ export default function RouteChart({
       className={className}
       preserveAspectRatio="xMidYMid meet"
       role="img"
-      aria-label="覆盖全球 39 个海外城市的航线示意图"
+      aria-label={t('route.aria')}
     >
       {/* 经纬网 */}
       {graticules.map((g, i) => (
@@ -151,7 +153,7 @@ export default function RouteChart({
             key={i}
             d={d}
             fill="none"
-            stroke={compact ? '#F3EEE2' : '#BE5A38'}
+            stroke={compact ? '#F0F7FA' : '#E76F51'}
             strokeWidth="1.1"
             strokeDasharray="5 7"
             opacity="0.7"
@@ -166,13 +168,13 @@ export default function RouteChart({
         return (
           <g key={p.id}>
             {active && (
-              <circle cx={p.x} cy={p.y} r="7" stroke={compact ? '#F3EEE2' : '#BE5A38'} strokeWidth="0.9" opacity="0.7" />
+              <circle cx={p.x} cy={p.y} r="7" stroke={compact ? '#F0F7FA' : '#E76F51'} strokeWidth="0.9" opacity="0.7" />
             )}
             <circle
               cx={p.x}
               cy={p.y}
               r={active ? 3.2 : 2}
-              fill={active ? '#BE5A38' : compact ? '#F3EEE2' : '#1F2D28'}
+              fill={active ? '#E76F51' : compact ? '#F0F7FA' : '#0A2530'}
               opacity={active ? 1 : 0.62}
             />
           </g>

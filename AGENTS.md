@@ -11,6 +11,7 @@
 - **UI**: Tailwind CSS 3 + framer-motion 13（过渡动画）
 - **字体**（第三轮起，全部 OFL 自托管，禁外部 CDN）：Noto Sans SC（display/heading/body，@fontsource/noto-sans-sc 300-900）、IBM Plex Mono（data/等宽数字）、Source Serif 4（英文点缀，仅 serif-accent）；tailwind fontFamily 层级 token：`display/heading/body/data/serif-accent`（兼容映射 sans/serif/mono）
 - **图表**: 自绘 SVG（六维雷达图、维度条形图、世界海图）
+- **i18n（第七轮）**: 自研轻量双语（zh/en）——LangContext + useI18n + REVERSE_ZH 反查，六域词典自托管，无第三方 i18n 依赖
 
 ## 目录结构
 
@@ -28,6 +29,7 @@
 │       ├── fetch-efepi.mjs  # EF EPI 国家评级提取
 │       └── assemble.mjs     # 装配 100 城：39 旧城富化 + 新城派生 + 成本线性拟合 + americas 拆分 → 6 大洲 JSON
 │       └── fetch-country.mjs# 第六轮国家级管道：65 国 = World Bank 全表+逐国 GDP/POP + Numbeo country 表解析 + MANUAL 手工快照（GPI/网速源站不可达硬编码 null）→ src/data/countries.json
+│       └── snapshot-gpispeed.mjs # 第七轮幂等快照回填：GPI（IEP 2024，163 国榜单手工快照，62/65，HK/PR/FJ 豁免显式 null）+ 网速（Ookla 固定宽带中位数下行，65/65）→ countries.json 的 gpi/internetMbpsFixed + sources 标注；详见 DATA.md 第八节
 ├── server/
 │   ├── routes/              # Express 路由（无业务接口）
 │   ├── server.ts            # Express 入口
@@ -45,7 +47,8 @@
 │   │   ├── compare/         # 对比页模块：CompareScreen（选城含大洲/次区域筛选/11 维权重滑杆/排名/存档）、CompareCharts（多城雷达/逐维条形/语义色数值表，null→'—'，含 CityDetailModal 城市详情弹层：城市卡+国家基本信息区）、CompareDataCards（成本卡+公开数据表+国家级对比行（同国合并），仅真实字段）
 │   │   ├── report/          # 报告增强模块：WeightDonut/BreakdownSection（11 维）/CityAnalysisSection/TrialSection/SemBar（语义色数据条，支持 null 值显示 '—'）/BigFiveSection（第五轮：五维雷达+30 facets 条+映射卡+两版对比）/ConstraintsNotice（硬约束排除说明可展开）/CountryCards（国家概况卡）/VerificationChecklist（待核实清单+免责声明）
 │   │   ├── billing/         # 第五轮虚拟计费：ProIntro（商品介绍页：对比表/题库结构/解锁 CTA，未购可预览）、PayModal（渠道选择+2s 模拟动画+成功态，顶部注明演示环境）
-│   │   ├── Quiz.tsx         # 测评（双版本）：version 分支——lite 原 56 题流程不动；pro = IPIP 120（5 点量表，6 题/页）+ 20 道四题型混编（choice/forced/slider/rank）+ 28 兴趣标签（含二级展开）；草稿按版本分键
+│   │   ├── Quiz.tsx         # 测评（双版本）：version 分支——lite 原 56 题流程不动；pro = IPIP 120（5 点量表，6 题/页）+ 20 道四题型混编（choice/forced/slider/rank）+ 28 兴趣标签（含二级展开）；草稿按版本分键。第七轮 i18n：IPIPItem 题干 en 模式渲染 question.ref（IPIP 英文原句）、LifestyleItem title/hint/选项经 t() 走 REVERSE_ZH 反查
+│   │   ├── LangSwitch.tsx   # 第七轮：顶部导航中/EN 切换（LangContext，localStorage 记忆优先 + navigator.language 兜底）
 │   │   ├── RadarChart.tsx   # 六维雷达图（原生多序列 series: RadarSeries[]，对比页复用；缺维城自动剔除）
 │   │   ├── RouteChart.tsx   # 世界航线图（内含城市经纬度）
 │   │   └── CompassMark.tsx  # 罗盘花品牌符号
@@ -56,6 +59,12 @@
 │   │   ├── constraints.ts   # 第六轮硬约束过滤层（打分前一票否决，双版通用）：CNY_USD_RATE=7.2/OVER_BUDGET_BAND=0.15/RELAX_MIN_KEEP=5/OVER_BUDGET_PENALTY=3；applyHardConstraints 两阶段（先预算→再签证/安全，放宽回填者仍需过签证/安全）；applyOverBudgetPenalty（match-3+overBudget 标注）；null 数据=无法核验排除，reason 可解释
 │   │   ├── telemetry.ts     # 第六轮轻量埋点：FUNNEL_KEY 'nomadmatch.v1:funnel'，track/getFunnel/trackStage（阶段键 stage_start_N_name），纯 localStorage 计数无 PII，node 守卫降级
 │   │   └── compare.ts       # 对比页计算层 v2：临时权重重算（null 维/类跳过，与引擎同口径）、rankRows、compareCost（双缺→'暂无数据'）、NEUTRAL_ANSWERS、weightShare 最大余数法
+│   │   ├── format.ts        # 第七轮 i18n 展示层：cityName/countryName（按 lang 取 nameEn/nameZh，Country.nameEn 可空回退）、formatMoney（zh: ¥xxx（≈$usd）· en: $usd，CNY_USD_RATE=7.2）、formatDate（en-US/zh-CN locale）、cityById/cityNameById（ExcludedEntry 快照回退）
+│   │   └── colors.ts        # 第七轮图表色常量（SVG 图表与 Tailwind token 解耦的 JS 侧取值）
+│   ├── i18n/                # 第七轮双语基础设施（zh/en）
+│   │   ├── index.tsx        # LangContext + useI18n(){ lang, setLang, t }；t() 插值 {var}；translate() 键查不到时走 REVERSE_ZH 反查（中文值→key），使规则层中文文案在展示层 {t(reason)} 自动双语；导出 translate/getCurrentLang/makeStaticT；Provider useEffect 同步 html lang / title / meta description / og:* 随语言切换；语言持久化键 nomadmatch.v1:lang
+│   │   ├── title.ts         # TITLE_BY_LANG / DESCRIPTION_BY_LANG（SEO 双语文案）
+│   │   └── dict/            # 六域词典（zh/en 各一套扁平 Record）：ui（全站 UI）/analysis（报告规则）/questions（题库：mbti.*/ls.*/pro.*）/interests（tag.*/sub.*/fac.*）/mbti（16 型）/extra（杂项）；index.ts 组装 DICTS（extra 后合并可覆盖）+ REVERSE_ZH
 │   └── data/
 │       ├── types.ts         # City v2：continent/subregion/population/timezone/climateDetail/六指数/rent1brUSD/mealUSD/visaStatus 三档/visaDetail/englishEpiBand；大量字段可空；第六轮：City.countryCode（ISO2）+ Country 接口（17 字段+cityCount/updatedAt/sources 逐字段来源）
 │       ├── index.ts         # 合并六大洲 JSON（europe/asia/africa/north-america/south-america/oceania）
@@ -87,7 +96,8 @@
 - 迭代验证：`pnpm tsx scripts/verify-iter1.ts`、`pnpm tsx scripts/verify-iter2.ts`
 - 数据校验（第四轮）：`pnpm tsx scripts/verify-data-v2.ts`（依赖 /tmp/pipeline/climate.json 与 new-ids.txt，全量重跑见 DATA.md）
 - 题库校验（第五轮）：`pnpm tsx scripts/verify-quiz-v2.ts`（IPIP 120 完整性/计分键方向/Big Five→16 型映射回归/四题型覆盖/兴趣子项强化）
-- 第六轮校验：`pnpm tsx scripts/verify-country-v3.ts`（国家数据完整性/逐字段来源标注/GPI 网速全 null 预期/硬约束单测：预算排除与 5 城放宽/签证三档/安全阈值/null 无法核验/两阶段过滤/埋点计数/引擎集成冒烟）
+- 第六轮校验：`pnpm tsx scripts/verify-country-v3.ts`（国家数据完整性/逐字段来源标注/GPI 覆盖与豁免/网速覆盖/硬约束单测：预算排除与 5 城放宽/签证三档/安全阈值/null 无法核验/两阶段过滤/埋点计数/引擎集成冒烟；第七轮已更新：GPI 62/65 + 网速 65/65 断言替代全 null 预期）
+- i18n 校验（第七轮）：`pnpm tsx scripts/verify-i18n-v4.ts`（zh/en 键集合一致/IPIP ref 与题库词典双语/16 型与 facets/REVERSE_ZH 反查抽样/analysis 规则串反查覆盖率/HTML lang 同步/城市国家 nameEn 覆盖）
 
 ## 匹配引擎说明
 
@@ -118,7 +128,18 @@
 
 ## 设计规范
 
-见 `DESIGN.md`。核心：「现代航海图志」——亚麻纸底、松墨、陶土强调、Fraunces/Noto Serif SC 衬线、制图符号语言；禁止科技蓝渐变与模板化 SaaS 布局。
+见 `DESIGN.md`。核心（第七轮起）：「现代航海图志 · 海洋蓝白」——雾蓝白底（paper #F0F7FA）、深海蓝（deep-sea #0A4D68）、海洋青（ocean #088395）、珊瑚暖点缀（coral #E76F51）、白卡片大圆角 + 波浪纹理 SVG；五层字体 token（display/heading/body/data/serif-accent）不变；禁止科技蓝紫渐变与模板化 SaaS 布局。
+
+## 第七轮：海洋蓝白改版 / 全站双语 / 国家数据补录
+
+- **视觉换肤**：tailwind 语义 token 名不变只换值（paper/paper-deep/card/ink/ink-soft/pine/clay/clay/ochre/teal/moss/sea → 海洋蓝白系），卡片圆角加大 + 波浪纹理 SVG（`src/index.css` 纹理类）；品牌名「栖居罗盘」与五层字体 token 不动；组件结构零重构。图表 JS 侧取色统一走 `src/lib/colors.ts`。
+- **i18n 架构**（zh/en）：
+  - `src/i18n/index.tsx`：LangContext + useI18n；语言优先级 localStorage（`nomadmatch.v1:lang`）> navigator.language > zh；t() 支持 `{var}` 插值；**REVERSE_ZH 反查**——键查不到时用 zh 值→key 映射反查，规则层（analysis.ts/constraints.ts）产出的中文文案在展示层 `{t(reason)} 自动按语言输出；模块级常量工厂（如 `phaseLabels()`/`channels()`）内部用 `translate(getCurrentLang(), k)`，避免与组件内 t shadow。
+  - 词典六域 `src/i18n/dict/`（ui/analysis/questions/interests/mbti/extra），`dict/index.ts` 组装 DICTS + REVERSE_ZH；改文案先查 extra（后合并可覆盖）再改域文件。
+  - 题目双语：MBTI 32 题走 `mbti.{id}.left/right`；简易偏好 8 题走 `ls.{id}.*`（数据字段中文值与词典 zh 值完全一致，反查前提——改题目文案必须**同步**数据与词典）；IPIP 120 题干 en 渲染 `question.ref`（英文原句）；pro 20 题走 `pro.{qid}.*`。
+  - 名称/金额/日期：`src/lib/format.ts`——cityName/countryName 按语言取 nameEn/nameZh；formatMoney zh 双币（¥+≈$）en 单币 USD；formatDate locale 化。
+  - SEO：html lang / title / meta description / og:* 随语言切换（index.html 静态 zh 默认 + og:locale zh_CN/en_US alternate）。
+- **国家数据补录**：`scripts/pipeline/snapshot-gpispeed.mjs` 幂等回填 GPI（IEP 2024 手工快照 62/65，HK/PR/FJ 榜单不含显式 null + sources 注明豁免）与固定宽带网速（Ookla 中位数下行 65/65）；GPI/网速属「参考信息层」不进引擎加权（与第六轮一致）；来源口径见 DATA.md 第八节。
 
 ## 包管理规范
 

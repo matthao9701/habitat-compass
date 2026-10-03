@@ -5,22 +5,22 @@ export default {
   theme: {
     extend: {
       colors: {
-        paper: '#F3EEE2',
-        'paper-deep': '#EAE2D0',
-        card: '#FBF8EF',
+        paper: '#F0F7FA',
+        'paper-deep': '#E1EEF4',
+        card: '#FFFFFF',
         ink: {
-          DEFAULT: '#1F2D28',
-          soft: '#4A5950',
+          DEFAULT: '#0A2530',
+          soft: '#5A7A8A',
         },
-        pine: '#335043',
+        pine: '#0A4D68',
         clay: {
-          DEFAULT: '#BE5A38',
-          deep: '#9E4528',
+          DEFAULT: '#E76F51',
+          deep: '#C25438',
         },
-        ochre: '#B08544',
-        teal: '#466F66',
-        moss: '#4E7A5A',
-        sea: '#52708A',
+        ochre: '#D9A441',
+        teal: '#3FA7BF',
+        moss: '#2E8B74',
+        sea: '#4A8DB7',
       },
       fontFamily: {
         // 字体层级 token：各组件按 token 引用，不散落硬编码

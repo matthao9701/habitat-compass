@@ -3,35 +3,37 @@ import type { AssessmentResult, BigFiveProfile } from '../../lib/engine';
 import { interestLabelById } from '../../data/interests';
 import { interestLabelProById } from '../../data/interestsPro';
 import * as storage from '../../lib/storage';
+import { useI18n, translate, getCurrentLang } from '../../i18n';
 
 /**
  * 标准版报告增强：Big Five 五维剖面雷达 + 30 facets 条形 + 16 型映射说明卡
  * + 简易版结果对比（若做过）。
  */
 
-const DOMAIN_LABEL: Record<string, string> = {
-  E: '外向性 Extraversion',
-  A: '宜人性 Agreeableness',
-  C: '尽责性 Conscientiousness',
-  N: '神经质 Neuroticism',
-  O: '开放性 Openness',
-};
+/** 域代码 → 双语标签（工厂：每次渲染期调用取当前语言） */
+function domainLabel(domain: string): string {
+  return translate(getCurrentLang(), 'report.bigfive.domain.' + domain);
+}
 
 const DOMAIN_ORDER: (keyof BigFiveProfile['domains'])[] = ['O', 'C', 'E', 'A', 'N'];
 
 /** 映射说明：Big Five 域 → MBTI 字母（McCrae & Costa 1989 对应，中位 50 分界） */
-const MAPPING_NOTES: { axis: string; from: string; rule: string }[] = [
-  { axis: 'E / I', from: '外向性 Extraversion', rule: '百分位 ≥ 50 → E，否则 I' },
-  { axis: 'S / N', from: '开放性 Openness', rule: '百分位 ≥ 50 → N（高开放偏向直觉），否则 S' },
-  { axis: 'T / F', from: '宜人性 Agreeableness', rule: '百分位 ≥ 50 → F（高宜人偏向情感），否则 T' },
-  { axis: 'J / P', from: '尽责性 Conscientiousness', rule: '百分位 ≥ 50 → J，否则 P' },
-];
+function buildMappingNotes(): { axis: string; from: string; rule: string }[] {
+  const L = (k: string): string => translate(getCurrentLang(), k);
+  return [
+    { axis: 'E / I', from: L('report.bigfive.domain.E'), rule: L('report.bigfive.map.EI') },
+    { axis: 'S / N', from: L('report.bigfive.domain.O'), rule: L('report.bigfive.map.SN') },
+    { axis: 'T / F', from: L('report.bigfive.domain.A'), rule: L('report.bigfive.map.TF') },
+    { axis: 'J / P', from: L('report.bigfive.domain.C'), rule: L('report.bigfive.map.JP') },
+  ];
+}
 
 // ---------------------------------------------------------------------------
 // 五边形雷达（Big Five 专用，值域 0-100）
 // ---------------------------------------------------------------------------
 
 function PentagonRadar({ values }: { values: { label: string; pct: number }[] }) {
+  const { t } = useI18n();
   const cx = 130;
   const cy = 125;
   const r = 92;
@@ -43,7 +45,7 @@ function PentagonRadar({ values }: { values: { label: string; pct: number }[] })
   const polygon = values.map((v, i) => point(i, v.pct).join(',')).join(' ');
 
   return (
-    <svg viewBox="0 0 260 250" className="mx-auto w-full max-w-[320px]" role="img" aria-label="Big Five 五维剖面雷达图">
+    <svg viewBox="0 0 260 250" className="mx-auto w-full max-w-[320px]" role="img" aria-label={t('bf.radar.aria')}>
       {/* 网格：25/50/75/100 四圈五边形 */}
       {[25, 50, 75, 100].map((ring) => (
         <polygon
@@ -63,7 +65,7 @@ function PentagonRadar({ values }: { values: { label: string; pct: number }[] })
       <motion.polygon
         points={polygon}
         fill="rgba(190,90,56,0.18)"
-        stroke="#BE5A38"
+        stroke="#E76F51"
         strokeWidth="1.6"
         initial={{ opacity: 0, scale: 0.85 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -73,7 +75,7 @@ function PentagonRadar({ values }: { values: { label: string; pct: number }[] })
       {/* 顶点 */}
       {values.map((v, i) => {
         const [x, y] = point(i, v.pct);
-        return <circle key={v.label} cx={x} cy={y} r="2.6" fill="#BE5A38" />;
+        return <circle key={v.label} cx={x} cy={y} r="2.6" fill="#E76F51" />;
       })}
       {/* 标签 */}
       {values.map((v, i) => {
@@ -104,7 +106,8 @@ function PentagonRadar({ values }: { values: { label: string; pct: number }[] })
 // ---------------------------------------------------------------------------
 
 function FacetBar({ label, pct }: { label: string; pct: number }) {
-  const tag = pct >= 80 ? '高' : pct <= 20 ? '低' : null;
+  const { t } = useI18n();
+  const tag = pct >= 80 ? t('report.bigfive.high') : pct <= 20 ? t('report.bigfive.low') : null;
   const barColor = pct >= 80 ? 'bg-moss' : pct <= 20 ? 'bg-clay-deep' : 'bg-sea';
   return (
     <div className="flex items-center gap-3 py-1.5">
@@ -124,7 +127,7 @@ function FacetBar({ label, pct }: { label: string; pct: number }) {
       {tag ? (
         <span
           className={`shrink-0 rounded-full px-1.5 py-0.5 font-data text-[9px] ${
-            tag === '高' ? 'bg-moss/15 text-moss' : 'bg-clay-deep/15 text-clay-deep'
+            tag === t('report.bigfive.high') ? 'bg-moss/15 text-moss' : 'bg-clay-deep/15 text-clay-deep'
           }`}
         >
           {tag}
@@ -141,15 +144,15 @@ function FacetBar({ label, pct }: { label: string; pct: number }) {
 // ---------------------------------------------------------------------------
 
 function LiteCompareCard({ result }: { result: AssessmentResult }) {
+  const { t } = useI18n();
   const lite = storage.loadHistory();
   if (!lite) {
     return (
       <div className="rounded-xl border hairline bg-card/70 p-5">
         <p className="eyebrow mb-2">cross-version compare</p>
-        <h3 className="mb-2 font-heading text-base font-bold text-ink">两版结果对比</h3>
+        <h3 className="mb-2 font-heading text-base font-bold text-ink">{t('bill.pro.section.diff')}</h3>
         <p className="text-[13px] leading-relaxed text-ink-soft">
-          你还没有做过免费的简易版测评。完成简易版（约 8 分钟）后，
-          这里会并排对比两套题库给出的人格类型与兴趣差异。
+          {t('bf.compare.empty')}
         </p>
       </div>
     );
@@ -166,18 +169,18 @@ function LiteCompareCard({ result }: { result: AssessmentResult }) {
   return (
     <div className="rounded-xl border hairline bg-card/70 p-5">
       <p className="eyebrow mb-2">cross-version compare</p>
-      <h3 className="mb-4 font-heading text-base font-bold text-ink">两版结果对比</h3>
+      <h3 className="mb-4 font-heading text-base font-bold text-ink">{t('bill.pro.section.diff')}</h3>
 
       <div className="mb-4 grid gap-3 sm:grid-cols-2">
         <div className="rounded-lg border border-line bg-paper p-3.5">
           <p className="mb-1 font-mono text-[9.5px] uppercase tracking-wider text-ink-soft">
-            简易版（OEJTS）
+            {t('bf.compare.lite')}
           </p>
           <p className="font-data text-lg font-semibold text-ink">{lite.result.typeCode}</p>
         </div>
         <div className="rounded-lg border border-ochre/50 bg-ochre/[0.06] p-3.5">
           <p className="mb-1 font-mono text-[9.5px] uppercase tracking-wider text-ink-soft">
-            标准版（Big Five 映射）
+            {t('bf.compare.pro')}
           </p>
           <p className="font-data text-lg font-semibold text-ink">{result.typeCode}</p>
         </div>
@@ -188,28 +191,28 @@ function LiteCompareCard({ result }: { result: AssessmentResult }) {
           sameType ? 'bg-moss/15 text-moss' : 'bg-ochre/15 text-ochre'
         }`}
       >
-        {sameType ? '两版人格类型一致' : `两版类型不同：${lite.result.typeCode} → ${result.typeCode}`}
+        {sameType ? t('report.bigfive.compare.same') : t('bf.compare.diff', { lite: lite.result.typeCode, pro: result.typeCode })}
       </p>
       <p className="mb-4 text-[12px] leading-relaxed text-ink-soft">
         {sameType
-          ? '两套独立量表收敛到同一类型，说明你的自我认知比较稳定；标准版的 30 facets 还提供了更细的强度剖面。'
-          : '两套量表测的是同一份你，但题式与计分口径不同，类型出现偏移是正常现象——建议以标准版 30 facets 的强度分布为准，参考简易版的定性描述。'}
+          ? t('report.bigfive.compare.same.desc')
+          : t('report.bigfive.compare.diff.desc')}
       </p>
 
       <div className="space-y-2 text-[12.5px] leading-relaxed">
         <p>
-          <span className="font-medium text-ink">两版共同兴趣（{shared.length}）：</span>
+          <span className="font-medium text-ink">{t('bf.compare.shared', { count: shared.length })}</span>
           <span className="text-ink-soft">
-            {shared.length ? shared.map(labelOf).join('、') : '无'}
+            {shared.length ? shared.map(labelOf).join('、') : t('common.none')}
           </span>
         </p>
         <p>
-          <span className="font-medium text-ink">标准版新增（{proOnly.length}）：</span>
-          <span className="text-ink-soft">{proOnly.length ? proOnly.map(labelOf).join('、') : '无'}</span>
+          <span className="font-medium text-ink">{t('bf.compare.proOnly', { count: proOnly.length })}</span>
+          <span className="text-ink-soft">{proOnly.length ? proOnly.map(labelOf).join('、') : t('common.none')}</span>
         </p>
         <p>
-          <span className="font-medium text-ink">简易版独有（{liteOnly.length}）：</span>
-          <span className="text-ink-soft">{liteOnly.length ? liteOnly.map(labelOf).join('、') : '无'}</span>
+          <span className="font-medium text-ink">{t('bf.compare.liteOnly', { count: liteOnly.length })}</span>
+          <span className="text-ink-soft">{liteOnly.length ? liteOnly.map(labelOf).join('、') : t('common.none')}</span>
         </p>
       </div>
     </div>
@@ -227,6 +230,7 @@ export default function BigFiveSection({
   result: AssessmentResult;
   proProfile: BigFiveProfile;
 }) {
+  const { t } = useI18n();
   const radarValues = DOMAIN_ORDER.map((d) => ({
     label: d,
     pct: proProfile.domains[d],
@@ -243,11 +247,10 @@ export default function BigFiveSection({
     <section className="mx-auto max-w-almanac px-6 py-14 md:px-10 md:py-20">
       <p className="eyebrow mb-3">big five profile · standard</p>
       <h2 className="mb-2 font-display text-2xl font-bold tracking-tight md:text-3xl">
-        Big Five 人格剖面
+        {t('bf.title')}
       </h2>
       <p className="mb-10 max-w-xl text-[13px] leading-relaxed text-ink-soft">
-        基于 IPIP-NEO 120 题官方计分（+keyed / −keyed），30 个侧面聚合为五大域百分位（0-100）。
-        引用：IPIP (Goldberg, 1999) / IPIP-NEO 120 (Johnson, 2014)，公有领域。
+        {t('bf.desc')}
       </p>
 
       <div className="grid gap-6 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
@@ -256,10 +259,10 @@ export default function BigFiveSection({
           <PentagonRadar values={radarValues} />
           <div className="mt-4 border-t hairline px-5 py-4">
             <p className="mb-3 font-mono text-[9.5px] uppercase tracking-wider text-ink-soft">
-              16 型映射（McCrae &amp; Costa 1989 对应）
+              {t('bf.map.eyebrow')}
             </p>
             <ul className="space-y-2 text-[12.5px] leading-relaxed">
-              {MAPPING_NOTES.map((m) => (
+              {buildMappingNotes().map((m) => (
                 <li key={m.axis} className="flex items-start gap-2">
                   <span className="shrink-0 font-data font-medium text-clay">{m.axis}</span>
                   <span className="text-ink-soft">
@@ -269,10 +272,8 @@ export default function BigFiveSection({
               ))}
             </ul>
             <p className="mt-3 rounded-lg bg-paper-deep/60 px-3.5 py-2.5 text-[12px] leading-relaxed text-ink-soft">
-              <span className="font-medium text-ink">关于神经质 N（{nPct}）：</span>
-              它在 Big Five 中没有对应的 MBTI 字母——分数越高，面对陌生环境的压力波动越大。
-              海外定居意味着重建日常秩序，N 偏高的话，建议优先考虑社区成熟、英语普及深的城市，
-              并把「先试住 30 天」当作硬性流程。
+              <span className="font-medium text-ink">{t('bf.n.title', { pct: nPct })}</span>
+              {t('bf.n.desc')}
             </p>
           </div>
         </div>
@@ -280,14 +281,14 @@ export default function BigFiveSection({
         {/* 右：30 facets */}
         <div className="card-paper px-5 py-6 md:px-7">
           <p className="mb-4 font-mono text-[9.5px] uppercase tracking-wider text-ink-soft">
-            30 facets · 高分（≥80 绿）/ 低分（≤20 红）标注
+            {t('bf.facets.eyebrow')}
           </p>
           <div className="space-y-5">
             {groups.map((g) => (
               <div key={g.domain}>
                 <p className="mb-1.5 flex items-baseline justify-between">
                   <span className="font-heading text-[13.5px] font-bold text-ink">
-                    {DOMAIN_LABEL[g.domain]}
+                    {domainLabel(g.domain)}
                   </span>
                   <span className="font-data text-[12px] tabular-nums text-ochre">
                     {Math.round(proProfile.domains[g.domain])}

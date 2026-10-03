@@ -1,3 +1,5 @@
+import { useI18n } from '../i18n';
+
 interface RadarSeries {
   id: string;
   label: string;
@@ -13,6 +15,7 @@ interface RadarChartProps {
 
 // 六维雷达图（纯 SVG）
 export default function RadarChart({ axes, series, size = 340 }: RadarChartProps) {
+  const { t } = useI18n();
   const cx = size / 2;
   const cy = size / 2;
   const radius = size * 0.34;
@@ -35,7 +38,7 @@ export default function RadarChart({ axes, series, size = 340 }: RadarChartProps
         height={size}
         viewBox={`0 0 ${size} ${size}`}
         role="img"
-        aria-label="Top 3 城市六维对比雷达图"
+        aria-label={t('chart.radar.aria')}
         className="max-w-full"
       >
         {/* 网格环 */}
@@ -49,7 +52,7 @@ export default function RadarChart({ axes, series, size = 340 }: RadarChartProps
               })
               .join(' ')}
             fill="none"
-            stroke="#1F2D28"
+            stroke="#0A2530"
             strokeWidth="0.7"
             opacity="0.16"
           />
@@ -65,7 +68,7 @@ export default function RadarChart({ axes, series, size = 340 }: RadarChartProps
               y1={cy}
               x2={x}
               y2={y}
-              stroke="#1F2D28"
+              stroke="#0A2530"
               strokeWidth="0.7"
               opacity="0.16"
             />

@@ -13,14 +13,17 @@
   "population": 49355143,
   "gdpPerCapitaUSD": 38627.2472148623,
   "hdi": 0.911,
-  "gpi": null,
+  "gpi": {
+   "score": 1.639,
+   "rank": 37
+  },
   "cpi": 60,
   "numbeoSafety": 61.9,
   "numbeoHealthcare": 76.7,
   "numbeoQol": 183.4,
   "numbeoPollution": 26.4,
   "numbeoClimate": 32.4,
-  "internetMbpsFixed": null,
+  "internetMbpsFixed": 214,
   "visaOverview": "有官方远程工作签证（2023 年起，需受雇合同或自雇证明）",
   "taxTopRatePct": 47,
   "cityCount": 6,
@@ -43,7 +46,9 @@
    "numbeoHealthcare": "Numbeo country rankings (NYC=100)",
    "numbeoQol": "Numbeo country rankings (NYC=100)",
    "numbeoPollution": "Numbeo country rankings (NYC=100)",
-   "numbeoClimate": "Numbeo country rankings (NYC=100)"
+   "numbeoClimate": "Numbeo country rankings (NYC=100)",
+   "gpi": "GPI = IEP Global Peace Index 2024（163 国榜单；公开报道整理的手工快照，近似参考值，以 IEP 原报告为准；score 1-5 越低越和平，rank 为全球排名）",
+   "internetMbpsFixed": "Ookla Speedtest Global Index（国家级中位数 · 固定宽带下行 Mbps；公开榜单手工快照，近似参考值，以 Ookla 口径为准）（2025H1）"
   }
  },
  {
@@ -60,14 +65,17 @@
   "population": 131946900,
   "gdpPerCapitaUSD": 13889.2339628708,
   "hdi": 0.781,
-  "gpi": null,
+  "gpi": {
+   "score": 2.052,
+   "rank": 104
+  },
   "cpi": 31,
   "numbeoSafety": 47.3,
   "numbeoHealthcare": 72.3,
   "numbeoQol": 124,
   "numbeoPollution": 39.2,
   "numbeoClimate": 58.2,
-  "internetMbpsFixed": null,
+  "internetMbpsFixed": 79,
   "visaOverview": "无专门数字游民签证；临时居民签证（财务偿付能力证明）常被远程工作者使用",
   "taxTopRatePct": 35,
   "cityCount": 5,
@@ -90,7 +98,9 @@
    "numbeoHealthcare": "Numbeo country rankings (NYC=100)",
    "numbeoQol": "Numbeo country rankings (NYC=100)",
    "numbeoPollution": "Numbeo country rankings (NYC=100)",
-   "numbeoClimate": "Numbeo country rankings (NYC=100)"
+   "numbeoClimate": "Numbeo country rankings (NYC=100)",
+   "gpi": "GPI = IEP Global Peace Index 2024（163 国榜单；公开报道整理的手工快照，近似参考值，以 IEP 原报告为准；score 1-5 越低越和平，rank 为全球排名）",
+   "internetMbpsFixed": "Ookla Speedtest Global Index（国家级中位数 · 固定宽带下行 Mbps；公开榜单手工快照，近似参考值，以 Ookla 口径为准）（2025H1）"
   }
  },
  {
@@ -107,14 +117,17 @@
   "population": 27614411,
   "gdpPerCapitaUSD": 65129.7227990563,
   "hdi": 0.946,
-  "gpi": null,
+  "gpi": {
+   "score": 1.528,
+   "rank": 21
+  },
   "cpi": 75,
   "numbeoSafety": 52.6,
   "numbeoHealthcare": 71.8,
   "numbeoQol": 186.8,
   "numbeoPollution": 39,
   "numbeoClimate": 28.3,
-  "internetMbpsFixed": null,
+  "internetMbpsFixed": 75,
   "visaOverview": "无专门数字游民签证；访客签证政策下远程为境外雇主工作较普遍",
   "taxTopRatePct": 45,
   "cityCount": 4,
@@ -137,7 +150,9 @@
    "numbeoHealthcare": "Numbeo country rankings (NYC=100)",
    "numbeoQol": "Numbeo country rankings (NYC=100)",
    "numbeoPollution": "Numbeo country rankings (NYC=100)",
-   "numbeoClimate": "Numbeo country rankings (NYC=100)"
+   "numbeoClimate": "Numbeo country rankings (NYC=100)",
+   "gpi": "GPI = IEP Global Peace Index 2024（163 国榜单；公开报道整理的手工快照，近似参考值，以 IEP 原报告为准；score 1-5 越低越和平，rank 为全球排名）",
+   "internetMbpsFixed": "Ookla Speedtest Global Index（国家级中位数 · 固定宽带下行 Mbps；公开榜单手工快照，近似参考值，以 Ookla 口径为准）（2025H1）"
   }
  },
  {
@@ -154,14 +169,17 @@
   "population": 10804871,
   "gdpPerCapitaUSD": 32081.8106150292,
   "hdi": 0.874,
-  "gpi": null,
+  "gpi": {
+   "score": 1.372,
+   "rank": 7
+  },
   "cpi": 62,
   "numbeoSafety": 66.7,
   "numbeoHealthcare": 72,
   "numbeoQol": 169.5,
   "numbeoPollution": 28.4,
   "numbeoClimate": 29.8,
-  "internetMbpsFixed": null,
+  "internetMbpsFixed": 193,
   "visaOverview": "有官方数字游民签证（D8，需约 4 倍葡萄牙最低工资的月收入）",
   "taxTopRatePct": 48,
   "cityCount": 3,
@@ -184,7 +202,9 @@
    "numbeoHealthcare": "Numbeo country rankings (NYC=100)",
    "numbeoQol": "Numbeo country rankings (NYC=100)",
    "numbeoPollution": "Numbeo country rankings (NYC=100)",
-   "numbeoClimate": "Numbeo country rankings (NYC=100)"
+   "numbeoClimate": "Numbeo country rankings (NYC=100)",
+   "gpi": "GPI = IEP Global Peace Index 2024（163 国榜单；公开报道整理的手工快照，近似参考值，以 IEP 原报告为准；score 1-5 越低越和平，rank 为全球排名）",
+   "internetMbpsFixed": "Ookla Speedtest Global Index（国家级中位数 · 固定宽带下行 Mbps；公开榜单手工快照，近似参考值，以 Ookla 口径为准）（2025H1）"
   }
  },
  {
@@ -201,14 +221,17 @@
   "population": 3876200,
   "gdpPerCapitaUSD": 27103.9116109268,
   "hdi": 0.878,
-  "gpi": null,
+  "gpi": {
+   "score": 1.461,
+   "rank": 14
+  },
   "cpi": 50,
   "numbeoSafety": 74.8,
   "numbeoHealthcare": 65,
   "numbeoQol": 174.5,
   "numbeoPollution": 24.7,
   "numbeoClimate": 32.1,
-  "internetMbpsFixed": null,
+  "internetMbpsFixed": 74,
   "visaOverview": "有官方数字游民居留许可（一年期，不可连续延期、可重新申请）",
   "taxTopRatePct": 30,
   "cityCount": 3,
@@ -231,7 +254,9 @@
    "numbeoHealthcare": "Numbeo country rankings (NYC=100)",
    "numbeoQol": "Numbeo country rankings (NYC=100)",
    "numbeoPollution": "Numbeo country rankings (NYC=100)",
-   "numbeoClimate": "Numbeo country rankings (NYC=100)"
+   "numbeoClimate": "Numbeo country rankings (NYC=100)",
+   "gpi": "GPI = IEP Global Peace Index 2024（163 国榜单；公开报道整理的手工快照，近似参考值，以 IEP 原报告为准；score 1-5 越低越和平，rank 为全球排名）",
+   "internetMbpsFixed": "Ookla Speedtest Global Index（国家级中位数 · 固定宽带下行 Mbps；公开榜单手工快照，近似参考值，以 Ookla 口径为准）（2025H1）"
   }
  },
  {
@@ -248,14 +273,17 @@
   "population": 1406585000,
   "gdpPerCapitaUSD": 13861.970224368,
   "hdi": 0.788,
-  "gpi": null,
+  "gpi": {
+   "score": 1.97,
+   "rank": 94
+  },
   "cpi": 42,
   "numbeoSafety": 77,
   "numbeoHealthcare": 69.6,
   "numbeoQol": 139.3,
   "numbeoPollution": 38.4,
   "numbeoClimate": 76.3,
-  "internetMbpsFixed": null,
+  "internetMbpsFixed": 200,
   "visaOverview": "无专门数字游民签证；工作类居留许可需国内雇主担保",
   "taxTopRatePct": 45,
   "cityCount": 3,
@@ -278,7 +306,9 @@
    "numbeoHealthcare": "Numbeo country rankings (NYC=100)",
    "numbeoQol": "Numbeo country rankings (NYC=100)",
    "numbeoPollution": "Numbeo country rankings (NYC=100)",
-   "numbeoClimate": "Numbeo country rankings (NYC=100)"
+   "numbeoClimate": "Numbeo country rankings (NYC=100)",
+   "gpi": "GPI = IEP Global Peace Index 2024（163 国榜单；公开报道整理的手工快照，近似参考值，以 IEP 原报告为准；score 1-5 越低越和平，rank 为全球排名）",
+   "internetMbpsFixed": "Ookla Speedtest Global Index（国家级中位数 · 固定宽带下行 Mbps；公开榜单手工快照，近似参考值，以 Ookla 口径为准）（2025H1）"
   }
  },
  {
@@ -295,14 +325,17 @@
   "population": 123366734,
   "gdpPerCapitaUSD": null,
   "hdi": 0.92,
-  "gpi": null,
+  "gpi": {
+   "score": 1.525,
+   "rank": 20
+  },
   "cpi": 73,
   "numbeoSafety": 77.8,
   "numbeoHealthcare": 79.9,
   "numbeoQol": 180.9,
   "numbeoPollution": 40.1,
   "numbeoClimate": 37.4,
-  "internetMbpsFixed": null,
+  "internetMbpsFixed": 163,
   "visaOverview": "有官方数字游民签证（2024 年起，6 个月，需年收入约 1000 万日元）",
   "taxTopRatePct": 45,
   "cityCount": 3,
@@ -325,7 +358,9 @@
    "numbeoHealthcare": "Numbeo country rankings (NYC=100)",
    "numbeoQol": "Numbeo country rankings (NYC=100)",
    "numbeoPollution": "Numbeo country rankings (NYC=100)",
-   "numbeoClimate": "Numbeo country rankings (NYC=100)"
+   "numbeoClimate": "Numbeo country rankings (NYC=100)",
+   "gpi": "GPI = IEP Global Peace Index 2024（163 国榜单；公开报道整理的手工快照，近似参考值，以 IEP 原报告为准；score 1-5 越低越和平，rank 为全球排名）",
+   "internetMbpsFixed": "Ookla Speedtest Global Index（国家级中位数 · 固定宽带下行 Mbps；公开榜单手工快照，近似参考值，以 Ookla 口径为准）（2025H1）"
   }
  },
  {
@@ -342,14 +377,17 @@
   "population": 101598527,
   "gdpPerCapitaUSD": 5065.99091899299,
   "hdi": 0.726,
-  "gpi": null,
+  "gpi": {
+   "score": 1.698,
+   "rank": 45
+  },
   "cpi": 41,
   "numbeoSafety": null,
   "numbeoHealthcare": null,
   "numbeoQol": null,
   "numbeoPollution": null,
   "numbeoClimate": null,
-  "internetMbpsFixed": null,
+  "internetMbpsFixed": 136,
   "visaOverview": "无专门数字游民签证；电子签/商务签下远程办公处灰色地带",
   "taxTopRatePct": 35,
   "cityCount": 3,
@@ -372,7 +410,9 @@
    "numbeoHealthcare": null,
    "numbeoQol": null,
    "numbeoPollution": null,
-   "numbeoClimate": null
+   "numbeoClimate": null,
+   "gpi": "GPI = IEP Global Peace Index 2024（163 国榜单；公开报道整理的手工快照，近似参考值，以 IEP 原报告为准；score 1-5 越低越和平，rank 为全球排名）",
+   "internetMbpsFixed": "Ookla Speedtest Global Index（国家级中位数 · 固定宽带下行 Mbps；公开榜单手工快照，近似参考值，以 Ookla 口径为准）（2025H1）"
   }
  },
  {
@@ -389,14 +429,17 @@
   "population": 71619863,
   "gdpPerCapitaUSD": 8056.56359761558,
   "hdi": 0.803,
-  "gpi": null,
+  "gpi": {
+   "score": 1.672,
+   "rank": 43
+  },
   "cpi": 35,
   "numbeoSafety": 63.6,
   "numbeoHealthcare": 77.6,
   "numbeoQol": 106.2,
   "numbeoPollution": 37.8,
   "numbeoClimate": 73.7,
-  "internetMbpsFixed": null,
+  "internetMbpsFixed": 210,
   "visaOverview": "有目的地签证 DTV（2024 年起，单次最长 180 天，可付费续期）",
   "taxTopRatePct": 35,
   "cityCount": 3,
@@ -419,7 +462,9 @@
    "numbeoHealthcare": "Numbeo country rankings (NYC=100)",
    "numbeoQol": "Numbeo country rankings (NYC=100)",
    "numbeoPollution": "Numbeo country rankings (NYC=100)",
-   "numbeoClimate": "Numbeo country rankings (NYC=100)"
+   "numbeoClimate": "Numbeo country rankings (NYC=100)",
+   "gpi": "GPI = IEP Global Peace Index 2024（163 国榜单；公开报道整理的手工快照，近似参考值，以 IEP 原报告为准；score 1-5 越低越和平，rank 为全球排名）",
+   "internetMbpsFixed": "Ookla Speedtest Global Index（国家级中位数 · 固定宽带下行 Mbps；公开榜单手工快照，近似参考值，以 Ookla 口径为准）（2025H1）"
   }
  },
  {
@@ -436,14 +481,17 @@
   "population": 341784857,
   "gdpPerCapitaUSD": 90026.5163005744,
   "hdi": 0.927,
-  "gpi": null,
+  "gpi": {
+   "score": 2.378,
+   "rank": 132
+  },
   "cpi": 69,
   "numbeoSafety": 50.8,
   "numbeoHealthcare": 66.9,
   "numbeoQol": 184.7,
   "numbeoPollution": 33.9,
   "numbeoClimate": 37,
-  "internetMbpsFixed": null,
+  "internetMbpsFixed": 199,
   "visaOverview": "无专门数字游民签证；B1/免签计划下为境外雇主远程工作属灰色地带",
   "taxTopRatePct": 37,
   "cityCount": 3,
@@ -466,7 +514,9 @@
    "numbeoHealthcare": "Numbeo country rankings (NYC=100)",
    "numbeoQol": "Numbeo country rankings (NYC=100)",
    "numbeoPollution": "Numbeo country rankings (NYC=100)",
-   "numbeoClimate": "Numbeo country rankings (NYC=100)"
+   "numbeoClimate": "Numbeo country rankings (NYC=100)",
+   "gpi": "GPI = IEP Global Peace Index 2024（163 国榜单；公开报道整理的手工快照，近似参考值，以 IEP 原报告为准；score 1-5 越低越和平，rank 为全球排名）",
+   "internetMbpsFixed": "Ookla Speedtest Global Index（国家级中位数 · 固定宽带下行 Mbps；公开榜单手工快照，近似参考值，以 Ookla 口径为准）（2025H1）"
   }
  },
  {
@@ -484,14 +534,17 @@
   "population": 1463865525,
   "gdpPerCapitaUSD": 2702.47987141553,
   "hdi": 0.644,
-  "gpi": null,
+  "gpi": {
+   "score": 2.078,
+   "rank": 111
+  },
   "cpi": 39,
   "numbeoSafety": 55.8,
   "numbeoHealthcare": 65.6,
   "numbeoQol": 119,
   "numbeoPollution": 46.5,
   "numbeoClimate": 72.8,
-  "internetMbpsFixed": null,
+  "internetMbpsFixed": 85,
   "visaOverview": "无专门数字游民签证；电子商务签不允许实际就业活动",
   "taxTopRatePct": 30,
   "cityCount": 2,
@@ -514,7 +567,9 @@
    "numbeoHealthcare": "Numbeo country rankings (NYC=100)",
    "numbeoQol": "Numbeo country rankings (NYC=100)",
    "numbeoPollution": "Numbeo country rankings (NYC=100)",
-   "numbeoClimate": "Numbeo country rankings (NYC=100)"
+   "numbeoClimate": "Numbeo country rankings (NYC=100)",
+   "gpi": "GPI = IEP Global Peace Index 2024（163 国榜单；公开报道整理的手工快照，近似参考值，以 IEP 原报告为准；score 1-5 越低越和平，rank 为全球排名）",
+   "internetMbpsFixed": "Ookla Speedtest Global Index（国家级中位数 · 固定宽带下行 Mbps；公开榜单手工快照，近似参考值，以 Ookla 口径为准）（2025H1）"
   }
  },
  {
@@ -532,14 +587,17 @@
   "population": 35977838,
   "gdpPerCapitaUSD": 13124.5554178269,
   "hdi": 0.807,
-  "gpi": null,
+  "gpi": {
+   "score": 1.427,
+   "rank": 10
+  },
   "cpi": 50,
   "numbeoSafety": 52,
   "numbeoHealthcare": 70.7,
   "numbeoQol": 133.8,
   "numbeoPollution": 37.1,
   "numbeoClimate": 60.6,
-  "internetMbpsFixed": null,
+  "internetMbpsFixed": 115,
   "visaOverview": "有 DE Rantau 数字游民通行证（3-12 个月，可续期）",
   "taxTopRatePct": 30,
   "cityCount": 2,
@@ -562,7 +620,9 @@
    "numbeoHealthcare": "Numbeo country rankings (NYC=100)",
    "numbeoQol": "Numbeo country rankings (NYC=100)",
    "numbeoPollution": "Numbeo country rankings (NYC=100)",
-   "numbeoClimate": "Numbeo country rankings (NYC=100)"
+   "numbeoClimate": "Numbeo country rankings (NYC=100)",
+   "gpi": "GPI = IEP Global Peace Index 2024（163 国榜单；公开报道整理的手工快照，近似参考值，以 IEP 原报告为准；score 1-5 越低越和平，rank 为全球排名）",
+   "internetMbpsFixed": "Ookla Speedtest Global Index（国家级中位数 · 固定宽带下行 Mbps；公开榜单手工快照，近似参考值，以 Ookla 口径为准）（2025H1）"
   }
  },
  {
@@ -579,14 +639,17 @@
   "population": 51684564,
   "gdpPerCapitaUSD": 36226.9663637512,
   "hdi": 0.929,
-  "gpi": null,
+  "gpi": {
+   "score": 1.634,
+   "rank": 36
+  },
   "cpi": 63,
   "numbeoSafety": null,
   "numbeoHealthcare": null,
   "numbeoQol": null,
   "numbeoPollution": null,
   "numbeoClimate": null,
-  "internetMbpsFixed": null,
+  "internetMbpsFixed": 154,
   "visaOverview": "有数字游民（Workcation）签证（2024 年起试行）",
   "taxTopRatePct": 45,
   "cityCount": 2,
@@ -609,7 +672,9 @@
    "numbeoHealthcare": null,
    "numbeoQol": null,
    "numbeoPollution": null,
-   "numbeoClimate": null
+   "numbeoClimate": null,
+   "gpi": "GPI = IEP Global Peace Index 2024（163 国榜单；公开报道整理的手工快照，近似参考值，以 IEP 原报告为准；score 1-5 越低越和平，rank 为全球排名）",
+   "internetMbpsFixed": "Ookla Speedtest Global Index（国家级中位数 · 固定宽带下行 Mbps；公开榜单手工快照，近似参考值，以 Ookla 口径为准）（2025H1）"
   }
  },
  {
@@ -628,14 +693,17 @@
   "population": 64747319,
   "gdpPerCapitaUSD": 6597.71450918774,
   "hdi": 0.717,
-  "gpi": null,
+  "gpi": {
+   "score": 2.36,
+   "rank": 122
+  },
   "cpi": 41,
   "numbeoSafety": 25.5,
   "numbeoHealthcare": 63.9,
   "numbeoQol": 148.7,
   "numbeoPollution": 38.4,
   "numbeoClimate": 57.4,
-  "internetMbpsFixed": null,
+  "internetMbpsFixed": 46,
   "visaOverview": "有官方数字游民签证（2024 年移民修正法案引入）",
   "taxTopRatePct": 45,
   "cityCount": 2,
@@ -658,7 +726,9 @@
    "numbeoHealthcare": "Numbeo country rankings (NYC=100)",
    "numbeoQol": "Numbeo country rankings (NYC=100)",
    "numbeoPollution": "Numbeo country rankings (NYC=100)",
-   "numbeoClimate": "Numbeo country rankings (NYC=100)"
+   "numbeoClimate": "Numbeo country rankings (NYC=100)",
+   "gpi": "GPI = IEP Global Peace Index 2024（163 国榜单；公开报道整理的手工快照，近似参考值，以 IEP 原报告为准；score 1-5 越低越和平，rank 为全球排名）",
+   "internetMbpsFixed": "Ookla Speedtest Global Index（国家级中位数 · 固定宽带下行 Mbps；公开榜单手工快照，近似参考值，以 Ookla 口径为准）（2025H1）"
   }
  },
  {
@@ -676,14 +746,17 @@
   "population": 41651653,
   "gdpPerCapitaUSD": 55697.6639660837,
   "hdi": 0.935,
-  "gpi": null,
+  "gpi": {
+   "score": 1.449,
+   "rank": 11
+  },
   "cpi": 76,
   "numbeoSafety": 54.4,
   "numbeoHealthcare": 68.6,
   "numbeoQol": 169.5,
   "numbeoPollution": 33.1,
   "numbeoClimate": 29.8,
-  "internetMbpsFixed": null,
+  "internetMbpsFixed": 146,
   "visaOverview": "无专门数字游民签证；访客身份为境外雇主远程工作被普遍接受",
   "taxTopRatePct": 53,
   "cityCount": 2,
@@ -706,7 +779,9 @@
    "numbeoHealthcare": "Numbeo country rankings (NYC=100)",
    "numbeoQol": "Numbeo country rankings (NYC=100)",
    "numbeoPollution": "Numbeo country rankings (NYC=100)",
-   "numbeoClimate": "Numbeo country rankings (NYC=100)"
+   "numbeoClimate": "Numbeo country rankings (NYC=100)",
+   "gpi": "GPI = IEP Global Peace Index 2024（163 国榜单；公开报道整理的手工快照，近似参考值，以 IEP 原报告为准；score 1-5 越低越和平，rank 为全球排名）",
+   "internetMbpsFixed": "Ookla Speedtest Global Index（国家级中位数 · 固定宽带下行 Mbps；公开榜单手工快照，近似参考值，以 Ookla 口径为准）（2025H1）"
   }
  },
  {
@@ -723,14 +798,17 @@
   "population": 53425635,
   "gdpPerCapitaUSD": 8561.62091854449,
   "hdi": 0.758,
-  "gpi": null,
+  "gpi": {
+   "score": 2.66,
+   "rank": 147
+  },
   "cpi": 39,
   "numbeoSafety": 38.7,
   "numbeoHealthcare": 68.9,
   "numbeoQol": 107.6,
   "numbeoPollution": 46.3,
   "numbeoClimate": 62,
-  "internetMbpsFixed": null,
+  "internetMbpsFixed": 90,
   "visaOverview": "有官方数字游民签证（V 类签证 V-NOMADA，2022 年起）",
   "taxTopRatePct": 39,
   "cityCount": 2,
@@ -753,7 +831,9 @@
    "numbeoHealthcare": "Numbeo country rankings (NYC=100)",
    "numbeoQol": "Numbeo country rankings (NYC=100)",
    "numbeoPollution": "Numbeo country rankings (NYC=100)",
-   "numbeoClimate": "Numbeo country rankings (NYC=100)"
+   "numbeoClimate": "Numbeo country rankings (NYC=100)",
+   "gpi": "GPI = IEP Global Peace Index 2024（163 国榜单；公开报道整理的手工快照，近似参考值，以 IEP 原报告为准；score 1-5 越低越和平，rank 为全球排名）",
+   "internetMbpsFixed": "Ookla Speedtest Global Index（国家级中位数 · 固定宽带下行 Mbps；公开榜单手工快照，近似参考值，以 Ookla 口径为准）（2025H1）"
   }
  },
  {
@@ -770,14 +850,17 @@
   "population": 212812405,
   "gdpPerCapitaUSD": 10713.2856869511,
   "hdi": 0.76,
-  "gpi": null,
+  "gpi": {
+   "score": 1.949,
+   "rank": 88
+  },
   "cpi": 36,
   "numbeoSafety": 36.4,
   "numbeoHealthcare": 59.2,
   "numbeoQol": 117.2,
   "numbeoPollution": 40.3,
   "numbeoClimate": 52.7,
-  "internetMbpsFixed": null,
+  "internetMbpsFixed": 104,
   "visaOverview": "有官方数字游民签证（VITEM XIV，2022 年起）",
   "taxTopRatePct": 28,
   "cityCount": 2,
@@ -800,7 +883,9 @@
    "numbeoHealthcare": "Numbeo country rankings (NYC=100)",
    "numbeoQol": "Numbeo country rankings (NYC=100)",
    "numbeoPollution": "Numbeo country rankings (NYC=100)",
-   "numbeoClimate": "Numbeo country rankings (NYC=100)"
+   "numbeoClimate": "Numbeo country rankings (NYC=100)",
+   "gpi": "GPI = IEP Global Peace Index 2024（163 国榜单；公开报道整理的手工快照，近似参考值，以 IEP 原报告为准；score 1-5 越低越和平，rank 为全球排名）",
+   "internetMbpsFixed": "Ookla Speedtest Global Index（国家级中位数 · 固定宽带下行 Mbps；公开榜单手工快照，近似参考值，以 Ookla 口径为准）（2025H1）"
   }
  },
  {
@@ -817,14 +902,17 @@
   "population": 34576665,
   "gdpPerCapitaUSD": 9684.41170314988,
   "hdi": 0.762,
-  "gpi": null,
+  "gpi": {
+   "score": 1.83,
+   "rank": 64
+  },
   "cpi": 33,
   "numbeoSafety": 33.1,
   "numbeoHealthcare": 57.1,
   "numbeoQol": 92,
   "numbeoPollution": 50,
   "numbeoClimate": 82.7,
-  "internetMbpsFixed": null,
+  "internetMbpsFixed": 84,
   "visaOverview": "无专门数字游民签证（2023 年提案未落地）",
   "taxTopRatePct": 30,
   "cityCount": 2,
@@ -847,7 +935,9 @@
    "numbeoHealthcare": "Numbeo country rankings (NYC=100)",
    "numbeoQol": "Numbeo country rankings (NYC=100)",
    "numbeoPollution": "Numbeo country rankings (NYC=100)",
-   "numbeoClimate": "Numbeo country rankings (NYC=100)"
+   "numbeoClimate": "Numbeo country rankings (NYC=100)",
+   "gpi": "GPI = IEP Global Peace Index 2024（163 国榜单；公开报道整理的手工快照，近似参考值，以 IEP 原报告为准；score 1-5 越低越和平，rank 为全球排名）",
+   "internetMbpsFixed": "Ookla Speedtest Global Index（国家级中位数 · 固定宽带下行 Mbps；公开榜单手工快照，近似参考值，以 Ookla 口径为准）（2025H1）"
   }
  },
  {
@@ -865,14 +955,17 @@
   "population": 5324700,
   "gdpPerCapitaUSD": 49591.0405731713,
   "hdi": 0.939,
-  "gpi": null,
+  "gpi": {
+   "score": 1.323,
+   "rank": 4
+  },
   "cpi": 85,
   "numbeoSafety": 51.2,
   "numbeoHealthcare": 68.1,
   "numbeoQol": 186.2,
   "numbeoPollution": 32.4,
   "numbeoClimate": 26.2,
-  "internetMbpsFixed": null,
+  "internetMbpsFixed": 156,
   "visaOverview": "无专门数字游民签证；访客签证政策允许远程为境外雇主工作",
   "taxTopRatePct": 39,
   "cityCount": 2,
@@ -895,7 +988,9 @@
    "numbeoHealthcare": "Numbeo country rankings (NYC=100)",
    "numbeoQol": "Numbeo country rankings (NYC=100)",
    "numbeoPollution": "Numbeo country rankings (NYC=100)",
-   "numbeoClimate": "Numbeo country rankings (NYC=100)"
+   "numbeoClimate": "Numbeo country rankings (NYC=100)",
+   "gpi": "GPI = IEP Global Peace Index 2024（163 国榜单；公开报道整理的手工快照，近似参考值，以 IEP 原报告为准；score 1-5 越低越和平，rank 为全球排名）",
+   "internetMbpsFixed": "Ookla Speedtest Global Index（国家级中位数 · 固定宽带下行 Mbps；公开榜单手工快照，近似参考值，以 Ookla 口径为准）（2025H1）"
   }
  },
  {
@@ -913,14 +1008,17 @@
   "population": 18087633,
   "gdpPerCapitaUSD": 73683.917132794,
   "hdi": 0.946,
-  "gpi": null,
+  "gpi": {
+   "score": 1.47,
+   "rank": 15
+  },
   "cpi": 79,
   "numbeoSafety": 72.3,
   "numbeoHealthcare": 77.6,
   "numbeoQol": 205.6,
   "numbeoPollution": 22.9,
   "numbeoClimate": 22.6,
-  "internetMbpsFixed": null,
+  "internetMbpsFixed": 164,
   "visaOverview": "无专门数字游民签证；自雇居留（DAFT 仅限美国/荷兰国民）",
   "taxTopRatePct": 49,
   "cityCount": 1,
@@ -943,7 +1041,9 @@
    "numbeoHealthcare": "Numbeo country rankings (NYC=100)",
    "numbeoQol": "Numbeo country rankings (NYC=100)",
    "numbeoPollution": "Numbeo country rankings (NYC=100)",
-   "numbeoClimate": "Numbeo country rankings (NYC=100)"
+   "numbeoClimate": "Numbeo country rankings (NYC=100)",
+   "gpi": "GPI = IEP Global Peace Index 2024（163 国榜单；公开报道整理的手工快照，近似参考值，以 IEP 原报告为准；score 1-5 越低越和平，rank 为全球排名）",
+   "internetMbpsFixed": "Ookla Speedtest Global Index（国家级中位数 · 固定宽带下行 Mbps；公开榜单手工快照，近似参考值，以 Ookla 口径为准）（2025H1）"
   }
  },
  {
@@ -960,14 +1060,17 @@
   "population": 5610870,
   "gdpPerCapitaUSD": 94594.1929573987,
   "hdi": 0.966,
-  "gpi": null,
+  "gpi": {
+   "score": 1.49,
+   "rank": 18
+  },
   "cpi": 84,
   "numbeoSafety": 66.4,
   "numbeoHealthcare": 75.1,
   "numbeoQol": 193.5,
   "numbeoPollution": 29.9,
   "numbeoClimate": 18.7,
-  "internetMbpsFixed": null,
+  "internetMbpsFixed": 147,
   "visaOverview": null,
   "taxTopRatePct": null,
   "cityCount": 1,
@@ -990,7 +1093,9 @@
    "numbeoHealthcare": "Numbeo country rankings (NYC=100)",
    "numbeoQol": "Numbeo country rankings (NYC=100)",
    "numbeoPollution": "Numbeo country rankings (NYC=100)",
-   "numbeoClimate": "Numbeo country rankings (NYC=100)"
+   "numbeoClimate": "Numbeo country rankings (NYC=100)",
+   "gpi": "GPI = IEP Global Peace Index 2024（163 国榜单；公开报道整理的手工快照，近似参考值，以 IEP 原报告为准；score 1-5 越低越和平，rank 为全球排名）",
+   "internetMbpsFixed": "Ookla Speedtest Global Index（国家级中位数 · 固定宽带下行 Mbps；公开榜单手工快照，近似参考值，以 Ookla 口径为准）（2025H1）"
   }
  },
  {
@@ -1007,14 +1112,17 @@
   "population": 83491249,
   "gdpPerCapitaUSD": 60496.4350820414,
   "hdi": 0.95,
-  "gpi": null,
+  "gpi": {
+   "score": 1.496,
+   "rank": 19
+  },
   "cpi": 79,
   "numbeoSafety": 61,
   "numbeoHealthcare": 71.3,
   "numbeoQol": 195,
   "numbeoPollution": 28.5,
   "numbeoClimate": 23.2,
-  "internetMbpsFixed": null,
+  "internetMbpsFixed": 108,
   "visaOverview": "无专门数字游民签证；自雇（Freiberufler）签证是常见路径",
   "taxTopRatePct": 45,
   "cityCount": 1,
@@ -1037,7 +1145,9 @@
    "numbeoHealthcare": "Numbeo country rankings (NYC=100)",
    "numbeoQol": "Numbeo country rankings (NYC=100)",
    "numbeoPollution": "Numbeo country rankings (NYC=100)",
-   "numbeoClimate": "Numbeo country rankings (NYC=100)"
+   "numbeoClimate": "Numbeo country rankings (NYC=100)",
+   "gpi": "GPI = IEP Global Peace Index 2024（163 国榜单；公开报道整理的手工快照，近似参考值，以 IEP 原报告为准；score 1-5 越低越和平，rank 为全球排名）",
+   "internetMbpsFixed": "Ookla Speedtest Global Index（国家级中位数 · 固定宽带下行 Mbps；公开榜单手工快照，近似参考值，以 Ookla 口径为准）（2025H1）"
   }
  },
  {
@@ -1054,14 +1164,17 @@
   "population": 6549143,
   "gdpPerCapitaUSD": 15262.0464193413,
   "hdi": null,
-  "gpi": null,
+  "gpi": {
+   "score": 1.85,
+   "rank": 69
+  },
   "cpi": 53,
   "numbeoSafety": 63.1,
   "numbeoHealthcare": 52.1,
   "numbeoQol": 128.7,
   "numbeoPollution": 30.6,
   "numbeoClimate": 65.2,
-  "internetMbpsFixed": null,
+  "internetMbpsFixed": 79,
   "visaOverview": null,
   "taxTopRatePct": 10,
   "cityCount": 1,
@@ -1084,7 +1197,9 @@
    "numbeoHealthcare": "Numbeo country rankings (NYC=100)",
    "numbeoQol": "Numbeo country rankings (NYC=100)",
    "numbeoPollution": "Numbeo country rankings (NYC=100)",
-   "numbeoClimate": "Numbeo country rankings (NYC=100)"
+   "numbeoClimate": "Numbeo country rankings (NYC=100)",
+   "gpi": "GPI = IEP Global Peace Index 2024（163 国榜单；公开报道整理的手工快照，近似参考值，以 IEP 原报告为准；score 1-5 越低越和平，rank 为全球排名）",
+   "internetMbpsFixed": "Ookla Speedtest Global Index（国家级中位数 · 固定宽带下行 Mbps；公开榜单手工快照，近似参考值，以 Ookla 口径为准）（2025H1）"
   }
  },
  {
@@ -1101,14 +1216,17 @@
   "population": 9514251,
   "gdpPerCapitaUSD": 25907.4743259406,
   "hdi": 0.851,
-  "gpi": null,
+  "gpi": {
+   "score": 1.538,
+   "rank": 22
+  },
   "cpi": 42,
   "numbeoSafety": 66.8,
   "numbeoHealthcare": 54.2,
   "numbeoQol": 147.7,
   "numbeoPollution": 35.4,
   "numbeoClimate": 45.8,
-  "internetMbpsFixed": null,
+  "internetMbpsFixed": 181,
   "visaOverview": "有官方白卡（White Card）数字游民许可（一年期可续）",
   "taxTopRatePct": 15,
   "cityCount": 1,
@@ -1131,7 +1249,9 @@
    "numbeoHealthcare": "Numbeo country rankings (NYC=100)",
    "numbeoQol": "Numbeo country rankings (NYC=100)",
    "numbeoPollution": "Numbeo country rankings (NYC=100)",
-   "numbeoClimate": "Numbeo country rankings (NYC=100)"
+   "numbeoClimate": "Numbeo country rankings (NYC=100)",
+   "gpi": "GPI = IEP Global Peace Index 2024（163 国榜单；公开报道整理的手工快照，近似参考值，以 IEP 原报告为准；score 1-5 越低越和平，rank 为全球排名）",
+   "internetMbpsFixed": "Ookla Speedtest Global Index（国家级中位数 · 固定宽带下行 Mbps；公开榜单手工快照，近似参考值，以 Ookla 口径为准）（2025H1）"
   }
  },
  {
@@ -1148,14 +1268,17 @@
   "population": 19020271,
   "gdpPerCapitaUSD": 22537.9532108047,
   "hdi": 0.827,
-  "gpi": null,
+  "gpi": {
+   "score": 1.752,
+   "rank": 53
+  },
   "cpi": 46,
   "numbeoSafety": 66.9,
   "numbeoHealthcare": 56.4,
   "numbeoQol": 142.3,
   "numbeoPollution": 33.2,
   "numbeoClimate": 55.6,
-  "internetMbpsFixed": null,
+  "internetMbpsFixed": 228,
   "visaOverview": null,
   "taxTopRatePct": 10,
   "cityCount": 1,
@@ -1178,7 +1301,9 @@
    "numbeoHealthcare": "Numbeo country rankings (NYC=100)",
    "numbeoQol": "Numbeo country rankings (NYC=100)",
    "numbeoPollution": "Numbeo country rankings (NYC=100)",
-   "numbeoClimate": "Numbeo country rankings (NYC=100)"
+   "numbeoClimate": "Numbeo country rankings (NYC=100)",
+   "gpi": "GPI = IEP Global Peace Index 2024（163 国榜单；公开报道整理的手工快照，近似参考值，以 IEP 原报告为准；score 1-5 越低越和平，rank 为全球排名）",
+   "internetMbpsFixed": "Ookla Speedtest Global Index（国家级中位数 · 固定宽带下行 Mbps；公开榜单手工快照，近似参考值，以 Ookla 口径为准）（2025H1）"
   }
  },
  {
@@ -1195,14 +1320,17 @@
   "population": 10886878,
   "gdpPerCapitaUSD": 35917.2724081665,
   "hdi": 0.895,
-  "gpi": null,
+  "gpi": {
+   "score": 1.452,
+   "rank": 12
+  },
   "cpi": 57,
   "numbeoSafety": null,
   "numbeoHealthcare": null,
   "numbeoQol": null,
   "numbeoPollution": null,
   "numbeoClimate": null,
-  "internetMbpsFixed": null,
+  "internetMbpsFixed": 89,
   "visaOverview": "无专门数字游民签证；Zivno 自雇签证是常见路径",
   "taxTopRatePct": 23,
   "cityCount": 1,
@@ -1225,7 +1353,9 @@
    "numbeoHealthcare": null,
    "numbeoQol": null,
    "numbeoPollution": null,
-   "numbeoClimate": null
+   "numbeoClimate": null,
+   "gpi": "GPI = IEP Global Peace Index 2024（163 国榜单；公开报道整理的手工快照，近似参考值，以 IEP 原报告为准；score 1-5 越低越和平，rank 为全球排名）",
+   "internetMbpsFixed": "Ookla Speedtest Global Index（国家级中位数 · 固定宽带下行 Mbps；公开榜单手工快照，近似参考值，以 Ookla 口径为准）（2025H1）"
   }
  },
  {
@@ -1242,14 +1372,17 @@
   "population": 3935766,
   "gdpPerCapitaUSD": 9691.53472415196,
   "hdi": 0.814,
-  "gpi": null,
+  "gpi": {
+   "score": 1.835,
+   "rank": 65
+  },
   "cpi": 53,
   "numbeoSafety": 73.1,
   "numbeoHealthcare": 56.5,
   "numbeoQol": 126.4,
   "numbeoPollution": 36.6,
   "numbeoClimate": 68.6,
-  "internetMbpsFixed": null,
+  "internetMbpsFixed": 46,
   "visaOverview": "有官方数字游民/远程工作者一年期居留（收入门槛较低）",
   "taxTopRatePct": 20,
   "cityCount": 1,
@@ -1272,7 +1405,9 @@
    "numbeoHealthcare": "Numbeo country rankings (NYC=100)",
    "numbeoQol": "Numbeo country rankings (NYC=100)",
    "numbeoPollution": "Numbeo country rankings (NYC=100)",
-   "numbeoClimate": "Numbeo country rankings (NYC=100)"
+   "numbeoClimate": "Numbeo country rankings (NYC=100)",
+   "gpi": "GPI = IEP Global Peace Index 2024（163 国榜单；公开报道整理的手工快照，近似参考值，以 IEP 原报告为准；score 1-5 越低越和平，rank 为全球排名）",
+   "internetMbpsFixed": "Ookla Speedtest Global Index（国家级中位数 · 固定宽带下行 Mbps；公开榜单手工快照，近似参考值，以 Ookla 口径为准）（2025H1）"
   }
  },
  {
@@ -1289,14 +1424,17 @@
   "population": 58915656,
   "gdpPerCapitaUSD": 43308.6403060733,
   "hdi": 0.906,
-  "gpi": null,
+  "gpi": {
+   "score": 1.652,
+   "rank": 39
+  },
   "cpi": 56,
   "numbeoSafety": 52.6,
   "numbeoHealthcare": 64.8,
   "numbeoQol": 156.2,
   "numbeoPollution": 31.8,
   "numbeoClimate": 46.2,
-  "internetMbpsFixed": null,
+  "internetMbpsFixed": 109,
   "visaOverview": "有官方数字游民签证（2024 年起，需学历/收入门槛）",
   "taxTopRatePct": 43,
   "cityCount": 1,
@@ -1319,7 +1457,9 @@
    "numbeoHealthcare": "Numbeo country rankings (NYC=100)",
    "numbeoQol": "Numbeo country rankings (NYC=100)",
    "numbeoPollution": "Numbeo country rankings (NYC=100)",
-   "numbeoClimate": "Numbeo country rankings (NYC=100)"
+   "numbeoClimate": "Numbeo country rankings (NYC=100)",
+   "gpi": "GPI = IEP Global Peace Index 2024（163 国榜单；公开报道整理的手工快照，近似参考值，以 IEP 原报告为准；score 1-5 越低越和平，rank 为全球排名）",
+   "internetMbpsFixed": "Ookla Speedtest Global Index（国家级中位数 · 固定宽带下行 Mbps；公开榜单手工快照，近似参考值，以 Ookla 口径为准）（2025H1）"
   }
  },
  {
@@ -1336,14 +1476,17 @@
   "population": 6009169,
   "gdpPerCapitaUSD": 76970.1535217919,
   "hdi": 0.952,
-  "gpi": null,
+  "gpi": {
+   "score": 1.382,
+   "rank": 8
+  },
   "cpi": 90,
   "numbeoSafety": 73.2,
   "numbeoHealthcare": 74.4,
   "numbeoQol": 203.9,
   "numbeoPollution": 29.3,
   "numbeoClimate": 26.2,
-  "internetMbpsFixed": null,
+  "internetMbpsFixed": 197,
   "visaOverview": null,
   "taxTopRatePct": null,
   "cityCount": 1,
@@ -1366,7 +1509,9 @@
    "numbeoHealthcare": "Numbeo country rankings (NYC=100)",
    "numbeoQol": "Numbeo country rankings (NYC=100)",
    "numbeoPollution": "Numbeo country rankings (NYC=100)",
-   "numbeoClimate": "Numbeo country rankings (NYC=100)"
+   "numbeoClimate": "Numbeo country rankings (NYC=100)",
+   "gpi": "GPI = IEP Global Peace Index 2024（163 国榜单；公开报道整理的手工快照，近似参考值，以 IEP 原报告为准；score 1-5 越低越和平，rank 为全球排名）",
+   "internetMbpsFixed": "Ookla Speedtest Global Index（国家级中位数 · 固定宽带下行 Mbps；公开榜单手工快照，近似参考值，以 Ookla 口径为准）（2025H1）"
   }
  },
  {
@@ -1384,14 +1529,17 @@
   "population": 5646436,
   "gdpPerCapitaUSD": 56148.580949046,
   "hdi": 0.942,
-  "gpi": null,
+  "gpi": {
+   "score": 1.456,
+   "rank": 13
+  },
   "cpi": 87,
   "numbeoSafety": 73.7,
   "numbeoHealthcare": 77.5,
   "numbeoQol": 201.5,
   "numbeoPollution": 25,
   "numbeoClimate": 10.9,
-  "internetMbpsFixed": null,
+  "internetMbpsFixed": 145,
   "visaOverview": null,
   "taxTopRatePct": null,
   "cityCount": 1,
@@ -1414,7 +1562,9 @@
    "numbeoHealthcare": "Numbeo country rankings (NYC=100)",
    "numbeoQol": "Numbeo country rankings (NYC=100)",
    "numbeoPollution": "Numbeo country rankings (NYC=100)",
-   "numbeoClimate": "Numbeo country rankings (NYC=100)"
+   "numbeoClimate": "Numbeo country rankings (NYC=100)",
+   "gpi": "GPI = IEP Global Peace Index 2024（163 国榜单；公开报道整理的手工快照，近似参考值，以 IEP 原报告为准；score 1-5 越低越和平，rank 为全球排名）",
+   "internetMbpsFixed": "Ookla Speedtest Global Index（国家级中位数 · 固定宽带下行 Mbps；公开榜单手工快照，近似参考值，以 Ookla 口径为准）（2025H1）"
   }
  },
  {
@@ -1431,14 +1581,17 @@
   "population": 36435861,
   "gdpPerCapitaUSD": 28419.5777395638,
   "hdi": 0.881,
-  "gpi": null,
+  "gpi": {
+   "score": 1.578,
+   "rank": 27
+  },
   "cpi": 54,
   "numbeoSafety": 71.3,
   "numbeoHealthcare": 58,
   "numbeoQol": 155.9,
   "numbeoPollution": 31.9,
   "numbeoClimate": 54.8,
-  "internetMbpsFixed": null,
+  "internetMbpsFixed": 144,
   "visaOverview": null,
   "taxTopRatePct": 32,
   "cityCount": 1,
@@ -1461,7 +1614,9 @@
    "numbeoHealthcare": "Numbeo country rankings (NYC=100)",
    "numbeoQol": "Numbeo country rankings (NYC=100)",
    "numbeoPollution": "Numbeo country rankings (NYC=100)",
-   "numbeoClimate": "Numbeo country rankings (NYC=100)"
+   "numbeoClimate": "Numbeo country rankings (NYC=100)",
+   "gpi": "GPI = IEP Global Peace Index 2024（163 国榜单；公开报道整理的手工快照，近似参考值，以 IEP 原报告为准；score 1-5 越低越和平，rank 为全球排名）",
+   "internetMbpsFixed": "Ookla Speedtest Global Index（国家级中位数 · 固定宽带下行 Mbps；公开榜单手工快照，近似参考值，以 Ookla 口径为准）（2025H1）"
   }
  },
  {
@@ -1478,14 +1633,17 @@
   "population": 1847785,
   "gdpPerCapitaUSD": 26311.9730706362,
   "hdi": 0.879,
-  "gpi": null,
+  "gpi": {
+   "score": 1.61,
+   "rank": 31
+  },
   "cpi": 53,
   "numbeoSafety": 64,
   "numbeoHealthcare": 63.7,
   "numbeoQol": 166.2,
   "numbeoPollution": 27.1,
   "numbeoClimate": 27.8,
-  "internetMbpsFixed": null,
+  "internetMbpsFixed": 104,
   "visaOverview": "有官方数字游民签证（2022 年起，一年期）",
   "taxTopRatePct": 31,
   "cityCount": 1,
@@ -1508,7 +1666,9 @@
    "numbeoHealthcare": "Numbeo country rankings (NYC=100)",
    "numbeoQol": "Numbeo country rankings (NYC=100)",
    "numbeoPollution": "Numbeo country rankings (NYC=100)",
-   "numbeoClimate": "Numbeo country rankings (NYC=100)"
+   "numbeoClimate": "Numbeo country rankings (NYC=100)",
+   "gpi": "GPI = IEP Global Peace Index 2024（163 国榜单；公开报道整理的手工快照，近似参考值，以 IEP 原报告为准；score 1-5 越低越和平，rank 为全球排名）",
+   "internetMbpsFixed": "Ookla Speedtest Global Index（国家级中位数 · 固定宽带下行 Mbps；公开榜单手工快照，近似参考值，以 Ookla 口径为准）（2025H1）"
   }
  },
  {
@@ -1525,14 +1685,17 @@
   "population": 10596620,
   "gdpPerCapitaUSD": 63133.2126736715,
   "hdi": 0.952,
-  "gpi": null,
+  "gpi": {
+   "score": 1.482,
+   "rank": 17
+  },
   "cpi": 82,
   "numbeoSafety": 52.2,
   "numbeoHealthcare": 68.1,
   "numbeoQol": 187.6,
   "numbeoPollution": 28.8,
   "numbeoClimate": 17.1,
-  "internetMbpsFixed": null,
+  "internetMbpsFixed": 184,
   "visaOverview": null,
   "taxTopRatePct": null,
   "cityCount": 1,
@@ -1555,7 +1718,9 @@
    "numbeoHealthcare": "Numbeo country rankings (NYC=100)",
    "numbeoQol": "Numbeo country rankings (NYC=100)",
    "numbeoPollution": "Numbeo country rankings (NYC=100)",
-   "numbeoClimate": "Numbeo country rankings (NYC=100)"
+   "numbeoClimate": "Numbeo country rankings (NYC=100)",
+   "gpi": "GPI = IEP Global Peace Index 2024（163 国榜单；公开报道整理的手工快照，近似参考值，以 IEP 原报告为准；score 1-5 越低越和平，rank 为全球排名）",
+   "internetMbpsFixed": "Ookla Speedtest Global Index（国家级中位数 · 固定宽带下行 Mbps；公开榜单手工快照，近似参考值，以 Ookla 口径为准）（2025H1）"
   }
  },
  {
@@ -1574,14 +1739,17 @@
   "population": 9092436,
   "gdpPerCapitaUSD": 114769.012314293,
   "hdi": 0.967,
-  "gpi": null,
+  "gpi": {
+   "score": 1.35,
+   "rank": 6
+  },
   "cpi": 82,
   "numbeoSafety": 71.9,
   "numbeoHealthcare": 68.8,
   "numbeoQol": 203.2,
   "numbeoPollution": 35.1,
   "numbeoClimate": 22,
-  "internetMbpsFixed": null,
+  "internetMbpsFixed": 186,
   "visaOverview": null,
   "taxTopRatePct": null,
   "cityCount": 1,
@@ -1604,7 +1772,9 @@
    "numbeoHealthcare": "Numbeo country rankings (NYC=100)",
    "numbeoQol": "Numbeo country rankings (NYC=100)",
    "numbeoPollution": "Numbeo country rankings (NYC=100)",
-   "numbeoClimate": "Numbeo country rankings (NYC=100)"
+   "numbeoClimate": "Numbeo country rankings (NYC=100)",
+   "gpi": "GPI = IEP Global Peace Index 2024（163 国榜单；公开报道整理的手工快照，近似参考值，以 IEP 原报告为准；score 1-5 越低越和平，rank 为全球排名）",
+   "internetMbpsFixed": "Ookla Speedtest Global Index（国家级中位数 · 固定宽带下行 Mbps；公开榜单手工快照，近似参考值，以 Ookla 口径为准）（2025H1）"
   }
  },
  {
@@ -1621,14 +1791,17 @@
   "population": 1366475,
   "gdpPerCapitaUSD": 34417.6320815138,
   "hdi": 0.899,
-  "gpi": null,
+  "gpi": {
+   "score": 1.552,
+   "rank": 24
+  },
   "cpi": 76,
   "numbeoSafety": 76.5,
   "numbeoHealthcare": 75.4,
   "numbeoQol": 191.8,
   "numbeoPollution": 20.6,
   "numbeoClimate": 15.7,
-  "internetMbpsFixed": null,
+  "internetMbpsFixed": 92,
   "visaOverview": "有官方数字游民签证（D 类，为境外雇主远程工作）",
   "taxTopRatePct": 22,
   "cityCount": 1,
@@ -1651,7 +1824,9 @@
    "numbeoHealthcare": "Numbeo country rankings (NYC=100)",
    "numbeoQol": "Numbeo country rankings (NYC=100)",
    "numbeoPollution": "Numbeo country rankings (NYC=100)",
-   "numbeoClimate": "Numbeo country rankings (NYC=100)"
+   "numbeoClimate": "Numbeo country rankings (NYC=100)",
+   "gpi": "GPI = IEP Global Peace Index 2024（163 国榜单；公开报道整理的手工快照，近似参考值，以 IEP 原报告为准；score 1-5 越低越和平，rank 为全球排名）",
+   "internetMbpsFixed": "Ookla Speedtest Global Index（国家级中位数 · 固定宽带下行 Mbps；公开榜单手工快照，近似参考值，以 Ookla 口径为准）（2025H1）"
   }
  },
  {
@@ -1669,14 +1844,17 @@
   "population": null,
   "gdpPerCapitaUSD": 47906.9000057635,
   "hdi": 0.915,
-  "gpi": null,
+  "gpi": {
+   "score": 1.64,
+   "rank": 38
+  },
   "cpi": 51,
   "numbeoSafety": 57,
   "numbeoHealthcare": 53.3,
   "numbeoQol": 132.8,
   "numbeoPollution": 27.7,
   "numbeoClimate": 75.9,
-  "internetMbpsFixed": null,
+  "internetMbpsFixed": 70,
   "visaOverview": "有官方数字游民居留许可（Nomad Residence Permit，一年可续）",
   "taxTopRatePct": 35,
   "cityCount": 1,
@@ -1699,7 +1877,9 @@
    "numbeoHealthcare": "Numbeo country rankings (NYC=100)",
    "numbeoQol": "Numbeo country rankings (NYC=100)",
    "numbeoPollution": "Numbeo country rankings (NYC=100)",
-   "numbeoClimate": "Numbeo country rankings (NYC=100)"
+   "numbeoClimate": "Numbeo country rankings (NYC=100)",
+   "gpi": "GPI = IEP Global Peace Index 2024（163 国榜单；公开报道整理的手工快照，近似参考值，以 IEP 原报告为准；score 1-5 越低越和平，rank 为全球排名）",
+   "internetMbpsFixed": "Ookla Speedtest Global Index（国家级中位数 · 固定宽带下行 Mbps；公开榜单手工快照，近似参考值，以 Ookla 口径为准）（2025H1）"
   }
  },
  {
@@ -1716,14 +1896,17 @@
   "population": null,
   "gdpPerCapitaUSD": 32958.6706396386,
   "hdi": 0.879,
-  "gpi": null,
+  "gpi": {
+   "score": 1.586,
+   "rank": 28
+  },
   "cpi": 61,
   "numbeoSafety": 67.2,
   "numbeoHealthcare": 75.3,
   "numbeoQol": 181.4,
   "numbeoPollution": 22.9,
   "numbeoClimate": 22.9,
-  "internetMbpsFixed": null,
+  "internetMbpsFixed": 112,
   "visaOverview": null,
   "taxTopRatePct": 32,
   "cityCount": 1,
@@ -1746,7 +1929,9 @@
    "numbeoHealthcare": "Numbeo country rankings (NYC=100)",
    "numbeoQol": "Numbeo country rankings (NYC=100)",
    "numbeoPollution": "Numbeo country rankings (NYC=100)",
-   "numbeoClimate": "Numbeo country rankings (NYC=100)"
+   "numbeoClimate": "Numbeo country rankings (NYC=100)",
+   "gpi": "GPI = IEP Global Peace Index 2024（163 国榜单；公开报道整理的手工快照，近似参考值，以 IEP 原报告为准；score 1-5 越低越和平，rank 为全球排名）",
+   "internetMbpsFixed": "Ookla Speedtest Global Index（国家级中位数 · 固定宽带下行 Mbps；公开榜单手工快照，近似参考值，以 Ookla 口径为准）（2025H1）"
   }
  },
  {
@@ -1763,14 +1948,17 @@
   "population": 9208163,
   "gdpPerCapitaUSD": 62930.0351324599,
   "hdi": 0.926,
-  "gpi": null,
+  "gpi": {
+   "score": 1.32,
+   "rank": 3
+  },
   "cpi": 71,
   "numbeoSafety": 70.8,
   "numbeoHealthcare": 77.5,
   "numbeoQol": 198.1,
   "numbeoPollution": 23.9,
   "numbeoClimate": 16.3,
-  "internetMbpsFixed": null,
+  "internetMbpsFixed": 128,
   "visaOverview": null,
   "taxTopRatePct": 55,
   "cityCount": 1,
@@ -1793,7 +1981,9 @@
    "numbeoHealthcare": "Numbeo country rankings (NYC=100)",
    "numbeoQol": "Numbeo country rankings (NYC=100)",
    "numbeoPollution": "Numbeo country rankings (NYC=100)",
-   "numbeoClimate": "Numbeo country rankings (NYC=100)"
+   "numbeoClimate": "Numbeo country rankings (NYC=100)",
+   "gpi": "GPI = IEP Global Peace Index 2024（163 国榜单；公开报道整理的手工快照，近似参考值，以 IEP 原报告为准；score 1-5 越低越和平，rank 为全球排名）",
+   "internetMbpsFixed": "Ookla Speedtest Global Index（国家级中位数 · 固定宽带下行 Mbps；公开榜单手工快照，近似参考值，以 Ookla 口径为准）（2025H1）"
   }
  },
  {
@@ -1810,14 +2000,17 @@
   "population": 10413962,
   "gdpPerCapitaUSD": null,
   "hdi": 0.893,
-  "gpi": null,
+  "gpi": {
+   "score": 1.773,
+   "rank": 57
+  },
   "cpi": 51,
   "numbeoSafety": 54,
   "numbeoHealthcare": 58.6,
   "numbeoQol": 140.6,
   "numbeoPollution": 32.2,
   "numbeoClimate": 48.8,
-  "internetMbpsFixed": null,
+  "internetMbpsFixed": 61,
   "visaOverview": "有官方数字游民签证（G 类，月收入门槛约 3,500 欧元）",
   "taxTopRatePct": 44,
   "cityCount": 1,
@@ -1840,7 +2033,9 @@
    "numbeoHealthcare": "Numbeo country rankings (NYC=100)",
    "numbeoQol": "Numbeo country rankings (NYC=100)",
    "numbeoPollution": "Numbeo country rankings (NYC=100)",
-   "numbeoClimate": "Numbeo country rankings (NYC=100)"
+   "numbeoClimate": "Numbeo country rankings (NYC=100)",
+   "gpi": "GPI = IEP Global Peace Index 2024（163 国榜单；公开报道整理的手工快照，近似参考值，以 IEP 原报告为准；score 1-5 越低越和平，rank 为全球排名）",
+   "internetMbpsFixed": "Ookla Speedtest Global Index（国家级中位数 · 固定宽带下行 Mbps；公开榜单手工快照，近似参考值，以 Ookla 口径为准）（2025H1）"
   }
  },
  {
@@ -1857,14 +2052,17 @@
   "population": null,
   "gdpPerCapitaUSD": 18599.4420922378,
   "hdi": 0.855,
-  "gpi": null,
+  "gpi": {
+   "score": 2.05,
+   "rank": 103
+  },
   "cpi": 34,
   "numbeoSafety": null,
   "numbeoHealthcare": null,
   "numbeoQol": null,
   "numbeoPollution": null,
   "numbeoClimate": null,
-  "internetMbpsFixed": null,
+  "internetMbpsFixed": 41,
   "visaOverview": null,
   "taxTopRatePct": 40,
   "cityCount": 1,
@@ -1887,7 +2085,9 @@
    "numbeoHealthcare": null,
    "numbeoQol": null,
    "numbeoPollution": null,
-   "numbeoClimate": null
+   "numbeoClimate": null,
+   "gpi": "GPI = IEP Global Peace Index 2024（163 国榜单；公开报道整理的手工快照，近似参考值，以 IEP 原报告为准；score 1-5 越低越和平，rank 为全球排名）",
+   "internetMbpsFixed": "Ookla Speedtest Global Index（国家级中位数 · 固定宽带下行 Mbps；公开榜单手工快照，近似参考值，以 Ookla 口径为准）（2025H1）"
   }
  },
  {
@@ -1905,14 +2105,17 @@
   "population": 20843754,
   "gdpPerCapitaUSD": null,
   "hdi": 0.802,
-  "gpi": null,
+  "gpi": {
+   "score": 1.888,
+   "rank": 76
+  },
   "cpi": 39,
   "numbeoSafety": 54.8,
   "numbeoHealthcare": 60.7,
   "numbeoQol": 105.1,
   "numbeoPollution": 35.7,
   "numbeoClimate": 73,
-  "internetMbpsFixed": null,
+  "internetMbpsFixed": 104,
   "visaOverview": null,
   "taxTopRatePct": 10,
   "cityCount": 1,
@@ -1935,7 +2138,9 @@
    "numbeoHealthcare": "Numbeo country rankings (NYC=100)",
    "numbeoQol": "Numbeo country rankings (NYC=100)",
    "numbeoPollution": "Numbeo country rankings (NYC=100)",
-   "numbeoClimate": "Numbeo country rankings (NYC=100)"
+   "numbeoClimate": "Numbeo country rankings (NYC=100)",
+   "gpi": "GPI = IEP Global Peace Index 2024（163 国榜单；公开报道整理的手工快照，近似参考值，以 IEP 原报告为准；score 1-5 越低越和平，rank 为全球排名）",
+   "internetMbpsFixed": "Ookla Speedtest Global Index（国家级中位数 · 固定宽带下行 Mbps；公开榜单手工快照，近似参考值，以 Ookla 口径为准）（2025H1）"
   }
  },
  {
@@ -1952,14 +2157,17 @@
   "population": 3086700,
   "gdpPerCapitaUSD": 9474.01849300368,
   "hdi": 0.786,
-  "gpi": null,
+  "gpi": {
+   "score": 1.91,
+   "rank": 80
+  },
   "cpi": 47,
   "numbeoSafety": 78,
   "numbeoHealthcare": 60,
   "numbeoQol": 128.2,
   "numbeoPollution": 29.3,
   "numbeoClimate": 61.5,
-  "internetMbpsFixed": null,
+  "internetMbpsFixed": 70,
   "visaOverview": null,
   "taxTopRatePct": 22,
   "cityCount": 1,
@@ -1982,7 +2190,9 @@
    "numbeoHealthcare": "Numbeo country rankings (NYC=100)",
    "numbeoQol": "Numbeo country rankings (NYC=100)",
    "numbeoPollution": "Numbeo country rankings (NYC=100)",
-   "numbeoClimate": "Numbeo country rankings (NYC=100)"
+   "numbeoClimate": "Numbeo country rankings (NYC=100)",
+   "gpi": "GPI = IEP Global Peace Index 2024（163 国榜单；公开报道整理的手工快照，近似参考值，以 IEP 原报告为准；score 1-5 越低越和平，rank 为全球排名）",
+   "internetMbpsFixed": "Ookla Speedtest Global Index（国家级中位数 · 固定宽带下行 Mbps；公开榜单手工快照，近似参考值，以 Ookla 口径为准）（2025H1）"
   }
  },
  {
@@ -1999,14 +2209,17 @@
   "population": 11520684,
   "gdpPerCapitaUSD": 5347.77731384797,
   "hdi": 0.736,
-  "gpi": null,
+  "gpi": {
+   "score": 2.09,
+   "rank": 113
+  },
   "cpi": 53,
   "numbeoSafety": 60.4,
   "numbeoHealthcare": 65.6,
   "numbeoQol": 126.6,
   "numbeoPollution": 40.8,
   "numbeoClimate": 76.9,
-  "internetMbpsFixed": null,
+  "internetMbpsFixed": 95,
   "visaOverview": null,
   "taxTopRatePct": 30,
   "cityCount": 1,
@@ -2029,7 +2242,9 @@
    "numbeoHealthcare": "Numbeo country rankings (NYC=100)",
    "numbeoQol": "Numbeo country rankings (NYC=100)",
    "numbeoPollution": "Numbeo country rankings (NYC=100)",
-   "numbeoClimate": "Numbeo country rankings (NYC=100)"
+   "numbeoClimate": "Numbeo country rankings (NYC=100)",
+   "gpi": "GPI = IEP Global Peace Index 2024（163 国榜单；公开报道整理的手工快照，近似参考值，以 IEP 原报告为准；score 1-5 越低越和平，rank 为全球排名）",
+   "internetMbpsFixed": "Ookla Speedtest Global Index（国家级中位数 · 固定宽带下行 Mbps；公开榜单手工快照，近似参考值，以 Ookla 口径为准）（2025H1）"
   }
  },
  {
@@ -2046,14 +2261,17 @@
   "population": 285721236,
   "gdpPerCapitaUSD": 5059.62596411213,
   "hdi": 0.713,
-  "gpi": null,
+  "gpi": {
+   "score": 1.962,
+   "rank": 91
+  },
   "cpi": 34,
   "numbeoSafety": 53.8,
   "numbeoHealthcare": 61.8,
   "numbeoQol": 90.4,
   "numbeoPollution": 42.7,
   "numbeoClimate": 66.1,
-  "internetMbpsFixed": null,
+  "internetMbpsFixed": 33,
   "visaOverview": "有官方远程工作签证 E33G（2024 年起，年收入门槛约 6 万美元）",
   "taxTopRatePct": 35,
   "cityCount": 1,
@@ -2076,7 +2294,9 @@
    "numbeoHealthcare": "Numbeo country rankings (NYC=100)",
    "numbeoQol": "Numbeo country rankings (NYC=100)",
    "numbeoPollution": "Numbeo country rankings (NYC=100)",
-   "numbeoClimate": "Numbeo country rankings (NYC=100)"
+   "numbeoClimate": "Numbeo country rankings (NYC=100)",
+   "gpi": "GPI = IEP Global Peace Index 2024（163 国榜单；公开报道整理的手工快照，近似参考值，以 IEP 原报告为准；score 1-5 越低越和平，rank 为全球排名）",
+   "internetMbpsFixed": "Ookla Speedtest Global Index（国家级中位数 · 固定宽带下行 Mbps；公开榜单手工快照，近似参考值，以 Ookla 口径为准）（2025H1）"
   }
  },
  {
@@ -2093,14 +2313,17 @@
   "population": 11513149,
   "gdpPerCapitaUSD": 50273.5126243239,
   "hdi": 0.937,
-  "gpi": null,
+  "gpi": {
+   "score": 1.729,
+   "rank": 49
+  },
   "cpi": 68,
   "numbeoSafety": 86.3,
   "numbeoHealthcare": 70.8,
   "numbeoQol": 168.5,
   "numbeoPollution": 35.9,
   "numbeoClimate": 49.7,
-  "internetMbpsFixed": null,
+  "internetMbpsFixed": 230,
   "visaOverview": "有虚拟工作签证（一年期，需月收入约 3,500 美元证明）",
   "taxTopRatePct": 0,
   "cityCount": 1,
@@ -2123,7 +2346,9 @@
    "numbeoHealthcare": "Numbeo country rankings (NYC=100)",
    "numbeoQol": "Numbeo country rankings (NYC=100)",
    "numbeoPollution": "Numbeo country rankings (NYC=100)",
-   "numbeoClimate": "Numbeo country rankings (NYC=100)"
+   "numbeoClimate": "Numbeo country rankings (NYC=100)",
+   "gpi": "GPI = IEP Global Peace Index 2024（163 国榜单；公开报道整理的手工快照，近似参考值，以 IEP 原报告为准；score 1-5 越低越和平，rank 为全球排名）",
+   "internetMbpsFixed": "Ookla Speedtest Global Index（国家级中位数 · 固定宽带下行 Mbps；公开榜单手工快照，近似参考值，以 Ookla 口径为准）（2025H1）"
   }
  },
  {
@@ -2140,14 +2365,17 @@
   "population": 17847982,
   "gdpPerCapitaUSD": 2872.42926639909,
   "hdi": null,
-  "gpi": null,
+  "gpi": {
+   "score": 1.98,
+   "rank": 97
+  },
   "cpi": 22,
   "numbeoSafety": null,
   "numbeoHealthcare": null,
   "numbeoQol": null,
   "numbeoPollution": null,
   "numbeoClimate": null,
-  "internetMbpsFixed": null,
+  "internetMbpsFixed": 60,
   "visaOverview": null,
   "taxTopRatePct": 20,
   "cityCount": 1,
@@ -2170,7 +2398,9 @@
    "numbeoHealthcare": null,
    "numbeoQol": null,
    "numbeoPollution": null,
-   "numbeoClimate": null
+   "numbeoClimate": null,
+   "gpi": "GPI = IEP Global Peace Index 2024（163 国榜单；公开报道整理的手工快照，近似参考值，以 IEP 原报告为准；score 1-5 越低越和平，rank 为全球排名）",
+   "internetMbpsFixed": "Ookla Speedtest Global Index（国家级中位数 · 固定宽带下行 Mbps；公开榜单手工快照，近似参考值，以 Ookla 口径为准）（2025H1）"
   }
  },
  {
@@ -2188,14 +2418,17 @@
   "population": 21756000,
   "gdpPerCapitaUSD": 5002.07904353724,
   "hdi": 0.78,
-  "gpi": null,
+  "gpi": {
+   "score": 1.855,
+   "rank": 70
+  },
   "cpi": 34,
   "numbeoSafety": 57.5,
   "numbeoHealthcare": 70.8,
   "numbeoQol": 62.1,
   "numbeoPollution": 53.8,
   "numbeoClimate": 58.2,
-  "internetMbpsFixed": null,
+  "internetMbpsFixed": 51,
   "visaOverview": null,
   "taxTopRatePct": 36,
   "cityCount": 1,
@@ -2218,7 +2451,9 @@
    "numbeoHealthcare": "Numbeo country rankings (NYC=100)",
    "numbeoQol": "Numbeo country rankings (NYC=100)",
    "numbeoPollution": "Numbeo country rankings (NYC=100)",
-   "numbeoClimate": "Numbeo country rankings (NYC=100)"
+   "numbeoClimate": "Numbeo country rankings (NYC=100)",
+   "gpi": "GPI = IEP Global Peace Index 2024（163 国榜单；公开报道整理的手工快照，近似参考值，以 IEP 原报告为准；score 1-5 越低越和平，rank 为全球排名）",
+   "internetMbpsFixed": "Ookla Speedtest Global Index（国家级中位数 · 固定宽带下行 Mbps；公开榜单手工快照，近似参考值，以 Ookla 口径为准）（2025H1）"
   }
  },
  {
@@ -2236,14 +2471,17 @@
   "population": 116786962,
   "gdpPerCapitaUSD": null,
   "hdi": 0.71,
-  "gpi": null,
+  "gpi": {
+   "score": 2.1,
+   "rank": 115
+  },
   "cpi": 34,
   "numbeoSafety": 56.6,
   "numbeoHealthcare": 67,
   "numbeoQol": 84.4,
   "numbeoPollution": 41.7,
   "numbeoClimate": 72.4,
-  "internetMbpsFixed": null,
+  "internetMbpsFixed": 96,
   "visaOverview": null,
   "taxTopRatePct": 35,
   "cityCount": 1,
@@ -2266,7 +2504,9 @@
    "numbeoHealthcare": "Numbeo country rankings (NYC=100)",
    "numbeoQol": "Numbeo country rankings (NYC=100)",
    "numbeoPollution": "Numbeo country rankings (NYC=100)",
-   "numbeoClimate": "Numbeo country rankings (NYC=100)"
+   "numbeoClimate": "Numbeo country rankings (NYC=100)",
+   "gpi": "GPI = IEP Global Peace Index 2024（163 国榜单；公开报道整理的手工快照，近似参考值，以 IEP 原报告为准；score 1-5 越低越和平，rank 为全球排名）",
+   "internetMbpsFixed": "Ookla Speedtest Global Index（国家级中位数 · 固定宽带下行 Mbps；公开榜单手工快照，近似参考值，以 Ookla 口径为准）（2025H1）"
   }
  },
  {
@@ -2283,14 +2523,17 @@
   "population": 10122800,
   "gdpPerCapitaUSD": 60336.8477964194,
   "hdi": 0.915,
-  "gpi": null,
+  "gpi": {
+   "score": 2.86,
+   "rank": 155
+  },
   "cpi": 58,
   "numbeoSafety": 68.2,
   "numbeoHealthcare": 73.5,
   "numbeoQol": 164.8,
   "numbeoPollution": 37,
   "numbeoClimate": 57.2,
-  "internetMbpsFixed": null,
+  "internetMbpsFixed": 148,
   "visaOverview": null,
   "taxTopRatePct": 50,
   "cityCount": 1,
@@ -2313,7 +2556,9 @@
    "numbeoHealthcare": "Numbeo country rankings (NYC=100)",
    "numbeoQol": "Numbeo country rankings (NYC=100)",
    "numbeoPollution": "Numbeo country rankings (NYC=100)",
-   "numbeoClimate": "Numbeo country rankings (NYC=100)"
+   "numbeoClimate": "Numbeo country rankings (NYC=100)",
+   "gpi": "GPI = IEP Global Peace Index 2024（163 国榜单；公开报道整理的手工快照，近似参考值，以 IEP 原报告为准；score 1-5 越低越和平，rank 为全球排名）",
+   "internetMbpsFixed": "Ookla Speedtest Global Index（国家级中位数 · 固定宽带下行 Mbps；公开榜单手工快照，近似参考值，以 Ookla 口径为准）（2025H1）"
   }
  },
  {
@@ -2338,7 +2583,7 @@
   "numbeoQol": null,
   "numbeoPollution": null,
   "numbeoClimate": null,
-  "internetMbpsFixed": null,
+  "internetMbpsFixed": 270,
   "visaOverview": "无专门数字游民签证；高端人才通行证计划（高才通）为主流路径",
   "taxTopRatePct": 15,
   "cityCount": 1,
@@ -2361,7 +2606,9 @@
    "numbeoHealthcare": null,
    "numbeoQol": null,
    "numbeoPollution": null,
-   "numbeoClimate": null
+   "numbeoClimate": null,
+   "gpi": "null — GPI 榜单不含（地区不单列）",
+   "internetMbpsFixed": "Ookla Speedtest Global Index（国家级中位数 · 固定宽带下行 Mbps；公开榜单手工快照，近似参考值，以 Ookla 口径为准）（2025H1）"
   }
  },
  {
@@ -2381,14 +2628,17 @@
   "population": 6111175,
   "gdpPerCapitaUSD": 98813.9788172877,
   "hdi": 0.949,
-  "gpi": null,
+  "gpi": {
+   "score": 1.339,
+   "rank": 5
+  },
   "cpi": 83,
   "numbeoSafety": 77.7,
   "numbeoHealthcare": 71.9,
   "numbeoQol": 147.9,
   "numbeoPollution": 41,
   "numbeoClimate": 32.5,
-  "internetMbpsFixed": null,
+  "internetMbpsFixed": 310,
   "visaOverview": "无专门数字游民签证；EP / ONE Pass 为雇佣类路径",
   "taxTopRatePct": 24,
   "cityCount": 1,
@@ -2411,7 +2661,9 @@
    "numbeoHealthcare": "Numbeo country rankings (NYC=100)",
    "numbeoQol": "Numbeo country rankings (NYC=100)",
    "numbeoPollution": "Numbeo country rankings (NYC=100)",
-   "numbeoClimate": "Numbeo country rankings (NYC=100)"
+   "numbeoClimate": "Numbeo country rankings (NYC=100)",
+   "gpi": "GPI = IEP Global Peace Index 2024（163 国榜单；公开报道整理的手工快照，近似参考值，以 IEP 原报告为准；score 1-5 越低越和平，rank 为全球排名）",
+   "internetMbpsFixed": "Ookla Speedtest Global Index（国家级中位数 · 固定宽带下行 Mbps；公开榜单手工快照，近似参考值，以 Ookla 口径为准）（2025H1）"
   }
  },
  {
@@ -2428,14 +2680,17 @@
   "population": 35064272,
   "gdpPerCapitaUSD": 3257.1588903576,
   "hdi": 0.602,
-  "gpi": null,
+  "gpi": {
+   "score": 1.931,
+   "rank": 84
+  },
   "cpi": 43,
   "numbeoSafety": null,
   "numbeoHealthcare": null,
   "numbeoQol": null,
   "numbeoPollution": null,
   "numbeoClimate": null,
-  "internetMbpsFixed": null,
+  "internetMbpsFixed": 46,
   "visaOverview": null,
   "taxTopRatePct": 35,
   "cityCount": 1,
@@ -2458,7 +2713,9 @@
    "numbeoHealthcare": null,
    "numbeoQol": null,
    "numbeoPollution": null,
-   "numbeoClimate": null
+   "numbeoClimate": null,
+   "gpi": "GPI = IEP Global Peace Index 2024（163 国榜单；公开报道整理的手工快照，近似参考值，以 IEP 原报告为准；score 1-5 越低越和平，rank 为全球排名）",
+   "internetMbpsFixed": "Ookla Speedtest Global Index（国家级中位数 · 固定宽带下行 Mbps；公开榜单手工快照，近似参考值，以 Ookla 口径为准）（2025H1）"
   }
  },
  {
@@ -2475,14 +2732,17 @@
   "population": 18931966,
   "gdpPerCapitaUSD": 1954.71174194867,
   "hdi": 0.517,
-  "gpi": null,
+  "gpi": {
+   "score": 1.92,
+   "rank": 82
+  },
   "cpi": 43,
   "numbeoSafety": null,
   "numbeoHealthcare": null,
   "numbeoQol": null,
   "numbeoPollution": null,
   "numbeoClimate": null,
-  "internetMbpsFixed": null,
+  "internetMbpsFixed": 36,
   "visaOverview": null,
   "taxTopRatePct": null,
   "cityCount": 1,
@@ -2505,7 +2765,9 @@
    "numbeoHealthcare": null,
    "numbeoQol": null,
    "numbeoPollution": null,
-   "numbeoClimate": null
+   "numbeoClimate": null,
+   "gpi": "GPI = IEP Global Peace Index 2024（163 国榜单；公开报道整理的手工快照，近似参考值，以 IEP 原报告为准；score 1-5 越低越和平，rank 为全球排名）",
+   "internetMbpsFixed": "Ookla Speedtest Global Index（国家级中位数 · 固定宽带下行 Mbps；公开榜单手工快照，近似参考值，以 Ookla 口径为准）（2025H1）"
   }
  },
  {
@@ -2524,14 +2786,17 @@
   "population": 14569341,
   "gdpPerCapitaUSD": 1123.73874633225,
   "hdi": 0.548,
-  "gpi": null,
+  "gpi": {
+   "score": 1.96,
+   "rank": 90
+  },
   "cpi": 53,
   "numbeoSafety": null,
   "numbeoHealthcare": null,
   "numbeoQol": null,
   "numbeoPollution": null,
   "numbeoClimate": null,
-  "internetMbpsFixed": null,
+  "internetMbpsFixed": 35,
   "visaOverview": null,
   "taxTopRatePct": 30,
   "cityCount": 1,
@@ -2554,7 +2819,9 @@
    "numbeoHealthcare": null,
    "numbeoQol": null,
    "numbeoPollution": null,
-   "numbeoClimate": null
+   "numbeoClimate": null,
+   "gpi": "GPI = IEP Global Peace Index 2024（163 国榜单；公开报道整理的手工快照，近似参考值，以 IEP 原报告为准；score 1-5 越低越和平，rank 为全球排名）",
+   "internetMbpsFixed": "Ookla Speedtest Global Index（国家级中位数 · 固定宽带下行 Mbps；公开榜单手工快照，近似参考值，以 Ookla 口径为准）（2025H1）"
   }
  },
  {
@@ -2571,14 +2838,17 @@
   "population": 118365995,
   "gdpPerCapitaUSD": 3085.80712036204,
   "hdi": 0.728,
-  "gpi": null,
+  "gpi": {
+   "score": 2.601,
+   "rank": 148
+  },
   "cpi": 35,
   "numbeoSafety": null,
   "numbeoHealthcare": null,
   "numbeoQol": null,
   "numbeoPollution": null,
   "numbeoClimate": null,
-  "internetMbpsFixed": null,
+  "internetMbpsFixed": 44,
   "visaOverview": null,
   "taxTopRatePct": 25,
   "cityCount": 1,
@@ -2601,7 +2871,9 @@
    "numbeoHealthcare": null,
    "numbeoQol": null,
    "numbeoPollution": null,
-   "numbeoClimate": null
+   "numbeoClimate": null,
+   "gpi": "GPI = IEP Global Peace Index 2024（163 国榜单；公开报道整理的手工快照，近似参考值，以 IEP 原报告为准；score 1-5 越低越和平，rank 为全球排名）",
+   "internetMbpsFixed": "Ookla Speedtest Global Index（国家级中位数 · 固定宽带下行 Mbps；公开榜单手工快照，近似参考值，以 Ookla 口径为准）（2025H1）"
   }
  },
  {
@@ -2619,14 +2891,17 @@
   "population": 1243741,
   "gdpPerCapitaUSD": 12991.2935987166,
   "hdi": 0.796,
-  "gpi": null,
+  "gpi": {
+   "score": 1.56,
+   "rank": 23
+  },
   "cpi": 58,
   "numbeoSafety": null,
   "numbeoHealthcare": null,
   "numbeoQol": null,
   "numbeoPollution": null,
   "numbeoClimate": null,
-  "internetMbpsFixed": null,
+  "internetMbpsFixed": 46,
   "visaOverview": "有官方数字游民签证 Premium Visa（一年期可续）",
   "taxTopRatePct": 20,
   "cityCount": 1,
@@ -2649,7 +2924,9 @@
    "numbeoHealthcare": null,
    "numbeoQol": null,
    "numbeoPollution": null,
-   "numbeoClimate": null
+   "numbeoClimate": null,
+   "gpi": "GPI = IEP Global Peace Index 2024（163 国榜单；公开报道整理的手工快照，近似参考值，以 IEP 原报告为准；score 1-5 越低越和平，rank 为全球排名）",
+   "internetMbpsFixed": "Ookla Speedtest Global Index（国家级中位数 · 固定宽带下行 Mbps；公开榜单手工快照，近似参考值，以 Ookla 口径为准）（2025H1）"
   }
  },
  {
@@ -2667,14 +2944,17 @@
   "population": 38430770,
   "gdpPerCapitaUSD": 4672.46826171875,
   "hdi": 0.698,
-  "gpi": null,
+  "gpi": {
+   "score": 1.843,
+   "rank": 67
+  },
   "cpi": 37,
   "numbeoSafety": 52.9,
   "numbeoHealthcare": 46.8,
   "numbeoQol": 112.9,
   "numbeoPollution": 34.9,
   "numbeoClimate": 68.7,
-  "internetMbpsFixed": null,
+  "internetMbpsFixed": 46,
   "visaOverview": null,
   "taxTopRatePct": 37,
   "cityCount": 1,
@@ -2697,7 +2977,9 @@
    "numbeoHealthcare": "Numbeo country rankings (NYC=100)",
    "numbeoQol": "Numbeo country rankings (NYC=100)",
    "numbeoPollution": "Numbeo country rankings (NYC=100)",
-   "numbeoClimate": "Numbeo country rankings (NYC=100)"
+   "numbeoClimate": "Numbeo country rankings (NYC=100)",
+   "gpi": "GPI = IEP Global Peace Index 2024（163 国榜单；公开报道整理的手工快照，近似参考值，以 IEP 原报告为准；score 1-5 越低越和平，rank 为全球排名）",
+   "internetMbpsFixed": "Ookla Speedtest Global Index（国家级中位数 · 固定宽带下行 Mbps；公开榜单手工快照，近似参考值，以 Ookla 口径为准）（2025H1）"
   }
  },
  {
@@ -2715,14 +2997,17 @@
   "population": 57532493,
   "gdpPerCapitaUSD": 2362.86091198611,
   "hdi": 0.601,
-  "gpi": null,
+  "gpi": {
+   "score": 2.12,
+   "rank": 117
+  },
   "cpi": 31,
   "numbeoSafety": 44.8,
   "numbeoHealthcare": 62.2,
   "numbeoQol": 98.1,
   "numbeoPollution": 51.2,
   "numbeoClimate": 69.2,
-  "internetMbpsFixed": null,
+  "internetMbpsFixed": 46,
   "visaOverview": "Class K 居留（有固定境外收入者）常被视作数字游民路径",
   "taxTopRatePct": 30,
   "cityCount": 1,
@@ -2745,7 +3030,9 @@
    "numbeoHealthcare": "Numbeo country rankings (NYC=100)",
    "numbeoQol": "Numbeo country rankings (NYC=100)",
    "numbeoPollution": "Numbeo country rankings (NYC=100)",
-   "numbeoClimate": "Numbeo country rankings (NYC=100)"
+   "numbeoClimate": "Numbeo country rankings (NYC=100)",
+   "gpi": "GPI = IEP Global Peace Index 2024（163 国榜单；公开报道整理的手工快照，近似参考值，以 IEP 原报告为准；score 1-5 越低越和平，rank 为全球排名）",
+   "internetMbpsFixed": "Ookla Speedtest Global Index（国家级中位数 · 固定宽带下行 Mbps；公开榜单手工快照，近似参考值，以 Ookla 口径为准）（2025H1）"
   }
  },
  {
@@ -2762,14 +3049,17 @@
   "population": 135472051,
   "gdpPerCapitaUSD": 932.729352775179,
   "hdi": 0.492,
-  "gpi": null,
+  "gpi": {
+   "score": 2.724,
+   "rank": 152
+  },
   "cpi": 26,
   "numbeoSafety": null,
   "numbeoHealthcare": null,
   "numbeoQol": null,
   "numbeoPollution": null,
   "numbeoClimate": null,
-  "internetMbpsFixed": null,
+  "internetMbpsFixed": 25,
   "visaOverview": null,
   "taxTopRatePct": 35,
   "cityCount": 1,
@@ -2792,7 +3082,9 @@
    "numbeoHealthcare": null,
    "numbeoQol": null,
    "numbeoPollution": null,
-   "numbeoClimate": null
+   "numbeoClimate": null,
+   "gpi": "GPI = IEP Global Peace Index 2024（163 国榜单；公开报道整理的手工快照，近似参考值，以 IEP 原报告为准；score 1-5 越低越和平，rank 为全球排名）",
+   "internetMbpsFixed": "Ookla Speedtest Global Index（国家级中位数 · 固定宽带下行 Mbps；公开榜单手工快照，近似参考值，以 Ookla 口径为准）（2025H1）"
   }
  },
  {
@@ -2817,7 +3109,7 @@
   "numbeoQol": null,
   "numbeoPollution": null,
   "numbeoClimate": null,
-  "internetMbpsFixed": null,
+  "internetMbpsFixed": 110,
   "visaOverview": null,
   "taxTopRatePct": null,
   "cityCount": 1,
@@ -2840,7 +3132,9 @@
    "numbeoHealthcare": null,
    "numbeoQol": null,
    "numbeoPollution": null,
-   "numbeoClimate": null
+   "numbeoClimate": null,
+   "gpi": "null — GPI 榜单不含（美国地区，不单列）",
+   "internetMbpsFixed": "Ookla Speedtest Global Index（国家级中位数 · 固定宽带下行 Mbps；公开榜单手工快照，近似参考值，以 Ookla 口径为准）（2025H1）"
   }
  },
  {
@@ -2857,14 +3151,17 @@
   "population": 45851378,
   "gdpPerCapitaUSD": 14898.0885943842,
   "hdi": 0.849,
-  "gpi": null,
+  "gpi": {
+   "score": 1.714,
+   "rank": 47
+  },
   "cpi": 37,
   "numbeoSafety": 37,
   "numbeoHealthcare": 67.8,
   "numbeoQol": 123.2,
   "numbeoPollution": 43.9,
   "numbeoClimate": 50.5,
-  "internetMbpsFixed": null,
+  "internetMbpsFixed": 104,
   "visaOverview": null,
   "taxTopRatePct": 35,
   "cityCount": 1,
@@ -2887,7 +3184,9 @@
    "numbeoHealthcare": "Numbeo country rankings (NYC=100)",
    "numbeoQol": "Numbeo country rankings (NYC=100)",
    "numbeoPollution": "Numbeo country rankings (NYC=100)",
-   "numbeoClimate": "Numbeo country rankings (NYC=100)"
+   "numbeoClimate": "Numbeo country rankings (NYC=100)",
+   "gpi": "GPI = IEP Global Peace Index 2024（163 国榜单；公开报道整理的手工快照，近似参考值，以 IEP 原报告为准；score 1-5 越低越和平，rank 为全球排名）",
+   "internetMbpsFixed": "Ookla Speedtest Global Index（国家级中位数 · 固定宽带下行 Mbps；公开榜单手工快照，近似参考值，以 Ookla 口径为准）（2025H1）"
   }
  },
  {
@@ -2904,14 +3203,17 @@
   "population": 3384688,
   "gdpPerCapitaUSD": 25215.8238152781,
   "hdi": 0.83,
-  "gpi": null,
+  "gpi": {
+   "score": 1.78,
+   "rank": 58
+  },
   "cpi": 76,
   "numbeoSafety": 47.3,
   "numbeoHealthcare": 69,
   "numbeoQol": 141.2,
   "numbeoPollution": 39.2,
   "numbeoClimate": 42.4,
-  "internetMbpsFixed": null,
+  "internetMbpsFixed": 104,
   "visaOverview": null,
   "taxTopRatePct": 36,
   "cityCount": 1,
@@ -2934,7 +3236,9 @@
    "numbeoHealthcare": "Numbeo country rankings (NYC=100)",
    "numbeoQol": "Numbeo country rankings (NYC=100)",
    "numbeoPollution": "Numbeo country rankings (NYC=100)",
-   "numbeoClimate": "Numbeo country rankings (NYC=100)"
+   "numbeoClimate": "Numbeo country rankings (NYC=100)",
+   "gpi": "GPI = IEP Global Peace Index 2024（163 国榜单；公开报道整理的手工快照，近似参考值，以 IEP 原报告为准；score 1-5 越低越和平，rank 为全球排名）",
+   "internetMbpsFixed": "Ookla Speedtest Global Index（国家级中位数 · 固定宽带下行 Mbps；公开榜单手工快照，近似参考值，以 Ookla 口径为准）（2025H1）"
   }
  },
  {
@@ -2951,14 +3255,17 @@
   "population": 19859921,
   "gdpPerCapitaUSD": 17994.5911957485,
   "hdi": 0.86,
-  "gpi": null,
+  "gpi": {
+   "score": 1.744,
+   "rank": 51
+  },
   "cpi": 67,
   "numbeoSafety": 39.4,
   "numbeoHealthcare": 63.7,
   "numbeoQol": 108.6,
   "numbeoPollution": 35.7,
   "numbeoClimate": 77.3,
-  "internetMbpsFixed": null,
+  "internetMbpsFixed": 231,
   "visaOverview": null,
   "taxTopRatePct": null,
   "cityCount": 1,
@@ -2981,7 +3288,9 @@
    "numbeoHealthcare": "Numbeo country rankings (NYC=100)",
    "numbeoQol": "Numbeo country rankings (NYC=100)",
    "numbeoPollution": "Numbeo country rankings (NYC=100)",
-   "numbeoClimate": "Numbeo country rankings (NYC=100)"
+   "numbeoClimate": "Numbeo country rankings (NYC=100)",
+   "gpi": "GPI = IEP Global Peace Index 2024（163 国榜单；公开报道整理的手工快照，近似参考值，以 IEP 原报告为准；score 1-5 越低越和平，rank 为全球排名）",
+   "internetMbpsFixed": "Ookla Speedtest Global Index（国家级中位数 · 固定宽带下行 Mbps；公开榜单手工快照，近似参考值，以 Ookla 口径为准）（2025H1）"
   }
  },
  {
@@ -3007,7 +3316,7 @@
   "numbeoQol": null,
   "numbeoPollution": null,
   "numbeoClimate": null,
-  "internetMbpsFixed": null,
+  "internetMbpsFixed": 30,
   "visaOverview": null,
   "taxTopRatePct": null,
   "cityCount": 1,
@@ -3030,7 +3339,9 @@
    "numbeoHealthcare": null,
    "numbeoQol": null,
    "numbeoPollution": null,
-   "numbeoClimate": null
+   "numbeoClimate": null,
+   "gpi": "null — GPI 榜单不含（163 国不含太平洋岛国）",
+   "internetMbpsFixed": "Ookla Speedtest Global Index（国家级中位数 · 固定宽带下行 Mbps；公开榜单手工快照，近似参考值，以 Ookla 口径为准）（2025H1）"
   }
  },
  {
@@ -3047,14 +3358,17 @@
   "population": null,
   "gdpPerCapitaUSD": null,
   "hdi": null,
-  "gpi": null,
+  "gpi": {
+   "score": 1.618,
+   "rank": 33
+  },
   "cpi": null,
   "numbeoSafety": null,
   "numbeoHealthcare": null,
   "numbeoQol": null,
   "numbeoPollution": null,
   "numbeoClimate": null,
-  "internetMbpsFixed": null,
+  "internetMbpsFixed": 131,
   "visaOverview": "对多国提供落地/免签入境；长期居留与数字游民类签证请查询官方来源",
   "taxTopRatePct": null,
   "cityCount": 1,
@@ -3067,7 +3381,7 @@
    "population": "World Bank 无 TWN 条目，留空",
    "gdpPerCapitaUSD": "World Bank 无 TWN 条目，留空",
    "hdi": "未取数，留空",
-   "gpi": "visionofhumanity 不可达，待补录",
+   "gpi": "GPI = IEP Global Peace Index 2024（163 国榜单；公开报道整理的手工快照，近似参考值，以 IEP 原报告为准；score 1-5 越低越和平，rank 为全球排名）",
    "cpi": "手工快照缺失，留空",
    "languages": "手工快照",
    "currency": "手工快照（ISO 4217）",
@@ -3076,7 +3390,7 @@
    "visaOverview": "手工快照（以官方为准）",
    "numbeoSafety": "Numbeo 国家表无此项",
    "numbeoHealthcare": "Numbeo 国家表无此项",
-   "internetMbpsFixed": "Speedtest Global Index 不可达，待补录"
+   "internetMbpsFixed": "Ookla Speedtest Global Index（国家级中位数 · 固定宽带下行 Mbps；公开榜单手工快照，近似参考值，以 Ookla 口径为准）（2025H1）"
   }
  }
 ]

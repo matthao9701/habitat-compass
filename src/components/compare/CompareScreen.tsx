@@ -22,18 +22,21 @@ import { cities } from '../../data';
 import { REGION_LABEL, REGION_ORDER, subregionLabel } from '../../data/regions';
 import CompareCharts from './CompareCharts';
 import CompareDataCards from './CompareDataCards';
+import { useI18n } from '../../i18n';
+import { cityName } from '../../lib/format';
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
 /** 收藏星标（纯几何四角星，无 emoji） */
 function FavButton({ active, onClick, label }: { active: boolean; onClick: () => void; label: string }) {
+  const { t } = useI18n();
   return (
     <button
       type="button"
       onClick={onClick}
       aria-label={label}
       aria-pressed={active}
-      title={active ? '取消收藏' : '收藏城市'}
+      title={active ? t('cmp.fav.remove') : t('profile.favorites')}
       className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-[6px] transition-colors ${
         active ? 'text-clay' : 'text-ink-soft hover:text-clay'
       }`}
@@ -41,8 +44,8 @@ function FavButton({ active, onClick, label }: { active: boolean; onClick: () =>
       <svg width="15" height="15" viewBox="0 0 20 20" aria-hidden="true">
         <path
           d="M10 1.5 L12.1 7.9 L18.5 10 L12.1 12.1 L10 18.5 L7.9 12.1 L1.5 10 L7.9 7.9 Z"
-          fill={active ? '#BE5A38' : 'none'}
-          stroke={active ? '#BE5A38' : '#4A5950'}
+          fill={active ? '#E76F51' : 'none'}
+          stroke={active ? '#E76F51' : '#5A7A8A'}
           strokeWidth="1.4"
           strokeLinejoin="round"
         />
@@ -59,6 +62,7 @@ interface CompareScreenProps {
 }
 
 export default function CompareScreen({ result, answers, seedCities, onOpenQuiz }: CompareScreenProps) {
+  const { t } = useI18n();
   const cityById = useMemo(() => new Map(cities.map((c) => [c.id, c])), []);
   const validId = (id: string): boolean => cityById.has(id);
 
@@ -135,7 +139,7 @@ export default function CompareScreen({ result, answers, seedCities, onOpenQuiz 
       (regionFilter === 'all' || c.region === regionFilter) &&
       (subFilter === 'all' || c.subregion === subFilter) &&
       (queryLower === '' ||
-        c.nameZh.includes(query.trim()) ||
+        cityName(c).includes(query.trim()) ||
         c.nameEn.toLowerCase().includes(queryLower) ||
         c.countryZh.includes(query.trim())),
   );
@@ -187,23 +191,22 @@ export default function CompareScreen({ result, answers, seedCities, onOpenQuiz 
       {/* 页头 */}
       <section className="border-b hairline bg-paper-deep/50">
         <div className="mx-auto max-w-almanac px-6 py-10 md:px-10">
-          <p className="eyebrow">chart 01 · 城市对比</p>
-          <h1 className="mt-2 font-display text-[26px] font-bold tracking-tight md:text-[32px]">把候选城市摆上同一张海图</h1>
+          <p className="eyebrow">{t('cmp.sec.select.eyebrow')}</p>
+          <h1 className="mt-2 font-display text-[26px] font-bold tracking-tight md:text-[32px]">{t('cmp.sec.select.title')}</h1>
           <p className="mt-3 max-w-xl text-[13.5px] leading-[1.8] text-ink-soft">
-            最多同时对比 {COMPARE_CITY_LIMIT} 座城市；「我最在意什么」滑杆只在对比页实时重算排序，
-            不会写入你的测评报告。
+            {t('cmp.note.limit', { limit: COMPARE_CITY_LIMIT })}
           </p>
           {!personalized && (
             <div className="mt-5 flex flex-col items-start justify-between gap-3 rounded-[8px] border border-ochre/40 bg-ochre/[0.07] px-4 py-3 sm:flex-row sm:items-center">
               <p className="text-[12.5px] leading-[1.7] text-ink-soft">
-                未检测到测评结果：以中性偏好为基准对比，权重默认均分。完成测评可获得个性化分数与推荐。
+                {t('cmp.note.neutral')}
               </p>
               <button
                 type="button"
                 onClick={onOpenQuiz}
                 className="btn-ghost shrink-0 font-mono text-[11px]"
               >
-                去做测评 →
+                {t('cmp.note.quizCta')}
               </button>
             </div>
           )}
@@ -216,14 +219,14 @@ export default function CompareScreen({ result, answers, seedCities, onOpenQuiz 
           {/* 搜索自选 */}
           <div>
             <div className="flex items-center justify-between">
-              <h2 className="font-heading text-[17px] font-bold">搜索城市</h2>
-              <span className="font-mono text-[10px] text-ink-soft">{selected.length} / {COMPARE_CITY_LIMIT} 已选</span>
+              <h2 className="font-heading text-[17px] font-bold">{t('cmp.search')}</h2>
+              <span className="font-mono text-[10px] text-ink-soft">{t('cmp.selectedCount', { sel: selected.length, limit: COMPARE_CITY_LIMIT })}</span>
             </div>
             <input
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="输入中文 / 英文名或国家搜索…"
+              placeholder={t('cmp.search.placeholder')}
               className="mt-3 w-full rounded-[8px] border border-ink/15 bg-card px-4 py-2.5 text-[13px] text-ink placeholder:text-ink-soft/60 outline-none transition-colors focus:border-clay"
             />
             {/* 大洲 / 次区域筛选 */}
@@ -234,10 +237,10 @@ export default function CompareScreen({ result, answers, seedCities, onOpenQuiz 
                   setRegionFilter(e.target.value);
                   setSubFilter('all');
                 }}
-                aria-label="按大洲筛选"
+                aria-label={t('cmp.filter.regionAria')}
                 className="rounded-[6px] border border-ink/15 bg-card px-2.5 py-1.5 font-mono text-[11px] text-ink outline-none focus:border-clay"
               >
-                <option value="all">全部大洲（{cities.length} 城）</option>
+                <option value="all">{t('cmp.filter.all', { count: cities.length })}</option>
                 {REGION_ORDER.map((r) => (
                   <option key={r} value={r}>
                     {REGION_LABEL[r]}
@@ -247,10 +250,10 @@ export default function CompareScreen({ result, answers, seedCities, onOpenQuiz 
               <select
                 value={subFilter}
                 onChange={(e) => setSubFilter(e.target.value)}
-                aria-label="按次区域筛选"
+                aria-label={t('cmp.filter.subAria')}
                 className="rounded-[6px] border border-ink/15 bg-card px-2.5 py-1.5 font-mono text-[11px] text-ink outline-none focus:border-clay"
               >
-                <option value="all">全部次区域</option>
+                <option value="all">{t('cmp.filter.allSub')}</option>
                 {subOptions.map((s) => (
                   <option key={s} value={s}>
                     {subregionLabel(s)}
@@ -261,7 +264,7 @@ export default function CompareScreen({ result, answers, seedCities, onOpenQuiz 
             {showCandidates && (
               <div className="mt-3 grid max-h-[280px] gap-1.5 overflow-y-auto pr-1">
                 {filtered.length === 0 && (
-                  <p className="px-1 py-3 font-mono text-[11px] text-ink-soft">没有匹配的城市</p>
+                  <p className="px-1 py-3 font-mono text-[11px] text-ink-soft">{t('cmp.filter.empty')}</p>
                 )}
                 {filtered.map((c) => {
                   const added = selected.includes(c.id);
@@ -281,17 +284,17 @@ export default function CompareScreen({ result, answers, seedCities, onOpenQuiz 
                         className="flex flex-1 items-center justify-between px-3.5 py-2 text-left"
                       >
                         <span className={`text-[12.5px] ${added ? 'text-ink-soft/60' : 'text-ink'}`}>
-                          {c.nameZh}
+                          {cityName(c)}
                           <span className="ml-2 font-mono text-[10px] text-ink-soft">
                             {c.countryZh} · {subregionLabel(c.subregion)}
                           </span>
                         </span>
-                        <span className="font-mono text-[10px] text-ink-soft">{added ? '已添加' : '+ 添加'}</span>
+                        <span className="font-mono text-[10px] text-ink-soft">{added ? t('cmp.added') : t('cmp.add')}</span>
                       </button>
                       <FavButton
                         active={favIds.includes(c.id)}
                         onClick={() => toggleFav(c.id)}
-                        label={favIds.includes(c.id) ? `取消收藏 ${c.nameZh}` : `收藏 ${c.nameZh}`}
+                        label={favIds.includes(c.id) ? t('cmp.fav.remove', { name: cityName(c) }) : t('cmp.fav.add', { name: cityName(c) })}
                       />
                     </div>
                   );
@@ -311,11 +314,11 @@ export default function CompareScreen({ result, answers, seedCities, onOpenQuiz 
                       className="flex items-center gap-2 rounded-full border border-ink/15 bg-card py-1 pl-2.5 pr-1.5 text-[12px] text-ink"
                     >
                       <span className="h-2 w-2 rounded-[2px]" style={{ backgroundColor: COMPARE_COLORS[i % COMPARE_COLORS.length] }} />
-                      {c.nameZh}
+                      {cityName(c)}
                       <button
                         type="button"
                         onClick={() => removeCity(id)}
-                        aria-label={`移除 ${c.nameZh}`}
+                        aria-label={t('cmp.removeCity', { name: cityName(c) })}
                         className="flex h-4 w-4 items-center justify-center rounded-full text-ink-soft transition-colors hover:bg-clay/15 hover:text-clay"
                       >
                         ×
@@ -330,8 +333,8 @@ export default function CompareScreen({ result, answers, seedCities, onOpenQuiz 
           {/* 推荐（仅个性化模式） */}
           {result && (
             <div>
-              <h2 className="font-heading text-[17px] font-bold">根据您的测评结果推荐</h2>
-              <p className="mt-1 font-mono text-[10px] text-ink-soft">Top 5 · 匹配分由引擎实时计算</p>
+              <h2 className="font-heading text-[17px] font-bold">{t('cmp.recommend')}</h2>
+              <p className="mt-1 font-mono text-[10px] text-ink-soft">{t('cmp.recommend.note')}</p>
               <div className="mt-3 flex flex-col gap-2.5">
                 {result.matches.map((m) => {
                   const added = selected.includes(m.city.id);
@@ -339,7 +342,7 @@ export default function CompareScreen({ result, answers, seedCities, onOpenQuiz 
                     <div key={m.city.id} className="card-paper flex items-center gap-4 px-4 py-3">
                       <div className="min-w-0 flex-1">
                         <div className="flex items-baseline justify-between gap-2">
-                          <p className="truncate font-medium text-[14.5px]">{m.city.nameZh}</p>
+                          <p className="truncate font-medium text-[14.5px]">{cityName(m.city)}</p>
                           <p className="font-mono text-[13px] text-clay">{m.match}%</p>
                         </div>
                         <div className="mt-1.5 h-[4px] overflow-hidden rounded-full bg-ink/10">
@@ -356,7 +359,7 @@ export default function CompareScreen({ result, answers, seedCities, onOpenQuiz 
                         <FavButton
                           active={favIds.includes(m.city.id)}
                           onClick={() => toggleFav(m.city.id)}
-                          label={favIds.includes(m.city.id) ? `取消收藏 ${m.city.nameZh}` : `收藏 ${m.city.nameZh}`}
+                          label={favIds.includes(m.city.id) ? t('cmp.fav.remove', { name: cityName(m.city) }) : t('cmp.fav.add', { name: cityName(m.city) })}
                         />
                         <button
                           type="button"
@@ -368,7 +371,7 @@ export default function CompareScreen({ result, answers, seedCities, onOpenQuiz 
                               : 'border-clay/50 text-clay hover:bg-clay hover:text-paper'
                           }`}
                         >
-                          {added ? '已添加' : '+ 对比'}
+                          {added ? t('cmp.added') : t('cmp.addToCompare')}
                         </button>
                       </div>
                     </div>
@@ -385,23 +388,22 @@ export default function CompareScreen({ result, answers, seedCities, onOpenQuiz 
         <div className="mx-auto max-w-almanac px-6 py-10 md:px-10">
           <div className="flex flex-wrap items-end justify-between gap-3">
             <div>
-              <p className="eyebrow">chart 02 · 我最在意什么</p>
-              <h2 className="mt-2 font-display text-[22px] font-bold tracking-tight md:text-[26px]">调整 11 维偏好权重</h2>
+              <p className="eyebrow">{t('cmp.sec.weights.eyebrow')}</p>
+              <h2 className="mt-2 font-display text-[22px] font-bold tracking-tight md:text-[26px]">{t('cmp.sec.weights.title')}</h2>
             </div>
             <div className="flex items-center gap-3">
               {!isDefaultWeights(weights, personalized) && (
                 <button type="button" onClick={resetWeights} className="btn-ghost font-mono text-[11px]">
-                  重置权重
+                  {t('cmp.weights.reset')}
                 </button>
               )}
               <span className="font-mono text-[10px] text-ink-soft">
-                {personalized ? '默认 = 引擎偏好权重' : '默认均分（中性基准）'}
+                {personalized ? t('cmp.weights.engineDefault') : t('cmp.weights.neutralDefault')}
               </span>
             </div>
           </div>
           <p className="mt-2 max-w-2xl text-[12.5px] leading-[1.7] text-ink-soft">
-            滑杆重新分配生活偏好 48% 的内部占比（你的 8 维情景偏好 + 3 维客观数据），人格 30% 与兴趣 22% 保持不变；
-            综合分实时重算并重排序——这是对比场景的临时权重，不会回写引擎与报告。城市缺某维数据时该维自动跳过（降权不惩罚）。
+            {t('cmp.weights.note')}
           </p>
 
           <div className="mt-6 grid gap-x-10 gap-y-4 sm:grid-cols-2">
@@ -414,7 +416,7 @@ export default function CompareScreen({ result, answers, seedCities, onOpenQuiz 
                       {d.label}
                       {d.objective && (
                         <span className="ml-1.5 rounded-[3px] border border-teal/45 px-1 py-px font-mono text-[8.5px] text-teal">
-                          客观
+                          {t('cmp.weights.objective')}
                         </span>
                       )}
                     </label>
@@ -429,7 +431,7 @@ export default function CompareScreen({ result, answers, seedCities, onOpenQuiz 
                     value={weights[d.key] ?? 1}
                     title={d.desc}
                     onChange={(e) => setWeights((prev) => ({ ...prev, [d.key]: Number(e.target.value) }))}
-                    className="w-full accent-[#BE5A38]"
+                    className="w-full accent-[#E76F51]"
                   />
                 </div>
               );
@@ -441,8 +443,8 @@ export default function CompareScreen({ result, answers, seedCities, onOpenQuiz 
       {/* 排名榜 */}
       {ranked.length > 0 && (
         <section className="mx-auto max-w-almanac px-6 py-10 md:px-10">
-          <p className="eyebrow">chart 03 · 综合评分</p>
-          <h2 className="mt-2 font-display text-[22px] font-bold tracking-tight md:text-[26px]">临时权重下的排名</h2>
+          <p className="eyebrow">{t('cmp.sec.rank.eyebrow')}</p>
+          <h2 className="mt-2 font-display text-[22px] font-bold tracking-tight md:text-[26px]">{t('cmp.sec.rank.title')}</h2>
           <div className="mt-6 flex flex-col gap-3">
             {ranked.map((r, i) => (
               <motion.div
@@ -456,10 +458,10 @@ export default function CompareScreen({ result, answers, seedCities, onOpenQuiz 
                 <div className="min-w-0 flex-1">
                   <div className="flex items-baseline justify-between gap-3">
                     <p className="truncate font-medium text-[15.5px]">
-                      {r.city.nameZh}
+                      {cityName(r.city)}
                       {i === 0 && ranked.length > 1 && (
                         <span className="ml-2 rounded-[4px] border border-moss/50 bg-moss/[0.08] px-1.5 py-0.5 font-mono text-[9px] text-moss">
-                          当前最优
+                          {t('cmp.weights.best')}
                         </span>
                       )}
                     </p>
@@ -475,7 +477,7 @@ export default function CompareScreen({ result, answers, seedCities, onOpenQuiz 
                       />
                     </div>
                     <span className="shrink-0 font-mono text-[9.5px] text-ink-soft">
-                      人格 {r.personalityFit ?? '—'} · 偏好 {r.prefWeighted ?? '—'} · 兴趣 {r.interestFit ?? '—'}
+                      {t('cmp.rank.breakdown', { p: r.personalityFit ?? '—', f: r.prefWeighted ?? '—', i: r.interestFit ?? '—' })}
                     </span>
                   </div>
                 </div>
@@ -495,23 +497,23 @@ export default function CompareScreen({ result, answers, seedCities, onOpenQuiz 
           <div className="mx-auto max-w-almanac px-6 py-12 md:px-10">
             <div className="flex flex-wrap items-end justify-between gap-3">
               <div>
-                <p className="eyebrow">chart 04 · 决策备注</p>
-                <h2 className="mt-2 font-display text-[22px] font-bold tracking-tight md:text-[26px]">写下你的权衡</h2>
+                <p className="eyebrow">{t('cmp.sec.notes.eyebrow')}</p>
+                <h2 className="mt-2 font-display text-[22px] font-bold tracking-tight md:text-[26px]">{t('cmp.sec.notes.title')}</h2>
               </div>
               <button type="button" onClick={saveArchive} className="btn-clay font-mono text-[11.5px]">
-                保存对比结果
+                {t('cmp.save.cta')}
               </button>
             </div>
-            <p className="mt-2 font-mono text-[10px] text-ink-soft">备注自动保存在本机浏览器 · 保存后可在「我的」Tab 查看历史对比</p>
+            <p className="mt-2 font-mono text-[10px] text-ink-soft">{t('cmp.notes.autosave')}</p>
 
             <div className="mt-6 grid gap-5 md:grid-cols-2">
               <label className="card-paper block p-4">
-                <span className="mb-2 block font-mono text-[10px] uppercase tracking-eyebrow text-ink-soft">整组备注</span>
+                <span className="mb-2 block font-mono text-[10px] uppercase tracking-eyebrow text-ink-soft">{t('cmp.notes.group')}</span>
                 <textarea
                   value={overallNote}
                   onChange={(e) => setOverallNote(e.target.value)}
                   rows={4}
-                  placeholder="例如：更看重签证灵活度，成本可以放宽…"
+                  placeholder={t('cmp.note.placeholder')}
                   className="w-full resize-none bg-transparent text-[13px] leading-[1.8] text-ink outline-none placeholder:text-ink-soft/50"
                 />
               </label>
@@ -519,13 +521,13 @@ export default function CompareScreen({ result, answers, seedCities, onOpenQuiz 
                 <label key={r.city.id} className="card-paper block p-4">
                   <span className="mb-2 flex items-center gap-2 font-mono text-[10px] uppercase tracking-eyebrow text-ink-soft">
                     <span className="h-2 w-2 rounded-[2px]" style={{ backgroundColor: r.color }} />
-                    {r.city.nameZh} 备注
+                    {t('cmp.note.label', { name: cityName(r.city) })}
                   </span>
                   <textarea
                     value={cityNotes[r.city.id] ?? ''}
                     onChange={(e) => setCityNotes((prev) => ({ ...prev, [r.city.id]: e.target.value }))}
                     rows={4}
-                    placeholder={`对 ${r.city.nameZh} 的具体顾虑或期待…`}
+                    placeholder={t('cmp.note.ph', { name: cityName(r.city) })}
                     className="w-full resize-none bg-transparent text-[13px] leading-[1.8] text-ink outline-none placeholder:text-ink-soft/50"
                   />
                 </label>
@@ -546,10 +548,10 @@ export default function CompareScreen({ result, answers, seedCities, onOpenQuiz 
           >
             <div className="flex items-center gap-2.5">
               <CompassMark size={22} />
-              <h3 className="font-heading text-[17px] font-bold">对比位已满（{COMPARE_CITY_LIMIT} 城）</h3>
+              <h3 className="font-heading text-[17px] font-bold">{t('cmp.replace.title', { limit: COMPARE_CITY_LIMIT })}</h3>
             </div>
             <p className="mt-2 text-[13px] leading-[1.7] text-ink-soft">
-              选择一个要替换的城市，把 <span className="text-ink">{pending.nameZh}</span> 加进来。
+              {t('cmp.replace.desc1')} <span className="text-ink">{cityName(pending)}</span> {t('cmp.replace.desc2')}
             </p>
             <div className="mt-4 flex flex-col gap-2">
               {selected.map((id, i) => {
@@ -564,9 +566,9 @@ export default function CompareScreen({ result, answers, seedCities, onOpenQuiz 
                   >
                     <span className="flex items-center gap-2 text-[13px]">
                       <span className="h-2 w-2 rounded-[2px]" style={{ backgroundColor: COMPARE_COLORS[i % COMPARE_COLORS.length] }} />
-                      {c.nameZh}
+                      {cityName(c)}
                     </span>
-                    <span className="font-mono text-[10px] text-clay">替换为 {pending.nameZh} →</span>
+                    <span className="font-mono text-[10px] text-clay">{t('cmp.replace.cta', { name: cityName(pending) })}</span>
                   </button>
                 );
               })}
@@ -576,7 +578,7 @@ export default function CompareScreen({ result, answers, seedCities, onOpenQuiz 
               onClick={() => setPendingCity(null)}
               className="mt-4 w-full rounded-[7px] border border-ink/15 py-2 font-mono text-[11px] text-ink-soft transition-colors hover:bg-ink/5"
             >
-              取消
+              {t('common.cancel')}
             </button>
           </motion.div>
         </div>
@@ -585,7 +587,7 @@ export default function CompareScreen({ result, answers, seedCities, onOpenQuiz 
       {/* 保存成功提示 */}
       {savedToast && (
         <div className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2 rounded-full border border-moss/50 bg-card px-5 py-2.5 font-mono text-[11px] text-moss shadow-[0_4px_18px_rgba(31,45,40,0.18)]">
-          已保存到「我的」Tab
+          {t('cmp.save.done')}
         </div>
       )}
     </div>

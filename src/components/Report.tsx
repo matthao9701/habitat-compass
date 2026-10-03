@@ -20,6 +20,8 @@ import ConstraintsNotice from './report/ConstraintsNotice';
 import CountryCards from './report/CountryCards';
 import VerificationChecklist from './report/VerificationChecklist';
 import { MBTI_SOURCE } from '../data/questions';
+import { useI18n, translate, getCurrentLang } from '../i18n';
+import { cityName } from '../lib/format';
 
 interface ReportProps {
   result: AssessmentResult;
@@ -29,13 +31,18 @@ interface ReportProps {
   onStartQuiz?: () => void;
 }
 
-const RADAR_AXES = ['成本', '网络', '安全', '社区', '英语', '签证'];
+/** 雷达六轴标签（工厂：渲染期取当前语言） */
+function radarAxes(): string[] {
+  const L = (k: string): string => translate(getCurrentLang(), k);
+  return [L('report.radar.cost'), L('report.radar.network'), L('report.radar.safety'), L('report.radar.community'), L('report.radar.english'), L('report.radar.visa')];
+}
 
-const RADAR_COLORS = ['#BE5A38', '#335043', '#B08544'];
+const RADAR_COLORS = ['#E76F51', '#0A4D68', '#D9A441'];
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
 export default function Report({ result, onRestart, isDemo = false, onStartQuiz }: ReportProps) {
+  const { t } = useI18n();
   const profile = mbtiProfiles[result.typeCode];
   const [copied, setCopied] = useState(false);
   const top = result.matches[0];
@@ -44,7 +51,7 @@ export default function Report({ result, onRestart, isDemo = false, onStartQuiz 
     .slice(0, 3)
     .map((m, i) => ({
       id: m.city.id,
-      label: m.city.nameZh,
+      label: cityName(m.city),
       color: RADAR_COLORS[i],
       values: [
         m.scores.cost,
@@ -84,7 +91,7 @@ export default function Report({ result, onRestart, isDemo = false, onStartQuiz 
         <div className="mx-auto flex max-w-almanac items-center justify-between px-6 py-5 md:px-10">
           <div className="flex items-center gap-2.5">
             <CompassMark size={26} />
-            <span className="font-display text-[15px] font-bold tracking-wide">栖居罗盘</span>
+            <span className="font-display text-[15px] font-bold tracking-wide">{t('landing.hero.title')}</span>
           </div>
           <p className="font-mono text-[10px] uppercase tracking-eyebrow text-ink-soft">
             your report
@@ -103,7 +110,7 @@ export default function Report({ result, onRestart, isDemo = false, onStartQuiz 
           >
             {isDemo ? (
               <span className="rounded-full border border-clay bg-clay px-3 py-1 text-paper">
-                演示档案 · demo
+                {t('rep.demo.badge')}
               </span>
             ) : null}
             assessment complete · 56 answers
@@ -152,7 +159,7 @@ export default function Report({ result, onRestart, isDemo = false, onStartQuiz 
           {/* 四轴偏好百分比 */}
           <div className="mt-10 border-t border-paper/15 pt-8">
             <p className="font-mono text-[9.5px] uppercase tracking-eyebrow text-paper/45">
-              axis preference · 四轴偏好
+              axis preference · {t('rep.axisPref.sub').split('·')[1]?.trim() ?? ''}
             </p>
             <div className="mt-5 grid gap-x-10 gap-y-4 sm:grid-cols-2">
               {AXIS_ROWS.map((row, i) => (
@@ -171,7 +178,7 @@ export default function Report({ result, onRestart, isDemo = false, onStartQuiz 
           {top ? (
             <div className="mt-10 border-t border-paper/15 pt-8">
               <p className="font-mono text-[9.5px] uppercase tracking-eyebrow text-paper/45">
-                score composition · 评分构成
+                score composition · {t('rep.scoreComp.sub').split('·')[1]?.trim() ?? ''}
               </p>
               <div className="mt-6">
                 <WeightDonut
@@ -199,10 +206,10 @@ export default function Report({ result, onRestart, isDemo = false, onStartQuiz 
       <section className="mx-auto max-w-almanac px-6 py-14 md:px-10 md:py-20">
         <p className="eyebrow mb-3">dimension compare</p>
         <h2 className="mb-2 font-display text-2xl font-bold tracking-tight md:text-3xl">
-          Top 3 城市六维对比
+          {t('rep.radar.title')}
         </h2>
         <p className="mb-10 text-[13px] text-ink-soft">
-          成本、网络、安全、社区、英语友好与签证灵活度（归一化 0-100）
+          {t('rep.radar.desc')}
         </p>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -211,7 +218,7 @@ export default function Report({ result, onRestart, isDemo = false, onStartQuiz 
           transition={{ duration: 0.7, ease }}
           className="card-paper px-4 py-10 md:px-10"
         >
-          <RadarChart axes={RADAR_AXES} series={radarSeries} />
+          <RadarChart axes={radarAxes()} series={radarSeries} />
         </motion.div>
       </section>
 
@@ -226,7 +233,7 @@ export default function Report({ result, onRestart, isDemo = false, onStartQuiz 
       {/* Top 5 卡片 */}
       <section className="mx-auto max-w-almanac px-6 pb-16 md:px-10 md:pb-24">
         <p className="eyebrow mb-3">your top 5</p>
-        <h2 className="mb-10 font-display text-2xl font-bold tracking-tight md:text-3xl">最适合你的 5 座城市</h2>
+        <h2 className="mb-10 font-display text-2xl font-bold tracking-tight md:text-3xl">{t('report.top5')}</h2>
         <div className="space-y-5">
           {result.matches.map((m, i) => (
             <CityCard key={m.city.id} match={m} rank={i + 1} />
@@ -234,10 +241,7 @@ export default function Report({ result, onRestart, isDemo = false, onStartQuiz 
         </div>
 
         <p className="mt-8 border-t hairline pt-5 font-mono text-[9.5px] leading-[1.9] text-ink-soft/80">
-          数据口径 · 月均综合生活成本为「市区一居室租金 + 水电网 + 餐饮 + 交通」的估算值（USD），
-          成本指数采用 Numbeo 口径（NYC=100），宽带速度为固定宽带中位数；气候指标为 Open-Meteo 历史再分析
-          2015–2024 十年均值；安全/医疗/污染/通勤/气候等指数沿用 Numbeo Quality of Life 口径（0–100，NYC=100）。
-          城市缺数据的维度以「—」标示，不参与打分。签证信息为 2026 年初政策快照，出行前请以官方最新信息为准。
+          {t('rep.dataNote')}
         </p>
       </section>
 
@@ -259,14 +263,14 @@ export default function Report({ result, onRestart, isDemo = false, onStartQuiz 
           <div className="mx-auto flex max-w-almanac flex-col items-center justify-between gap-5 px-6 py-9 text-center md:flex-row md:px-10 md:text-left">
             <div>
               <p className="font-heading text-lg font-bold text-ink">
-                这是示例报告 —— 你的答案，可能指向完全不同的城市。
+                {t('rep.demo.cta1')}
               </p>
               <p className="mt-1 text-[13px] text-ink-soft">
-                三段测评约 12 分钟：MBTI 七级量表、生活情景选择、兴趣标签，无需注册。
+                {t('rep.demo.cta2')}
               </p>
             </div>
             <button type="button" onClick={onStartQuiz} className="btn-clay shrink-0">
-              开始我的正式测试
+              {t('rep.cta.start')}
               <span className="font-mono text-xs opacity-80">→</span>
             </button>
           </div>
@@ -276,21 +280,21 @@ export default function Report({ result, onRestart, isDemo = false, onStartQuiz 
       {/* 操作区 */}
       <section className="border-t hairline bg-paper-deep/60">
         <div className="mx-auto flex max-w-almanac flex-col items-center gap-5 px-6 py-14 text-center md:px-10">
-          <h2 className="font-display text-2xl font-bold tracking-tight md:text-3xl">把这份报告带走</h2>
+          <h2 className="font-display text-2xl font-bold tracking-tight md:text-3xl">{t('report.copy.title')}</h2>
           <p className="max-w-md text-[13.5px] leading-relaxed text-ink-soft">
-            复制完整文字摘要发给朋友，或重新测一次看看不同选择的结果。
+            {t('rep.cta.copyHint')}
           </p>
           <div className="mt-2 flex flex-wrap items-center justify-center gap-4">
             <button type="button" onClick={copySummary} className="btn-clay">
-              {copied ? '已复制到剪贴板' : '一键复制报告摘要'}
+              {copied ? t('report.copy.copied') : t('report.copy.action')}
             </button>
             {isDemo && onStartQuiz ? (
               <button type="button" onClick={onStartQuiz} className="btn-ghost !border-clay/60 !text-clay hover:!bg-clay hover:!text-paper">
-                开始我的正式测试
+                {t('rep.cta.start')}
               </button>
             ) : (
               <button type="button" onClick={onRestart} className="btn-ghost">
-                重新测评
+                {t('rep.cta.restart')}
               </button>
             )}
           </div>
@@ -304,22 +308,18 @@ export default function Report({ result, onRestart, isDemo = false, onStartQuiz 
             disclaimer
           </p>
           <p className="mt-3 max-w-3xl text-[12.5px] leading-[1.9] text-paper/60">
-            本报告中的月生活成本、签证与居留政策均为参考快照，受汇率、季节、政策周期影响会发生变动；
-            月均综合生活成本与成本指数（Numbeo 口径，NYC=100）为估算值，因个人生活方式而异；
-            数字游民签证的收入门槛、停留时长与税务处理请以目的地官方移民机构及使领馆发布的最新信息为准。
-            MBTI 测评题目基于 {MBTI_SOURCE.base}（{MBTI_SOURCE.publisher}）改编，
-            以 {MBTI_SOURCE.license} 许可使用，人格类型仅供自我探索参考，不构成临床或职业建议。
-            栖居罗盘提供决策参考，不构成移民、税务或法律建议。
+            {t('rep.disclaimer.1')}
+            {t('rep.disclaimer.mbti1', { base: MBTI_SOURCE.base, publisher: MBTI_SOURCE.publisher })}
+            {t('rep.disclaimer.2')}
           </p>
           <p className="mt-4 max-w-3xl text-[11px] font-light leading-relaxed text-paper/45">
-            字体：思源黑体 / IBM Plex Mono / Source Serif 4（OFL 开源许可）
+            {t('rep.footer.fonts')}
           </p>
           <p className="mt-1 max-w-3xl text-[11px] font-light leading-relaxed text-paper/45">
-            数据来源：GeoNames（CC BY 4.0）· Open-Meteo Historical Weather API（CC BY 4.0）·
-            Numbeo 公开指数（口径脚注见上）· EF English Proficiency Index
+            {t('rep.footer.sources')}
           </p>
           <p className="mt-6 font-mono text-[10px] text-paper/35">
-            © 2025 栖居罗盘 · OVERSEAS SETTLEMENT ALMANAC
+            {t('rep.footer.copyright')}
           </p>
         </div>
       </footer>
@@ -336,16 +336,21 @@ interface CityCardProps {
   rank: number;
 }
 
-const BAR_DIMS: { key: keyof CityMatch['scores']; label: string }[] = [
-  { key: 'cost', label: '成本契合' },
-  { key: 'internet', label: '网络' },
-  { key: 'safety', label: '安全' },
-  { key: 'community', label: '社区' },
-  { key: 'english', label: '英语' },
-  { key: 'visa', label: '签证' },
-];
+/** 条形图维度标签（工厂：渲染期取当前语言） */
+function barDims(): { key: keyof CityMatch['scores']; label: string }[] {
+  const L = (k: string): string => translate(getCurrentLang(), k);
+  return [
+    { key: 'cost', label: L('report.dim.budget') },
+    { key: 'internet', label: L('report.radar.network') },
+    { key: 'safety', label: L('report.radar.safety') },
+    { key: 'community', label: L('report.radar.community') },
+    { key: 'english', label: L('report.radar.english') },
+    { key: 'visa', label: L('report.radar.visa') },
+  ];
+}
 
 function CityCard({ match, rank }: CityCardProps) {
+  const { t } = useI18n();
   const { city } = match;
   const cityInterests = city.tags
     .map((t) => interestLabelById.get(t) ?? t)
@@ -385,28 +390,28 @@ function CityCard({ match, rank }: CityCardProps) {
           </span>
           {match.overBudget ? (
             <span
-              title="月成本超出你设定的预算上限，但因剩余城市不足被放宽保留，匹配分已扣减"
+              title={t('rep.overBudget.title')}
               className="ml-2 inline-block rounded-full border border-ochre/60 bg-ochre/10 px-3 py-1 font-mono text-[10.5px] text-ochre"
             >
-              超预算 · 降权保留
+              {t('rep.overBudget.chip')}
             </span>
           ) : null}
           <h3 className="mt-4 font-display text-[26px] font-bold leading-tight tracking-tight">
-            {city.nameZh}
+            {cityName(city)}
           </h3>
           <p className="mt-1 font-mono text-[10.5px] uppercase tracking-wide text-ink-soft">
             {city.nameEn} · {city.countryZh}
           </p>
 
           <dl className="mt-6 space-y-2.5 text-[12.5px]">
-            <Stat label="月生活成本" value={formatCost(city)} />
+            <Stat label={t('rep.stat.monthly')} value={formatCost(city)} />
             <Stat
-              label="综合月均"
+              label={t('rep.stat.avgAll')}
               value={city.monthlyCostUSD != null ? `~$${city.monthlyCostUSD.toLocaleString('en-US')}` : '—'}
             />
-            <Stat label="成本指数" value={city.costIndex != null ? `${city.costIndex} · NYC=100` : '—'} />
+            <Stat label={t('rep.stat.costIndex')} value={city.costIndex != null ? `${city.costIndex} · NYC=100` : '—'} />
             <Stat
-              label="宽带中位"
+              label={t('cmp.data.internet')}
               value={
                 city.internetMbps != null && city.internet != null
                   ? `${city.internetMbps} Mbps · ${INTERNET_LABEL[city.internet]}`
@@ -416,21 +421,21 @@ function CityCard({ match, rank }: CityCardProps) {
               }
             />
             <Stat
-              label="气候"
+              label={t('cmp.data.climate')}
               value={
                 city.climate != null && city.tempC != null
-                  ? `${CLIMATE_LABEL[city.climate]} · 年均 ${city.tempC}°C`
+                  ? `${CLIMATE_LABEL[city.climate]} · ${t('rep.climate.avg', { temp: city.tempC })}`
                   : city.climateDetail != null
-                    ? `年均 ${city.climateDetail.avgTempC}°C · ${city.climateDetail.summary}`
+                    ? t('rep.climate.avgDetail', { temp: city.climateDetail.avgTempC, summary: city.climateDetail.summary })
                     : '—'
               }
             />
-            <Stat label="安全指数" value={city.safety != null ? `${city.safety} / 100` : '—'} />
+            <Stat label={t('cmp.data.safety')} value={city.safety != null ? `${city.safety} / 100` : '—'} />
             <Stat
-              label="数字游民签证"
-              value={city.digitalNomadVisa === true ? '有' : city.digitalNomadVisa === false ? '—' : '待核实'}
+              label={t('cmp.data.visa')}
+              value={city.digitalNomadVisa === true ? t('report.copy.visaYes') : city.digitalNomadVisa === false ? '—' : t('profile.visa.pending')}
             />
-            <Stat label="游民社区" value={city.community != null ? `${city.community} / 5` : '—'} />
+            <Stat label={t('rep.stat.community')} value={city.community != null ? `${city.community} / 5` : '—'} />
           </dl>
         </div>
 
@@ -446,7 +451,7 @@ function CityCard({ match, rank }: CityCardProps) {
           </ul>
 
           <div className="mt-6 grid gap-x-8 gap-y-3 sm:grid-cols-2">
-            {BAR_DIMS.map((d) => (
+            {barDims().map((d) => (
               <DimensionBar key={d.key} label={d.label} value={match.scores[d.key]} />
             ))}
           </div>
@@ -473,7 +478,7 @@ function CityCard({ match, rank }: CityCardProps) {
           <div className="mt-6 grid gap-x-8 gap-y-4 border-t hairline pt-5 sm:grid-cols-2">
             <div>
               <p className="mb-2.5 font-mono text-[9.5px] uppercase tracking-eyebrow text-moss">
-                优势 · pros
+                {t('rep.pros.label')}
               </p>
               <ul className="space-y-2">
                 {pros.map((pro, i) => (
@@ -486,7 +491,7 @@ function CityCard({ match, rank }: CityCardProps) {
             </div>
             <div>
               <p className="mb-2.5 font-mono text-[9.5px] uppercase tracking-eyebrow text-clay-deep">
-                注意 · cautions
+                {t('rep.cons.label')}
               </p>
               <ul className="space-y-2">
                 {cons.map((con, i) => (
@@ -628,32 +633,39 @@ function CountUp({ value }: { value: number }) {
 // ---------------------------------------------------------------------------
 
 function buildSummaryText(result: AssessmentResult): string {
+  const { t } = useI18n();
   const profile = mbtiProfiles[result.typeCode];
   const axisText = AXIS_ROWS.map(
     (row) =>
       `${row.left} ${Math.round(result.axisScores[row.key])}% / ${row.right} ${Math.round(100 - result.axisScores[row.key])}%`,
   ).join(' · ');
   const lines: string[] = [
-    '【栖居罗盘 · 我的海外定居测评报告】',
+    t('report.copy.header'),
     `MBTI：${result.typeCode} ${profile?.name ?? ''} — ${profile?.motto ?? ''}`,
-    `四轴偏好：${axisText}`,
-    `游民风格：${profile?.nomadStyle ?? ''}`,
-    `用户画像：${result.profileTags.join(' / ')}`,
+    t('report.copy.axis', { axis: axisText }),
+    t('report.copy.style', { style: profile?.nomadStyle ?? '' }),
+    t('report.copy.tags', { tags: result.profileTags.join(' / ') }),
     '',
-    'Top 5 推荐城市：',
+    t('report.copy.top5'),
   ];
   result.matches.forEach((m, i) => {
     lines.push(
-      `${i + 1}. ${m.city.nameZh}（${m.city.countryZh}）匹配度 ${m.match}%` +
-        `｜综合月均 ${m.city.monthlyCostUSD != null ? `~$${m.city.monthlyCostUSD.toLocaleString('en-US')}` : '暂缺'}` +
-        `｜宽带 ${m.city.internetMbps ?? '—'} Mbps` +
-        `｜数字游民签证 ${m.city.digitalNomadVisa ? '有' : '—'}｜${m.reasons[0]}`,
+      t('report.copy.city', {
+        i: i + 1,
+        name: cityName(m.city),
+        country: m.city.countryZh,
+        match: m.match,
+        cost: m.city.monthlyCostUSD != null ? `~$${m.city.monthlyCostUSD.toLocaleString('en-US')}` : t('report.copy.na'),
+        net: m.city.internetMbps ?? '—',
+        visa: m.city.digitalNomadVisa ? t('report.copy.visaYes') : '—',
+        reason: m.reasons[0] ?? '',
+      }),
     );
   });
   lines.push(
     '',
-    '月均综合生活成本为估算值（Numbeo 口径，NYC=100），因个人生活方式而异；',
-    '生活成本与签证政策为参考快照，实际以官方最新信息为准。',
+    t('report.copy.footnote1'),
+    t('report.copy.footnote2'),
   );
   return lines.join('\n');
 }

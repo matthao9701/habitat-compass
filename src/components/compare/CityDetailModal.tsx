@@ -2,6 +2,8 @@ import { useEffect } from 'react';
 import { CLIMATE_LABEL, INTERNET_LABEL, formatCost } from '../../lib/engine';
 import { getCountry } from '../../data/countries';
 import type { CompareRow } from '../../lib/compare';
+import { useI18n, getCurrentLang } from '../../i18n';
+import { cityName, countryName, formatDate } from '../../lib/format';
 
 /**
  * CityDetailModal — 对比页城市详情弹层（第六轮）
@@ -14,6 +16,7 @@ export default function CityDetailModal({
   row: CompareRow;
   onClose: () => void;
 }) {
+  const { t } = useI18n();
   // Esc 关闭 + 打开时锁定滚动
   useEffect(() => {
     function onKey(e: KeyboardEvent): void {
@@ -36,7 +39,7 @@ export default function CityDetailModal({
       onClick={onClose}
       role="dialog"
       aria-modal="true"
-      aria-label={`${city.nameZh} 详情`}
+      aria-label={t('cdm.detailAria', { name: cityName(city) })}
     >
       <div
         className="max-h-[88vh] w-full max-w-lg overflow-y-auto rounded-t-xl border hairline bg-card shadow-xl sm:rounded-xl"
@@ -45,7 +48,7 @@ export default function CityDetailModal({
         {/* 头部 */}
         <div className="sticky top-0 flex items-start justify-between gap-3 border-b hairline bg-card px-5 py-4">
           <div>
-            <h3 className="font-display text-xl font-bold tracking-tight text-ink">{city.nameZh}</h3>
+            <h3 className="font-display text-xl font-bold tracking-tight text-ink">{cityName(city)}</h3>
             <p className="mt-0.5 font-mono text-[10px] uppercase tracking-wide text-ink-soft">
               {city.nameEn} · {city.countryZh}
             </p>
@@ -53,7 +56,7 @@ export default function CityDetailModal({
           <button
             type="button"
             onClick={onClose}
-            aria-label="关闭"
+            aria-label={t('common.close')}
             className="shrink-0 rounded-full border hairline px-2.5 py-1 font-mono text-[11px] text-ink-soft transition-colors hover:border-clay hover:text-clay"
           >
             ✕
@@ -62,46 +65,46 @@ export default function CityDetailModal({
 
         {/* 城市数据 */}
         <div className="px-5 py-4">
-          <p className="font-mono text-[9.5px] uppercase tracking-eyebrow text-ochre">city · 城市数据</p>
+          <p className="font-mono text-[9.5px] uppercase tracking-eyebrow text-ochre">{t('cmp.detail.cityData')}</p>
           <dl className="mt-3 grid grid-cols-2 gap-x-6 gap-y-2.5 text-[12.5px]">
-            <Stat label="匹配度" value={`${row.composite}`} accent />
-            <Stat label="月生活成本" value={formatCost(city)} />
+            <Stat label={t('rep.stat.match')} value={`${row.composite}`} accent />
+            <Stat label={t('rep.stat.monthly')} value={formatCost(city)} />
             <Stat
-              label="综合月均"
+              label={t('rep.stat.avgAll')}
               value={city.monthlyCostUSD != null ? `~$${city.monthlyCostUSD.toLocaleString('en-US')}` : '—'}
             />
-            <Stat label="成本指数" value={city.costIndex != null ? `${city.costIndex} · NYC=100` : '—'} />
+            <Stat label={t('rep.stat.costIndex')} value={city.costIndex != null ? `${city.costIndex} · NYC=100` : '—'} />
             <Stat
-              label="市中心 1 居"
+              label={t('cdm.rent')}
               value={city.rent1brUSD != null ? `$${city.rent1brUSD.toLocaleString('en-US')}` : '—'}
             />
-            <Stat label="平价一餐" value={city.mealUSD != null ? `$${city.mealUSD}` : '—'} />
+            <Stat label={t('cmp.data.meal')} value={city.mealUSD != null ? `$${city.mealUSD}` : '—'} />
             <Stat
-              label="宽带中位"
+              label={t('cmp.data.internet')}
               value={
                 city.internetMbps != null && city.internet != null
-                  ? `${city.internetMbps} Mbps · ${INTERNET_LABEL[city.internet]}`
+                  ? `${city.internetMbps} Mbps · ${t(INTERNET_LABEL[city.internet])}`
                   : city.internetMbps != null
                     ? `${city.internetMbps} Mbps`
                     : '—'
               }
             />
-            <Stat label="安全指数" value={city.safety != null ? `${city.safety} / 100` : '—'} />
-            <Stat label="医疗指数" value={city.healthcareIndex != null ? `${city.healthcareIndex}` : '—'} />
-            <Stat label="污染指数" value={city.pollutionIndex != null ? `${city.pollutionIndex}` : '—'} />
+            <Stat label={t('cmp.data.safety')} value={city.safety != null ? `${city.safety} / 100` : '—'} />
+            <Stat label={t('cmp.data.healthcare')} value={city.healthcareIndex != null ? `${city.healthcareIndex}` : '—'} />
+            <Stat label={t('cmp.data.pollution')} value={city.pollutionIndex != null ? `${city.pollutionIndex}` : '—'} />
             <Stat
-              label="气候"
+              label={t('cmp.data.climate')}
               value={
                 city.climate != null && city.tempC != null
-                  ? `${CLIMATE_LABEL[city.climate]} · ${city.tempC}°C`
+                  ? `${t(CLIMATE_LABEL[city.climate])} · ${city.tempC}°C`
                   : city.climateDetail != null
-                    ? `${city.climateDetail.avgTempC}°C · ${city.climateDetail.summary}`
+                    ? `${city.climateDetail.avgTempC}°C · ${t(city.climateDetail.summary)}`
                     : '—'
               }
             />
             <Stat
-              label="数字游民签证"
-              value={city.digitalNomadVisa === true ? '有' : city.digitalNomadVisa === false ? '—' : '待核实'}
+              label={t('cmp.data.visa')}
+              value={city.digitalNomadVisa === true ? t('report.copy.visaYes') : city.digitalNomadVisa === false ? '—' : t('profile.visa.pending')}
             />
           </dl>
           {city.visaLabel ? (
@@ -115,45 +118,44 @@ export default function CityDetailModal({
         {country ? (
           <div className="border-t hairline px-5 py-4">
             <p className="font-mono text-[9.5px] uppercase tracking-eyebrow text-ochre">
-              country · {country.nameZh} 国家概况（参考）
+              {t('cdm.country.eyebrow', { name: countryName(country) })}
             </p>
             <dl className="mt-3 grid grid-cols-2 gap-x-6 gap-y-2.5 text-[12.5px]">
-              <Stat label="首都" value={country.capital ?? '—'} />
-              <Stat label="官方语言" value={country.languages?.join('、') ?? '—'} />
-              <Stat label="货币" value={country.currency ?? '—'} />
-              <Stat label="人口" value={country.population != null ? formatPop(country.population) : '—'} />
+              <Stat label={t('cty.capital')} value={country.capital ?? '—'} />
+              <Stat label={t('cty.languages')} value={country.languages?.join('、') ?? '—'} />
+              <Stat label={t('cty.currency')} value={country.currency ?? '—'} />
+              <Stat label={t('cty.population')} value={country.population != null ? formatPop(country.population) : '—'} />
               <Stat
-                label="人均 GDP"
+                label={t('cty.gdp')}
                 value={country.gdpPerCapitaUSD != null ? `$${country.gdpPerCapitaUSD.toLocaleString('en-US')}` : '—'}
               />
               <Stat label="HDI" value={country.hdi != null ? country.hdi.toFixed(3) : '—'} />
               <Stat
-                label="GPI 和平指数"
-                value={country.gpi != null ? `${country.gpi.score.toFixed(2)} · 第 ${country.gpi.rank} 位` : '—'}
+                label={t('cty.gpi')}
+                value={country.gpi != null ? `${country.gpi.score.toFixed(2)} · ${t('cty.gpiRank', { rank: country.gpi.rank })}` : '—'}
               />
-              <Stat label="CPI 廉洁指数" value={country.cpi != null ? `${country.cpi} / 100` : '—'} />
+              <Stat label={t('cty.cpi')} value={country.cpi != null ? `${country.cpi} / 100` : '—'} />
               <Stat
-                label="国家安全（Numbeo）"
+                label={t('cty.safetyNumbeo')}
                 value={country.numbeoSafety != null ? `${country.numbeoSafety} / 100` : '—'}
               />
               <Stat
-                label="宽带均速"
+                label={t('cty.internet')}
                 value={country.internetMbpsFixed != null ? `${country.internetMbpsFixed} Mbps` : '—'}
               />
               <Stat
-                label="最高边际个税率"
+                label={t('cty.tax')}
                 value={country.taxTopRatePct != null ? `${country.taxTopRatePct}%` : '—'}
               />
             </dl>
             {country.visaOverview ? (
               <p className="mt-3 text-[12px] leading-[1.7] text-ink-soft">
-                <span className="font-medium text-ink">数字游民签证概览：</span>
+                <span className="font-medium text-ink">{t('cmp.detail.visaOverview')}</span>
                 {country.visaOverview}
               </p>
             ) : null}
             <p className="mt-3 border-t hairline pt-2.5 font-mono text-[9px] leading-[1.8] text-ink-soft/75">
-              国家数据截至 {country.updatedAt} · World Bank（CC BY 4.0）/ UNDP / Vision of Humanity（引用）/
-              Transparency International（引用）/ Numbeo；不参与城市打分。
+              {t('cdm.footnote', { date: formatDate(country.updatedAt) })}
             </p>
           </div>
         ) : null}
@@ -174,7 +176,9 @@ function Stat({ label, value, accent = false }: { label: string; value: string; 
 }
 
 function formatPop(n: number): string {
-  if (n >= 1_0000_0000) return `${(n / 1_0000_0000).toFixed(1)} 亿`;
-  if (n >= 1_0000) return `${(n / 1_0000).toFixed(0)} 万`;
+  if (getCurrentLang() === 'zh') {
+    if (n >= 1_0000_0000) return `${(n / 1_0000_0000).toFixed(1)} 亿`;
+    if (n >= 1_0000) return `${(n / 1_0000).toFixed(0)} 万`;
+  }
   return n.toLocaleString('en-US');
 }

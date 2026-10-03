@@ -2,6 +2,8 @@ import { motion } from 'framer-motion';
 import type { AxisName, CityMatch } from '../../lib/engine';
 import { personalityCityAnalysis } from '../../lib/analysis';
 import { SectionHeading } from './SemBar';
+import { useI18n, translate, getCurrentLang } from '../../i18n';
+import { cityName } from '../../lib/format';
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
@@ -10,14 +12,19 @@ interface CityAnalysisSectionProps {
   axisScores: Record<AxisName, number>;
 }
 
-const PANELS: { key: 'ideal' | 'factors' | 'challenges'; title: string; mark: string; note: string }[] = [
-  { key: 'ideal', title: '理想环境特征', mark: '◎', note: '按你最强的人格倾向生成' },
-  { key: 'factors', title: '关键匹配因素', mark: '◇', note: '人格向量 × 城市气质同频项' },
-  { key: 'challenges', title: '潜在挑战', mark: '▲', note: '橙卡提示，供试住期重点验证' },
-];
+/** 三块面板标题（工厂：渲染期取当前语言） */
+function panels(): { key: 'ideal' | 'factors' | 'challenges'; title: string; mark: string; note: string }[] {
+  const L = (k: string): string => translate(getCurrentLang(), k);
+  return [
+    { key: 'ideal', title: L('report.cityanalysis.ideal'), mark: '◎', note: L('report.cityanalysis.ideal.hint') },
+    { key: 'factors', title: L('report.cityanalysis.factors'), mark: '◇', note: L('report.cityanalysis.factors.hint') },
+    { key: 'challenges', title: L('report.cityanalysis.challenges'), mark: '▲', note: L('report.cityanalysis.challenges.hint') },
+  ];
+}
 
 /** 模块六：人格-环境匹配分析（规则模板生成，不调用外部模型） */
 export default function CityAnalysisSection({ top, axisScores }: CityAnalysisSectionProps) {
+  const { t } = useI18n();
   const analysis = personalityCityAnalysis(
     axisScores,
     top.city.traits ?? null,
@@ -29,8 +36,8 @@ export default function CityAnalysisSection({ top, axisScores }: CityAnalysisSec
     <section className="mx-auto max-w-almanac px-6 pb-4 md:px-10">
       <SectionHeading
         eyebrow="personality × place"
-        title={`你的人格 × ${top.city.nameZh}`}
-        desc="Top 1 城市与你的四维人格倾向逐轴对照——同频处是理由，错位处写进试住清单。"
+        title={t('an.cityanalysis.title', { name: cityName(top.city) })}
+        desc={t('an.cityanalysis.desc')}
       />
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -40,7 +47,7 @@ export default function CityAnalysisSection({ top, axisScores }: CityAnalysisSec
         className="rounded-[10px] border border-clay/45 bg-clay/[0.05] p-6 md:p-8"
       >
         <div className="grid gap-8 md:grid-cols-3">
-          {PANELS.map((panel) => {
+          {panels().map((panel) => {
             const items = analysis[panel.key];
             const isChallenge = panel.key === 'challenges';
             return (
@@ -65,7 +72,7 @@ export default function CityAnalysisSection({ top, axisScores }: CityAnalysisSec
                         isChallenge ? 'border-clay/60 text-[13px] text-ink' : 'border-ochre/50 text-ink'
                       }`}
                     >
-                      {item}
+                      {t(item)}
                     </li>
                   ))}
                 </ul>

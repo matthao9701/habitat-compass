@@ -1,11 +1,14 @@
 import { getCountry } from '../../data/countries';
 import type { CityMatch } from '../../lib/engine';
+import { useI18n, getCurrentLang } from '../../i18n';
+import { countryName, formatDate } from '../../lib/format';
 
 /**
  * CountryCards — 报告页「国家概况」参考卡（第六轮）
  * 参考信息层：不进引擎加权。按 Top5 城市所属国家去重展示国家级数据，缺失字段显示「—」。
  */
 export default function CountryCards({ matches }: { matches: CityMatch[] }) {
+  const { t } = useI18n();
   // 同国城市只展示一次，保持首次出现顺序
   const seen = new Set<string>();
   const rows: { match: CityMatch }[] = [];
@@ -19,9 +22,9 @@ export default function CountryCards({ matches }: { matches: CityMatch[] }) {
   return (
     <section className="mx-auto max-w-almanac px-6 py-14 md:px-10 md:py-20">
       <p className="eyebrow mb-3">country context</p>
-      <h2 className="mb-2 font-display text-2xl font-bold tracking-tight md:text-3xl">国家概况</h2>
+      <h2 className="mb-2 font-display text-2xl font-bold tracking-tight md:text-3xl">{t('report.country.title')}</h2>
       <p className="mb-10 text-[13px] leading-relaxed text-ink-soft">
-        推荐城市所在国家的宏观数据，仅作背景参考——不参与城市打分。缺失数据以「—」标示。
+        {t('cty.sectionNote')}
       </p>
 
       <div className="grid gap-5 md:grid-cols-2">
@@ -34,6 +37,7 @@ export default function CountryCards({ matches }: { matches: CityMatch[] }) {
 }
 
 function CountryCard({ match }: { match: CityMatch }) {
+  const { t } = useI18n();
   const country = getCountry(match.city.countryCode);
   if (!country) return null;
 
@@ -42,24 +46,24 @@ function CountryCard({ match }: { match: CityMatch }) {
       <div className="flex items-baseline justify-between gap-3">
         <div>
           <h3 className="font-heading text-lg font-bold tracking-tight text-ink">
-            {country.nameZh}
+            {countryName(country)}
           </h3>
           <p className="mt-0.5 font-mono text-[10px] uppercase tracking-wide text-ink-soft">
             {country.nameEn} · {country.code}
           </p>
         </div>
         <p className="shrink-0 font-mono text-[10px] text-ink-soft">
-          覆盖城市 {country.cityCount} 座
+          {t('cty.coverage', { count: country.cityCount })}
         </p>
       </div>
 
       <dl className="mt-5 grid grid-cols-2 gap-x-6 gap-y-2.5 text-[12.5px] sm:grid-cols-3">
-        <Stat label="首都" value={country.capital ?? '—'} />
-        <Stat label="官方语言" value={country.languages?.join('、') ?? '—'} />
-        <Stat label="货币" value={country.currency ?? '—'} />
-        <Stat label="人口" value={country.population != null ? formatPop(country.population) : '—'} />
+        <Stat label={t('cty.capital')} value={country.capital ?? '—'} />
+        <Stat label={t('cty.languages')} value={country.languages?.join('、') ?? '—'} />
+        <Stat label={t('cty.currency')} value={country.currency ?? '—'} />
+        <Stat label={t('cty.population')} value={country.population != null ? formatPop(country.population) : '—'} />
         <Stat
-          label="人均 GDP"
+          label={t('cty.gdp')}
           value={
             country.gdpPerCapitaUSD != null
               ? `$${country.gdpPerCapitaUSD.toLocaleString('en-US')}`
@@ -68,28 +72,28 @@ function CountryCard({ match }: { match: CityMatch }) {
         />
         <Stat label="HDI" value={country.hdi != null ? country.hdi.toFixed(3) : '—'} />
         <Stat
-          label="GPI 和平指数"
+          label={t('cty.gpi')}
           value={
             country.gpi != null
-              ? `${country.gpi.score.toFixed(2)} · 第 ${country.gpi.rank} 位`
+              ? `${country.gpi.score.toFixed(2)} · ${t('cty.gpiRank', { rank: country.gpi.rank })}`
               : '—'
           }
         />
-        <Stat label="CPI 廉洁指数" value={country.cpi != null ? `${country.cpi} / 100` : '—'} />
+        <Stat label={t('cty.cpi')} value={country.cpi != null ? `${country.cpi} / 100` : '—'} />
         <Stat
-          label="国家安全（Numbeo）"
+          label={t('cty.safetyNumbeo')}
           value={country.numbeoSafety != null ? `${country.numbeoSafety} / 100` : '—'}
         />
         <Stat
-          label="医疗（Numbeo）"
+          label={t('cty.healthcareNumbeo')}
           value={country.numbeoHealthcare != null ? `${country.numbeoHealthcare} / 100` : '—'}
         />
         <Stat
-          label="宽带均速"
+          label={t('cty.internet')}
           value={country.internetMbpsFixed != null ? `${country.internetMbpsFixed} Mbps` : '—'}
         />
         <Stat
-          label="最高边际个税率"
+          label={t('cty.tax')}
           value={country.taxTopRatePct != null ? `${country.taxTopRatePct}%` : '—'}
         />
       </dl>
@@ -97,15 +101,14 @@ function CountryCard({ match }: { match: CityMatch }) {
       {country.visaOverview ? (
         <div className="mt-4 rounded-[6px] bg-paper-deep/70 px-4 py-3">
           <p className="font-mono text-[9.5px] uppercase tracking-eyebrow text-ink-soft">
-            数字游民签证概览 · 国家级
+            {t('cty.visaOverview')}
           </p>
           <p className="mt-1.5 text-[12.5px] leading-[1.7]">{country.visaOverview}</p>
         </div>
       ) : null}
 
       <p className="mt-4 border-t hairline pt-3 font-mono text-[9px] leading-[1.8] text-ink-soft/75">
-        数据截至 {country.updatedAt} · 来源：World Bank（CC BY 4.0）· UNDP HDR · Vision of Humanity GPI（引用）·
-        Transparency International CPI（引用）· Numbeo 国家指数；个税率为事实性标注，不构成税务建议。
+        {t('cty.footnote2', { date: formatDate(country.updatedAt) })}
       </p>
     </article>
   );
@@ -121,7 +124,9 @@ function Stat({ label, value }: { label: string; value: string }) {
 }
 
 function formatPop(n: number): string {
-  if (n >= 1_0000_0000) return `${(n / 1_0000_0000).toFixed(1)} 亿`;
-  if (n >= 1_0000) return `${(n / 1_0000).toFixed(0)} 万`;
+  if (getCurrentLang() === 'zh') {
+    if (n >= 1_0000_0000) return `${(n / 1_0000_0000).toFixed(1)} 亿`;
+    if (n >= 1_0000) return `${(n / 1_0000).toFixed(0)} 万`;
+  }
   return n.toLocaleString('en-US');
 }

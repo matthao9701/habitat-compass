@@ -86,3 +86,15 @@ pnpm tsx scripts/verify-data-v2.ts
 - 放宽：严格过滤后保留 < `RELAX_MIN_KEEP`（5）城时，「超上限但差距 < `OVER_BUDGET_BAND`（15%）」的城回填，match 扣 `OVER_BUDGET_PENALTY`（3）并标注「超预算」；回填者仍需通过签证/安全检查（两阶段过滤）。
 - 排除语义：签证/安全数据 null 视作「无法核验」排除（带可解释 reason），与引擎降权不惩罚原则互补——硬约束是底线而非打分。
 - 埋点：纯前端 localStorage 计数（`nomadmatch.v1:funnel`），不采集 PII。
+
+## 八、第七轮：GPI / 网速手工快照补录（`scripts/pipeline/snapshot-gpispeed.mjs`）
+
+| 字段 | 来源 | 许可 / 口径 |
+| --- | --- | --- |
+| gpi（score + rank） | IEP Global Peace Index 2024（163 国/地区榜单） | 引用；**公开报道整理的手工快照，近似参考值，以 IEP 原报告为准**（score 1-5 越低越和平，rank 为全球排名） |
+| internetMbpsFixed | Ookla Speedtest Global Index（国家级中位数 · 固定宽带下行 Mbps） | 引用；**公开榜单手工快照（2025 年内），近似参考值，以 Ookla 口径为准** |
+
+- 覆盖：GPI 62/65（HK/PR/FJ 为「榜单不含地区」，显式 null 并在 `sources.gpi` 注明原因）；网速 65/65。
+- 快照脚本幂等可重跑：`node scripts/pipeline/snapshot-gpispeed.mjs`（直接读写 `src/data/countries.json`，仅回填 `gpi` / `internetMbpsFixed` 两字段与对应 sources，不动其他字段）。
+- 断言：`verify-country-v3` 已更新——GPI 覆盖率 ≥90%（除豁免地区）、网速覆盖率 ≥90%、取值合理性（GPI 1-5 / 1-163 名、网速 5-500 Mbps）、来源标注口径检查。
+- 参考信息层定位不变：两字段均不进引擎加权。

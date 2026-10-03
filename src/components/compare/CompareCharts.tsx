@@ -5,10 +5,16 @@ import RadarChart from '../RadarChart';
 import CityDetailModal from './CityDetailModal';
 import { PREFERENCE_DIMENSIONS } from '../../lib/analysis';
 import type { CompareRow } from '../../lib/compare';
+import { useI18n, translate, getCurrentLang } from '../../i18n';
+import { cityName } from '../../lib/format';
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
-const RADAR_AXES = ['居住成本', '网络', '安全', '社区', '英语', '签证'];
+/** 雷达六轴标签（工厂：渲染期取当前语言） */
+function radarAxes(): string[] {
+  const L = (k: string): string => translate(getCurrentLang(), k);
+  return [L('cmp.chart.dim.budget'), L('report.radar.network'), L('report.radar.safety'), L('report.radar.community'), L('report.radar.english'), L('report.radar.visa')];
+}
 
 /** 雷达六维：与报告页 CityMatch.scores 同源同公式；null = 城市缺该维数据 */
 function radarValues(row: CompareRow): (number | null)[] {
@@ -24,6 +30,7 @@ function radarValues(row: CompareRow): (number | null)[] {
 }
 
 export default function CompareCharts({ rows }: { rows: CompareRow[] }) {
+  const { t } = useI18n();
   const [detailId, setDetailId] = useState<string | null>(null);
   const detailRow = detailId != null ? rows.find((r) => r.city.id === detailId) ?? null : null;
   if (rows.length === 0) return null;
@@ -32,50 +39,50 @@ export default function CompareCharts({ rows }: { rows: CompareRow[] }) {
   const radarReady = rows.filter((r) => radarValues(r).every((v): v is number => v != null));
   const series = radarReady.map((r) => ({
     id: r.city.id,
-    label: r.city.nameZh,
+    label: cityName(r.city),
     color: r.color,
     values: radarValues(r) as number[],
   }));
 
   /** 逐维条形：人格 + 11 偏好 + 兴趣 */
   const dimRows: { label: string; valueOf: (r: CompareRow) => number | null }[] = [
-    { label: '人格契合', valueOf: (r) => r.personalityFit },
+    { label: t('cmp.chart.personality'), valueOf: (r) => r.personalityFit },
     ...PREFERENCE_DIMENSIONS.map((d) => ({
       label: d.label,
       valueOf: (r: CompareRow) => r.fitDetails[d.key],
     })),
-    { label: '兴趣重合', valueOf: (r) => r.interestFit },
+    { label: t('cmp.chart.interest'), valueOf: (r) => r.interestFit },
   ];
 
   return (
     <section className="border-t hairline">
       <div className="mx-auto max-w-almanac px-6 py-12 md:px-10">
-        <p className="eyebrow">chart 02 · 多城雷达</p>
-        <h2 className="mt-2 font-display text-[22px] font-bold tracking-tight md:text-[26px]">雷达与逐维对比</h2>
+        <p className="eyebrow">{t('cmp.chart.radar.eyebrow')}</p>
+        <h2 className="mt-2 font-display text-[22px] font-bold tracking-tight md:text-[26px]">{t('cmp.chart.radar.title')}</h2>
 
         <div className="mt-8 grid gap-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)]">
           {/* 多城雷达 */}
           <div className="card-paper p-5 md:p-7">
             {series.length > 0 ? (
-              <RadarChart axes={RADAR_AXES} series={series} size={320} />
+              <RadarChart axes={radarAxes()} series={series} size={320} />
             ) : (
               <p className="flex h-[320px] items-center justify-center text-center text-[12px] leading-[1.8] text-ink-soft">
-                所选城市的雷达维度数据不全，暂不绘制雷达图——
+                {t('cmp.radar.skip1')}
                 <br />
-                完整数值见右侧逐维对比。
+                {t('cmp.radar.skip2')}
               </p>
             )}
             <div className="mt-4 flex flex-wrap justify-center gap-x-5 gap-y-1.5">
               {radarReady.map((r) => (
                 <span key={r.city.id} className="flex items-center gap-1.5 font-mono text-[10.5px] text-ink-soft">
                   <span className="inline-block h-2 w-2 rounded-[2px]" style={{ backgroundColor: r.color }} />
-                  {r.city.nameZh}
+                  {cityName(r.city)}
                 </span>
               ))}
             </div>
             {radarReady.length < rows.length ? (
               <p className="mt-2 text-center font-mono text-[9.5px] text-ink-soft/70">
-                注：数据不全的城市未计入雷达图
+                {t('cmp.radar.note')}
               </p>
             ) : null}
           </div>
@@ -113,7 +120,7 @@ export default function CompareCharts({ rows }: { rows: CompareRow[] }) {
                               <span className="w-7 shrink-0 text-right font-mono text-[10px] text-ink-soft">{v}</span>
                             </>
                           ) : (
-                            <span className="flex-1 text-right font-mono text-[10px] text-ink-soft/70">— 无数据</span>
+                            <span className="flex-1 text-right font-mono text-[10px] text-ink-soft/70">{t('cmp.chart.noData')}</span>
                           )}
                         </div>
                       );
@@ -128,7 +135,7 @@ export default function CompareCharts({ rows }: { rows: CompareRow[] }) {
               <table className="w-full min-w-[420px] border-collapse font-mono text-[11px]">
                 <thead>
                   <tr className="border-b border-ink/15 text-left">
-                    <th className="py-2 pr-3 font-medium text-ink-soft">维度</th>
+                    <th className="py-2 pr-3 font-medium text-ink-soft">{t('bill.pro.section.compareCol.dim')}</th>
                     {rows.map((r) => (
                       <th key={r.city.id} className="py-2 pr-3 text-right font-medium">
                         <span className="flex items-center justify-end gap-1.5">
@@ -136,10 +143,10 @@ export default function CompareCharts({ rows }: { rows: CompareRow[] }) {
                           <button
                             type="button"
                             onClick={() => setDetailId(r.city.id)}
-                            title={`查看 ${r.city.nameZh} 详情`}
+                            title={t('cmp.chart.detailTitle', { name: cityName(r.city) })}
                             className="text-ink underline decoration-ink/30 underline-offset-4 transition-colors hover:text-clay hover:decoration-clay/60"
                           >
-                            {r.city.nameZh}
+                            {cityName(r.city)}
                           </button>
                         </span>
                       </th>
@@ -167,7 +174,7 @@ export default function CompareCharts({ rows }: { rows: CompareRow[] }) {
           </div>
         </div>
         <p className="mt-6 font-mono text-[9.5px] text-ink-soft/70">
-          点击城市名可查看城市与所属国家的详细数据
+          {t('cmp.chart.tableHint')}
         </p>
       </div>
       {detailRow ? <CityDetailModal row={detailRow} onClose={() => setDetailId(null)} /> : null}
