@@ -134,3 +134,33 @@
 - **展示规范**：WHO 2021 口径分档徽标语义色——优=moss / 良=sea / 一般=ochre / 差=clay-deep；数值 `font-data` tabular-nums（μg/m³）；固定脚注「WHO 2021 年均指导值与过渡目标分档 · CAMS 再分析 2022-08 ~ 2024-12 · 参考信息，不构成健康建议」；null 显示「—」（数据库无值不编造）。
 - **数据卡片**：详情弹层加「空气质量」Stat（气候之后），对比页公开数据表加同名列；两处共用 `AIR_BAND_TONE` 语义色映射（`src/lib/colors.ts`）。
 
+
+## 天空蓝白换肤与入口收纳（第十一轮增量）
+
+### 主色调整记录：海洋蓝白 → 天空蓝白
+
+- **动机**：第七轮深海蓝 #0A4D68 偏沉、整体「蓝度不够」；第十一轮整体提亮提饱和，换为明亮的天空蓝白系。token 机制沿用第七轮（名不变只换值，组件零 diff）。
+- **色板（tailwind.config.js 为唯一事实源）**：
+  - `pine`（主操作深档）：#0A4D68 → **#0369A1**（sky-700，白字对比约 5.9:1，按钮/链接/主 CTA 均可保证可读性）
+  - `teal`（亮天蓝 accent）：#3FA7BF → **#17A2C6**（图表序列 4、激活点缀）
+  - `paper`：#F0F7FA → **#F0F9FF**（sky-50，极浅蓝白底）
+  - `paper-deep`：#E1EEF4 → **#E0F2FE**（sky-100）
+  - `ink`：#0A2530 → **#082F49**（sky-950 深青蓝墨，正文对比度不变档）
+  - `ink-soft`：#5A7A8A → **#4E7A96**（蓝灰，白底对比 ≥4.5:1）
+  - `sea`：#4A8DB7 → **#57B4E0**（亮天蓝辅助，空气「良」档/序列）
+  - `clay`（珊瑚暖点缀）：#E76F51 → **#EE6C4D**（提亮一档，与天蓝形成清爽互补）；`clay-deep` #C25438 → **#D14E2F**
+  - `ochre` #D9A441 / `moss` #2E8B74 保留（金色与绿与天蓝为经典组合）
+- **图表色同步**：`src/lib/colors.ts` CHART_COLORS 逐项对齐 token；散落 hex 全部清零（verify-iter-v8 全源码扫描断言）。
+- **禁忌**：不引入紫色调（indigo/violet）；不把 pine 用于大面积背景（深色区块仍用 ink）；正文禁止用 ink-soft 低于 4.5:1 的场合。
+
+### 顶部导航防重叠规范
+
+- LangSwitch 禁止绝对定位叠在 nav 上；采用 `justify-between` 流式布局：窄屏 nav 左对齐（gap-1.5、px-2.5 收紧）+ LangSwitch `shrink-0` 靠右，桌面 nav `md:mx-auto` 居中。
+- 任何新增 header 元素必须走正常流（或先核对 375px 宽度下的总宽预算）。
+
+### 首页入口层级
+
+- 主入口「开始测评」：header 按钮与 Hero CTA 统一弹出版本选择弹层（VersionPicker：简易免费徽章 / 标准 PRO 徽章并列），不允许散落直连。
+- 次入口「查看报告样例」：Hero CTA 旁 ghost 样式，视觉层级低于主入口；与演示档案卡指向同一数据源（DEMO_PROFILES → buildDemoAnswers → assess）同一渲染（Report isDemo）。
+- 结尾版本介绍卡保留（lite 卡直连 lite / pro 卡进介绍页），属版本详情而非散落入口。
+- 样例模式规范：报告顶部「样例报告 · demo」徽标 + 底部引导 CTA「开始我的测评」；纯只读渲染，不写 draft/history/billing 任何键。

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import CompassMark from './CompassMark';
 import RouteChart from './RouteChart';
+import VersionPicker from './VersionPicker';
 import { cities } from '../data';
 import { DEMO_PROFILES } from '../data/demoProfiles';
 import { REGION_LABEL, REGION_ORDER, subregionLabel } from '../data/regions';
@@ -47,12 +48,22 @@ export default function Landing({ onStart, onDemo, onProIntro }: LandingProps) {
   const { t } = useI18n();
   const marqueeList = [...cities, ...cities];
   const [atlasRegion, setAtlasRegion] = useState<string>('all');
+  /** 第十一轮入口收纳：主入口统一弹出版本选择 */
+  const [pickerOpen, setPickerOpen] = useState(false);
   const atlasCities =
     atlasRegion === 'all' ? cities : cities.filter((c) => c.region === atlasRegion);
   const regionCount = (r: string) => cities.filter((c) => c.region === r).length;
 
   return (
     <div className="grain min-h-screen bg-paper text-ink">
+      <VersionPicker
+        open={pickerOpen}
+        onClose={() => setPickerOpen(false)}
+        onPick={(v) => {
+          setPickerOpen(false);
+          onStart(v);
+        }}
+      />
       {/* 顶部导航 */}
       <header className="mx-auto flex max-w-almanac items-center justify-between px-6 py-6 md:px-10">
         <div className="flex items-center gap-3 text-ink">
@@ -64,7 +75,7 @@ export default function Landing({ onStart, onDemo, onProIntro }: LandingProps) {
             </p>
           </div>
         </div>
-        <button type="button" onClick={() => onStart()} className="btn-clay !px-6 !py-2.5 text-sm">
+        <button type="button" onClick={() => setPickerOpen(true)} className="btn-clay !px-6 !py-2.5 text-sm">
           {t('nav.startQuiz')}
         </button>
       </header>
@@ -121,9 +132,17 @@ export default function Landing({ onStart, onDemo, onProIntro }: LandingProps) {
               custom={3}
               className="mt-9 flex flex-wrap items-center gap-4"
             >
-              <button type="button" onClick={() => onStart()} className="btn-clay">
+              <button type="button" onClick={() => setPickerOpen(true)} className="btn-clay">
                 {t('landing.hero.cta')}
                 <span className="font-mono text-xs opacity-80">→</span>
+              </button>
+              {/* 第十一轮：报告样例次入口（与演示档案同数据源同渲染） */}
+              <button
+                type="button"
+                onClick={() => onDemo(DEMO_PROFILES[0]?.id ?? '')}
+                className="btn-ghost !text-[13px]"
+              >
+                {t('landing.hero.sampleCta')}
               </button>
               <p className="font-mono text-[11px] text-ink-soft">
                 {t('landing.hero.ctaHint')}
@@ -433,7 +452,7 @@ export default function Landing({ onStart, onDemo, onProIntro }: LandingProps) {
           </div>
         </div>
 
-        <button type="button" onClick={() => onStart()} className="mt-8 text-sm text-ink-soft underline-offset-4 transition-colors hover:text-clay hover:underline">
+        <button type="button" onClick={() => setPickerOpen(true)} className="mt-8 text-sm text-ink-soft underline-offset-4 transition-colors hover:text-clay hover:underline">
           {t('landing.version.freeCta')}
         </button>
       </section>

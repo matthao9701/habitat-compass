@@ -16,7 +16,7 @@ const zh: Record<string, string> = {
   'cost.naLong': '成本数据暂缺',
 
   // ---- 报告页 Report ----
-  'rep.demo.badge': '演示档案 · demo',
+  'rep.demo.badge': '样例报告 · demo',
   'rep.axisPref.sub': 'axis preference · 四轴偏好',
   'rep.scoreComp.sub': 'score composition · 评分构成',
   'rep.radar.title': 'Top 3 城市六维对比',
@@ -343,7 +343,7 @@ const en: Record<string, string> = {
   'cost.na': 'Cost —',
   'cost.naLong': 'Cost data unavailable',
 
-  'rep.demo.badge': 'Demo profile · demo',
+  'rep.demo.badge': 'Sample report · demo',
   'rep.axisPref.sub': 'axis preference · 4 axes',
   'rep.scoreComp.sub': 'score composition · weights',
   'rep.radar.title': 'Top 3 cities · 6-dimension radar',

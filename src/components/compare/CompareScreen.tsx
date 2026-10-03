@@ -44,8 +44,8 @@ function FavButton({ active, onClick, label }: { active: boolean; onClick: () =>
       <svg width="15" height="15" viewBox="0 0 20 20" aria-hidden="true">
         <path
           d="M10 1.5 L12.1 7.9 L18.5 10 L12.1 12.1 L10 18.5 L7.9 12.1 L1.5 10 L7.9 7.9 Z"
-          fill={active ? '#E76F51' : 'none'}
-          stroke={active ? '#E76F51' : '#5A7A8A'}
+          fill={active ? '#EE6C4D' : 'none'}
+          stroke={active ? '#EE6C4D' : '#4E7A96'}
           strokeWidth="1.4"
           strokeLinejoin="round"
         />
@@ -431,7 +431,7 @@ export default function CompareScreen({ result, answers, seedCities, onOpenQuiz 
                     value={weights[d.key] ?? 1}
                     title={d.desc}
                     onChange={(e) => setWeights((prev) => ({ ...prev, [d.key]: Number(e.target.value) }))}
-                    className="w-full accent-[#E76F51]"
+                    className="w-full accent-[#EE6C4D]"
                   />
                 </div>
               );

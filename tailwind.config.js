@@ -5,22 +5,23 @@ export default {
   theme: {
     extend: {
       colors: {
-        paper: '#F0F7FA',
-        'paper-deep': '#E1EEF4',
+        // 第十一轮「天空蓝白」换肤：token 名不变只换值（组件零 diff）
+        paper: '#F0F9FF',
+        'paper-deep': '#E0F2FE',
         card: '#FFFFFF',
         ink: {
-          DEFAULT: '#0A2530',
-          soft: '#5A7A8A',
+          DEFAULT: '#082F49',
+          soft: '#4E7A96',
         },
-        pine: '#0A4D68',
+        pine: '#0369A1', // 主操作深天蓝（白字对比 ≥5:1）
         clay: {
-          DEFAULT: '#E76F51',
-          deep: '#C25438',
+          DEFAULT: '#EE6C4D',
+          deep: '#D14E2F',
         },
         ochre: '#D9A441',
-        teal: '#3FA7BF',
+        teal: '#17A2C6', // 亮天蓝 accent
         moss: '#2E8B74',
-        sea: '#4A8DB7',
+        sea: '#57B4E0',
       },
       fontFamily: {
         // 字体层级 token：各组件按 token 引用，不散落硬编码

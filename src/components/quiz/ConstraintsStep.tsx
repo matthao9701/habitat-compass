@@ -182,7 +182,7 @@ export default function ConstraintsStep({
                 step={5}
                 value={hc.safetyThreshold}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => setHc((s) => ({ ...s, safetyThreshold: Number(e.target.value) }))}
-                className="w-full accent-[#E76F51]"
+                className="w-full accent-[#EE6C4D]"
               />
               <div className="mt-1 flex justify-between font-data text-xs text-ink-soft">
                 <span>20</span>

@@ -106,14 +106,15 @@
 - 第八轮校验：`pnpm tsx scripts/verify-onet-v5.ts`（RIASEC 30 题完整性/计分与 top2 单测/六维→标签映射全在池/风险 10 题 keyed 方向与计分/tagRepeats 有界叠加封顶 ×3/双语键/Quiz 流程接入；注意 verify-data-v2 依赖 /tmp/pipeline/climate.json 管道中间产物，被清理后需按 DATA.md 第五节重跑管道）
 - 第九轮校验：`pnpm tsx scripts/verify-passport-v6.ts`（护照枚举与默认值/65 国快照覆盖与枚举/CN+visaFree 过滤联动与快照独立重算一致/非 CN 降级全保留/两阶段排除无重复/引擎集成冒烟/双语键完整/reason 串与词典一致）
 - 第十轮校验：`pnpm tsx scripts/verify-engine-v7.ts`（分层权重表完整性/值域/三类相对优先级/Tier 3 上限/airFit 分档/冒险友好度与风险联动算例/RIASEC 迁移解耦/双版本回归/200 城覆盖）
+- 第十一轮校验：`pnpm tsx scripts/verify-iter-v8.ts`（入口收纳结构/报告样例 demo 完整性与 expectedType/样例模式不污染/Tab 栏防重叠语义/天空蓝白 token 一致性与旧 hex 清零/新键双语与 REVERSE_ZH 反查）
 
 ## 匹配引擎说明
 
-- 权重：人格特质契合 30% + 生活偏好 48% + 兴趣重合 22%（三大类不变）；偏好 48% 内部 11 维——用户 8 维（budget .18/climate .12/pace .10/size .09/social .10/language .09/visa .09/remote .09 = 0.86）+ 客观 3 维（climateComfort .05/safety .05/englishDepth .04 = 0.14，客观维度数据来自城市库非用户作答）。
+- 权重（引擎 v3 分层，常量块在 engine.ts 为唯一事实源，设计依据见 DESIGN.md 第十/十一轮章节）：Tier 2 三大类 `TIER2_WEIGHTS` = 偏好 0.42 + 人格 0.30 + 兴趣 0.18（保持偏好 > 人格 > 兴趣）；偏好内部 `PREFERENCE_SPLIT` = 用户 8 维 0.86（budget .18/climate .12/pace .10/size .09/social .10/language .09/visa .09/remote .09）+ 客观 3 维 0.14（climateComfort .05/safety .05/englishDepth .04，数据来自城市库非用户作答）；Tier 3 `TIER3_WEIGHTS` = riasecBoost 0.05 + riskLink 0.03 + airFit 0.02（合计 ≤10%）。
 - 人格：32 道七级双极量表题（1=完全左、4=中立、7=完全右，OEJTS 1.2 结构、CC BY-NC-SA 4.0）按轴求和（8~56）换算偏好百分比，累计得出四轴向量（E/I、S/N、T/F、J/P，-100..100），与城市 `traits` 向量算距离相似度；恰好中立时归入正向字母（E/N/F/P）。城市 traits 为 null 时人格类整体 null（如 61 座新城）。
 - 偏好：预算（与城市成本区间惩罚函数）、气候兼容表、节奏/规模/社交/英语/签证/网络均为 1-5 序数距离打分；客观三维——气候舒适度（19°C 最优锚 + 日照加分 + 降水惩罚）、安全（Numbeo Safety 原值截断 5-100）、英语深度（EF EPI band→95/85/72/55/40，fallback english×20）。
 - 兴趣：精度（user 视角，70% 权重）+ 召回（city 视角，30% 权重）；城市 tags 为空数组时兴趣类 null。
-- **降权不惩罚（v2 核心）**：任何维度/大类数据缺失（null）时从对应加权的分子与分母中同时剔除，其余维度权重相对放大；极端情况下 raw = classNum/classDen 仍归一化。
+- **降权不惩罚（v2→v3 一脉相承）**：任何维度/大类数据缺失（null）时从对应加权的分子与分母中同时剔除，其余维度权重相对放大；极端情况下 raw = classNum/classDen 仍归一化。Tier 3 三信号任一存在才按 0.9/0.1 与 Tier 2 混合，全缺回落纯 Tier 2；简易版 tier3Fit 恒 null。
 - 原始分校准：`match = round(clamp(52 + raw * 0.46, 0, 99))`，输出 Top 5 及分维度分数（可空）。
 - `computeCityFits(city, answers)`：导出的单城 8 维偏好原始 fit（未取整，客观 3 维不在此内）。assess 内部消费它；对比页用它做临时权重重算——两处共用保证一致性（verify-iter2 校验含 null 语义）。
 
@@ -184,6 +185,14 @@
 - **airQuality 数据**：`City.airQuality { pm25, band, period } | null`；`scripts/pipeline/snapshot-airquality.mjs` 幂等快照 200/200（Open-Meteo Air Quality CAMS 2022-08~2024-12 均值 + WHO 2021 分档，坐标 = GeoNames 匹配 + EXTRA_COORD 9 城兜底）；展示 = 详情弹层「空气质量」Stat + 对比页数据表列（`AIR_BAND_TONE` 语义色，`src/lib/colors.ts`）。
 - **全站文案 100→200**：Landing 统计/图集/CTA、ui/extra 词典 hero 与 atlas 描述、index.html og、title.ts 已同步；`air.*` 词典键（ui 域）双语齐全。
 - **验证**：`verify-engine-v7.ts`（55 项：分层权重/值域/优先级/Tier3 上限/airFit 分档算例/冒险友好度与风险联动/RIASEC 迁移解耦/双版本回归/200 城覆盖）；`verify-data-v2.ts` 200 城口径（NEW_ROUND_IDS 读 selection2，兼容数组或 {cities} 顶层）；`verify-iter1` 优劣势分代阈值（39 旧城 3+2 / 其余 1+1）；`verify-passport-v6` 保留区间改为 ≥5 且 < 全量；`verify-i18n-v4` nameEn 断言 cities.length >= 100。
+
+## 第十一轮：Tab 栏防重叠 + 天空蓝白换肤 + 入口收纳 + 报告样例
+
+- **Tab 栏防重叠**：`TabBar.tsx` LangSwitch 不再 `absolute right-*` 叠放（窄屏会盖住「我的」Tab）——改为 `justify-between` 流式布局：窄屏 nav 左对齐（gap-1.5 / px-2.5 收紧）+ LangSwitch `shrink-0` 靠右；桌面 `md:mx-auto` 居中。新增 header 元素必须走正常流并核对 375px 宽度预算。
+- **天空蓝白换肤**：token 名不变只换值（第七轮机制），`tailwind.config.js` 为唯一事实源——pine #0369A1（sky-700 主操作，白字 ≥5:1）/ teal #17A2C6 / paper #F0F9FF / paper-deep #E0F2FE / ink #082F49 / ink-soft #4E7A96 / sea #57B4E0 / clay #EE6C4D（deep #D14E2F）/ ochre·moss 不变；`src/lib/colors.ts` CHART_COLORS 逐项对齐；**全 src/ 旧 hex 清零**（散落色一律 import CHART_COLORS 或用 token 类，verify-iter-v8 全源码扫描把关）。禁紫色调；深色区块仍用 ink 不用 pine。
+- **入口收纳**：`VersionPicker.tsx` 新组件（版本选择弹层：lite「永久免费」徽章 + pro「PRO」徽章并列）；Landing 的 header 按钮 / Hero CTA / 底部 freeCta 统一弹层，`onStart()` 直调仅剩结尾 lite 介绍卡一处（直连 lite）；pro 介绍卡保持 onProIntro。
+- **报告样例**：Hero CTA 旁「查看报告样例」次入口（`onDemo(DEMO_PROFILES[0].id)`，ghost 层级）——与快速演示档案**同一数据源同一渲染**（buildDemoAnswers → assess → Report isDemo）；样例标注 = Report 顶部 `rep.demo.badge`（样例报告 · demo）+ 底部引导 CTA；**纯只读**：openDemo 不写 draft/history/billing 任何键（verify-iter-v8 源码断言 + node 守卫降级测试）。
+- **验证**：`pnpm tsx scripts/verify-iter-v8.ts`（51 项：入口收纳结构 / 样例 demo 数据完整性与 expectedType / 不污染断言 / Tab 布局语义 / 换肤 token 一致性与旧 hex 清零 / 新键双语 + REVERSE_ZH 反查）。注意 `verify-data-v2` 依赖 /tmp 管道中间产物，被清理后需按 DATA.md 第五节重跑管道。
 
 ## 编码规范
 

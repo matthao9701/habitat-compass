@@ -65,7 +65,7 @@ function PentagonRadar({ values }: { values: { label: string; pct: number }[] })
       <motion.polygon
         points={polygon}
         fill="rgba(190,90,56,0.18)"
-        stroke="#E76F51"
+        stroke="#EE6C4D"
         strokeWidth="1.6"
         initial={{ opacity: 0, scale: 0.85 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -75,7 +75,7 @@ function PentagonRadar({ values }: { values: { label: string; pct: number }[] })
       {/* 顶点 */}
       {values.map((v, i) => {
         const [x, y] = point(i, v.pct);
-        return <circle key={v.label} cx={x} cy={y} r="2.6" fill="#E76F51" />;
+        return <circle key={v.label} cx={x} cy={y} r="2.6" fill="#EE6C4D" />;
       })}
       {/* 标签 */}
       {values.map((v, i) => {
