@@ -37,7 +37,7 @@ export default function BreakdownSection({ top, userInterests }: BreakdownSectio
           className="card-paper p-6 md:p-7"
         >
           <div className="mb-5 flex items-baseline justify-between">
-            <p className="font-serif text-lg font-medium">兴趣匹配细分</p>
+            <p className="font-heading text-lg font-bold">兴趣匹配细分</p>
             <p className="font-mono text-[9.5px] uppercase tracking-eyebrow text-ink-soft">
               精度 70% + 召回 30%
             </p>
@@ -67,7 +67,7 @@ export default function BreakdownSection({ top, userInterests }: BreakdownSectio
           className="card-paper p-6 md:p-7"
         >
           <div className="mb-5 flex items-baseline justify-between">
-            <p className="font-serif text-lg font-medium">生活偏好细分</p>
+            <p className="font-heading text-lg font-bold">生活偏好细分</p>
             <p className="font-mono text-[9.5px] uppercase tracking-eyebrow text-ink-soft">
               8 维 · 序数距离
             </p>

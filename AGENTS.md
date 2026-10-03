@@ -1,14 +1,15 @@
-# 项目上下文 — NomadMatch · 海外定居指南
+# 项目上下文 — 栖居罗盘 · 海外定居指南
 
 ## 项目概览
 
-面向数字游民、自由职业者、独立开发者与普通用户的海外城市定居辅助决策网站（纯前端 SPA，界面为简体中文）。三 Tab 架构（首页 / 城市对比 / 我的）：用户完成三段式测评（MBTI 32 题七级量表 + 生活偏好 8 题情景选择 + 兴趣 16 标签），系统对内置的 39 城加权打分，输出 MBTI 解读与 Top 5 城市报告，支持一键复制摘要；城市对比页支持临时权重重算与多城对比；「我的」承载收藏城市、最近一次测评与对比存档。
+面向数字游民、自由职业者、独立开发者与普通用户的海外城市定居辅助决策网站（纯前端 SPA，界面为简体中文，品牌名「栖居罗盘」）。三 Tab 架构（首页 / 城市对比 / 我的）：用户完成三段式测评（MBTI 32 题七级量表 + 生活偏好 8 题情景选择 + 兴趣 16 标签），系统对内置的 39 城加权打分，输出 MBTI 解读与 Top 5 城市报告，支持一键复制摘要；城市对比页支持临时权重重算与多城对比；「我的」承载收藏城市、最近一次测评与对比存档。
 
 ## 技术栈
 
 - **核心**: React 19, Vite 7, TypeScript 5（`moduleResolution: bundler`）
 - **服务**: Express（仅承载 Vite 开发中间件与生产静态文件，无业务 API）
 - **UI**: Tailwind CSS 3 + framer-motion 13（过渡动画）
+- **字体**（第三轮起，全部 OFL 自托管，禁外部 CDN）：Noto Sans SC（display/heading/body，@fontsource/noto-sans-sc 300-900）、IBM Plex Mono（data/等宽数字）、Source Serif 4（英文点缀，仅 serif-accent）；tailwind fontFamily 层级 token：`display/heading/body/data/serif-accent`（兼容映射 sans/serif/mono）
 - **图表**: 自绘 SVG（六维雷达图、维度条形图、世界海图）
 
 ## 目录结构
@@ -26,7 +27,7 @@
 ├── src/
 │   ├── index.tsx            # React 客户端入口（注意是 .tsx）
 │   ├── App.tsx              # 屏幕状态机：landing→quiz→report + compare/profile（TAB_SCREENS 三 Tab）
-│   ├── index.css            # Tailwind + 字体（fonts.googleapis.cn）+ 纸纹/组件类
+│   ├── index.css            # Tailwind + 纸纹/组件类（字体在 index.tsx 经 @fontsource 自托管导入）
 │   ├── components/
 │   │   ├── TabBar.tsx       # 顶部三 Tab 导航（首页/城市对比/我的，纯几何 SVG 图标）
 │   │   ├── Landing.tsx      # 首页：Hero/快速体验演示档案/痛点/流程/深色城市带/CTA
@@ -82,7 +83,7 @@
 - **选城**：上限 4 城（COMPARE_CITY_LIMIT），满员添加走替换弹窗；每城固定一色（COMPARE_COLORS：pine/clay/ochre/teal）；选城、权重、备注、整组结论持久化到 `compare` 键，「保存对比结果」进 `archives`（最多 12 条）。
 - **中性模式**：无测评结果时用 NEUTRAL_ANSWERS（MBTI 全 4、lifestyle 中性值、兴趣空）作为对比基准，页面需注明「未计入你的测评」；此模式只可搜索添加，无推荐区。
 - **数据表**：仅列数据库真实字段（11 项），无医疗字段——禁止编造城市数据。
-- **本地存储键**（storage.ts，前缀 `nomadmatch.v1:`）：draft（测验草稿，完成后清除）、history（最近一次测评）、favorites（收藏城市）、compare（对比现场）、archives（对比存档）。node 环境（tsx 脚本）无 localStorage，函数内部守卫安全降级。
+- **本地存储键**（storage.ts，前缀 `nomadmatch.v1:`）：draft（测验草稿，完成后清除）、history（最近一次测评）、favorites（收藏城市）、compare（对比现场）、archives（对比存档）。node 环境（tsx 脚本）无 localStorage，函数内部守卫安全降级。**注意：前缀为内部技术键名，品牌更名「栖居罗盘」时不改**（改了会丢失用户既有草稿/收藏/存档）。
 
 ## 设计规范
 

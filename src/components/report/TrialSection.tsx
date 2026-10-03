@@ -42,7 +42,7 @@ export default function TrialSection({ top }: TrialSectionProps) {
                 <span aria-hidden="true" className="font-mono text-[13px] text-pine">
                   {GROUP_MARKS[gi] ?? '·'}
                 </span>
-                <p className="font-serif text-[15px] font-medium">{group.title}</p>
+                <p className="font-heading text-[15px] font-bold">{group.title}</p>
               </div>
               <ul className="space-y-2.5">
                 {group.items.map((item, i) => (

@@ -1,4 +1,7 @@
-@import url("https://fonts.googleapis.cn/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..600&family=Manrope:wght@300..800&family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Sans+SC:wght@300..700&family=Noto+Serif+SC:wght@400;500;600;700&display=swap");
+/* 字体全部自托管（@fontsource，见 src/index.tsx 导入），不依赖外部 CDN：
+   - Noto Sans SC（思源黑体，SIL OFL）：display/heading/body
+   - IBM Plex Mono（SIL OFL）：数据/等宽数字
+   - Source Serif 4（SIL OFL）：英文副标与引用点缀 */
 
 @tailwind base;
 @tailwind components;
@@ -17,7 +20,8 @@
   body {
     background-color: var(--background);
     color: var(--foreground);
-    font-family: "Manrope", "Noto Sans SC", system-ui, sans-serif;
+    font-family: "Noto Sans SC", system-ui, sans-serif;
+    font-weight: 400;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
   }

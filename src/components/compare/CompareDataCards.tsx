@@ -34,13 +34,13 @@ export default function CompareDataCards({ rows }: { rows: CompareRow[] }) {
     <section className="border-t hairline">
       <div className="mx-auto max-w-almanac px-6 py-12 md:px-10">
         <p className="eyebrow">chart 03 · 数据卡</p>
-        <h2 className="mt-2 font-serif text-[22px] md:text-[26px]">成本与公开数据</h2>
+        <h2 className="mt-2 font-display text-[22px] font-bold tracking-tight md:text-[26px]">成本与公开数据</h2>
 
         <div className="mt-8 grid gap-8 lg:grid-cols-2">
           {/* 生活成本对比卡 */}
           <div className="card-paper p-5 md:p-7">
             <div className="flex items-center justify-between gap-3">
-              <h3 className="font-serif text-[16px]">生活成本对比</h3>
+              <h3 className="font-heading text-[16px] font-bold">生活成本对比</h3>
               <div className="flex gap-2">
                 {([0, 1] as const).map((slot) => (
                   <select
@@ -87,7 +87,7 @@ export default function CompareDataCards({ rows }: { rows: CompareRow[] }) {
 
           {/* 公开数据对比表 */}
           <div className="card-paper p-5 md:p-7">
-            <h3 className="font-serif text-[16px]">公开数据对比表</h3>
+            <h3 className="font-heading text-[16px] font-bold">公开数据对比表</h3>
             <div className="mt-4 overflow-x-auto">
               <table className="w-full min-w-[360px] border-collapse">
                 <thead>

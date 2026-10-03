@@ -69,7 +69,7 @@ export function SectionHeading({ eyebrow, title, desc }: SectionHeadingProps) {
         <CompassMark size={18} className="text-ochre" />
         <p className="eyebrow !mb-0">{eyebrow}</p>
       </div>
-      <h2 className="font-serif text-2xl font-medium md:text-3xl">{title}</h2>
+      <h2 className="font-display text-2xl font-bold tracking-tight md:text-3xl">{title}</h2>
       {desc ? <p className="mt-2 text-[13px] text-ink-soft">{desc}</p> : null}
     </div>
   );

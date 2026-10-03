@@ -55,7 +55,7 @@ export default function ProfileScreen({ onOpenQuiz, onOpenHistory, onOpenCompare
   return (
     <div className="mx-auto max-w-almanac px-6 pb-20 pt-10 md:px-10">
       <p className="eyebrow">my · 01</p>
-      <h1 className="mt-2 font-serif text-[26px] md:text-[32px]">我的航海手账</h1>
+      <h1 className="mt-2 font-display text-[26px] font-bold tracking-tight md:text-[32px]">我的航海手账</h1>
       <p className="mt-3 max-w-lg text-[13.5px] leading-[1.8] text-ink-soft">
         收藏城市、回看测评历史与保存过的对比。数据仅存于本机浏览器。
       </p>
@@ -65,7 +65,7 @@ export default function ProfileScreen({ onOpenQuiz, onOpenHistory, onOpenCompare
         <section>
           <div className="flex items-center gap-2.5">
             <CompassMark size={18} />
-            <h2 className="font-serif text-[17px]">测验历史</h2>
+            <h2 className="font-heading text-[17px] font-bold">测验历史</h2>
           </div>
           {history ? (
             <motion.div
@@ -79,7 +79,7 @@ export default function ProfileScreen({ onOpenQuiz, onOpenHistory, onOpenCompare
                   <p className="font-mono text-[9.5px] uppercase tracking-eyebrow text-ink-soft">
                     {fmtDate(history.savedAt)}
                   </p>
-                  <p className="mt-1 font-serif text-[26px] tracking-wide text-ink">{history.result.typeCode}</p>
+                  <p className="mt-1 font-data text-[26px] font-semibold tracking-wide text-ink">{history.result.typeCode}</p>
                 </div>
                 <div className="text-right">
                   <p className="font-mono text-[9.5px] uppercase tracking-eyebrow text-ink-soft">Top 1</p>
@@ -116,7 +116,7 @@ export default function ProfileScreen({ onOpenQuiz, onOpenHistory, onOpenCompare
         <section>
           <div className="flex items-center gap-2.5">
             <CompassMark size={18} />
-            <h2 className="font-serif text-[17px]">收藏城市</h2>
+            <h2 className="font-heading text-[17px] font-bold">收藏城市</h2>
             <span className="font-mono text-[10px] text-ink-soft">{favCities.length}</span>
           </div>
           {favCities.length > 0 ? (
@@ -124,7 +124,7 @@ export default function ProfileScreen({ onOpenQuiz, onOpenHistory, onOpenCompare
               {favCities.map((c) => (
                 <div key={c.id} className="card-paper p-4">
                   <div className="flex items-baseline justify-between gap-2">
-                    <p className="font-serif text-[15px]">{c.nameZh}</p>
+                    <p className="font-medium text-[15px]">{c.nameZh}</p>
                     <span className="font-mono text-[10px] text-ink-soft">{c.countryZh}</span>
                   </div>
                   <p className="mt-1.5 font-mono text-[10.5px] text-ink-soft">
@@ -167,7 +167,7 @@ export default function ProfileScreen({ onOpenQuiz, onOpenHistory, onOpenCompare
       <section className="mt-12">
         <div className="flex items-center gap-2.5">
           <CompassMark size={18} />
-          <h2 className="font-serif text-[17px]">保存的对比</h2>
+          <h2 className="font-heading text-[17px] font-bold">保存的对比</h2>
           <span className="font-mono text-[10px] text-ink-soft">{archives.length}</span>
         </div>
         {archives.length > 0 ? (

@@ -65,7 +65,7 @@ export default function Landing({ onStart, onDemo }: LandingProps) {
         <div className="flex items-center gap-3 text-ink">
           <CompassMark size={32} />
           <div className="leading-tight">
-            <p className="font-serif text-[17px] font-semibold tracking-wide">NomadMatch</p>
+            <p className="font-display text-[17px] font-bold tracking-wide">栖居罗盘</p>
             <p className="font-mono text-[9px] uppercase tracking-eyebrow text-ink-soft">
               overseas almanac
             </p>
@@ -94,11 +94,11 @@ export default function Landing({ onStart, onDemo }: LandingProps) {
               initial="hidden"
               animate="visible"
               custom={1}
-              className="font-serif text-[40px] font-medium leading-[1.18] tracking-tight md:text-[60px]"
+              className="font-display text-[40px] font-black leading-[1.18] tracking-tight md:text-[60px]"
             >
               在世界的版图上，
               <br />
-              找到<span className="italic text-clay">真正适合</span>你
+              找到<span className="text-clay">真正适合</span>你
               <br />
               停靠的那座城。
             </motion.h1>
@@ -107,7 +107,16 @@ export default function Landing({ onStart, onDemo }: LandingProps) {
               initial="hidden"
               animate="visible"
               custom={2}
-              className="mt-7 max-w-md text-[15.5px] leading-[1.9] text-ink-soft"
+              className="mt-4 font-serif-accent text-[14px] lowercase tracking-[0.32em] text-ink-soft"
+            >
+              nomadmatch
+            </motion.p>
+            <motion.p
+              variants={fadeUp}
+              initial="hidden"
+              animate="visible"
+              custom={2}
+              className="mt-6 max-w-md text-[15.5px] leading-[1.9] text-ink-soft"
             >
               一份结合 MBTI 人格、生活偏好与兴趣图谱的综合测评，
               为数字游民、自由职业者与独立开发者，从全球 39
@@ -168,7 +177,7 @@ export default function Landing({ onStart, onDemo }: LandingProps) {
           <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
             <div>
               <p className="eyebrow mb-3">quick preview · 10 seconds</p>
-              <h2 className="font-serif text-2xl font-medium md:text-3xl">
+              <h2 className="font-display text-2xl font-bold leading-snug tracking-tight md:text-3xl">
                 还没准备好答题？先看一份演示报告
               </h2>
             </div>
@@ -193,7 +202,7 @@ export default function Landing({ onStart, onDemo }: LandingProps) {
                     查看示例 →
                   </span>
                 </div>
-                <p className="font-serif text-lg font-medium text-ink">{profile.label}</p>
+                <p className="font-heading text-lg font-bold text-ink">{profile.label}</p>
                 <p className="mt-1.5 font-mono text-[11px] text-ochre">{profile.tagline}</p>
                 <p className="mt-3 text-[13px] leading-relaxed text-ink-soft">{profile.desc}</p>
                 <div className="mt-4 flex items-center justify-between border-t hairline pt-3">
@@ -214,7 +223,7 @@ export default function Landing({ onStart, onDemo }: LandingProps) {
           <div className="mb-12 flex items-end justify-between gap-6">
             <div>
               <p className="eyebrow mb-3">01 / the problem</p>
-              <h2 className="font-serif text-3xl font-medium md:text-4xl">
+              <h2 className="font-display text-3xl font-bold tracking-tight md:text-4xl">
                 选一座城市定居，
                 <br className="md:hidden" />
                 为什么这么难？
@@ -235,7 +244,7 @@ export default function Landing({ onStart, onDemo }: LandingProps) {
                 className="bg-card p-7"
               >
                 <p className="font-mono text-xs text-clay">{p.no}</p>
-                <h3 className="mt-4 font-serif text-xl font-semibold">{p.title}</h3>
+                <h3 className="mt-4 font-heading text-xl font-bold">{p.title}</h3>
                 <p className="mt-3 text-[13.5px] leading-[1.85] text-ink-soft">{p.desc}</p>
               </motion.div>
             ))}
@@ -246,7 +255,7 @@ export default function Landing({ onStart, onDemo }: LandingProps) {
       {/* 流程 */}
       <section className="mx-auto max-w-almanac px-6 py-16 md:px-10 md:py-24">
         <p className="eyebrow mb-3">02 / how it works</p>
-        <h2 className="mb-12 font-serif text-3xl font-medium md:text-4xl">三步，得到你的定居坐标</h2>
+        <h2 className="mb-12 font-display text-3xl font-bold tracking-tight md:text-4xl">三步，得到你的定居坐标</h2>
         <div className="grid gap-10 md:grid-cols-3">
           {STEPS.map((s, i) => (
             <motion.div
@@ -258,7 +267,7 @@ export default function Landing({ onStart, onDemo }: LandingProps) {
               className="relative border-t hairline pt-6"
             >
               <p className="font-mono text-xs text-ochre">{s.no}</p>
-              <h3 className="mt-3 font-serif text-xl font-semibold">{s.title}</h3>
+              <h3 className="mt-3 font-heading text-xl font-bold">{s.title}</h3>
               <p className="mt-3 text-[13.5px] leading-[1.85] text-ink-soft">{s.desc}</p>
             </motion.div>
           ))}
@@ -273,7 +282,7 @@ export default function Landing({ onStart, onDemo }: LandingProps) {
         <div className="relative flex w-max animate-marquee gap-10 whitespace-nowrap">
           {marqueeList.map((c, i) => (
             <div key={`${c.id}-${i}`} className="flex items-baseline gap-3 text-paper/80">
-              <span className="font-serif text-lg">{c.nameZh}</span>
+              <span className="font-medium text-lg">{c.nameZh}</span>
               <span className="font-mono text-[10px] uppercase tracking-wide text-paper/40">
                 {c.nameEn} · {formatCost(c)}
               </span>
@@ -285,7 +294,7 @@ export default function Landing({ onStart, onDemo }: LandingProps) {
       {/* 结尾 CTA */}
       <section className="mx-auto max-w-almanac px-6 py-20 text-center md:px-10 md:py-28">
         <p className="eyebrow mb-5">03 / set sail</p>
-        <h2 className="mx-auto max-w-2xl font-serif text-3xl font-medium leading-snug md:text-[44px]">
+        <h2 className="mx-auto max-w-2xl font-display text-3xl font-bold leading-snug tracking-tight md:text-[44px]">
           下一座城，不该靠运气决定。
         </h2>
         <p className="mx-auto mt-5 max-w-md text-[15px] leading-[1.9] text-ink-soft">
@@ -300,9 +309,12 @@ export default function Landing({ onStart, onDemo }: LandingProps) {
         <div className="mx-auto flex max-w-almanac flex-col gap-3 px-6 py-8 text-[11px] text-ink-soft md:flex-row md:items-center md:justify-between md:px-10">
           <div className="flex items-center gap-2">
             <CompassMark size={18} />
-            <span className="font-mono uppercase tracking-eyebrow">NomadMatch · 海外定居指南</span>
+            <span className="font-mono uppercase tracking-eyebrow">栖居罗盘 · 海外定居指南</span>
           </div>
-          <p>生活成本与签证政策为参考快照，请以官方最新信息为准</p>
+          <div className="flex flex-col gap-1 md:items-end">
+            <p>生活成本与签证政策为参考快照，请以官方最新信息为准</p>
+            <p className="font-light">字体：思源黑体 / IBM Plex Mono / Source Serif 4（OFL 开源许可）</p>
+          </div>
         </div>
       </footer>
     </div>

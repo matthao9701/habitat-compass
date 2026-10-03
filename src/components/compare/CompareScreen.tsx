@@ -176,7 +176,7 @@ export default function CompareScreen({ result, answers, seedCities, onOpenQuiz 
       <section className="border-b hairline bg-paper-deep/50">
         <div className="mx-auto max-w-almanac px-6 py-10 md:px-10">
           <p className="eyebrow">chart 01 · 城市对比</p>
-          <h1 className="mt-2 font-serif text-[26px] md:text-[32px]">把候选城市摆上同一张海图</h1>
+          <h1 className="mt-2 font-display text-[26px] font-bold tracking-tight md:text-[32px]">把候选城市摆上同一张海图</h1>
           <p className="mt-3 max-w-xl text-[13.5px] leading-[1.8] text-ink-soft">
             最多同时对比 {COMPARE_CITY_LIMIT} 座城市；「我最在意什么」滑杆只在对比页实时重算排序，
             不会写入你的测评报告。
@@ -204,7 +204,7 @@ export default function CompareScreen({ result, answers, seedCities, onOpenQuiz 
           {/* 搜索自选 */}
           <div>
             <div className="flex items-center justify-between">
-              <h2 className="font-serif text-[17px]">搜索城市</h2>
+              <h2 className="font-heading text-[17px] font-bold">搜索城市</h2>
               <span className="font-mono text-[10px] text-ink-soft">{selected.length} / {COMPARE_CITY_LIMIT} 已选</span>
             </div>
             <input
@@ -284,7 +284,7 @@ export default function CompareScreen({ result, answers, seedCities, onOpenQuiz 
           {/* 推荐（仅个性化模式） */}
           {result && (
             <div>
-              <h2 className="font-serif text-[17px]">根据您的测评结果推荐</h2>
+              <h2 className="font-heading text-[17px] font-bold">根据您的测评结果推荐</h2>
               <p className="mt-1 font-mono text-[10px] text-ink-soft">Top 5 · 匹配分由引擎实时计算</p>
               <div className="mt-3 flex flex-col gap-2.5">
                 {result.matches.map((m) => {
@@ -293,7 +293,7 @@ export default function CompareScreen({ result, answers, seedCities, onOpenQuiz 
                     <div key={m.city.id} className="card-paper flex items-center gap-4 px-4 py-3">
                       <div className="min-w-0 flex-1">
                         <div className="flex items-baseline justify-between gap-2">
-                          <p className="truncate font-serif text-[14.5px]">{m.city.nameZh}</p>
+                          <p className="truncate font-medium text-[14.5px]">{m.city.nameZh}</p>
                           <p className="font-mono text-[13px] text-clay">{m.match}%</p>
                         </div>
                         <div className="mt-1.5 h-[4px] overflow-hidden rounded-full bg-ink/10">
@@ -340,7 +340,7 @@ export default function CompareScreen({ result, answers, seedCities, onOpenQuiz 
           <div className="flex flex-wrap items-end justify-between gap-3">
             <div>
               <p className="eyebrow">chart 02 · 我最在意什么</p>
-              <h2 className="mt-2 font-serif text-[22px] md:text-[26px]">调整 8 维偏好权重</h2>
+              <h2 className="mt-2 font-display text-[22px] font-bold tracking-tight md:text-[26px]">调整 8 维偏好权重</h2>
             </div>
             <div className="flex items-center gap-3">
               {!isDefaultWeights(weights, personalized) && (
@@ -388,7 +388,7 @@ export default function CompareScreen({ result, answers, seedCities, onOpenQuiz 
       {ranked.length > 0 && (
         <section className="mx-auto max-w-almanac px-6 py-10 md:px-10">
           <p className="eyebrow">chart 03 · 综合评分</p>
-          <h2 className="mt-2 font-serif text-[22px] md:text-[26px]">临时权重下的排名</h2>
+          <h2 className="mt-2 font-display text-[22px] font-bold tracking-tight md:text-[26px]">临时权重下的排名</h2>
           <div className="mt-6 flex flex-col gap-3">
             {ranked.map((r, i) => (
               <motion.div
@@ -401,7 +401,7 @@ export default function CompareScreen({ result, answers, seedCities, onOpenQuiz 
                 <span className="h-2.5 w-2.5 shrink-0 rounded-[3px]" style={{ backgroundColor: r.color }} />
                 <div className="min-w-0 flex-1">
                   <div className="flex items-baseline justify-between gap-3">
-                    <p className="truncate font-serif text-[15.5px]">
+                    <p className="truncate font-medium text-[15.5px]">
                       {r.city.nameZh}
                       {i === 0 && ranked.length > 1 && (
                         <span className="ml-2 rounded-[4px] border border-moss/50 bg-moss/[0.08] px-1.5 py-0.5 font-mono text-[9px] text-moss">
@@ -442,7 +442,7 @@ export default function CompareScreen({ result, answers, seedCities, onOpenQuiz 
             <div className="flex flex-wrap items-end justify-between gap-3">
               <div>
                 <p className="eyebrow">chart 04 · 决策备注</p>
-                <h2 className="mt-2 font-serif text-[22px] md:text-[26px]">写下你的权衡</h2>
+                <h2 className="mt-2 font-display text-[22px] font-bold tracking-tight md:text-[26px]">写下你的权衡</h2>
               </div>
               <button type="button" onClick={saveArchive} className="btn-clay font-mono text-[11.5px]">
                 保存对比结果
@@ -492,7 +492,7 @@ export default function CompareScreen({ result, answers, seedCities, onOpenQuiz 
           >
             <div className="flex items-center gap-2.5">
               <CompassMark size={22} />
-              <h3 className="font-serif text-[17px]">对比位已满（{COMPARE_CITY_LIMIT} 城）</h3>
+              <h3 className="font-heading text-[17px] font-bold">对比位已满（{COMPARE_CITY_LIMIT} 城）</h3>
             </div>
             <p className="mt-2 text-[13px] leading-[1.7] text-ink-soft">
               选择一个要替换的城市，把 <span className="text-ink">{pending.nameZh}</span> 加进来。

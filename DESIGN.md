@@ -1,4 +1,4 @@
-# DESIGN.md — NomadMatch · 海外定居指南
+# DESIGN.md — 栖居罗盘 · 海外定居指南
 
 ## 气质与意象
 
@@ -41,11 +41,17 @@
 - 报告页权重构成用三段环形图（甜甜圈）：扇区大小 = 引擎真实权重（人格 30 / 偏好 48 / 兴趣 22），配色 pine / clay / ochre，扇区标注实际得分。
 - 演示档案态：报告头部「演示档案」徽标（ochre 描边 + 等宽小字），底部固定示例报告 CTA 引导回正式测评。
 
-## 字体排版
+## 字体排版（第三轮改版：黑体主导）
 
-- 展示衬线：**Fraunces**（西文，可变光学尺寸）+ **Noto Serif SC**（中文）；大标题用细—常规字重，留白宽。
-- 正文：**Manrope** + **Noto Sans SC**；中文正文 15-16px、行距 1.8。
-- 数据/标签：**IBM Plex Mono**；坐标、价格、百分比、编号全部用等宽体 + 大写宽字距小标签。
+- 基础字体：中文全站 **Noto Sans SC（思源黑体，SIL OFL）**，通过 `@fontsource/noto-sans-sc` 自托管打包（300/400/500/700/900），不依赖外部 CDN；Fraunces / Manrope / Noto Serif SC 已移除。
+- 层级阶梯（大小-字重-灰度分明）：
+  - 页面大标题 / Hero：`font-display` + Black(900)/Bold(700) + `tracking-tight` 收紧字距（tailwind token：display/heading/body/data/serif-accent）。
+  - 区块标题：`font-heading` + Bold(700)。
+  - 正文：`font-body`（默认继承 body）Regular(400)，行高 1.8-1.9。
+  - 辅助说明 / 脚注：Light(300) 或 Regular + 灰度降一档（text-ink-soft）。
+- 数字与数据：**IBM Plex Mono**（OFL，`@fontsource/ibm-plex-mono` 400/500/600），token `font-data`；评分/成本/指数表/雷达数值启用等宽与 `tabular-nums` 保证纵向对齐。
+- 英文点缀：**Source Serif 4**（OFL，`@fontsource/source-serif-4` 400/400-italic），token `font-serif-accent`——仅用于 Hero 英文副标（小写 `nomadmatch` + 宽字距）与引用；不与中文混排，中文一律黑体。
+- 页脚署名：「字体：思源黑体 / IBM Plex Mono / Source Serif 4（OFL 开源许可）」极小字，与数据口径脚注并列（Landing 页脚 + 报告免责区）。
 - 节奏：杂志式编号章节（`01 / 02 / 03`）、宽字距 eyebrow 标签、大量细线分隔；数字是视觉锚点。
 
 ## 动效与交互
@@ -65,7 +71,7 @@
 
 ## Tab 导航与对比页（第二轮增量）
 
-- **Tab 导航**：sticky 顶部纸面栏（罗盘花 + NomadMatch + 等宽小字「海外定居指南」），三 Tab = 首页 / 城市对比 / 我的；图标一律纯几何 SVG（圆点、刻度柱、圆弧航线），禁止 emoji；激活态 = 陶土描边 + clay/10 底 + 陶土文字。
+- **Tab 导航（第三轮瘦身）**：sticky 顶部纸面栏，**不放品牌名**（品牌名由首页 Hero 承载）；仅三个 Tab 居中排布、加大留白（h-16，桌面端 gap-8）——首页 / 城市对比 / 我的；图标一律纯几何 SVG（圆点、刻度柱、圆弧航线），禁止 emoji；标签用黑体 Medium(500)；激活态 = 陶土描边 + clay/10 底 + 陶土文字。
 - **对比页配色语义**：每城固定一色——pine #335043 / clay #BE5A38 / ochre #B08544 / teal #466F66（上限 4 城贯穿排名、雷达、条形、数值表）；数据条沿用语义色（moss≥75 / sea 50-74 / clay-deep<50）。
 - **权重滑杆**：轨道细线 + 陶土拇指（accent-[#BE5A38]），右端等宽体显示份额百分比；「重置」按钮仅偏离默认时出现。
 - **收藏星标**：几何四角星 SVG，激活填陶土色，未激活墨色细描边。

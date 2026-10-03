@@ -1,5 +1,3 @@
-import CompassMark from './CompassMark';
-
 export type TabId = 'landing' | 'compare' | 'profile';
 
 const TABS: { id: TabId; label: string }[] = [
@@ -41,18 +39,12 @@ function TabIcon({ id, active }: { id: TabId; active: boolean }) {
   );
 }
 
+/** 顶部导航：只保留三个 Tab（品牌名由首页 Hero 承载），居中排布、加大留白 */
 export default function TabBar({ active, onChange }: { active: TabId; onChange: (t: TabId) => void }) {
   return (
     <header className="sticky top-0 z-40 border-b border-ink/10 bg-paper/95 backdrop-blur-sm">
-      <div className="mx-auto flex h-14 max-w-almanac items-center justify-between px-5 md:px-10">
-        <div className="flex items-center gap-2.5">
-          <CompassMark size={22} />
-          <span className="font-serif text-[15px] tracking-wide">NomadMatch</span>
-          <span className="hidden font-mono text-[9px] uppercase tracking-eyebrow text-ink-soft md:inline">
-            海外定居指南
-          </span>
-        </div>
-        <nav className="flex items-center gap-1 md:gap-2" aria-label="主导航">
+      <div className="mx-auto flex h-16 max-w-almanac items-center justify-center px-5 md:px-10">
+        <nav className="flex items-center gap-2 md:gap-8" aria-label="主导航">
           {TABS.map((t) => {
             const isActive = t.id === active;
             return (
@@ -61,7 +53,7 @@ export default function TabBar({ active, onChange }: { active: TabId; onChange: 
                 type="button"
                 onClick={() => onChange(t.id)}
                 aria-current={isActive ? 'page' : undefined}
-                className={`flex items-center gap-1.5 rounded-[7px] px-3 py-1.5 font-mono text-[11px] tracking-wide transition-colors duration-200 ${
+                className={`flex items-center gap-2 rounded-[7px] px-4 py-2 font-heading text-[13px] font-medium tracking-wide transition-colors duration-200 ${
                   isActive
                     ? 'bg-clay/10 text-clay'
                     : 'text-ink-soft hover:bg-ink/5 hover:text-ink'

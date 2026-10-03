@@ -250,7 +250,7 @@ export default function Quiz({ onComplete, onExit }: QuizProps) {
             className="flex items-center gap-2.5 text-ink"
           >
             <CompassMark size={26} />
-            <span className="font-serif text-[15px] font-semibold tracking-wide">NomadMatch</span>
+            <span className="font-display text-[15px] font-bold tracking-wide">栖居罗盘</span>
           </button>
           <p className="font-mono text-[11px] text-ink-soft">
             {String(pageIndex + 1).padStart(2, '0')} / {String(pages.length).padStart(2, '0')}
@@ -423,7 +423,7 @@ function TransitionStage({ to }: { to: 'lifestyle' | 'interests' }) {
         <span className="h-px w-10 bg-ink/20" />
       </div>
       <p className="eyebrow">stage {meta.no} / 03 · 即将开始</p>
-      <h2 className="mt-4 font-serif text-3xl font-medium md:text-4xl">{meta.title}</h2>
+      <h2 className="mt-4 font-display text-3xl font-bold tracking-tight md:text-4xl">{meta.title}</h2>
       <p className="mt-5 max-w-md text-[14px] leading-[1.9] text-ink-soft">{meta.desc}</p>
       <p className="mt-6 rounded-full border hairline px-4 py-1.5 font-mono text-[10.5px] text-ink-soft">
         还剩 {meta.remaining}
@@ -510,7 +510,7 @@ interface LifestyleItemProps {
 function LifestyleItem({ question, value, onSelect }: LifestyleItemProps) {
   return (
     <div>
-      <p className="mb-1 font-serif text-[17px] font-medium leading-relaxed md:text-lg">
+      <p className="mb-1 font-heading text-[17px] font-bold leading-relaxed md:text-lg">
         {question.title}
       </p>
       {question.hint && (

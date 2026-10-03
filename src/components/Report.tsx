@@ -77,7 +77,7 @@ export default function Report({ result, onRestart, isDemo = false, onStartQuiz 
         <div className="mx-auto flex max-w-almanac items-center justify-between px-6 py-5 md:px-10">
           <div className="flex items-center gap-2.5">
             <CompassMark size={26} />
-            <span className="font-serif text-[15px] font-semibold tracking-wide">NomadMatch</span>
+            <span className="font-display text-[15px] font-bold tracking-wide">栖居罗盘</span>
           </div>
           <p className="font-mono text-[10px] uppercase tracking-eyebrow text-ink-soft">
             your report
@@ -107,17 +107,17 @@ export default function Report({ result, onRestart, isDemo = false, onStartQuiz 
                 initial={{ opacity: 0, y: 18 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, ease }}
-                className="font-serif text-[54px] font-semibold leading-none md:text-[84px]"
+                className="font-display text-[54px] font-black leading-none tabular-nums md:text-[84px]"
               >
                 {result.typeCode}
               </motion.h1>
-              <p className="mt-4 font-serif text-xl italic text-paper/80">
+              <p className="mt-4 font-heading text-xl font-bold text-paper/85">
                 {profile?.name ?? ''} · {profile?.motto ?? ''}
               </p>
             </div>
             <div className="max-w-sm">
               <p className="text-[14px] leading-[1.9] text-paper/75">{profile?.desc ?? ''}</p>
-              <p className="mt-4 border-l-2 border-clay pl-4 font-serif text-[15px] italic text-paper/85">
+              <p className="mt-4 border-l-2 border-clay pl-4 text-[15px] font-light leading-relaxed text-paper/85">
                 {profile?.nomadStyle ?? ''}
               </p>
             </div>
@@ -182,7 +182,7 @@ export default function Report({ result, onRestart, isDemo = false, onStartQuiz 
       {/* 雷达图 */}
       <section className="mx-auto max-w-almanac px-6 py-14 md:px-10 md:py-20">
         <p className="eyebrow mb-3">dimension compare</p>
-        <h2 className="mb-2 font-serif text-2xl font-medium md:text-3xl">
+        <h2 className="mb-2 font-display text-2xl font-bold tracking-tight md:text-3xl">
           Top 3 城市六维对比
         </h2>
         <p className="mb-10 text-[13px] text-ink-soft">
@@ -205,7 +205,7 @@ export default function Report({ result, onRestart, isDemo = false, onStartQuiz 
       {/* Top 5 卡片 */}
       <section className="mx-auto max-w-almanac px-6 pb-16 md:px-10 md:pb-24">
         <p className="eyebrow mb-3">your top 5</p>
-        <h2 className="mb-10 font-serif text-2xl font-medium md:text-3xl">最适合你的 5 座城市</h2>
+        <h2 className="mb-10 font-display text-2xl font-bold tracking-tight md:text-3xl">最适合你的 5 座城市</h2>
         <div className="space-y-5">
           {result.matches.map((m, i) => (
             <CityCard key={m.city.id} match={m} rank={i + 1} />
@@ -230,7 +230,7 @@ export default function Report({ result, onRestart, isDemo = false, onStartQuiz 
         <section className="border-y border-clay/40 bg-clay/[0.07]">
           <div className="mx-auto flex max-w-almanac flex-col items-center justify-between gap-5 px-6 py-9 text-center md:flex-row md:px-10 md:text-left">
             <div>
-              <p className="font-serif text-lg font-medium text-ink">
+              <p className="font-heading text-lg font-bold text-ink">
                 这是示例报告 —— 你的答案，可能指向完全不同的城市。
               </p>
               <p className="mt-1 text-[13px] text-ink-soft">
@@ -248,7 +248,7 @@ export default function Report({ result, onRestart, isDemo = false, onStartQuiz 
       {/* 操作区 */}
       <section className="border-t hairline bg-paper-deep/60">
         <div className="mx-auto flex max-w-almanac flex-col items-center gap-5 px-6 py-14 text-center md:px-10">
-          <h2 className="font-serif text-2xl font-medium md:text-3xl">把这份报告带走</h2>
+          <h2 className="font-display text-2xl font-bold tracking-tight md:text-3xl">把这份报告带走</h2>
           <p className="max-w-md text-[13.5px] leading-relaxed text-ink-soft">
             复制完整文字摘要发给朋友，或重新测一次看看不同选择的结果。
           </p>
@@ -281,10 +281,13 @@ export default function Report({ result, onRestart, isDemo = false, onStartQuiz 
             数字游民签证的收入门槛、停留时长与税务处理请以目的地官方移民机构及使领馆发布的最新信息为准。
             MBTI 测评题目基于 {MBTI_SOURCE.base}（{MBTI_SOURCE.publisher}）改编，
             以 {MBTI_SOURCE.license} 许可使用，人格类型仅供自我探索参考，不构成临床或职业建议。
-            NomadMatch 提供决策参考，不构成移民、税务或法律建议。
+            栖居罗盘提供决策参考，不构成移民、税务或法律建议。
+          </p>
+          <p className="mt-4 max-w-3xl text-[11px] font-light leading-relaxed text-paper/45">
+            字体：思源黑体 / IBM Plex Mono / Source Serif 4（OFL 开源许可）
           </p>
           <p className="mt-6 font-mono text-[10px] text-paper/35">
-            © 2025 NOMADMATCH · OVERSEAS SETTLEMENT ALMANAC
+            © 2025 栖居罗盘 · OVERSEAS SETTLEMENT ALMANAC
           </p>
         </div>
       </footer>
@@ -348,7 +351,7 @@ function CityCard({ match, rank }: CityCardProps) {
           >
             {badge.label}
           </span>
-          <h3 className="mt-4 font-serif text-[26px] font-semibold leading-tight">
+          <h3 className="mt-4 font-display text-[26px] font-bold leading-tight tracking-tight">
             {city.nameZh}
           </h3>
           <p className="mt-1 font-mono text-[10.5px] uppercase tracking-wide text-ink-soft">
@@ -559,7 +562,7 @@ function buildSummaryText(result: AssessmentResult): string {
       `${row.left} ${Math.round(result.axisScores[row.key])}% / ${row.right} ${Math.round(100 - result.axisScores[row.key])}%`,
   ).join(' · ');
   const lines: string[] = [
-    '【NomadMatch · 我的海外定居测评报告】',
+    '【栖居罗盘 · 我的海外定居测评报告】',
     `MBTI：${result.typeCode} ${profile?.name ?? ''} — ${profile?.motto ?? ''}`,
     `四轴偏好：${axisText}`,
     `游民风格：${profile?.nomadStyle ?? ''}`,

@@ -45,7 +45,7 @@ export default function CompareCharts({ rows }: { rows: CompareRow[] }) {
     <section className="border-t hairline">
       <div className="mx-auto max-w-almanac px-6 py-12 md:px-10">
         <p className="eyebrow">chart 02 · 多城雷达</p>
-        <h2 className="mt-2 font-serif text-[22px] md:text-[26px]">雷达与逐维对比</h2>
+        <h2 className="mt-2 font-display text-[22px] font-bold tracking-tight md:text-[26px]">雷达与逐维对比</h2>
 
         <div className="mt-8 grid gap-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)]">
           {/* 多城雷达 */}
