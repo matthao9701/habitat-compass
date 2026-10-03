@@ -1,6 +1,8 @@
-// 对比页图表区：多城雷达 + 逐维条形 + 打分数值表
+// 对比页图表区：多城雷达 + 逐维条形 + 打分数值表（城市名可点开详情弹层）
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import RadarChart from '../RadarChart';
+import CityDetailModal from './CityDetailModal';
 import { PREFERENCE_DIMENSIONS } from '../../lib/analysis';
 import type { CompareRow } from '../../lib/compare';
 
@@ -22,6 +24,8 @@ function radarValues(row: CompareRow): (number | null)[] {
 }
 
 export default function CompareCharts({ rows }: { rows: CompareRow[] }) {
+  const [detailId, setDetailId] = useState<string | null>(null);
+  const detailRow = detailId != null ? rows.find((r) => r.city.id === detailId) ?? null : null;
   if (rows.length === 0) return null;
 
   // 任一轴缺数据的城市不进雷达（避免 0 值误导），仍在条形与数值表中以 — 展示
@@ -129,7 +133,14 @@ export default function CompareCharts({ rows }: { rows: CompareRow[] }) {
                       <th key={r.city.id} className="py-2 pr-3 text-right font-medium">
                         <span className="flex items-center justify-end gap-1.5">
                           <span className="inline-block h-2 w-2 rounded-[2px]" style={{ backgroundColor: r.color }} />
-                          <span className="text-ink">{r.city.nameZh}</span>
+                          <button
+                            type="button"
+                            onClick={() => setDetailId(r.city.id)}
+                            title={`查看 ${r.city.nameZh} 详情`}
+                            className="text-ink underline decoration-ink/30 underline-offset-4 transition-colors hover:text-clay hover:decoration-clay/60"
+                          >
+                            {r.city.nameZh}
+                          </button>
                         </span>
                       </th>
                     ))}
@@ -155,7 +166,11 @@ export default function CompareCharts({ rows }: { rows: CompareRow[] }) {
             </div>
           </div>
         </div>
+        <p className="mt-6 font-mono text-[9.5px] text-ink-soft/70">
+          点击城市名可查看城市与所属国家的详细数据
+        </p>
       </div>
+      {detailRow ? <CityDetailModal row={detailRow} onClose={() => setDetailId(null)} /> : null}
     </section>
   );
 }

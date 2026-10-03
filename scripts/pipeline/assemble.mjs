@@ -333,6 +333,7 @@ function main() {
       nameEn: s.nameEn,
       countryZh: s.countryZh,
       countryEn: null, // 由 GeoNames 国家表补充（见下方 COUNTRY_EN）
+      countryCode: s.iso2,
       continent,
       subregion,
       region: continent, // v2: region = continent 六值
@@ -402,6 +403,7 @@ function main() {
 
     const next = {
       ...c,
+      countryCode: base.conf.iso,
       region,
       continent,
       subregion,

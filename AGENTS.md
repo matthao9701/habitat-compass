@@ -2,7 +2,7 @@
 
 ## 项目概览
 
-面向数字游民、自由职业者、独立开发者与普通用户的海外城市定居辅助决策网站（纯前端 SPA，界面为简体中文，品牌名「栖居罗盘」）。三 Tab 架构（首页 / 城市对比 / 我的）：测评分**双版本**（第五轮）——简易版永久免费（MBTI 32 题七级量表 + 生活偏好 8 题情景选择 + 兴趣 16 标签，原样保留）、标准版一次性虚拟买断 ¥29.9（IPIP-NEO 120 题 Big Five + 20 道四题型偏好 + 28 兴趣标签二级细化，报告含五维剖面/30 facets/16 型映射卡/两版对比；购买流程 = 商品页 → 模拟支付弹窗 → localStorage 解锁 + 订单留痕，纯前端模拟无真实交易），系统对内置的 100 城加权打分，输出 16 型解读与 Top 5 城市报告，支持一键复制摘要；城市对比页支持临时权重重算（11 维）与最多 4 城对比，含大洲/次区域筛选；「我的」承载双版本测评记录、收藏城市、对比存档与标准版订单/重置入口。数据工程（第四轮）：100 城六洲覆盖 + GeoNames/Open-Meteo/Numbeo/EF EPI 真实数据管道，详见 `DATA.md`。
+面向数字游民、自由职业者、独立开发者与普通用户的海外城市定居辅助决策网站（纯前端 SPA，界面为简体中文，品牌名「栖居罗盘」）。三 Tab 架构（首页 / 城市对比 / 我的）：测评分**双版本**（第五轮）——简易版永久免费（MBTI 32 题七级量表 + 生活偏好 8 题情景选择 + 兴趣 16 标签，原样保留）、标准版一次性虚拟买断 ¥29.9（IPIP-NEO 120 题 Big Five + 20 道四题型偏好 + 28 兴趣标签二级细化，报告含五维剖面/30 facets/16 型映射卡/两版对比；购买流程 = 商品页 → 模拟支付弹窗 → localStorage 解锁 + 订单留痕，纯前端模拟无真实交易），系统对内置的 100 城加权打分，输出 16 型解读与 Top 5 城市报告，支持一键复制摘要；城市对比页支持临时权重重算（11 维）与最多 4 城对比，含大洲/次区域筛选；「我的」承载双版本测评记录、收藏城市、对比存档与标准版订单/重置入口。数据工程（第四轮）：100 城六洲覆盖 + GeoNames/Open-Meteo/Numbeo/EF EPI 真实数据管道，详见 `DATA.md`。硬约束过滤层 + 国家维度参考 + 待核实清单 + 轻量埋点（第六轮）：测评前「硬性条件」步骤（月预算上限 CNY/USD / 签证底线三档 / 安全阈值，一票否决跑在引擎打分前，不足 5 城时放宽为超上限差距 <15% 降权保留并标注超预算，全部带可解释排除原因）；国家级参考数据 65 国（World Bank/UNDP/TI/Numbeo/手工快照，**参考信息层不进引擎加权**）供报告页国家概况卡、对比页国家级行与城市详情弹层；报告页「搬家前待核实清单」+ 固定免责声明；纯前端 localStorage 漏斗埋点（无 PII），我的 Tab 底部数据概览折叠区。
 
 ## 技术栈
 
@@ -27,6 +27,7 @@
 │       ├── fetch-climate.mjs# Open-Meteo archive 2015-2024 十年均值（增量重跑；argv[2] 可传旧城底座文件）
 │       ├── fetch-efepi.mjs  # EF EPI 国家评级提取
 │       └── assemble.mjs     # 装配 100 城：39 旧城富化 + 新城派生 + 成本线性拟合 + americas 拆分 → 6 大洲 JSON
+│       └── fetch-country.mjs# 第六轮国家级管道：65 国 = World Bank 全表+逐国 GDP/POP + Numbeo country 表解析 + MANUAL 手工快照（GPI/网速源站不可达硬编码 null）→ src/data/countries.json
 ├── server/
 │   ├── routes/              # Express 路由（无业务接口）
 │   ├── server.ts            # Express 入口
@@ -38,11 +39,11 @@
 │   ├── components/
 │   │   ├── TabBar.tsx       # 顶部三 Tab 导航（首页/城市对比/我的，纯几何 SVG 图标）
 │   │   ├── Landing.tsx      # 首页：Hero/演示档案/痛点/流程/城市图集（大洲浏览）/深色城市带/CTA
-│   │   ├── Quiz.tsx         # 测评：分页/进度条/回退/三类题型/草稿 localStorage 恢复与清空
+│   │   ├── Quiz.tsx         # 测评：分页/进度条/回退/三类题型/草稿 localStorage 恢复与清空；第六轮：ConstraintsStep 前置步骤（stage constraints→quiz）+ 阶段埋点 trackStage
 │   │   ├── Report.tsx       # 报告：人格解读/权重环图/Top5 卡片/徽标/复制/数据口径脚注/许可署名
 │   │   ├── ProfileScreen.tsx# 我的：最近测评入口/收藏城市网格/对比存档列表（载入/删除）
-│   │   ├── compare/         # 对比页模块：CompareScreen（选城含大洲/次区域筛选/11 维权重滑杆/排名/存档）、CompareCharts（多城雷达/逐维条形/语义色数值表，null→'—'）、CompareDataCards（成本卡+公开数据表，仅真实字段）
-│   │   ├── report/          # 报告增强模块：WeightDonut/BreakdownSection（11 维）/CityAnalysisSection/TrialSection/SemBar（语义色数据条，支持 null 值显示 '—'）/BigFiveSection（第五轮：五维雷达+30 facets 条+映射卡+两版对比）
+│   │   ├── compare/         # 对比页模块：CompareScreen（选城含大洲/次区域筛选/11 维权重滑杆/排名/存档）、CompareCharts（多城雷达/逐维条形/语义色数值表，null→'—'，含 CityDetailModal 城市详情弹层：城市卡+国家基本信息区）、CompareDataCards（成本卡+公开数据表+国家级对比行（同国合并），仅真实字段）
+│   │   ├── report/          # 报告增强模块：WeightDonut/BreakdownSection（11 维）/CityAnalysisSection/TrialSection/SemBar（语义色数据条，支持 null 值显示 '—'）/BigFiveSection（第五轮：五维雷达+30 facets 条+映射卡+两版对比）/ConstraintsNotice（硬约束排除说明可展开）/CountryCards（国家概况卡）/VerificationChecklist（待核实清单+免责声明）
 │   │   ├── billing/         # 第五轮虚拟计费：ProIntro（商品介绍页：对比表/题库结构/解锁 CTA，未购可预览）、PayModal（渠道选择+2s 模拟动画+成功态，顶部注明演示环境）
 │   │   ├── Quiz.tsx         # 测评（双版本）：version 分支——lite 原 56 题流程不动；pro = IPIP 120（5 点量表，6 题/页）+ 20 道四题型混编（choice/forced/slider/rank）+ 28 兴趣标签（含二级展开）；草稿按版本分键
 │   │   ├── RadarChart.tsx   # 六维雷达图（原生多序列 series: RadarSeries[]，对比页复用；缺维城自动剔除）
@@ -51,10 +52,12 @@
 │   ├── lib/
 │   │   ├── engine.ts        # MBTI 判定 + 加权匹配引擎 v2（PREFERENCE_WEIGHTS 11 维唯一事实源：用户 8 维 0.86 + 客观 3 维 0.14；computeCityFits 单城 8 维原始 fit；类/维 null 降权不惩罚）；第五轮新增 derivePersonalityPro（IPIP 计分→Big Five→16 型映射，McCrae & Costa 1989）/derivePreferenceOrdinals（pro 偏好聚合）/buildProfileTags 子项强化（选子项的一级标签计双倍权重）
 │   │   ├── analysis.ts      # 报告增强规则层 v2：11 维偏好细分/优劣势（含医疗/日照/降水/签证待核实）/人格×城市/试住计划（全部 null 安全）
-│   │   ├── storage.ts       # localStorage 层（nomadmatch.v1: 前缀）：draft/history/favorites/compare/archives；第五轮计费键：proUnlocked/orders/proDraft/proHistory（PRO_PRICE_CNY=29.9 常量；resetBilling 供演示重置）
+│   │   ├── storage.ts       # localStorage 层（nomadmatch.v1: 前缀）：draft/history/favorites/compare/archives；第五轮计费键：proUnlocked/orders/proDraft/proHistory（PRO_PRICE_CNY=29.9 常量；resetBilling 供演示重置）；第六轮：loadHardConstraints/saveHardConstraints（键 hardConstraints）
+│   │   ├── constraints.ts   # 第六轮硬约束过滤层（打分前一票否决，双版通用）：CNY_USD_RATE=7.2/OVER_BUDGET_BAND=0.15/RELAX_MIN_KEEP=5/OVER_BUDGET_PENALTY=3；applyHardConstraints 两阶段（先预算→再签证/安全，放宽回填者仍需过签证/安全）；applyOverBudgetPenalty（match-3+overBudget 标注）；null 数据=无法核验排除，reason 可解释
+│   │   ├── telemetry.ts     # 第六轮轻量埋点：FUNNEL_KEY 'nomadmatch.v1:funnel'，track/getFunnel/trackStage（阶段键 stage_start_N_name），纯 localStorage 计数无 PII，node 守卫降级
 │   │   └── compare.ts       # 对比页计算层 v2：临时权重重算（null 维/类跳过，与引擎同口径）、rankRows、compareCost（双缺→'暂无数据'）、NEUTRAL_ANSWERS、weightShare 最大余数法
 │   └── data/
-│       ├── types.ts         # City v2：continent/subregion/population/timezone/climateDetail/六指数/rent1brUSD/mealUSD/visaStatus 三档/visaDetail/englishEpiBand；大量字段可空
+│       ├── types.ts         # City v2：continent/subregion/population/timezone/climateDetail/六指数/rent1brUSD/mealUSD/visaStatus 三档/visaDetail/englishEpiBand；大量字段可空；第六轮：City.countryCode（ISO2）+ Country 接口（17 字段+cityCount/updatedAt/sources 逐字段来源）
 │       ├── index.ts         # 合并六大洲 JSON（europe/asia/africa/north-america/south-america/oceania）
 │       ├── regions.ts       # 大洲/次区域 key 顺序与中文标签（REGION_LABEL/SUBREGION_LABEL）
 │       ├── questions.ts     # 32 MBTI 七级双极题（OEJTS 1.2 结构）+ 8 生活偏好情景题
@@ -62,6 +65,8 @@
 │       ├── demoProfiles.ts  # 3 个演示档案预设答案（INTJ/ENTP/ESFJ，经 verify-iter1 校验）
 │       ├── interests.ts     # 简易版 16 个兴趣标签池（与城市 tags 同 id）
 │       ├── interestsPro.ts  # 第五轮标准版：28 个一级标签（16 共用 + 12 新增，城市库已同步标注）+ interestSubs 二级细化（每类 3-5 子项）+ reinforcedTags
+│       ├── countries.json   # 第六轮国家级参考数据（65 国，fetch-country.mjs 产物勿手改；逐字段 sources 标注；TW 仅手工快照）
+│       ├── countries.ts     # COUNTRIES/BY_CODE/getCountry(code)/countriesUpdatedAt()；getCountry 对 null/未知码返回 null
 │       ├── mbtiProfiles.ts  # 16 型人格游民视角解读
 │       └── cities/          # europe/asia/africa/north-america/south-america/oceania.json（共 100 城，assemble.mjs 产出勿手改）
 ├── DATA.md                  # 数据源/许可/派生规则/缺失约定/再生成流程
@@ -82,6 +87,7 @@
 - 迭代验证：`pnpm tsx scripts/verify-iter1.ts`、`pnpm tsx scripts/verify-iter2.ts`
 - 数据校验（第四轮）：`pnpm tsx scripts/verify-data-v2.ts`（依赖 /tmp/pipeline/climate.json 与 new-ids.txt，全量重跑见 DATA.md）
 - 题库校验（第五轮）：`pnpm tsx scripts/verify-quiz-v2.ts`（IPIP 120 完整性/计分键方向/Big Five→16 型映射回归/四题型覆盖/兴趣子项强化）
+- 第六轮校验：`pnpm tsx scripts/verify-country-v3.ts`（国家数据完整性/逐字段来源标注/GPI 网速全 null 预期/硬约束单测：预算排除与 5 城放宽/签证三档/安全阈值/null 无法核验/两阶段过滤/埋点计数/引擎集成冒烟）
 
 ## 匹配引擎说明
 

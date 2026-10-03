@@ -16,6 +16,9 @@ import BreakdownSection from './report/BreakdownSection';
 import CityAnalysisSection from './report/CityAnalysisSection';
 import TrialSection from './report/TrialSection';
 import BigFiveSection from './report/BigFiveSection';
+import ConstraintsNotice from './report/ConstraintsNotice';
+import CountryCards from './report/CountryCards';
+import VerificationChecklist from './report/VerificationChecklist';
 import { MBTI_SOURCE } from '../data/questions';
 
 interface ReportProps {
@@ -183,6 +186,15 @@ export default function Report({ result, onRestart, isDemo = false, onStartQuiz 
         </div>
       </section>
 
+      {/* 硬性条件过滤说明（第六轮）：打分前一票否决的可解释性声明 */}
+      {result.constraints?.applied ? (
+        <ConstraintsNotice
+          excluded={result.constraints.excluded}
+          relaxed={result.constraints.relaxed}
+          overBudgetCount={result.constraints.overBudgetIds.length}
+        />
+      ) : null}
+
       {/* 雷达图 */}
       <section className="mx-auto max-w-almanac px-6 py-14 md:px-10 md:py-20">
         <p className="eyebrow mb-3">dimension compare</p>
@@ -229,11 +241,17 @@ export default function Report({ result, onRestart, isDemo = false, onStartQuiz 
         </p>
       </section>
 
+      {/* 国家概况（第六轮）：参考信息层，不参与打分 */}
+      <CountryCards matches={result.matches} />
+
       {/* 人格 × 城市 定性分析（Top 1） */}
       {top ? <CityAnalysisSection top={top} axisScores={result.axisScores} /> : null}
 
       {/* 先试住再决定（Top 1） */}
       {top ? <TrialSection top={top} /> : null}
+
+      {/* 搬家前待核实清单（第六轮） */}
+      <VerificationChecklist matches={result.matches} />
 
       {/* 演示档案引导 CTA */}
       {isDemo ? (
@@ -365,6 +383,14 @@ function CityCard({ match, rank }: CityCardProps) {
           >
             {badge.label}
           </span>
+          {match.overBudget ? (
+            <span
+              title="月成本超出你设定的预算上限，但因剩余城市不足被放宽保留，匹配分已扣减"
+              className="ml-2 inline-block rounded-full border border-ochre/60 bg-ochre/10 px-3 py-1 font-mono text-[10.5px] text-ochre"
+            >
+              超预算 · 降权保留
+            </span>
+          ) : null}
           <h3 className="mt-4 font-display text-[26px] font-bold leading-tight tracking-tight">
             {city.nameZh}
           </h3>

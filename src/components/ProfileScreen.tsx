@@ -5,6 +5,7 @@ import CompassMark from './CompassMark';
 import * as storage from '../lib/storage';
 import { PRO_PRICE_CNY } from '../lib/storage';
 import { cities } from '../data';
+import { getFunnel, type FunnelEvent, type FunnelData } from '../lib/telemetry';
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
@@ -391,6 +392,87 @@ export default function ProfileScreen({
           </div>
         )}
       </section>
+
+      {/* 数据概览（第六轮）：本地漏斗计数，纯前端 localStorage，不采集任何个人信息 */}
+      <FunnelSection />
     </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// 数据概览：本地使用漏斗（折叠区）
+// ---------------------------------------------------------------------------
+
+const FUNNEL_ROWS: { event: FunnelEvent; label: string }[] = [
+  { event: 'quiz_version_lite', label: '选择简易版测评' },
+  { event: 'quiz_version_pro', label: '选择标准版测评' },
+  { event: 'hard_constraints_used', label: '使用了硬性条件' },
+  { event: 'pro_intro_view', label: '标准版介绍页曝光' },
+  { event: 'pay_click', label: '点击模拟支付' },
+  { event: 'unlock_success', label: '解锁成功' },
+  { event: 'report_generated', label: '报告生成' },
+];
+
+function FunnelSection() {
+  const [open, setOpen] = useState(false);
+  // 每次展开时读取最新计数
+  const funnel: FunnelData = open ? getFunnel() : {};
+  const stageRows = Object.entries(funnel)
+    .filter(([k]) => k.startsWith('stage_'))
+    .sort(([a], [b]) => a.localeCompare(b));
+
+  return (
+    <section className="mt-12">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        className="flex w-full items-center gap-2.5 text-left"
+        aria-expanded={open}
+      >
+        <CompassMark size={18} />
+        <h2 className="font-heading text-[17px] font-bold">数据概览</h2>
+        <span className="font-mono text-[9.5px] text-ink-soft">本地统计 · 不上传</span>
+        <span className="ml-auto font-mono text-[11px] text-ink-soft">{open ? '−' : '+'}</span>
+      </button>
+      {open ? (
+        <div className="mt-4 rounded-[10px] border hairline bg-card/70 p-5">
+          <p className="font-mono text-[9.5px] uppercase tracking-eyebrow text-ink-soft">
+            funnel · 本机使用漏斗
+          </p>
+          <div className="mt-3 grid gap-x-8 gap-y-2 sm:grid-cols-2">
+            {FUNNEL_ROWS.map((row) => {
+              const hit = funnel[row.event]?.count ?? 0;
+              return (
+                <div key={row.event} className="flex items-baseline justify-between gap-3">
+                  <span className="text-[12.5px] text-ink-soft">{row.label}</span>
+                  <span className={`font-data text-[12px] tabular-nums ${hit > 0 ? 'text-ink' : 'text-ink-soft/50'}`}>
+                    {hit} 次
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+          {stageRows.length > 0 ? (
+            <>
+              <p className="mt-5 font-mono text-[9.5px] uppercase tracking-eyebrow text-ink-soft">
+                stages · 测评阶段
+              </p>
+              <div className="mt-3 grid gap-x-8 gap-y-2 sm:grid-cols-2">
+                {stageRows.map(([event, meta]) => (
+                  <div key={event} className="flex items-baseline justify-between gap-3">
+                    <span className="font-mono text-[10.5px] text-ink-soft">{event}</span>
+                    <span className="font-data text-[12px] tabular-nums text-ink">{meta.count} 次</span>
+                  </div>
+                ))}
+              </div>
+            </>
+          ) : null}
+          <p className="mt-5 border-t hairline pt-3 font-mono text-[9px] leading-[1.8] text-ink-soft/70">
+            以上计数仅保存在你的浏览器本地（localStorage），不包含任何个人身份信息，也不会被上传或分享；
+            清除浏览器数据后计数会归零。
+          </p>
+        </div>
+      ) : null}
+    </section>
   );
 }

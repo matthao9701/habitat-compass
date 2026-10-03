@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { createProOrder, PRO_PRICE_CNY, type PayChannel, type ProOrder } from '../../lib/storage';
+import { track } from '../../lib/telemetry';
 
 /**
  * 模拟支付确认弹窗：渠道选择 → 2 秒虚拟处理动画 → 解锁成功。
@@ -58,12 +59,14 @@ export default function PayModal({ open, onClose, onSuccess }: PayModalProps) {
   }, [open]);
 
   function confirmPay(): void {
+    track('pay_click');
     setPhase('processing');
     // 虚拟处理：2 秒后成功（纯前端模拟，无真实交易）
     window.setTimeout(() => {
       const created = createProOrder(channel);
       setOrder(created);
       setPhase('done');
+      track('unlock_success');
     }, 2000);
   }
 

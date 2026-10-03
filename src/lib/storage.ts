@@ -194,3 +194,15 @@ export function saveProHistory(answers: UserAnswers, result: AssessmentResult): 
   const entry: HistoryEntry = { answers, result, savedAt: Date.now() };
   write('proHistory', entry);
 }
+
+// ---- 硬性条件（第六轮：与草稿分开独立键，修改后可重算） ----
+
+import type { HardConstraints } from './constraints';
+
+export function loadHardConstraints(): HardConstraints | null {
+  return read<HardConstraints | null>('hardConstraints', null);
+}
+
+export function saveHardConstraints(hc: HardConstraints): void {
+  write('hardConstraints', hc);
+}

@@ -61,3 +61,28 @@ pnpm tsx scripts/verify-data-v2.ts
 - **Big Five → 16 型映射**：McCrae & Costa (1989) 经典对应——E/I←Extraversion、S/N←Openness（高开放→N）、T/F←Agreeableness（高宜人→F）、J/P←Conscientiousness（高尽责→J）；Neuroticism 无对应轴，作为独立补充维度展示（海外定居压力适应参考）。
 - **计分**：IPIP 官方标准——+keyed 题计 1-5 原值、-keyed 题计 5-1，facet 内平均 → (mean−1)/4×100 百分位；域百分位 = 6 facets 均值；四轴字母按对应域 50 分位分界（≥50 归 E/N/F/J）。
 - 上述出处已在标准版报告页映射说明卡与本页一并注明；简化版 OEJTS 题库出处见第一轮记录（CC BY-NC-SA 4.0，仅用于非商用场景）。
+
+## 七、第六轮：国家级参考数据与硬约束口径
+
+### 国家级数据源（`src/data/countries.json`，scripts/pipeline/fetch-country.mjs 产出，65 国全覆盖）
+
+| 字段 | 来源 | 许可 / 口径 |
+| --- | --- | --- |
+| nameEn / iso3 / capital / population / gdpPerCapitaUSD | World Bank API（country 表 + SP.POP.TOTL / NY.GDP.PCAP.CD 最新可得年） | CC BY 4.0 |
+| nameZh / languages / currency / currencyCode | 手工快照（ISO 4217 / 各国官方口径） | 事实性引用 |
+| hdi | UNDP《人类发展报告 2023-24》手工转录 | 引用，仅事实参考 |
+| cpi | Transparency International CPI 2023 手工转录 | 引用 |
+| numbeoSafety / numbeoHealthcare / numbeoQol / numbeoPollution / numbeoClimate | Numbeo country rankings（quality-of-life/rankings_by_country.jsp） | NYC=100 口径，引用 |
+| taxTopRatePct | 手工快照（最高边际个税率，不含地方附加与社保） | 仅事实参考非税务建议 |
+| visaOverview | 手工快照（各国移民局公开信息概述） | 以官方为准 |
+| **gpi / internetMbpsFixed** | **全 null——visionofhumanity 与 Speedtest Global Index 采集时源站不可达，留待补录** | — |
+
+- 逐字段来源标注在每国 `sources` 对象内；TW（World Bank 无 TWN 条目）仅手工快照基本字段，其余 null。
+- **参考信息层定位**：国家级数据一律不进引擎加权（30/48/22 与 11 维零改动），仅供报告页国家概况卡、对比页国家级行与城市详情弹层展示。
+
+### 硬约束层口径（`src/lib/constraints.ts`，引擎打分前的一票否决过滤）
+
+- 汇率：CNY→USD 固定近似汇率 `CNY_USD_RATE = 7.2`（仅预算上限换算用）。
+- 放宽：严格过滤后保留 < `RELAX_MIN_KEEP`（5）城时，「超上限但差距 < `OVER_BUDGET_BAND`（15%）」的城回填，match 扣 `OVER_BUDGET_PENALTY`（3）并标注「超预算」；回填者仍需通过签证/安全检查（两阶段过滤）。
+- 排除语义：签证/安全数据 null 视作「无法核验」排除（带可解释 reason），与引擎降权不惩罚原则互补——硬约束是底线而非打分。
+- 埋点：纯前端 localStorage 计数（`nomadmatch.v1:funnel`），不采集 PII。

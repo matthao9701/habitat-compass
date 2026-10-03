@@ -1,6 +1,9 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import CompassMark from './CompassMark';
+import ConstraintsStep from './quiz/ConstraintsStep';
+import { track, trackStage } from '../lib/telemetry';
+import { hasAnyConstraint, DEFAULT_CONSTRAINTS, type HardConstraints } from '../lib/constraints';
 import {
   mbtiQuestions,
   lifestyleQuestions,
@@ -201,6 +204,14 @@ const PHASE_LABEL: Record<ModuleId, string> = {
   interests: '兴趣爱好',
 };
 
+/** 埋点阶段序号与名称（漏斗：1 人格 → 2 偏好 → 3 兴趣 → 4 quiz 完成） */
+const STAGE_INDEX: Record<ModuleId, number> = { mbti: 1, lifestyle: 2, interests: 3 };
+const STAGE_NAME: Record<ModuleId, string> = {
+  mbti: 'personality',
+  lifestyle: 'lifestyle',
+  interests: 'interests',
+};
+
 /** 标准版偏好题是否已有效作答（滑杆需恰好配满总点数，排序需全项覆盖） */
 export function proLifestyleAnswered(
   q: ProLifestyleQuestion,
@@ -251,6 +262,18 @@ export default function Quiz({ onComplete, onExit, version = 'lite' }: QuizProps
         ...(isPro ? { interestSubs: {} } : {}),
       },
   );
+  // 已应用的硬性条件（第六轮）：新会话默认先展示设置步骤；有草稿进度时直接续答
+  const [appliedConstraints, setAppliedConstraints] = useState<HardConstraints | null>(() =>
+    storage.loadHardConstraints(),
+  );
+  const [stage, setStage] = useState<'constraints' | 'quiz'>(() => {
+    const resumed =
+      draft != null &&
+      (Object.keys(draft.mbti).length > 0 ||
+        Object.keys(draft.lifestyle).length > 0 ||
+        draft.interests.length > 0);
+    return resumed ? 'quiz' : 'constraints';
+  });
 
   const page = pages[pageIndex];
   const isLast = pageIndex === pages.length - 1;
@@ -290,6 +313,19 @@ export default function Quiz({ onComplete, onExit, version = 'lite' }: QuizProps
     if (isPro) storage.saveProDraft(answers);
     else storage.saveDraft(answers);
   }, [answers, isPro]);
+
+  // ---- 续答场景（跳过硬性条件页直接恢复）：记录当前阶段开始埋点（仅一次） ----
+  const stageStartedRef = useRef(false);
+  useEffect(() => {
+    if (stage !== 'quiz' || stageStartedRef.current) return;
+    stageStartedRef.current = true;
+    if (page.kind === 'data') {
+      const firstOfModule = dataPages.find((p) => p.module === page.module);
+      if (firstOfModule && page.dataPageNo === firstOfModule.dataPageNo) {
+        trackStage('start', STAGE_INDEX[page.module], STAGE_NAME[page.module]);
+      }
+    }
+  }, [stage, page, dataPages]);
 
   function resetDraft(): void {
     if (isPro) storage.clearProDraft();
@@ -362,8 +398,46 @@ export default function Quiz({ onComplete, onExit, version = 'lite' }: QuizProps
       onComplete(answers);
       return;
     }
+    // 阶段漏斗埋点：离开某阶段最后一个数据页 = 完成；进入新阶段第一个数据页 = 开始
+    if (page.kind === 'data') {
+      const ofModule = dataPages.filter((p) => p.module === page.module);
+      const last = ofModule[ofModule.length - 1];
+      if (last && page.dataPageNo === last.dataPageNo) {
+        trackStage('complete', STAGE_INDEX[page.module], STAGE_NAME[page.module]);
+      }
+    }
+    const next = pages[pageIndex + 1];
+    if (next.kind === 'data') {
+      const firstOfModule = dataPages.find((p) => p.module === next.module);
+      if (firstOfModule && next.dataPageNo === firstOfModule.dataPageNo) {
+        trackStage('start', STAGE_INDEX[next.module], STAGE_NAME[next.module]);
+      }
+    }
     setDirection(1);
     setPageIndex((i) => i + 1);
+  }
+
+  /** 硬性条件：保存 → 记埋点 → 进入答题 */
+  function applyConstraints(hc: HardConstraints): void {
+    storage.saveHardConstraints(hc);
+    setAppliedConstraints(hc);
+    if (hasAnyConstraint(hc)) track('hard_constraints_used');
+    enterQuiz();
+  }
+
+  /** 硬性条件：跳过（清空已存条件）→ 进入答题 */
+  function skipConstraints(): void {
+    storage.saveHardConstraints(DEFAULT_CONSTRAINTS);
+    setAppliedConstraints(null);
+    enterQuiz();
+  }
+
+  function enterQuiz(): void {
+    setStage('quiz');
+    const first = pages[0];
+    if (first.kind === 'data') {
+      trackStage('start', STAGE_INDEX[first.module], STAGE_NAME[first.module]);
+    }
   }
 
   function goBack(): void {
@@ -396,9 +470,28 @@ export default function Quiz({ onComplete, onExit, version = 'lite' }: QuizProps
                 {isPro ? 'STANDARD · PRO' : 'LITE'}
               </span>
             </div>
-            <p className="font-mono text-[10px] text-ink-soft">
-              {answeredCount} / {totalAnswerable}
-            </p>
+            {stage === 'constraints' ? (
+              <button
+                type="button"
+                onClick={onExit}
+                className="font-mono text-[10px] text-ink-soft underline-offset-4 transition-colors hover:text-ink hover:underline"
+              >
+                ← 返回首页
+              </button>
+            ) : (
+              <div className="flex items-center gap-4">
+                <button
+                  type="button"
+                  onClick={() => setStage('constraints')}
+                  className="font-mono text-[10px] text-ink-soft underline-offset-4 transition-colors hover:text-clay hover:underline"
+                >
+                  硬性条件{hasAnyConstraint(appliedConstraints) ? ' ✓' : ''}
+                </button>
+                <p className="font-mono text-[10px] text-ink-soft">
+                  {answeredCount} / {totalAnswerable}
+                </p>
+              </div>
+            )}
           </div>
           <div className="h-1 w-full overflow-hidden rounded-full bg-ink/10">
             <div
@@ -429,6 +522,13 @@ export default function Quiz({ onComplete, onExit, version = 'lite' }: QuizProps
 
       {/* 页面主体 */}
       <main className="mx-auto flex w-full max-w-[860px] flex-1 flex-col px-6 py-8 md:px-8 md:py-12">
+        {stage === 'constraints' ? (
+          <ConstraintsStep
+            initial={appliedConstraints}
+            onApply={applyConstraints}
+            onSkip={skipConstraints}
+          />
+        ) : (
         <AnimatePresence mode="wait" custom={direction}>
           <motion.div
             key={pageIndex}
@@ -530,9 +630,11 @@ export default function Quiz({ onComplete, onExit, version = 'lite' }: QuizProps
             )}
           </motion.div>
         </AnimatePresence>
+        )}
       </main>
 
-      {/* 底部导航 */}
+      {/* 底部导航（硬性条件设置页自带 CTA，无需底部导航） */}
+      {stage === 'quiz' && (
       <footer className="sticky bottom-0 border-t hairline bg-paper/90 backdrop-blur">
         <div className="mx-auto flex max-w-[860px] items-center justify-between gap-4 px-6 py-4 md:px-8">
           <button type="button" onClick={goBack} className="btn-ghost !px-5 !py-3 text-sm">
@@ -562,6 +664,7 @@ export default function Quiz({ onComplete, onExit, version = 'lite' }: QuizProps
           </button>
         </div>
       </footer>
+      )}
     </div>
   );
 }

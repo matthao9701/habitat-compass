@@ -1,7 +1,10 @@
 // 数据卡区：生活成本对比（真实字段计算 + 规则模板结论） + 公开数据对比表（仅列数据库实际字段）
+// + 国家级参考对比行（第六轮：同国城市合并为一列，参考信息不参与打分）
 import { useState } from 'react';
 import { CLIMATE_LABEL } from '../../lib/engine';
 import { compareCost, type CompareRow } from '../../lib/compare';
+import { getCountry } from '../../data/countries';
+import type { Country } from '../../data/types';
 
 const fmt = (n: number): string => `$${n.toLocaleString('en-US')}`;
 
@@ -151,7 +154,100 @@ export default function CompareDataCards({ rows }: { rows: CompareRow[] }) {
             </p>
           </div>
         </div>
+
+        {/* 国家级参考对比行（第六轮）：同国城市合并为一列 */}
+        <CountryCompareTable rows={rows} />
       </div>
     </section>
   );
+}
+
+// ---------------------------------------------------------------------------
+// 国家级参考对比（第六轮）：参考信息层，同国合并，缺失显示 —
+// ---------------------------------------------------------------------------
+
+function CountryCompareTable({ rows }: { rows: CompareRow[] }) {
+  const groups = new Map<string, { country: Country; cities: string[] }>();
+  for (const r of rows) {
+    const c = getCountry(r.city.countryCode);
+    if (!c) continue;
+    const g = groups.get(c.code);
+    if (g) g.cities.push(r.city.nameZh);
+    else groups.set(c.code, { country: c, cities: [r.city.nameZh] });
+  }
+  if (groups.size === 0) return null;
+  const list = [...groups.values()];
+
+  const fields: { label: string; valueOf: (c: Country) => string }[] = [
+    { label: '首都', valueOf: (c) => c.capital ?? '—' },
+    { label: '官方语言', valueOf: (c) => c.languages?.join('、') ?? '—' },
+    { label: '货币', valueOf: (c) => c.currency ?? '—' },
+    { label: '人口', valueOf: (c) => (c.population != null ? formatPop(c.population) : '—') },
+    { label: '人均 GDP', valueOf: (c) => (c.gdpPerCapitaUSD != null ? `$${c.gdpPerCapitaUSD.toLocaleString('en-US')}` : '—') },
+    { label: 'HDI', valueOf: (c) => (c.hdi != null ? c.hdi.toFixed(3) : '—') },
+    { label: 'GPI 和平指数', valueOf: (c) => (c.gpi != null ? `${c.gpi.score.toFixed(2)} · ${c.gpi.rank}` : '—') },
+    { label: 'CPI 廉洁指数', valueOf: (c) => (c.cpi != null ? `${c.cpi}/100` : '—') },
+    { label: '国家安全', valueOf: (c) => (c.numbeoSafety != null ? `${c.numbeoSafety}/100` : '—') },
+    { label: '医疗（国家）', valueOf: (c) => (c.numbeoHealthcare != null ? `${c.numbeoHealthcare}/100` : '—') },
+    { label: '宽带均速', valueOf: (c) => (c.internetMbpsFixed != null ? `${c.internetMbpsFixed} Mbps` : '—') },
+    { label: '最高边际个税率', valueOf: (c) => (c.taxTopRatePct != null ? `${c.taxTopRatePct}%` : '—') },
+  ];
+
+  return (
+    <div className="card-paper mt-8 p-5 md:p-7">
+      <h3 className="font-heading text-[16px] font-bold">国家级参考对比</h3>
+      <p className="mt-1 text-[12px] text-ink-soft">
+        同国城市合并显示；国家宏观数据仅作背景参考，不参与城市打分。
+      </p>
+      <div className="mt-4 overflow-x-auto">
+        <table className="w-full min-w-[420px] border-collapse">
+          <thead>
+            <tr className="border-b border-ink/15 text-left">
+              <th className="py-2 pr-3 font-mono text-[10px] font-medium uppercase tracking-eyebrow text-ink-soft">国家</th>
+              {list.map((g) => (
+                <th key={g.country.code} className="py-2 pr-3 text-right">
+                  <span className="block font-mono text-[11px] font-medium text-ink">{g.country.nameZh}</span>
+                  <span className="block font-mono text-[9px] font-normal text-ink-soft">
+                    {g.cities.join(' / ')}
+                  </span>
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {fields.map((f) => (
+              <tr key={f.label} className="border-b border-ink/[0.07]">
+                <td className="py-1.5 pr-3 text-[12px] text-ink-soft">{f.label}</td>
+                {list.map((g) => (
+                  <td key={g.country.code} className="py-1.5 pr-3 text-right font-data text-[11.5px] tabular-nums text-ink">
+                    {f.valueOf(g.country)}
+                  </td>
+                ))}
+              </tr>
+            ))}
+            {list.some((g) => g.country.visaOverview) ? (
+              <tr className="border-b border-ink/[0.07] align-top">
+                <td className="py-1.5 pr-3 text-[12px] text-ink-soft">数字游民签证概览</td>
+                {list.map((g) => (
+                  <td key={g.country.code} className="max-w-[180px] py-1.5 pr-3 text-right text-[11px] leading-[1.6] text-ink">
+                    {g.country.visaOverview ?? '—'}
+                  </td>
+                ))}
+              </tr>
+            ) : null}
+          </tbody>
+        </table>
+      </div>
+      <p className="mt-3 font-mono text-[9.5px] leading-relaxed text-ink-soft/70">
+        国家数据截至 {list[0]?.country.updatedAt} · 来源：World Bank（CC BY 4.0）/ UNDP HDR / Vision of Humanity GPI（引用）/
+        Transparency International CPI（引用）/ Numbeo 国家指数；个税率为事实性标注，不构成税务建议。
+      </p>
+    </div>
+  );
+}
+
+function formatPop(n: number): string {
+  if (n >= 1_0000_0000) return `${(n / 1_0000_0000).toFixed(1)} 亿`;
+  if (n >= 1_0000) return `${(n / 1_0000).toFixed(0)} 万`;
+  return n.toLocaleString('en-US');
 }

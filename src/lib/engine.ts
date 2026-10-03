@@ -54,6 +54,8 @@ export interface CityMatch {
   city: City;
   /** 展示用匹配度 0-100 */
   match: number;
+  /** 硬约束放宽保留的超预算标记（constraints 层注入） */
+  overBudget?: boolean;
   /** null = 城市缺该类数据，聚合时降权（不惩罚） */
   personalityFit: number | null;
   preferenceFit: number | null;
@@ -78,6 +80,14 @@ export interface AssessmentResult {
   matches: CityMatch[];
   /** pro 专有：Big Five 完整剖面（五域百分位 + 30 facets） */
   proProfile?: BigFiveProfile;
+  /** 第六轮：硬约束过滤摘要（未设置硬约束时缺省） */
+  constraints?: {
+    applied: boolean;
+    relaxed: boolean;
+    excludedCount: number;
+    excluded: import('./constraints').ExcludedEntry[];
+    overBudgetIds: string[];
+  };
 }
 
 // ---------------------------------------------------------------------------
@@ -703,13 +713,13 @@ export function computeCityFits(city: City, answers: UserAnswers): CityFits {
 // 主入口：计算整份报告
 // ---------------------------------------------------------------------------
 
-export function assess(answers: UserAnswers): AssessmentResult {
+export function assess(answers: UserAnswers, cityPool?: City[]): AssessmentResult {
   const personality = getPersonality(answers);
   const { typeCode, traitVector, axisScores } = personality;
 
   const preferenceInputs = answers.lifestyle;
 
-  const matches: CityMatch[] = cities.map((city: City) => {
+  const matches: CityMatch[] = (cityPool ?? cities).map((city: City) => {
     const fits = computeCityFits(city, answers);
     const { personalityFit, preferenceFit, interestFit: interestFitScore, fitValues } = fits;
 

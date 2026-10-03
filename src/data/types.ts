@@ -56,6 +56,8 @@ export interface City {
   nameEn: string;
   countryZh: string;
   countryEn: string;
+  /** ISO 3166-1 alpha-2 国家代码（World Bank / 手工表主键） */
+  countryCode: string;
   region: Region;
   /** UN M49 口径次区域（如 南欧 / 东南亚 / 东非） */
   subregion: string;
@@ -116,4 +118,46 @@ export interface City {
   /** 生活方式标签（取自兴趣标签池；空数组 = 无标注，兴趣维度降权） */
   tags: string[];
   traits: CityTraitVector | null;
+}
+
+/** 国家级参考数据（第六轮；参考信息层，不进引擎加权） */
+export interface Country {
+  /** ISO 3166-1 alpha-2 */
+  code: string;
+  iso3: string | null;
+  nameZh: string;
+  nameEn: string | null;
+  capital: string | null;
+  /** 官方语言（常用顺序） */
+  languages: string[] | null;
+  currency: string | null;
+  currencyCode: string | null;
+  /** 总人口（World Bank，最新可得年） */
+  population: number | null;
+  /** 人均 GDP（现价美元，World Bank） */
+  gdpPerCapitaUSD: number | null;
+  /** 人类发展指数（UNDP HDR 2023-24） */
+  hdi: number | null;
+  /** 全球和平指数（GPI 分数与排名；源站不可达时 null） */
+  gpi: { score: number; rank: number } | null;
+  /** 腐败感知指数（Transparency International CPI 2023，0-100） */
+  cpi: number | null;
+  /** 国家级 Numbeo 指数（NYC = 100 口径） */
+  numbeoSafety: number | null;
+  numbeoHealthcare: number | null;
+  numbeoQol: number | null;
+  numbeoPollution: number | null;
+  numbeoClimate: number | null;
+  /** 固定宽带平均网速 Mbps（Speedtest/ITU；源站不可达时 null） */
+  internetMbpsFixed: number | null;
+  /** 国家级数字游民签证概览（一句话；以官方为准） */
+  visaOverview: string | null;
+  /** 最高边际个税率（%，不含地方附加与社保；仅事实参考非税务建议） */
+  taxTopRatePct: number | null;
+  /** 城市库中该国城市数（参考） */
+  cityCount: number;
+  /** 快照日期（YYYY-MM-DD） */
+  updatedAt: string;
+  /** 逐字段来源标注（field → 来源描述；未采集字段为 null） */
+  sources: Record<string, string | null>;
 }

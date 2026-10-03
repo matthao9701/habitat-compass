@@ -10,6 +10,9 @@ import ProfileScreen from './components/ProfileScreen';
 import { assess, type UserAnswers, type AssessmentResult, type QuizVersion } from './lib/engine';
 import { DEMO_PROFILES, buildDemoAnswers } from './data/demoProfiles';
 import * as storage from './lib/storage';
+import { applyHardConstraints, applyOverBudgetPenalty, hasAnyConstraint, type HardConstraints } from './lib/constraints';
+import { track, trackStage } from './lib/telemetry';
+import { cities as CITIES } from './data';
 
 type Screen = 'landing' | 'quiz' | 'report' | 'compare' | 'profile' | 'pro-intro';
 
@@ -35,6 +38,7 @@ export default function App() {
 
   /** 进入测评：标准版未解锁时跳商品介绍页（可预览，不可答题） */
   function startQuiz(version: QuizVersion = 'lite'): void {
+    track(version === 'pro' ? 'quiz_version_pro' : 'quiz_version_lite');
     if (version === 'pro' && !storage.isProUnlocked()) {
       go('pro-intro');
       return;
@@ -47,8 +51,32 @@ export default function App() {
     go('landing');
   }
 
+  /** 硬约束过滤 + 引擎打分（硬约束在打分前一票否决，不影响 30/48/22 权重） */
+  function runAssessment(done: UserAnswers, hc: HardConstraints | null): AssessmentResult {
+    const cRes = applyHardConstraints(CITIES, hc);
+    const assessment = assess(done, cRes.kept);
+    const matches = applyOverBudgetPenalty(assessment.matches, cRes.overBudgetIds);
+    return {
+      ...assessment,
+      matches,
+      constraints: cRes.applied
+        ? {
+            applied: true,
+            relaxed: cRes.relaxed,
+            excludedCount: cRes.excluded.length,
+            excluded: cRes.excluded,
+            overBudgetIds: cRes.overBudgetIds,
+          }
+        : undefined,
+    };
+  }
+
   function completeQuiz(done: UserAnswers): void {
-    const assessment = assess(done);
+    const hc = storage.loadHardConstraints();
+    if (hasAnyConstraint(hc)) track('hard_constraints_used');
+    trackStage('complete', 4, 'quiz');
+    const assessment = runAssessment(done, hc);
+    track('report_generated');
     if (done.version === 'pro') {
       storage.clearProDraft(); // 完成后清除标准版草稿
       storage.saveProHistory(done, assessment);

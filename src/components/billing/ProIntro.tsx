@@ -1,10 +1,11 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import PayModal from './PayModal';
 import CompassMark from '../CompassMark';
 import { ipipQuestions, proLifestyleQuestions } from '../../data/questionsPro';
 import { interestTagsPro } from '../../data/interestsPro';
 import { PRO_PRICE_CNY, isProUnlocked, loadOrders, type ProOrder } from '../../lib/storage';
+import { track } from '../../lib/telemetry';
 
 /**
  * 标准版商品介绍页：题量/题型/报告增强对比 + 虚拟计费入口。
@@ -36,6 +37,11 @@ export default function ProIntro({
   const [payOpen, setPayOpen] = useState(false);
   const unlocked = useMemo(() => isProUnlocked(), []);
   const latestOrder = useMemo<ProOrder | null>(() => loadOrders()[0] ?? null, []);
+
+  // 埋点：付费页曝光（每次挂载记一次）
+  useEffect(() => {
+    track('pro_intro_view');
+  }, []);
 
   return (
     <div className="min-h-screen bg-paper pb-24">
