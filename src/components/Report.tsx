@@ -16,6 +16,7 @@ import BreakdownSection from './report/BreakdownSection';
 import CityAnalysisSection from './report/CityAnalysisSection';
 import TrialSection from './report/TrialSection';
 import BigFiveSection from './report/BigFiveSection';
+import RiasecSection from './report/RiasecSection';
 import ConstraintsNotice from './report/ConstraintsNotice';
 import CountryCards from './report/CountryCards';
 import VerificationChecklist from './report/VerificationChecklist';
@@ -113,7 +114,7 @@ export default function Report({ result, onRestart, isDemo = false, onStartQuiz 
                 {t('rep.demo.badge')}
               </span>
             ) : null}
-            assessment complete · 56 answers
+            assessment complete · {result.version === 'pro' ? 208 : 56} answers
           </motion.p>
           <div className="mt-8 flex flex-col gap-10 md:flex-row md:items-end md:justify-between">
             <div>
@@ -225,6 +226,11 @@ export default function Report({ result, onRestart, isDemo = false, onStartQuiz 
       {/* 标准版增强：Big Five 剖面 + 30 facets + 映射说明 + 两版对比 */}
       {result.version === 'pro' && result.proProfile ? (
         <BigFiveSection result={result} proProfile={result.proProfile} />
+      ) : null}
+
+      {/* 第八轮增强：RIASEC 兴趣画像 + 风险偏好卡（仅标准版且已作答） */}
+      {result.version === 'pro' && result.riasecProfile ? (
+        <RiasecSection result={result} profile={result.riasecProfile} risk={result.riskProfile ?? null} />
       ) : null}
 
       {/* 细分拆解：兴趣 6 类 + 生活偏好 8 维（Top 1） */}

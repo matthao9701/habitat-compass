@@ -58,7 +58,8 @@
 │   │   ├── storage.ts       # localStorage 层（nomadmatch.v1: 前缀）：draft/history/favorites/compare/archives；第五轮计费键：proUnlocked/orders/proDraft/proHistory（PRO_PRICE_CNY=29.9 常量；resetBilling 供演示重置）；第六轮：loadHardConstraints/saveHardConstraints（键 hardConstraints）
 │   │   ├── constraints.ts   # 第六轮硬约束过滤层（打分前一票否决，双版通用）：CNY_USD_RATE=7.2/OVER_BUDGET_BAND=0.15/RELAX_MIN_KEEP=5/OVER_BUDGET_PENALTY=3；applyHardConstraints 两阶段（先预算→再签证/安全，放宽回填者仍需过签证/安全）；applyOverBudgetPenalty（match-3+overBudget 标注）；null 数据=无法核验排除，reason 可解释
 │   │   ├── telemetry.ts     # 第六轮轻量埋点：FUNNEL_KEY 'nomadmatch.v1:funnel'，track/getFunnel/trackStage（阶段键 stage_start_N_name），纯 localStorage 计数无 PII，node 守卫降级
-│   │   └── compare.ts       # 对比页计算层 v2：临时权重重算（null 维/类跳过，与引擎同口径）、rankRows、compareCost（双缺→'暂无数据'）、NEUTRAL_ANSWERS、weightShare 最大余数法
+│   │   ├── compare.ts       # 对比页计算层 v2：临时权重重算（null 维/类跳过，与引擎同口径）、rankRows、compareCost（双缺→'暂无数据'）、NEUTRAL_ANSWERS、weightShare 最大余数法
+│   │   └── riasec.ts        # 第八轮：deriveRiasec（六维 5-25→百分位→top2 组合）/tagRepeats（RIASEC 高分维 ≥60 给映射标签 +1 重复，与子项强化叠加封顶 2）/deriveRisk（风险 10 题 → 0-100 指数 + high/mid/low band，keyed 反向计分）
 │   │   ├── format.ts        # 第七轮 i18n 展示层：cityName/countryName（按 lang 取 nameEn/nameZh，Country.nameEn 可空回退）、formatMoney（zh: ¥xxx（≈$usd）· en: $usd，CNY_USD_RATE=7.2）、formatDate（en-US/zh-CN locale）、cityById/cityNameById（ExcludedEntry 快照回退）
 │   │   └── colors.ts        # 第七轮图表色常量（SVG 图表与 Tailwind token 解耦的 JS 侧取值）
 │   ├── i18n/                # 第七轮双语基础设施（zh/en）
@@ -74,6 +75,9 @@
 │       ├── demoProfiles.ts  # 3 个演示档案预设答案（INTJ/ENTP/ESFJ，经 verify-iter1 校验）
 │       ├── interests.ts     # 简易版 16 个兴趣标签池（与城市 tags 同 id）
 │       ├── interestsPro.ts  # 第五轮标准版：28 个一级标签（16 共用 + 12 新增，城市库已同步标注）+ interestSubs 二级细化（每类 3-5 子项）+ reinforcedTags
+│       ├── riasec.ts        # 第八轮：O*NET Interest Profiler Short Form 30 题（六维 × 5，Public Domain，ref 官方 activity 英文短语）+ RIASEC_SCALE 喜好 5 档
+│       ├── riskTaking.ts    # 第八轮：IPIP Risk-Taking 精选 10 题（6 正 4 反 keyed，Public Domain，ref IPIP 英文原句）
+│       └── riasecMap.ts     # 第八轮：六维 → 28 标签池映射常量（可调）
 │       ├── countries.json   # 第六轮国家级参考数据（65 国，fetch-country.mjs 产物勿手改；逐字段 sources 标注；TW 仅手工快照）
 │       ├── countries.ts     # COUNTRIES/BY_CODE/getCountry(code)/countriesUpdatedAt()；getCountry 对 null/未知码返回 null
 │       ├── mbtiProfiles.ts  # 16 型人格游民视角解读
@@ -98,6 +102,7 @@
 - 题库校验（第五轮）：`pnpm tsx scripts/verify-quiz-v2.ts`（IPIP 120 完整性/计分键方向/Big Five→16 型映射回归/四题型覆盖/兴趣子项强化）
 - 第六轮校验：`pnpm tsx scripts/verify-country-v3.ts`（国家数据完整性/逐字段来源标注/GPI 覆盖与豁免/网速覆盖/硬约束单测：预算排除与 5 城放宽/签证三档/安全阈值/null 无法核验/两阶段过滤/埋点计数/引擎集成冒烟；第七轮已更新：GPI 62/65 + 网速 65/65 断言替代全 null 预期）
 - i18n 校验（第七轮）：`pnpm tsx scripts/verify-i18n-v4.ts`（zh/en 键集合一致/IPIP ref 与题库词典双语/16 型与 facets/REVERSE_ZH 反查抽样/analysis 规则串反查覆盖率/HTML lang 同步/城市国家 nameEn 覆盖）
+- 第八轮校验：`pnpm tsx scripts/verify-onet-v5.ts`（RIASEC 30 题完整性/计分与 top2 单测/六维→标签映射全在池/风险 10 题 keyed 方向与计分/tagRepeats 有界叠加封顶 ×3/双语键/Quiz 流程接入；注意 verify-data-v2 依赖 /tmp/pipeline/climate.json 管道中间产物，被清理后需按 DATA.md 第五节重跑管道）
 
 ## 匹配引擎说明
 
@@ -149,6 +154,15 @@
 - 重要：`server/vite.ts` 创建 Vite 中间件时必须带 `configFile: false`——inline config 已 spread 整个 `vite.config`（含 plugins），若不禁用，Vite 会再次加载配置文件并合并出两份 `react()` 插件，导致 react-refresh 重复注入、所有组件模块 500（页面白屏）。
 - 重要：`scripts/build.sh` 中 tsup 打包 server 必须带 `--shims`——`vite.config.ts`（含 `@vitejs/plugin-react`）会被内联进 CJS bundle，ESM 代码里的 `import.meta.url` 在 CJS 输出中为 `undefined`，模块初始化即抛 `ERR_INVALID_ARG_TYPE`（部署崩溃、函数重启 3 次失败）。`--shims` 将其替换为 `pathToFileURL(__filename).href`；refresh-runtime 路径仅 dev 的 react-refresh 使用，prod 只计算不消费。
 - 重要：Express 全局错误中间件必须恰好 4 个参数 `(err, req, res, next)`——Express 按 arity=4 识别 error handler，3 参数会被当普通中间件（`server/server.ts`）。
+
+## 第八轮：O*NET RIASEC + IPIP 风险偏好（标准版只增不改）
+
+- **题库**：RIASEC 30 题（O*NET Interest Profiler Short Form，Public Domain，每维 5 题，ref 为官方 activity 英文短语）与 IPIP Risk-Taking 10 题（ipip.ori.org 语句池精选，6 正 4 反）均为 `text` 中文 + `ref` 英文模式，en 模式渲染 ref（与 IPIP 120 同构）。
+- **流程**：标准版 pro 流程 = IPIP 120（20 页）→ transition → 偏好 20 题（5 页）→ **风险 10 题（2 页，module 仍为 lifestyle）** → transition → 28 标签（3 页）→ **RIASEC 30 题（6 页，module 仍为 interests）**；进度条三阶段不变，总作答约 180 题量级。
+- **草稿兼容**：UserAnswers 新增可选 `riasec`/`risk` 字段；旧草稿缺字段由 `(draft.riasec ?? {})` / `(prev.riasec ?? {})` 兜底，恢复后补答新页即可。
+- **加权机制（引擎打分结构零改动）**：RIASEC 高分维（百分位 ≥60）给映射标签 +1 次重复权重，与「子项双倍」有界叠加、重复次数封顶 2（标签 ×3）；只强化**已勾选**标签，不凭空新增兴趣。风险分只进报告画像，不进引擎。
+- **报告**：`report/RiasecSection.tsx` = 六维雷达（复用 RadarChart 通用 axes/series）+ top2 组合画像卡（16 组合词典）+ 标签联动行 + 风险偏好卡（band 语义色徽标）；仅在 `result.riasecProfile` 存在时渲染。
+- **不动清单**：引擎 30/48/22 与 11 维、硬约束、简易版题库、计费、16Personalities 类逆向题库（版权风险，明确不采用）。
 
 ## 编码规范
 

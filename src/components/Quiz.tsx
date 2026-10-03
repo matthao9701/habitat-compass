@@ -21,6 +21,12 @@ import {
   type ProLifestyleQuestion,
 } from '../data/questionsPro';
 import { interestTagsPro, interestSubs } from '../data/interestsPro';
+import {
+  riasecQuestions,
+  RIASEC_SCALE,
+  type RiasecQuestion,
+} from '../data/riasec';
+import { riskQuestions, type RiskQuestion } from '../data/riskTaking';
 import type { InterestTag } from '../data/interests';
 import type { UserAnswers, QuizVersion } from '../lib/engine';
 import * as storage from '../lib/storage';
@@ -36,6 +42,10 @@ function firstIncompletePage(pages: Page[], draft: UserAnswers | null): number {
         return typeof draft.mbti[item.question.id] !== 'number';
       if (item.kind === 'lifestyle' || item.kind === 'proLifestyle')
         return !draft.lifestyle[item.question.id];
+      if (item.kind === 'riasec')
+        return typeof (draft.riasec ?? {})[item.question.id] !== 'number';
+      if (item.kind === 'risk')
+        return typeof (draft.risk ?? {})[item.question.id] !== 'number';
       return false;
     });
   });
@@ -54,7 +64,9 @@ type PageItem =
   | { kind: 'lifestyle'; question: LifestyleQuestion }
   | { kind: 'proLifestyle'; question: ProLifestyleQuestion }
   | { kind: 'interests'; ids: string[] }
-  | { kind: 'proInterests'; ids: string[] };
+  | { kind: 'proInterests'; ids: string[] }
+  | { kind: 'riasec'; question: RiasecQuestion }
+  | { kind: 'risk'; question: RiskQuestion };
 
 type DataPage = {
   kind: 'data';
@@ -75,6 +87,8 @@ const INTEREST_CHUNK = 8;
 const IPIP_CHUNK = 6;
 const PRO_LIFESTYLE_CHUNK = 4;
 const PRO_INTEREST_CHUNK = 10;
+const RIASEC_CHUNK = 6;
+const RISK_CHUNK = 5;
 
 function buildPages(version: QuizVersion): Page[] {
   const L = (k: string): string => translate(getCurrentLang(), k);
@@ -122,6 +136,18 @@ function buildPages(version: QuizVersion): Page[] {
           .map((question) => ({ kind: 'proLifestyle' as const, question })),
       });
     }
+    // 第八轮：IPIP Risk-Taking 10 题（偏好阶段末尾，2 页 × 5 题）
+    for (let i = 0; i < riskQuestions.length; i += RISK_CHUNK) {
+      pages.push({
+        kind: 'data',
+        module: 'lifestyle',
+        eyebrow: L('quiz.stage.risk.eyebrow'),
+        dataPageNo: dataPageNo++,
+        items: riskQuestions
+          .slice(i, i + RISK_CHUNK)
+          .map((question) => ({ kind: 'risk' as const, question })),
+      });
+    }
   } else {
     for (let i = 0; i < lifestyleQuestions.length; i += LIFESTYLE_CHUNK) {
       pages.push({
@@ -151,6 +177,18 @@ function buildPages(version: QuizVersion): Page[] {
             ids: interestTagsPro.slice(i, i + PRO_INTEREST_CHUNK).map((t) => t.id),
           },
         ],
+      });
+    }
+    // 第八轮：O*NET RIASEC 30 题（兴趣阶段第二小节，快答 Likert，5 页 × 6 题）
+    for (let i = 0; i < riasecQuestions.length; i += RIASEC_CHUNK) {
+      pages.push({
+        kind: 'data',
+        module: 'interests',
+        eyebrow: L('quiz.stage.riasec.eyebrow'),
+        dataPageNo: dataPageNo++,
+        items: riasecQuestions
+          .slice(i, i + RIASEC_CHUNK)
+          .map((question) => ({ kind: 'riasec' as const, question })),
       });
     }
   } else {
@@ -297,9 +335,15 @@ export default function Quiz({ onComplete, onExit, version = 'lite' }: QuizProps
   const answeredCount =
     Object.keys(answers.mbti).length +
     Object.keys(answers.lifestyle).length +
-    answers.interests.length;
+    answers.interests.length +
+    Object.keys(answers.riasec ?? {}).length +
+    Object.keys(answers.risk ?? {}).length;
   const totalAnswerable = isPro
-    ? ipipQuestions.length + proLifestyleQuestions.length + interestTagsPro.length
+    ? ipipQuestions.length +
+      proLifestyleQuestions.length +
+      riskQuestions.length +
+      interestTagsPro.length +
+      riasecQuestions.length
     : mbtiQuestions.length + lifestyleQuestions.length + interestTags.length;
   const progress = Math.round((answeredCount / totalAnswerable) * 100);
 
@@ -312,6 +356,10 @@ export default function Quiz({ onComplete, onExit, version = 'lite' }: QuizProps
       if (item.kind === 'lifestyle') return Boolean(answers.lifestyle[item.question.id]);
       if (item.kind === 'proLifestyle')
         return proLifestyleAnswered(item.question, answers.lifestyle);
+      if (item.kind === 'riasec')
+        return typeof (answers.riasec ?? {})[item.question.id] === 'number';
+      if (item.kind === 'risk')
+        return typeof (answers.risk ?? {})[item.question.id] === 'number';
       return true;
     });
 
@@ -402,6 +450,21 @@ export default function Quiz({ onComplete, onExit, version = 'lite' }: QuizProps
         : [...list, subId];
       return { ...prev, interestSubs: subs };
     });
+  }
+
+  // 第八轮：RIASEC 六维题 / IPIP Risk-Taking 题作答（旧草稿缺字段时惰性初始化）
+  function setRiasecAnswer(id: string, value: number): void {
+    setAnswers((prev) => ({
+      ...prev,
+      riasec: { ...(prev.riasec ?? {}), [id]: value },
+    }));
+  }
+
+  function setRiskAnswer(id: string, value: number): void {
+    setAnswers((prev) => ({
+      ...prev,
+      risk: { ...(prev.risk ?? {}), [id]: value },
+    }));
   }
 
   function goNext(): void {
@@ -608,6 +671,26 @@ export default function Quiz({ onComplete, onExit, version = 'lite' }: QuizProps
                         />
                       );
                     }
+                    if (item.kind === 'riasec') {
+                      return (
+                        <RiasecItem
+                          key={item.question.id}
+                          question={item.question}
+                          value={(answers.riasec ?? {})[item.question.id]}
+                          onSelect={(value) => setRiasecAnswer(item.question.id, value)}
+                        />
+                      );
+                    }
+                    if (item.kind === 'risk') {
+                      return (
+                        <RiskItem
+                          key={item.question.id}
+                          question={item.question}
+                          value={(answers.risk ?? {})[item.question.id]}
+                          onSelect={(value) => setRiskAnswer(item.question.id, value)}
+                        />
+                      );
+                    }
                     if (item.kind === 'proInterests') {
                       return (
                         <InterestItemPro
@@ -636,6 +719,18 @@ export default function Quiz({ onComplete, onExit, version = 'lite' }: QuizProps
                     {isPro
                       ? t('quiz.ipip.source')
                       : t('quiz.foot.source', { base: MBTI_SOURCE.base, publisher: MBTI_SOURCE.publisher, license: MBTI_SOURCE.license })}
+                  </p>
+                )}
+
+                {/* 第八轮：RIASEC / 风险题首页来源脚注 */}
+                {page.items[0]?.kind === 'riasec' && (
+                  <p className="mt-8 font-mono text-[9.5px] leading-relaxed text-ink-soft/80">
+                    {t('quiz.riasec.source')}
+                  </p>
+                )}
+                {page.items[0]?.kind === 'risk' && (
+                  <p className="mt-8 font-mono text-[9.5px] leading-relaxed text-ink-soft/80">
+                    {t('quiz.risk.source')}
                   </p>
                 )}
               </>
@@ -832,6 +927,107 @@ function IPIPItem({ question, value, onSelect }: IPIPItemProps) {
         <span>{ipipScaleHint()[1]}</span>
         <span className="font-mono text-[9px]">{value ? ipipScaleHint()[value] : ''}</span>
         <span>{ipipScaleHint()[5]}</span>
+      </div>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// 第八轮：O*NET RIASEC 喜好量表 + IPIP Risk-Taking 自陈量表
+// ---------------------------------------------------------------------------
+
+interface RiasecItemProps {
+  question: RiasecQuestion;
+  value?: number;
+  onSelect: (value: number) => void;
+}
+
+function RiasecItem({ question, value, onSelect }: RiasecItemProps) {
+  const { t, lang } = useI18n();
+  const stem = lang === 'en' ? question.ref : question.text;
+  const hint = (v: number): string => t(`quiz.riasec.${v}`);
+  return (
+    <div className="rounded-[8px] border hairline bg-card/70 px-4 py-5 md:px-6">
+      <p className="mb-4 flex items-start gap-3 text-[14px] leading-[1.75]">
+        <span className="mt-0.5 shrink-0 font-mono text-[10px] text-ochre">
+          {question.dim}
+        </span>
+        <span className="text-ink">{stem}</span>
+      </p>
+      <div className="flex items-center justify-between gap-1.5 md:gap-2.5">
+        {RIASEC_SCALE.map((opt) => {
+          const selected = value === opt.value;
+          const scaleLabel = hint(opt.value);
+          return (
+            <button
+              key={opt.value}
+              type="button"
+              aria-label={t('quiz.riasec.aria', { text: stem, label: scaleLabel })}
+              onClick={() => onSelect(opt.value)}
+              data-selected={selected}
+              title={scaleLabel}
+              className={`flex h-10 flex-1 items-center justify-center rounded-[7px] border font-mono text-[12px] transition-all duration-200 active:scale-95 ${
+                selected
+                  ? 'border-clay bg-clay text-paper shadow-[0_2px_10px_rgba(190,90,56,0.35)]'
+                  : 'border-ink/20 bg-transparent text-ink-soft hover:border-ink/50 hover:text-ink'
+              }`}
+            >
+              {opt.value}
+            </button>
+          );
+        })}
+      </div>
+      <div className="mt-2 flex items-center justify-between text-[10px] text-ink-soft/80">
+        <span>{hint(1)}</span>
+        <span className="font-mono text-[9px]">{value ? hint(value) : ''}</span>
+        <span>{hint(5)}</span>
+      </div>
+    </div>
+  );
+}
+
+interface RiskItemProps {
+  question: RiskQuestion;
+  value?: number;
+  onSelect: (value: number) => void;
+}
+
+function RiskItem({ question, value, onSelect }: RiskItemProps) {
+  const { t, lang } = useI18n();
+  const stem = lang === 'en' ? question.ref : question.text;
+  const hint = (v: number): string => t(`quiz.ipip.${v}`);
+  return (
+    <div className="rounded-[8px] border hairline bg-card/70 px-4 py-5 md:px-6">
+      <p className="mb-4 text-[14px] leading-[1.75]">
+        <span className="text-ink">{stem}</span>
+      </p>
+      <div className="flex items-center justify-between gap-1.5 md:gap-2.5">
+        {IPIP_SCALE.map((opt) => {
+          const selected = value === opt.value;
+          const scaleLabel = hint(opt.value);
+          return (
+            <button
+              key={opt.value}
+              type="button"
+              aria-label={t('quiz.ipip.aria', { text: stem, label: scaleLabel })}
+              onClick={() => onSelect(opt.value)}
+              data-selected={selected}
+              title={scaleLabel}
+              className={`flex h-10 flex-1 items-center justify-center rounded-[7px] border font-mono text-[12px] transition-all duration-200 active:scale-95 ${
+                selected
+                  ? 'border-clay bg-clay text-paper shadow-[0_2px_10px_rgba(190,90,56,0.35)]'
+                  : 'border-ink/20 bg-transparent text-ink-soft hover:border-ink/50 hover:text-ink'
+              }`}
+            >
+              {opt.value}
+            </button>
+          );
+        })}
+      </div>
+      <div className="mt-2 flex items-center justify-between text-[10px] text-ink-soft/80">
+        <span>{hint(1)}</span>
+        <span className="font-mono text-[9px]">{value ? hint(value) : ''}</span>
+        <span>{hint(5)}</span>
       </div>
     </div>
   );

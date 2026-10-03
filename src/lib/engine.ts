@@ -1,7 +1,14 @@
 import type { City, CityTraitVector } from '../data/types';
 import { cities } from '../data';
 import { interestLabelById } from '../data/interests';
-import { reinforcedTags, interestLabelProById } from '../data/interestsPro';
+import { interestLabelProById } from '../data/interestsPro';
+import {
+  deriveRiasec,
+  deriveRisk,
+  tagRepeats,
+  type RiasecProfile,
+  type RiskProfile,
+} from './riasec';
 import type { MBTIQuestion, Pole } from '../data/questions';
 import { mbtiQuestions, lifestyleQuestions } from '../data/questions';
 import {
@@ -33,6 +40,10 @@ export interface UserAnswers {
   interests: string[];
   /** pro 专有：二级细化子项选择（key = 一级标签 id），选中子项强化该兴趣权重 */
   interestSubs?: Record<string, string[]>;
+  /** 第八轮 pro 专有：RIASEC 六维题作答（O*NET IP-SF 30 题，1-5 喜好量表） */
+  riasec?: Record<string, number>;
+  /** 第八轮 pro 专有：IPIP Risk-Taking 作答（10 题 1-5 量表） */
+  risk?: Record<string, number>;
 }
 
 export interface DimensionScores {
@@ -80,6 +91,10 @@ export interface AssessmentResult {
   matches: CityMatch[];
   /** pro 专有：Big Five 完整剖面（五域百分位 + 30 facets） */
   proProfile?: BigFiveProfile;
+  /** 第八轮 pro 专有：RIASEC 六维剖面（未作答时缺省） */
+  riasecProfile?: RiasecProfile;
+  /** 第八轮 pro 专有：风险偏好画像（未作答时缺省） */
+  riskProfile?: RiskProfile;
   /** 第六轮：硬约束过滤摘要（未设置硬约束时缺省） */
   constraints?: {
     applied: boolean;
@@ -291,12 +306,17 @@ function interestFit(userTags: string[], cityTags: string[]): number | null {
   return clamp(precision + recall, 0, 100);
 }
 
-/** 标准版二级子项强化：把选中了子项的一级标签在 userTags 中重复一次（权重 ×2） */
+/** 标准版标签权重强化：重复出现 = 权重加倍。信号源：二级子项 + RIASEC 高分维（叠加封顶 ×3，见 lib/riasec.ts） */
 export function weightedUserTags(answers: UserAnswers): string[] {
   const base = answers.interests;
-  if (answers.version !== 'pro' || !answers.interestSubs) return base;
-  const boost = reinforcedTags(answers.interestSubs);
-  return [...base, ...[...boost].filter((t) => base.includes(t))];
+  if (answers.version !== 'pro') return base;
+  const repeats = tagRepeats(answers);
+  if (repeats.size === 0) return base;
+  const out = [...base];
+  for (const [tag, n] of repeats) {
+    for (let i = 0; i < n; i++) out.push(tag);
+  }
+  return out;
 }
 
 // ---------------------------------------------------------------------------
@@ -793,5 +813,11 @@ export function assess(answers: UserAnswers, cityPool?: City[]): AssessmentResul
     profileTags,
     matches: matches.slice(0, 5),
     proProfile: personality.proProfile,
+    ...(answers.version === 'pro' && answers.riasec
+      ? { riasecProfile: deriveRiasec(answers.riasec) }
+      : {}),
+    ...(answers.version === 'pro' && answers.risk
+      ? { riskProfile: deriveRisk(answers.risk) ?? undefined }
+      : {}),
   };
 }

@@ -11,6 +11,8 @@
  * 运行：pnpm tsx scripts/verify-quiz-v2.ts（node 环境无 localStorage，storage 函数自动降级）
  */
 import { ipipQuestions, IPIP_FACETS, proLifestyleQuestions, RANK_ORDINALS } from '../src/data/questionsPro';
+import { riasecQuestions, RIASEC_DIMS, RIASEC_PER_DIM } from '../src/data/riasec';
+import { riskQuestions } from '../src/data/riskTaking';
 import { interestTagsPro, interestSubs, reinforcedTags } from '../src/data/interestsPro';
 import { assess, derivePersonalityPro, type UserAnswers, type BigFiveDomain } from '../src/lib/engine';
 
@@ -238,6 +240,22 @@ check('子项 label 非空', Object.values(interestSubs).every((subs) => subs.ev
 
 const boosted = reinforcedTags({ outdoor: ['hiking', 'cycling'], food: [] });
 check('reinforcedTags 只强化有选中子项的一级', boosted.has('outdoor') && !boosted.has('food'));
+
+// ---------------------------------------------------------------------------
+// 5. 第八轮：RIASEC 30 题 + IPIP Risk-Taking 10 题（接入性断言，详测见 verify-onet-v5）
+// ---------------------------------------------------------------------------
+section('5. 第八轮量表接入');
+check('RIASEC 题量 = 30（六维 × 5）', riasecQuestions.length === 30 && RIASEC_DIMS.length === 6 && RIASEC_PER_DIM === 5);
+check('Risk-Taking 题量 = 10', riskQuestions.length === 10);
+check(
+  '两量表 ref（英文原句）全部非空',
+  riasecQuestions.every((q) => q.ref.trim().length > 0) && riskQuestions.every((q) => q.ref.trim().length > 0),
+);
+check(
+  '两量表题 id 不与 IPIP/偏好题冲突',
+  new Set([...riasecQuestions, ...riskQuestions, ...ipipQuestions, ...proLifestyleQuestions].map((q) => q.id)).size ===
+    30 + 10 + 120 + 20,
+);
 
 // ---------------------------------------------------------------------------
 // 汇总

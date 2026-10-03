@@ -110,3 +110,10 @@
 - **i18n 架构**：zh/en 两套语言包（`src/i18n/` 按域拆分），轻量 `t()` + LangContext；顶部导航「中/EN」切换；首次进入按 `navigator.language` 自动选择，手动切换后 localStorage（`nomadmatch.v1:lang`）优先；`<html lang>` 与 document.title 同步切换。
 - **金额本地化**：zh 显示 CNY 主币种（USD 括注），en 显示 USD 主币种——城市成本库以 USD 为事实源，zh 按 7.2 汇率折算展示，避免双向换算误差。
 - **翻译范围**：全站 UI 文案 + 两套题库（IPIP 120 用题库内英文原句 ref；OEJTS 32 题用英文原文；偏好/兴趣/标签补英文）+ 报告文案（16 型/30 facets/11 维/签证三档/待核实清单/国家概况标签）+ 城市/国家名按语言切换。城市级人工快照自由文本（visaDetail 等）当前仅中文，en 模式下展示并标注。
+
+## RIASEC 画像与风险偏好卡（第八轮增量）
+
+- 报告页新增「兴趣画像 · RIASEC」编号章节：六维雷达复用通用 RadarChart（单序列 deep-sea 半透明 + 0-100 百分位脚注），与 Big Five 五维雷达同语言（pine 系单色叠加、克制动效）。
+- 兴趣画像卡：top2 组合名用黑体粗标题 + 等宽 eyebrow（`兴趣画像 · RA`）；标签联动行用 moss 语义色 pill（强化=优势语义），空态用 ink-soft 说明文字。
+- 风险偏好卡：独立整宽白卡，分数 `font-data` 大号等宽 + tabular-nums；band 徽标沿用全站语义色（high=moss / mid=sea / low=ink-soft），一句话解读 + 「不影响排序」等宽脚注（9.5px + ink-soft/80），延续数据口径脚注惯例。
+- 题库两处新来源脚注（RIASEC / IPIP Risk-Taking）沿用 `quiz.ipip.source` 的等宽小字 + ink-soft 弱化样式，出现在对应阶段第一页底部。

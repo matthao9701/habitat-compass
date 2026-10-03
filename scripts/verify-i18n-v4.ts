@@ -118,6 +118,23 @@ console.log('== [2] 题目双语完整性 ==');
   const refShort = ipipQuestions.filter((q) => q.ref.trim().length < 4).length;
   const quizSrc = readFileSync(join(ROOT, 'src/components/Quiz.tsx'), 'utf-8');
   ok(`IPIP ${ipipQuestions.length} 题 ref 英文原句完整`, ipipQuestions.length === 120 && refShort === 0, `ref 过短 ${refShort}`);
+  // 第八轮：RIASEC / 风险偏好双语键
+  const r8Miss: string[] = [];
+  for (const lang of ['zh', 'en'] as const) {
+    for (const d of ['R', 'I', 'A', 'S', 'E', 'C']) {
+      if (!DICTS[lang][`riasec.dim.${d}`]) r8Miss.push(`${lang}:riasec.dim.${d}`);
+    }
+    for (const combo of ['RA', 'RI', 'RS', 'RE', 'RC', 'IA', 'II', 'IS', 'IE', 'IC', 'AS', 'AE', 'AC', 'SE', 'SC', 'EC']) {
+      for (const suffix of ['name', 'desc']) {
+        if (!DICTS[lang][`riasec.combo.${combo}.${suffix}`]) r8Miss.push(`${lang}:riasec.combo.${combo}.${suffix}`);
+      }
+    }
+    for (const k of ['riasec.section.title', 'riasec.lead', 'riasec.link', 'riasec.tagSep', 'risk.band.high', 'risk.band.mid.desc', 'risk.card.score']) {
+      if (!DICTS[lang][k]) r8Miss.push(`${lang}:${k}`);
+    }
+    for (const i of [1, 2, 3, 4, 5]) if (!DICTS[lang][`quiz.riasec.${i}`]) r8Miss.push(`${lang}:quiz.riasec.${i}`);
+  }
+  ok('第八轮 RIASEC/风险键双语完整（dim/combo×16/量表档位/风险卡）', r8Miss.length === 0, r8Miss.slice(0, 4).join(', '));
   ok('IPIP 渲染层 en 模式使用 ref（lang === \'en\' ? question.ref）', quizSrc.includes("question.ref : question.text"));
   ok('IPIP 量表档位 quiz.ipip.1-5 双语', !!DICTS.en['quiz.ipip.1'] && !!DICTS.zh['quiz.ipip.5']);
 

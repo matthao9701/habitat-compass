@@ -98,3 +98,14 @@ pnpm tsx scripts/verify-data-v2.ts
 - 快照脚本幂等可重跑：`node scripts/pipeline/snapshot-gpispeed.mjs`（直接读写 `src/data/countries.json`，仅回填 `gpi` / `internetMbpsFixed` 两字段与对应 sources，不动其他字段）。
 - 断言：`verify-country-v3` 已更新——GPI 覆盖率 ≥90%（除豁免地区）、网速覆盖率 ≥90%、取值合理性（GPI 1-5 / 1-163 名、网速 5-500 Mbps）、来源标注口径检查。
 - 参考信息层定位不变：两字段均不进引擎加权。
+
+## 九、第八轮：RIASEC 兴趣题库 + IPIP 风险偏好自陈（`src/data/riasec.ts` / `src/data/riskTaking.ts`）
+
+| 数据 | 来源 | 使用方式与声明 |
+| --- | --- | --- |
+| RIASEC 30 题 | O*NET Interest Profiler Short Form（美国劳工部 / O*NET Resource Center，**Public Domain**） | 题面按官方六维主题（每维 5 题）手工整理：中文题干为自译改写，`ref` 字段保留对应官方 activity 英文短语；5 级喜好量表（Strongly dislike → Strongly like）。引用：O*NET Interest Profiler Short Form, National Center for O*NET Development（onetcenter.org）。六维得分（5-25/维）仅用于标签权重强化与报告画像，不进引擎 30/48/22 加权 |
+| IPIP Risk-Taking 10 题 | IPIP 国际人格项目池语句池（ipip.ori.org，**Public Domain**，Goldberg, 1999） | 精选 10 条高区分度语句（6 正向 + 4 反向，`keyed` 字段标注计分方向）：中文题干为自译改写，`ref` 保留 IPIP 英文原句；5 点符合度量表（复用 quiz.ipip.1-5 文案）。产出 0-100 冒险意愿指数，仅作报告画像展示，不影响城市排序 |
+| RIASEC → 标签映射 | 自研常量 `src/data/riasecMap.ts` | 六维 → 28 兴趣标签池的映射表（可调常量）；强化机制 = 有界叠加：RIASEC 高分维（百分位 ≥60）给映射标签 +1 次重复权重，与「子项双倍」叠加后封顶 2 次重复（×3），避免权重爆炸 |
+
+- 两量表均为公有领域，产品内展示位置：测评兴趣阶段第二小节（RIASEC）与标准版偏好阶段末尾（Risk-Taking），题面均在来源脚注标注出处。
+- 断言：`scripts/verify-onet-v5.ts`（30 题每维 5 题 / 计分与 top2 组合单测 / 映射标签必须存在于 28 标签池 / 反向题计分 / 双语键完整 / 引擎加权联动冒烟）。
