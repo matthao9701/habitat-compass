@@ -16,6 +16,34 @@
     <meta property="og:locale" content="zh_CN" />
     <meta property="og:locale:alternate" content="en_US" />
     <title>栖居罗盘 · 海外定居指南</title>
+    <!-- 第十二轮：SEO/GEO 结构化数据（域名由部署侧决定，sameAs 预留） -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "/#organization",
+          "name": "栖居罗盘 · Siju Compass",
+          "url": "/",
+          "description": "面向数字游民与自由职业者的海外城市定居决策工具",
+          "sameAs": []
+        },
+        {
+          "@type": "WebApplication",
+          "@id": "/#webapp",
+          "name": "栖居罗盘 · Siju Compass",
+          "applicationCategory": "TravelApplication",
+          "operatingSystem": "Web",
+          "url": "/",
+          "description": "海外城市定居决策工具：双版本测评 + 200 城六洲匹配 + 硬约束过滤与分层评分引擎",
+          "inLanguage": ["zh-Hans", "en"],
+          "offers": { "@type": "Offer", "price": "0", "priceCurrency": "CNY", "description": "简易版永久免费；标准版一次性解锁" },
+          "publisher": { "@id": "/#organization" }
+        }
+      ]
+    }
+    </script>
   </head>
   <body>
     <div id="app"></div>

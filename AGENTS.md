@@ -1,4 +1,5 @@
 # 项目上下文 — 栖居罗盘 · 海外定居指南
+       └── generate-landing.mjs # 第十二轮 SEO/GEO：构建后生成 536 落地页（200 城+65 国 zh/en）+ 索引/方法论页 + robots/llms.txt/sitemap.xml → dist/（express.static 自动命中；verify-seo-v9 校验）
 
 ## 项目概览
 
@@ -83,6 +84,7 @@
 │       ├── countries.ts     # COUNTRIES/BY_CODE/getCountry(code)/countriesUpdatedAt()；getCountry 对 null/未知码返回 null
 │       ├── mbtiProfiles.ts  # 16 型人格游民视角解读
 │       └── cities/          # europe/asia/africa/north-america/south-america/oceania.json（共 100 城，assemble.mjs 产出勿手改）
+│   └── verify-seo-v9.ts     # 第十二轮 SEO/GEO 校验（dist 产物断言）
 ├── DATA.md                  # 数据源/许可/派生规则/缺失约定/再生成流程
 ├── index.html
 ├── tailwind.config.js       # 纸/墨/陶土配色与字体 token
@@ -107,6 +109,7 @@
 - 第九轮校验：`pnpm tsx scripts/verify-passport-v6.ts`（护照枚举与默认值/65 国快照覆盖与枚举/CN+visaFree 过滤联动与快照独立重算一致/非 CN 降级全保留/两阶段排除无重复/引擎集成冒烟/双语键完整/reason 串与词典一致）
 - 第十轮校验：`pnpm tsx scripts/verify-engine-v7.ts`（分层权重表完整性/值域/三类相对优先级/Tier 3 上限/airFit 分档/冒险友好度与风险联动算例/RIASEC 迁移解耦/双版本回归/200 城覆盖）
 - 第十一轮校验：`pnpm tsx scripts/verify-iter-v8.ts`（入口收纳结构/报告样例 demo 完整性与 expectedType/样例模式不污染/Tab 栏防重叠语义/天空蓝白 token 一致性与旧 hex 清零/新键双语与 REVERSE_ZH 反查）
+- 第十二轮校验：`pnpm tsx scripts/verify-seo-v9.ts`（536 落地页生成完整性与内容要素/null 不编造/JSON-LD 全量可解析/robots 8 爬虫/llms.txt/sitemap ≥536 URL/hreflang 互链/主站 @graph/方法论页权重与许可）
 
 ## 匹配引擎说明
 
@@ -199,3 +202,15 @@
 - TypeScript `strict` + `react-jsx`；含 JSX 的文件必须使用 `.tsx` 扩展名。
 - 禁止隐式 `any` / `as any`；函数参数、返回值、事件对象、Express `req`/`res`、`catch` 错误需有明确类型或完成收窄。
 - 及时清理未使用的变量与导入。
+
+## 第十二轮：SEO/GEO 基建——预渲染落地页 + AI 可见性
+
+- **架构定位**：落地页是主应用外的新增静态层，主应用（测评/报告/对比）零改动；无路由库——落地页不进 SPA，由构建管道生成自包含静态 HTML，生产环境 `express.static(dist)` 自动命中 `dist/city/<id>/index.html` 等目录（fallback 顺序在后不吞）；dev 模式 /city/* 走 SPA fallback 属预期。
+- **生成管道**：`scripts/generate-landing.mjs`（Node ESM，build.sh 中 vite build 之后运行）——读 `src/data/cities/*.json` + `countries.json`，token 色值从 `tailwind.config.js` 正则提取（config 为唯一事实源）；域名取 `COZE_PROJECT_DOMAIN_DEFAULT`（构建时固化进 canonical/sitemap/robots）。产物：`city/<id>/` + `en/city/<id>/`（200×2）+ `country/<code>/` + `en/country/<code>/`（65×2）+ `cities|countries|methodology`（zh+en）= 536 页 + robots.txt + llms.txt + sitemap.xml（538 URL）。
+- **页面要素（answer-first）**：首屏直答段（50-80 字）→ 6 张数据卡（成本/安全/气候/网速/空气/签证，**每卡标注来源与日期**：Numbeo/Open-Meteo 2015-2024/CAMS+WHO 2021 分档/Ookla/快照日期）→ FAQ 3-5 问（`<details>` 零 JS）+ FAQPage JSON-LD + BreadcrumbList JSON-LD → CTA 链回主应用；每页 canonical + OG/Twitter 卡 + hreflang（zh-Hans/en/x-default）双语互链。
+- **null 不编造**：无 Numbeo 详情的城直答段与 FAQ 用「待核实/待补充」措辞并给出国家级参考（verify-seo-v9 第 3 节断言）。
+- **自包含 HTML**：内联精简 CSS（CSS 变量 = 主站 token 值）、系统字体栈（不加载 webfont，LCP 最优）、零 JS；英文版 meta+直答+FAQ 完整、数据卡与中文版同构。
+- **AI 可见性文件**：robots.txt 显式 Allow OAI-SearchBot/GPTBot/ClaudeBot/Claude-Web/PerplexityBot/Google-Extended/Bingbot/Googlebot/Applebot-Extended + Sitemap 行；llms.txt（H1+简介+关键页链接+示例城市/国家页+引擎口径）；sitemap.xml 全量 538 URL。
+- **主站**：index.html 注入 Organization + WebApplication @graph JSON-LD（sameAs 预留）；Landing 图集区新增「资料库」链接（landing.library.link 双语键）→ /cities/。
+- **方法论页**：三层权重全公开（T1 硬约束过滤 / T2 0.42+0.30+0.18（偏好内 0.86/0.14）/ T3 0.05+0.03+0.02）、校准公式 52+raw×0.46、数据许可署名（GeoNames/Open-Meteo/Numbeo/EF EPI/World Bank/UNDP/TI/IEP/Ookla/IPIP/OEJTS/O*NET/WHO 2021）、更新频率与免责声明——GEO 权威信号层。
+- **校验**：`pnpm tsx scripts/verify-seo-v9.ts`（dist 缺失时自动先跑 generate-landing，幂等）。

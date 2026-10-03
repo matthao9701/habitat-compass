@@ -298,6 +298,16 @@ export default function Landing({ onStart, onDemo, onProIntro }: LandingProps) {
             </p>
           </div>
 
+          {/* 第十二轮：SEO/GEO 资料库入口（每城/每国独立资料页，可被搜索引擎与 AI 收录） */}
+          <div className="mb-7">
+            <a
+              href="/cities/"
+              className="inline-flex items-center gap-1.5 text-sm font-semibold text-pine underline decoration-pine/30 decoration-2 underline-offset-4 hover:decoration-pine"
+            >
+              {t('landing.library.link')} <span aria-hidden>→</span>
+            </a>
+          </div>
+
           <div className="mb-7 flex flex-wrap gap-2">
             <button
               type="button"

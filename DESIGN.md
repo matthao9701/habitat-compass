@@ -164,3 +164,28 @@
 - 次入口「查看报告样例」：Hero CTA 旁 ghost 样式，视觉层级低于主入口；与演示档案卡指向同一数据源（DEMO_PROFILES → buildDemoAnswers → assess）同一渲染（Report isDemo）。
 - 结尾版本介绍卡保留（lite 卡直连 lite / pro 卡进介绍页），属版本详情而非散落入口。
 - 样例模式规范：报告顶部「样例报告 · demo」徽标 + 底部引导 CTA「开始我的测评」；纯只读渲染，不写 draft/history/billing 任何键。
+
+## 第十二轮：SEO/GEO 落地页设计规范
+
+落地页是构建产物（generate-landing.mjs 生成），与主站共享品牌语言但不共享运行时，视觉规范如下：
+
+### 色彩与字体（自包含 HTML 的取值方式）
+
+- 色值以 tailwind.config.js 为唯一事实源，由 generate-landing.mjs 用正则提取并写为 CSS 变量（--c-paper 等），不硬编码到模板文本。
+- 落地页自用色：pineDeep #075985（深色页脚/页眉，sky-800）——仅落地页使用，不回写主站 token。
+- 字体：系统字体栈（-apple-system, "PingFang SC", "Noto Sans SC", "Microsoft YaHei"…），不加载 webfont——LCP 最优 + 零第三方请求；数据/等宽场景用 ui-monospace 栈。
+- 禁止在落地页引入 JS；FAQ 折叠用原生 `<details>/<summary>`。
+
+### 布局
+
+- 单列内容流，max-width 780px 居中；数据卡 2 列网格（≥720px）/ 1 列（窄屏）。
+- 首屏结构：面包屑 → H1（城市 + 「数字游民定居指南」）→ 直答段（加粗关键词）→ 数据卡网格 → FAQ → CTA → 相关链接（索引页/方法论页）→ 页脚（署名 + 免责声明）。
+- 国家页同构，数据卡换国家指标（GPI/HDI/CPI/QoL/网速/税负），附加库内城市列表。
+
+### 数据卡规范
+
+- 每卡：标签（小写灰）+ 主值（大号 mono）+ 来源行（如「来源：Numbeo 公开指数 · 快照 2026-02」）；无数据一律「数据待核实」灰字 + 一句说明，禁止编造数字或占位色块。
+
+### 双语
+
+- 中文版 /city/<id>/、英文版 /en/city/<id>/ 同构渲染；hreflang 三档互链；语言切换为纯 <a> 链接（零 JS）。

@@ -11,6 +11,9 @@ bash "$COZE_WORKSPACE_PATH/scripts/prepare-node-modules.sh" --prefer-frozen-lock
 echo "Building frontend with Vite..."
 pnpm vite build
 
+echo "Generating SEO landing pages (200 cities + 65 countries + indexes + methodology + robots/llms/sitemap)..."
+node scripts/generate-landing.mjs
+
 echo "Bundling server with tsup..."
 # --shims 修复：plugin-react 等 ESM 依赖被内联进 CJS bundle 后，import.meta.url 会变成 undefined，
 # 模块初始化即抛 ERR_INVALID_ARG_TYPE。--shims 让 tsup 在 CJS 输出中把 import.meta.url
