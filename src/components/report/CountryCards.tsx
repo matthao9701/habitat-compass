@@ -2,6 +2,7 @@ import { getCountry } from '../../data/countries';
 import type { CityMatch } from '../../lib/engine';
 import { useI18n, getCurrentLang } from '../../i18n';
 import { countryName, formatDate } from '../../lib/format';
+import { PassportVisaBlock, LongStayBlock } from './PassportVisaBlock';
 
 /**
  * CountryCards — 报告页「国家概况」参考卡（第六轮）
@@ -106,6 +107,9 @@ function CountryCard({ match }: { match: CityMatch }) {
           <p className="mt-1.5 text-[12.5px] leading-[1.7]">{country.visaOverview}</p>
         </div>
       ) : null}
+
+      <PassportVisaBlock country={country} />
+      <LongStayBlock country={country} />
 
       <p className="mt-4 border-t hairline pt-3 font-mono text-[9px] leading-[1.8] text-ink-soft/75">
         {t('cty.footnote2', { date: formatDate(country.updatedAt) })}

@@ -200,6 +200,7 @@ export default function Report({ result, onRestart, isDemo = false, onStartQuiz 
           excluded={result.constraints.excluded}
           relaxed={result.constraints.relaxed}
           overBudgetCount={result.constraints.overBudgetIds.length}
+          passportSkipped={result.constraints.passportSkipped}
         />
       ) : null}
 

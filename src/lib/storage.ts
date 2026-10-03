@@ -198,6 +198,7 @@ export function saveProHistory(answers: UserAnswers, result: AssessmentResult): 
 // ---- 硬性条件（第六轮：与草稿分开独立键，修改后可重算） ----
 
 import type { HardConstraints } from './constraints';
+import type { PassportCode } from '../data/types';
 
 export function loadHardConstraints(): HardConstraints | null {
   return read<HardConstraints | null>('hardConstraints', null);
@@ -205,4 +206,14 @@ export function loadHardConstraints(): HardConstraints | null {
 
 export function saveHardConstraints(hc: HardConstraints): void {
   write('hardConstraints', hc);
+}
+
+// ---- 护照/国籍（第九轮；硬约束步骤选择，跨会话记忆） ----
+
+export function loadPassport(): PassportCode {
+  return read<PassportCode>('passport', 'CN');
+}
+
+export function savePassport(code: PassportCode): void {
+  write('passport', code);
 }

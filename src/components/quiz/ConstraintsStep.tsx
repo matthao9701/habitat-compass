@@ -1,7 +1,14 @@
 import { useState } from 'react';
+import type { PassportCode } from '../../data/types';
 import type { HardConstraints } from '../../lib/constraints';
 import { DEFAULT_CONSTRAINTS, CNY_USD_RATE, budgetCapUSD } from '../../lib/constraints';
+import { loadPassport, savePassport } from '../../lib/storage';
 import { useI18n } from '../../i18n';
+
+/** 护照/国籍选项（第九轮；免签快照目前仅覆盖中国大陆护照） */
+export const PASSPORT_OPTIONS: PassportCode[] = [
+  'CN', 'HK', 'MO', 'TW', 'SG', 'JP', 'US', 'GB', 'CA', 'AU', 'EU', 'OTHER',
+];
 
 /**
  * ConstraintsStep — 测评前的「硬性条件」设置步骤（第六轮）
@@ -17,10 +24,19 @@ export default function ConstraintsStep({
   onSkip: () => void;
 }) {
   const { t } = useI18n();
-  const [hc, setHc] = useState<HardConstraints>(initial ?? DEFAULT_CONSTRAINTS);
+  // 旧存档可能缺 passport 字段（第六轮结构）→ 用 storage 记忆或默认值补齐
+  const [hc, setHc] = useState<HardConstraints>(() => {
+    if (initial == null) return DEFAULT_CONSTRAINTS;
+    return { ...DEFAULT_CONSTRAINTS, ...initial, passport: initial.passport ?? loadPassport() };
+  });
   const capUsd = budgetCapUSD(hc);
 
   const anyApplied = hc.budgetCap != null || hc.visaLine !== 'none' || hc.safetyEnabled;
+
+  function pickPassport(code: PassportCode): void {
+    savePassport(code);
+    setHc((prev) => ({ ...prev, passport: code }));
+  }
 
   return (
     <div className="mx-auto max-w-almanac px-6 pb-20 pt-10 md:px-10">
@@ -42,7 +58,7 @@ export default function ConstraintsStep({
               type="number"
               min={0}
               inputMode="numeric"
-              placeholder={t('cons.visa.any')}
+              placeholder={t('cons.budget.placeholder')}
               value={hc.budgetCap ?? ''}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                 const v = e.target.value === '' ? null : Math.max(0, Number(e.target.value));
@@ -72,6 +88,31 @@ export default function ConstraintsStep({
           </p>
         </section>
 
+        {/* a2. 护照/国籍（第九轮）：决定签证底线的护照视角 */}
+        <section className="mt-4 rounded-xl border border-line bg-card p-5 md:p-6">
+          <div className="flex items-baseline justify-between gap-3">
+            <h3 className="font-heading text-base font-bold md:text-lg">{t('passport.label')}</h3>
+            <span className="font-data text-xs text-ink-soft">{t('cons.optional')}</span>
+          </div>
+          <div className="mt-4">
+            <select
+              value={hc.passport}
+              onChange={(e: React.ChangeEvent<HTMLSelectElement>) => pickPassport(e.target.value as PassportCode)}
+              aria-label={t('passport.label')}
+              className="w-full rounded-lg border border-line bg-paper px-3 py-2 text-sm outline-none transition-colors focus:border-clay md:text-base"
+            >
+              {PASSPORT_OPTIONS.map((code) => (
+                <option key={code} value={code}>
+                  {t(`passport.${code}`)}
+                </option>
+              ))}
+            </select>
+            <p className="mt-3 text-xs leading-relaxed text-ink-soft">
+              {hc.passport === 'CN' ? t('passport.hintCn') : t('passport.hintOther')}
+            </p>
+          </div>
+        </section>
+
         {/* b. 签证底线 */}
         <section className="mt-4 rounded-xl border border-line bg-card p-5 md:p-6">
           <div className="flex items-baseline justify-between gap-3">
@@ -81,6 +122,7 @@ export default function ConstraintsStep({
           <div className="mt-4 grid gap-2">
             {(
               [
+                { v: 'visaFree', label: t('cons.visa.visaFree'), desc: t('cons.visa.visaFree.desc') },
                 { v: 'official', label: t('cons.visa.official'), desc: t('cons.visa.official.desc') },
                 { v: 'alternative', label: t('cons.visa.alternative'), desc: t('cons.visa.alternative.desc') },
                 { v: 'none', label: t('cons.visa.any'), desc: t('cons.visa.any.desc') },

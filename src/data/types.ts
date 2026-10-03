@@ -120,6 +120,9 @@ export interface City {
   traits: CityTraitVector | null;
 }
 
+/** 护照/国籍代码（第九轮；免签与签证适用性快照目前仅覆盖中国大陆护照） */
+export type PassportCode = 'CN' | 'HK' | 'MO' | 'TW' | 'SG' | 'JP' | 'US' | 'GB' | 'CA' | 'AU' | 'EU' | 'OTHER';
+
 /** 国家级参考数据（第六轮；参考信息层，不进引擎加权） */
 export interface Country {
   /** ISO 3166-1 alpha-2 */
@@ -154,6 +157,22 @@ export interface Country {
   visaOverview: string | null;
   /** 最高边际个税率（%，不含地方附加与社保；仅事实参考非税务建议） */
   taxTopRatePct: number | null;
+  /** 中国大陆普通护照入境待遇与主要签证适用性快照（第九轮；政策多变需核实） */
+  visaPassport: {
+    entry: 'visaFree' | 'visaOnArrival' | 'eVisa' | 'visaRequired';
+    entryNote: string;
+    work: 'friendly' | 'restricted' | 'unknown';
+    digitalNomad: 'friendly' | 'restricted' | 'unknown';
+    longTerm: 'friendly' | 'restricted' | 'unknown';
+    snapshotDate: string;
+  } | null;
+  /** 长期定居实务快照（第九轮；字段级需核实） */
+  longStay: {
+    taxResidencyDays: number | null;
+    socialSecurityCn: 'treaty' | 'none' | 'negotiating' | null;
+    rentalCustom: string | null;
+    snapshotDate: string;
+  } | null;
   /** 城市库中该国城市数（参考） */
   cityCount: number;
   /** 快照日期（YYYY-MM-DD） */

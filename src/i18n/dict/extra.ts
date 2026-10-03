@@ -253,6 +253,39 @@ const zh: Record<string, string> = {
   'cn.relaxed2': '座因剩余城市不足放宽保留（降权标注「超预算」）',
   'cn.rule': '硬性条件在打分之前一票否决，不参与 30/48/22 权重；可返回测评前的「硬性条件」步骤修改后重算。',
   'cn.relaxedRule': '放宽规则：预算过滤后剩余城市不足 5 座时，「超上限但差距 < 15%」的城市保留进入打分，并在匹配分上扣减 3 分、标注「超预算」。',
+  'cn.passportSkipped': '降级说明：「免签 / 落地签优先」底线因所选护照暂无入境快照而未启用过滤；签证维度仍按城市档位在详情中展示。',
+  'cons.budget.placeholder': '如 8000',
+
+  // ---- 持当前护照签证卡（第九轮） ----
+  'pv.title': '持当前护照 · 签证速览',
+  'pv.entry.visaFree': '免签入境',
+  'pv.entry.visaOnArrival': '落地签',
+  'pv.entry.eVisa': '电子签（eVisa）',
+  'pv.entry.visaRequired': '需提前办签',
+  'pv.work': '工作签证',
+  'pv.digitalNomad': '数字游民签证',
+  'pv.longTerm': '长期居留',
+  'pv.level.friendly': '对中国护照友好',
+  'pv.level.restricted': '有限制或需担保',
+  'pv.level.unknown': '适用性待核实',
+  'pv.disclaimer': '签证政策多变，出行前务必核实官方渠道（移民局 / 使领馆）',
+  'pv.snapshot': '快照日期 {date}',
+  'pv.fallback': '所选护照暂无入境快照——免签速览目前仅覆盖中国大陆护照；签证档位与长期定居信息仍按参考层展示。',
+
+  // ---- 长期定居注意（第九轮） ----
+  'longstay.title': '长期定居注意',
+  'longstay.taxDaysLabel': '税务居民通常触发',
+  'longstay.taxDays': '{days} 天 / 年',
+  'longstay.ssLabel': '与中国社保双边协定',
+  'longstay.ss.treaty': '有生效协定',
+  'longstay.ss.none': '无协定',
+  'longstay.ss.negotiating': '谈判中',
+  'longstay.rentalLabel': '租房押金惯例',
+  'longstay.verify': '以上为公开资料手工快照，属参考信息层，落地前请以官方信息与当地专业意见为准。',
+  'longstay.none': '该国长期定居信息暂未收录。',
+
+  // ---- 对比页国家级行（第九轮） ----
+  'cmp.taxDays': '税居天数',
   'wd.segWeight': '权重 {pct}%',
   'wd.note': '分段宽度 = 引擎权重（人格 30 / 偏好 48 / 兴趣 22）；段内进度 = 该维度与 Top 1 城市的实际得分。',
 
@@ -536,6 +569,39 @@ const en: Record<string, string> = {
   'cn.relaxed2': 'over-budget cities were kept due to an insufficient remaining pool (down-weighted, marked "over budget")',
   'cn.rule': 'Hard constraints veto before scoring and don\'t participate in the 30/48/22 weights; go back to the "Hard constraints" step before the quiz to edit and re-run.',
   'cn.relaxedRule': 'Relaxation rule: if fewer than 5 cities remain after budget filtering, cities "over the cap but within a < 15% gap" enter scoring with a 3-point deduction and an "over budget" marker.',
+  'cn.passportSkipped': 'Downgraded: the "visa-free / VOA preferred" bottom line was not enforced because the selected passport has no entry snapshot; visa tiers are still shown in details as reference.',
+  'cons.budget.placeholder': 'e.g. 1200',
+
+  // ---- Passport visa snapshot card (round 9) ----
+  'pv.title': 'Passport visa snapshot',
+  'pv.entry.visaFree': 'Visa-free entry',
+  'pv.entry.visaOnArrival': 'Visa on arrival',
+  'pv.entry.eVisa': 'eVisa',
+  'pv.entry.visaRequired': 'Visa required in advance',
+  'pv.work': 'Work visa',
+  'pv.digitalNomad': 'Digital nomad visa',
+  'pv.longTerm': 'Long-term residence',
+  'pv.level.friendly': 'CN-passport friendly',
+  'pv.level.restricted': 'Restricted / sponsorship needed',
+  'pv.level.unknown': 'To be verified',
+  'pv.disclaimer': 'Visa rules change frequently — always verify with official sources (immigration / embassy) before travel',
+  'pv.snapshot': 'Snapshot {date}',
+  'pv.fallback': 'No entry snapshot for the selected passport — the visa-free snapshot currently covers mainland Chinese passports only; visa tiers and long-stay notes below remain shown as reference.',
+
+  // ---- Long-stay notes (round 9) ----
+  'longstay.title': 'Long-stay notes',
+  'longstay.taxDaysLabel': 'Tax residency usually triggers at',
+  'longstay.taxDays': '{days} days / year',
+  'longstay.ssLabel': 'CN social-security treaty',
+  'longstay.ss.treaty': 'Treaty in force',
+  'longstay.ss.none': 'No treaty',
+  'longstay.ss.negotiating': 'Under negotiation',
+  'longstay.rentalLabel': 'Rental deposit norm',
+  'longstay.verify': 'Hand-copied from public guides — reference layer only; confirm with official sources and local professionals before relocating.',
+  'longstay.none': 'No long-stay notes for this country yet.',
+
+  // ---- Compare country rows (round 9) ----
+  'cmp.taxDays': 'Tax-residency days',
   'wd.segWeight': 'Weight {pct}%',
   'wd.note': 'Segment width = engine weights (personality 30 / preferences 48 / interests 22); inner progress = actual score against the top city.',
 

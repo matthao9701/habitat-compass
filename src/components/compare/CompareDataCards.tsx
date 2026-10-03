@@ -195,6 +195,13 @@ function CountryCompareTable({ rows }: { rows: CompareRow[] }) {
     { label: t('cty.healthcare'), valueOf: (c) => (c.numbeoHealthcare != null ? `${c.numbeoHealthcare}/100` : '—') },
     { label: t('cty.internet'), valueOf: (c) => (c.internetMbpsFixed != null ? `${c.internetMbpsFixed} Mbps` : '—') },
     { label: t('cty.tax'), valueOf: (c) => (c.taxTopRatePct != null ? `${c.taxTopRatePct}%` : '—') },
+    {
+      label: t('cmp.taxDays'),
+      valueOf: (c) =>
+        c.longStay?.taxResidencyDays != null
+          ? t('longstay.taxDays', { days: c.longStay.taxResidencyDays })
+          : '—',
+    },
   ];
 
   return (

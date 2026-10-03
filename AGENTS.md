@@ -30,6 +30,7 @@
 │       └── assemble.mjs     # 装配 100 城：39 旧城富化 + 新城派生 + 成本线性拟合 + americas 拆分 → 6 大洲 JSON
 │       └── fetch-country.mjs# 第六轮国家级管道：65 国 = World Bank 全表+逐国 GDP/POP + Numbeo country 表解析 + MANUAL 手工快照（GPI/网速源站不可达硬编码 null）→ src/data/countries.json
 │       └── snapshot-gpispeed.mjs # 第七轮幂等快照回填：GPI（IEP 2024，163 国榜单手工快照，62/65，HK/PR/FJ 豁免显式 null）+ 网速（Ookla 固定宽带中位数下行，65/65）→ countries.json 的 gpi/internetMbpsFixed + sources 标注；详见 DATA.md 第八节
+│       └── snapshot-passport.mjs   # 第九轮幂等快照回填：65 国 visaPassport（entry 四档+三维适用性+快照日期）+ longStay（税居天数/社保协定/押金惯例）→ countries.json + sources 标注；详见 DATA.md 第十节
 ├── server/
 │   ├── routes/              # Express 路由（无业务接口）
 │   ├── server.ts            # Express 入口
@@ -103,6 +104,7 @@
 - 第六轮校验：`pnpm tsx scripts/verify-country-v3.ts`（国家数据完整性/逐字段来源标注/GPI 覆盖与豁免/网速覆盖/硬约束单测：预算排除与 5 城放宽/签证三档/安全阈值/null 无法核验/两阶段过滤/埋点计数/引擎集成冒烟；第七轮已更新：GPI 62/65 + 网速 65/65 断言替代全 null 预期）
 - i18n 校验（第七轮）：`pnpm tsx scripts/verify-i18n-v4.ts`（zh/en 键集合一致/IPIP ref 与题库词典双语/16 型与 facets/REVERSE_ZH 反查抽样/analysis 规则串反查覆盖率/HTML lang 同步/城市国家 nameEn 覆盖）
 - 第八轮校验：`pnpm tsx scripts/verify-onet-v5.ts`（RIASEC 30 题完整性/计分与 top2 单测/六维→标签映射全在池/风险 10 题 keyed 方向与计分/tagRepeats 有界叠加封顶 ×3/双语键/Quiz 流程接入；注意 verify-data-v2 依赖 /tmp/pipeline/climate.json 管道中间产物，被清理后需按 DATA.md 第五节重跑管道）
+- 第九轮校验：`pnpm tsx scripts/verify-passport-v6.ts`（护照枚举与默认值/65 国快照覆盖与枚举/CN+visaFree 过滤联动与快照独立重算一致/非 CN 降级全保留/两阶段排除无重复/引擎集成冒烟/双语键完整/reason 串与词典一致）
 
 ## 匹配引擎说明
 
@@ -163,6 +165,15 @@
 - **加权机制（引擎打分结构零改动）**：RIASEC 高分维（百分位 ≥60）给映射标签 +1 次重复权重，与「子项双倍」有界叠加、重复次数封顶 2（标签 ×3）；只强化**已勾选**标签，不凭空新增兴趣。风险分只进报告画像，不进引擎。
 - **报告**：`report/RiasecSection.tsx` = 六维雷达（复用 RadarChart 通用 axes/series）+ top2 组合画像卡（16 组合词典）+ 标签联动行 + 风险偏好卡（band 语义色徽标）；仅在 `result.riasecProfile` 存在时渲染。
 - **不动清单**：引擎 30/48/22 与 11 维、硬约束、简易版题库、计费、16Personalities 类逆向题库（版权风险，明确不采用）。
+
+## 第九轮：护照维度 + 签证匹配升级 + 长期定居模块
+
+- **护照选择器**：硬约束步骤新增（12 选项 PASSPORT_OPTIONS：CN/HK/MO/TW/SG/JP/US/GB/CA/AU/EU/OTHER），存 `HardConstraints.passport`（默认 'CN'）+ `UserAnswers.passport`，`storage.loadPassport/savePassport` 独立键跨会话记忆。
+- **免签快照**：`scripts/pipeline/snapshot-passport.mjs` 幂等回填 `Country.visaPassport`（entry 四档 + entryNote + work/digitalNomad/longTerm 三维 friendly/restricted/unknown + snapshotDate，65/65）与 `Country.longStay`（taxResidencyDays / socialSecurityCn treaty|none|negotiating / rentalCustom，65/65，字段级允许 null）；**仅覆盖中国大陆护照**，来源与日期见 DATA.md 第十节。
+- **过滤联动**：VisaLine 新增 'visaFree' 首档——CN 护照按 `getCountry(city.countryCode)?.visaPassport` 过滤（免签/落地签通过；无快照 = 无法核验排除，与 safety null 语义一致）；**非 CN 护照降级不过滤**（`ConstraintResult.passportSkipped = true`），ConstraintsNotice 显示降级标注。visaFree 档**不走城市 visaStatus 档位检查**（official/alternative 才走）。
+- **展示**：共享组件 `report/PassportVisaBlock.tsx`（PassportVisaBlock 持当前护照签证卡 + LongStayBlock 长期定居注意）——报告页 CountryCards 与对比页 CityDetailModal 复用，非 CN 护照显示降级文案，固定免责声明「签证政策多变，出行前务必核实官方渠道」；对比页国家级对比行追加「税居天数」列（cmp.taxDays）。
+- **两阶段去重**：applyHardConstraints 的 pushExcluded 按 cityId 去重——放宽回填失败者不再重复登记（阶段 1 预算原因保留）。
+- **约束**：引擎 30/48/22 与 11 维不动；简易版题库与流程不动；标准版题量不变；visaPassport/longStay 均为参考信息层（引擎加权不消费）。
 
 ## 编码规范
 

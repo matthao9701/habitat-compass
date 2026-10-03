@@ -11,10 +11,13 @@ export default function ConstraintsNotice({
   excluded,
   relaxed,
   overBudgetCount,
+  passportSkipped = false,
 }: {
   excluded: ExcludedEntry[];
   relaxed: boolean;
   overBudgetCount: number;
+  /** 第九轮：免签优先档因所选护照无快照而降级不过滤时置 true，需在排除说明中标注 */
+  passportSkipped?: boolean;
 }) {
   const { t } = useI18n();
   const [open, setOpen] = useState(false);
@@ -64,6 +67,12 @@ export default function ConstraintsNotice({
         {relaxed ? (
           <p className="mt-3 font-mono text-[10px] leading-relaxed text-ink-soft">
             {t('cn.relaxedRule')}
+          </p>
+        ) : null}
+
+        {passportSkipped ? (
+          <p className="mt-2 font-mono text-[10px] leading-relaxed text-ink-soft">
+            {t('cn.passportSkipped')}
           </p>
         ) : null}
       </div>

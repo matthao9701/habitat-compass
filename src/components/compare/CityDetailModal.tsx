@@ -4,6 +4,7 @@ import { getCountry } from '../../data/countries';
 import type { CompareRow } from '../../lib/compare';
 import { useI18n, getCurrentLang } from '../../i18n';
 import { cityName, countryName, formatDate } from '../../lib/format';
+import { PassportVisaBlock, LongStayBlock } from '../report/PassportVisaBlock';
 
 /**
  * CityDetailModal — 对比页城市详情弹层（第六轮）
@@ -154,6 +155,8 @@ export default function CityDetailModal({
                 {country.visaOverview}
               </p>
             ) : null}
+            <PassportVisaBlock country={country} />
+            <LongStayBlock country={country} />
             <p className="mt-3 border-t hairline pt-2.5 font-mono text-[9px] leading-[1.8] text-ink-soft/75">
               {t('cdm.footnote', { date: formatDate(country.updatedAt) })}
             </p>

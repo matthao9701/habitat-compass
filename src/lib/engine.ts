@@ -1,4 +1,4 @@
-import type { City, CityTraitVector } from '../data/types';
+import type { City, CityTraitVector, PassportCode } from '../data/types';
 import { cities } from '../data';
 import { interestLabelById } from '../data/interests';
 import { interestLabelProById } from '../data/interestsPro';
@@ -44,6 +44,8 @@ export interface UserAnswers {
   riasec?: Record<string, number>;
   /** 第八轮 pro 专有：IPIP Risk-Taking 作答（10 题 1-5 量表） */
   risk?: Record<string, number>;
+  /** 第九轮：护照/国籍（硬约束步骤选择，默认中国大陆；免签快照目前仅覆盖 CN） */
+  passport?: PassportCode;
 }
 
 export interface DimensionScores {
@@ -102,6 +104,8 @@ export interface AssessmentResult {
     excludedCount: number;
     excluded: import('./constraints').ExcludedEntry[];
     overBudgetIds: string[];
+    /** 第九轮：免签底线因所选护照无快照而降级不过滤 */
+    passportSkipped: boolean;
   };
 }
 

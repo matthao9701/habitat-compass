@@ -67,6 +67,7 @@ export default function App() {
             excludedCount: cRes.excluded.length,
             excluded: cRes.excluded,
             overBudgetIds: cRes.overBudgetIds,
+            passportSkipped: cRes.passportSkipped,
           }
         : undefined,
     };

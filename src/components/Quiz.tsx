@@ -304,13 +304,16 @@ export default function Quiz({ onComplete, onExit, version = 'lite' }: QuizProps
   const [direction, setDirection] = useState<1 | -1>(1);
   const [answers, setAnswers] = useState<UserAnswers>(
     () =>
-      draft ?? {
-        version,
-        mbti: {},
-        lifestyle: {},
-        interests: [],
-        ...(isPro ? { interestSubs: {} } : {}),
-      },
+      draft
+        ? { passport: storage.loadPassport(), ...draft }
+        : {
+            version,
+            mbti: {},
+            lifestyle: {},
+            interests: [],
+            passport: storage.loadPassport(),
+            ...(isPro ? { interestSubs: {} } : {}),
+          },
   );
   // 已应用的硬性条件（第六轮）：新会话默认先展示设置步骤；有草稿进度时直接续答
   const [appliedConstraints, setAppliedConstraints] = useState<HardConstraints | null>(() =>
@@ -496,6 +499,8 @@ export default function Quiz({ onComplete, onExit, version = 'lite' }: QuizProps
   function applyConstraints(hc: HardConstraints): void {
     storage.saveHardConstraints(hc);
     setAppliedConstraints(hc);
+    // 第九轮：护照选择随硬约束一起进入作答存档（草稿机制自动持久化）
+    setAnswers((prev) => ({ ...prev, passport: hc.passport }));
     if (hasAnyConstraint(hc)) track('hard_constraints_used');
     enterQuiz();
   }

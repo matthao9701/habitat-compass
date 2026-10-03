@@ -109,3 +109,19 @@ pnpm tsx scripts/verify-data-v2.ts
 
 - 两量表均为公有领域，产品内展示位置：测评兴趣阶段第二小节（RIASEC）与标准版偏好阶段末尾（Risk-Taking），题面均在来源脚注标注出处。
 - 断言：`scripts/verify-onet-v5.ts`（30 题每维 5 题 / 计分与 top2 组合单测 / 映射标签必须存在于 28 标签池 / 反向题计分 / 双语键完整 / 引擎加权联动冒烟）。
+
+## 十、第九轮：护照免签快照 + 长期定居快照（`scripts/pipeline/snapshot-passport.mjs`）
+
+| 字段 | 来源 | 许可 / 口径 |
+| --- | --- | --- |
+| `visaPassport.entry` / `entryNote` | 各国移民局公开信息 + 中国领事服务网免签协定清单 + 权威媒体公开报道，**手工快照（2025-01-15）** | 参考信息层；**签证政策多变，快照仅近似参考，出行前务必核实官方渠道**（组件内固定免责声明）。entry 枚举：visaFree（互免协定/单方面免签）/ visaOnArrival / eVisa / visaRequired |
+| `visaPassport.work` / `digitalNomad` / `longTerm` | 各国移民局与官方数字游民签证公开页面，手工整理 | 「中国护照适用性」三级枚举：friendly / restricted / unknown；**unknown 表示公开渠道未能确认，不编造** |
+| `longStay.taxResidencyDays` | 各国税务局公开指引（如 183 天规则、US 183 天实质存在测试、DE >183 天等） | 手工快照；部分国家为特殊口径（AE 90 / JP 365 / NO 270），null 表示无单一权威口径 |
+| `longStay.socialSecurityCn` | 人力资源社会保障部公布的中外社保双边协定生效名单（截至 2025-01） | treaty（已生效）/ none / negotiating；库内 11 国（DE/KR/DK/FI/CA/CH/NL/FR*/ES/RS/JP/RW 名单中 FR 不在本项目 65 国库——城市库无法国城市） |
+| `longStay.rentalCustom` | 公开租房指南与当地中介说明的手工概括（押金月数/预付惯例） | 定性描述非法规引用；null 表示未收录 |
+
+- 覆盖：`visaPassport` 65/65、`longStay` 65/65（对象级覆盖，字段级允许 null）；逐字段 `sources.visaPassport` / `sources.longStay` 标注口径与快照日期。
+- 免签快照**仅覆盖中国大陆护照**：其他护照（HK/MO/TW/SG/JP/US/GB/CA/AU/EU/OTHER）选择「免签/落地签优先」底线时，约束层降级为不过滤并在报告排除说明中标注（`passportSkipped`），不猜测其他护照待遇。
+- 快照脚本幂等可重跑：`node scripts/pipeline/snapshot-passport.mjs`（直接读写 `src/data/countries.json`，仅回填 `visaPassport` / `longStay` 与对应 sources，不动其他字段）。
+- 断言：`scripts/verify-passport-v6.ts`（护照枚举与默认值 / 65 国覆盖与枚举合法性 / CN+visaFree 过滤联动与快照独立重算一致 / 非 CN 降级全保留 / 两阶段排除无重复 / 引擎集成冒烟 / 双语键完整 / reason 串与词典一致）。
+- 参考信息层定位不变：两块快照均不进引擎加权；过滤联动仅消费 `visaPassport.entry`（用户显式勾选底线时的一票否决）。
