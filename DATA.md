@@ -54,3 +54,10 @@ node scripts/pipeline/assemble.mjs
 # 6. 校验
 pnpm tsx scripts/verify-data-v2.ts
 ```
+
+## 六、第五轮：标准版题库出处（IPIP-NEO 120）
+
+- **标准版人格题库**：IPIP-NEO 120 结构（30 facets × 4 题，五点量表，+keyed / -keyed 各半），条目译自 **IPIP（International Personality Item Pool，Goldberg, 1999）公有领域题库**（ipip.ori.org），量表结构参照 Johnson (2014) 的 IPIP-NEO-120 版式；中文译文为本产品自译（每题附 `ref` 英文原句便于回溯核对）。IPIP 声明：该题库属公有领域，可自由复制、编辑、翻译与商用，无需署名（但仍建议注明出处）。
+- **Big Five → 16 型映射**：McCrae & Costa (1989) 经典对应——E/I←Extraversion、S/N←Openness（高开放→N）、T/F←Agreeableness（高宜人→F）、J/P←Conscientiousness（高尽责→J）；Neuroticism 无对应轴，作为独立补充维度展示（海外定居压力适应参考）。
+- **计分**：IPIP 官方标准——+keyed 题计 1-5 原值、-keyed 题计 5-1，facet 内平均 → (mean−1)/4×100 百分位；域百分位 = 6 facets 均值；四轴字母按对应域 50 分位分界（≥50 归 E/N/F/J）。
+- 上述出处已在标准版报告页映射说明卡与本页一并注明；简化版 OEJTS 题库出处见第一轮记录（CC BY-NC-SA 4.0，仅用于非商用场景）。

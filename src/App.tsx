@@ -3,16 +3,17 @@ import { AnimatePresence, motion } from 'framer-motion';
 import Landing from './components/Landing';
 import Quiz from './components/Quiz';
 import Report from './components/Report';
+import ProIntro from './components/billing/ProIntro';
 import TabBar, { type TabId } from './components/TabBar';
 import CompareScreen from './components/compare/CompareScreen';
 import ProfileScreen from './components/ProfileScreen';
-import { assess, type UserAnswers, type AssessmentResult } from './lib/engine';
+import { assess, type UserAnswers, type AssessmentResult, type QuizVersion } from './lib/engine';
 import { DEMO_PROFILES, buildDemoAnswers } from './data/demoProfiles';
 import * as storage from './lib/storage';
 
-type Screen = 'landing' | 'quiz' | 'report' | 'compare' | 'profile';
+type Screen = 'landing' | 'quiz' | 'report' | 'compare' | 'profile' | 'pro-intro';
 
-/** Tab 栏仅在三个常驻页面显示（quiz / report 为专注模式） */
+/** Tab 栏仅在三个常驻页面显示（quiz / report / pro-intro 为专注模式） */
 const TAB_SCREENS: Screen[] = ['landing', 'compare', 'profile'];
 
 export default function App() {
@@ -20,6 +21,7 @@ export default function App() {
   const [result, setResult] = useState<AssessmentResult | null>(null);
   const [answers, setAnswers] = useState<UserAnswers | null>(null);
   const [isDemo, setIsDemo] = useState(false);
+  const [quizVersion, setQuizVersion] = useState<QuizVersion>('lite');
   const [compareSeed, setCompareSeed] = useState<string[]>([]);
 
   function go(next: Screen): void {
@@ -31,7 +33,13 @@ export default function App() {
     go(tab);
   }
 
-  function startQuiz(): void {
+  /** 进入测评：标准版未解锁时跳商品介绍页（可预览，不可答题） */
+  function startQuiz(version: QuizVersion = 'lite'): void {
+    if (version === 'pro' && !storage.isProUnlocked()) {
+      go('pro-intro');
+      return;
+    }
+    setQuizVersion(version);
     go('quiz');
   }
 
@@ -39,20 +47,27 @@ export default function App() {
     go('landing');
   }
 
-  function completeQuiz(answers: UserAnswers): void {
-    const assessment = assess(answers);
-    storage.clearDraft(); // 完成后清除草稿
-    storage.saveHistory(answers, assessment);
-    setAnswers(answers);
+  function completeQuiz(done: UserAnswers): void {
+    const assessment = assess(done);
+    if (done.version === 'pro') {
+      storage.clearProDraft(); // 完成后清除标准版草稿
+      storage.saveProHistory(done, assessment);
+    } else {
+      storage.clearDraft(); // 完成后清除简易版草稿
+      storage.saveHistory(done, assessment);
+    }
+    setAnswers(done);
     setResult(assessment);
     setIsDemo(false);
     go('report');
   }
 
   function restart(): void {
+    const version = result?.version === 'pro' ? 'pro' : 'lite';
     setResult(null);
     setAnswers(null);
     setIsDemo(false);
+    setQuizVersion(version);
     go('quiz');
   }
 
@@ -66,9 +81,9 @@ export default function App() {
     go('report');
   }
 
-  /** 我的 Tab：恢复最近一次测评报告 */
-  function openHistory(): void {
-    const entry = storage.loadHistory();
+  /** 我的 Tab：恢复最近一次测评报告（简易版 / 标准版各一条） */
+  function openHistory(version: QuizVersion = 'lite'): void {
+    const entry = version === 'pro' ? storage.loadProHistory() : storage.loadHistory();
     if (!entry) return;
     setAnswers(entry.answers);
     setResult(entry.result);
@@ -80,6 +95,11 @@ export default function App() {
   function openCompare(seed?: string[]): void {
     setCompareSeed(seed ?? []);
     go('compare');
+  }
+
+  /** 标准版商品介绍页（未购买可预览） */
+  function openProIntro(): void {
+    go('pro-intro');
   }
 
   return (
@@ -95,8 +115,18 @@ export default function App() {
           exit={{ opacity: 0 }}
           transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
         >
-          {screen === 'landing' && <Landing onStart={startQuiz} onDemo={openDemo} />}
-          {screen === 'quiz' && <Quiz onComplete={completeQuiz} onExit={exitQuiz} />}
+          {screen === 'landing' && (
+            <Landing onStart={startQuiz} onDemo={openDemo} onProIntro={openProIntro} />
+          )}
+          {screen === 'pro-intro' && (
+            <ProIntro
+              onStartPro={() => startQuiz('pro')}
+              onExit={exitQuiz}
+            />
+          )}
+          {screen === 'quiz' && (
+            <Quiz onComplete={completeQuiz} onExit={exitQuiz} version={quizVersion} />
+          )}
           {screen === 'report' && result && (
             <Report result={result} onRestart={restart} isDemo={isDemo} onStartQuiz={startQuiz} />
           )}
@@ -113,6 +143,7 @@ export default function App() {
               onOpenQuiz={startQuiz}
               onOpenHistory={openHistory}
               onOpenCompare={openCompare}
+              onProIntro={openProIntro}
             />
           )}
         </motion.div>

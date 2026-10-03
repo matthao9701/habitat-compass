@@ -1,22 +1,38 @@
 import type { City, CityTraitVector } from '../data/types';
 import { cities } from '../data';
 import { interestLabelById } from '../data/interests';
+import { reinforcedTags, interestLabelProById } from '../data/interestsPro';
 import type { MBTIQuestion, Pole } from '../data/questions';
 import { mbtiQuestions, lifestyleQuestions } from '../data/questions';
+import {
+  ipipQuestions,
+  proLifestyleQuestions,
+  RANK_ORDINALS,
+  IPIP_FACETS,
+  type BigFiveDomain,
+  type UserDimKey,
+} from '../data/questionsPro';
 
 // ---------------------------------------------------------------------------
 // 用户答案与测评结果类型
 // ---------------------------------------------------------------------------
 
+/** 测评版本：lite = 简易版（免费），pro = 标准版（IPIP-NEO 120 题深度测评） */
+export type QuizVersion = 'lite' | 'pro';
+
 export type AxisName = 'EI' | 'SN' | 'TF' | 'JP';
 
 export interface UserAnswers {
-  /** 阶段一：OEJTS 结构七级双极量表作答（1 = 完全符合左特征，4 = 中立，7 = 完全符合右特征） */
+  /** 作答版本；历史草稿无该字段时视为 lite */
+  version?: QuizVersion;
+  /** 阶段一：lite = OEJTS 七级双极量表（1-7）；pro = IPIP-NEO 五点量表（1-5） */
   mbti: Record<string, number>;
-  /** 阶段二：生活偏好情景选择题作答 */
+  /** 阶段二：生活偏好作答。pro 的滑杆/排序/二选一按约定编码存入（见 questionsPro.ts） */
   lifestyle: Record<string, string>;
-  /** 阶段三：兴趣标签多选 */
+  /** 阶段三：兴趣标签多选（pro 为 28 个一级标签 id） */
   interests: string[];
+  /** pro 专有：二级细化子项选择（key = 一级标签 id），选中子项强化该兴趣权重 */
+  interestSubs?: Record<string, string[]>;
 }
 
 export interface DimensionScores {
@@ -49,6 +65,8 @@ export interface CityMatch {
 }
 
 export interface AssessmentResult {
+  /** 测评版本（lite / pro） */
+  version: QuizVersion;
   typeCode: string;
   /** 四个维度的位置：正为 E/N/F/P，负为 I/S/T/J（-100..100） */
   traitVector: CityTraitVector;
@@ -58,6 +76,30 @@ export interface AssessmentResult {
   interests: string[];
   profileTags: string[];
   matches: CityMatch[];
+  /** pro 专有：Big Five 完整剖面（五域百分位 + 30 facets） */
+  proProfile?: BigFiveProfile;
+}
+
+// ---------------------------------------------------------------------------
+// Big Five（标准版人格）：IPIP-NEO 计分 → 30 facets → 5 域百分位 → 16 型映射
+// ---------------------------------------------------------------------------
+
+export interface BigFiveFacetScore {
+  facet: string;
+  facetZh: string;
+  domain: BigFiveDomain;
+  /** 0-100 百分位 */
+  percentile: number;
+}
+
+export interface BigFiveProfile {
+  /** 五大域百分位（0-100） */
+  domains: Record<BigFiveDomain, number>;
+  /** 30 个 facet 百分位 */
+  facets: BigFiveFacetScore[];
+  typeCode: string;
+  traitVector: CityTraitVector;
+  axisScores: Record<AxisName, number>;
 }
 
 // ---------------------------------------------------------------------------
@@ -225,13 +267,26 @@ function safetyObjFit(safety: number | null): number | null {
   return clamp(safety, 5, 100);
 }
 
+/**
+ * 兴趣匹配（userTags 允许重复出现以实现二级子项权重强化）：
+ * 精度（user 视角，70% 权重）+ 召回（city 视角，30% 权重，按去重交集计）。
+ */
 function interestFit(userTags: string[], cityTags: string[]): number | null {
   if (cityTags.length === 0) return null; // 城市无标签数据 → 兴趣维度降权，不编造
   if (userTags.length === 0) return 72;
-  const matched = userTags.filter((t) => cityTags.includes(t)).length;
-  const precision = (matched / userTags.length) * 70;
-  const recall = (matched / cityTags.length) * 30;
-  return clamp((precision + recall) * 100 / 100, 0, 100);
+  const matchedArr = userTags.filter((t) => cityTags.includes(t));
+  const matchedUnique = new Set(matchedArr).size;
+  const precision = (matchedArr.length / userTags.length) * 70;
+  const recall = (matchedUnique / cityTags.length) * 30;
+  return clamp(precision + recall, 0, 100);
+}
+
+/** 标准版二级子项强化：把选中了子项的一级标签在 userTags 中重复一次（权重 ×2） */
+export function weightedUserTags(answers: UserAnswers): string[] {
+  const base = answers.interests;
+  if (answers.version !== 'pro' || !answers.interestSubs) return base;
+  const boost = reinforcedTags(answers.interestSubs);
+  return [...base, ...[...boost].filter((t) => base.includes(t))];
 }
 
 // ---------------------------------------------------------------------------
@@ -291,6 +346,172 @@ export function derivePersonality(mbtiAnswers: Record<string, number>): {
   }
 
   return { typeCode: letters.join(''), traitVector: vector, axisScores };
+}
+
+// ---------------------------------------------------------------------------
+// 标准版人格：IPIP-NEO 五点计分 → Big Five → 16 型映射（McCrae & Costa 对应）
+// ---------------------------------------------------------------------------
+
+const IPIP_FACET_ITEMS = new Map<string, typeof ipipQuestions>();
+for (const f of IPIP_FACETS) {
+  IPIP_FACET_ITEMS.set(
+    f.key,
+    ipipQuestions.filter((q) => q.facet === f.key),
+  );
+}
+
+const clamp5 = (v: number): number => Math.min(5, Math.max(1, Math.round(v)));
+
+/**
+ * 标准版计分（IPIP 官方口径）：
+ * +keyed 得分 = 原始值；-keyed 得分 = 6 - 原始值（1-5）。
+ * facet 分 = 4 题均值 → 域分 = 6 facet 均值 → 百分位 = (score - 1) / 4 * 100。
+ * Big Five → 16 型（McCrae & Costa 1989 经典对应，中位 50 分界，恰为 50 归正向字母）：
+ *   E/I ← Extraversion；S/N ← Openness（高开放 → N）；T/F ← Agreeableness（高宜人 → F）；
+ *   J/P ← Conscientiousness（高尽责 → J）。Neuroticism 无对应字母，作为独立补充维度。
+ * traitVector 对齐引擎语义（正 = E/N/F/P）：
+ *   ei = (E-50)·2；sn = (O-50)·2；tf = (A-50)·2；jp = (50-C)·2。
+ */
+export function derivePersonalityPro(ipipAnswers: Record<string, number>): BigFiveProfile {
+  const facetPct = new Map<string, number>();
+
+  for (const f of IPIP_FACETS) {
+    const items = IPIP_FACET_ITEMS.get(f.key) ?? [];
+    let sum = 0;
+    let count = 0;
+    for (const q of items) {
+      const raw = ipipAnswers[q.id];
+      if (typeof raw !== 'number') continue;
+      const v = clamp5(raw);
+      sum += q.keyed === 1 ? v : 6 - v;
+      count += 1;
+    }
+    // 未作答的题按量表中值 3 计（facet 不因此缺分）
+    sum += (items.length - count) * 3;
+    const mean = sum / items.length;
+    facetPct.set(f.key, ((mean - 1) / 4) * 100);
+  }
+
+  const domainMean = (domain: BigFiveDomain): number => {
+    const keys = IPIP_FACETS.filter((f) => f.domain === domain).map((f) => f.key);
+    return keys.reduce((s, k) => s + (facetPct.get(k) ?? 50), 0) / keys.length;
+  };
+
+  const domains: Record<BigFiveDomain, number> = {
+    E: domainMean('E'),
+    A: domainMean('A'),
+    C: domainMean('C'),
+    N: domainMean('N'),
+    O: domainMean('O'),
+  };
+
+  const letters = { E: domains.E >= 50 ? 'E' : 'I', N: domains.O >= 50 ? 'N' : 'S', F: domains.A >= 50 ? 'F' : 'T', J: domains.C >= 50 ? 'J' : 'P' };
+  const typeCode = `${letters.E}${letters.N}${letters.F}${letters.J}`;
+
+  const vector: CityTraitVector = {
+    ei: Math.round((domains.E - 50) * 2),
+    sn: Math.round((domains.O - 50) * 2),
+    tf: Math.round((domains.A - 50) * 2),
+    jp: Math.round((50 - domains.C) * 2),
+  };
+  const axisScores: Record<AxisName, number> = {
+    EI: Math.round(domains.E),
+    SN: Math.round(domains.O),
+    TF: Math.round(domains.A),
+    JP: 100 - Math.round(domains.C),
+  };
+
+  const facets: BigFiveFacetScore[] = IPIP_FACETS.map((f) => ({
+    facet: f.key,
+    facetZh: f.zh,
+    domain: f.domain,
+    percentile: Math.round(facetPct.get(f.key) ?? 50),
+  }));
+
+  return { domains, facets, typeCode, traitVector: vector, axisScores };
+}
+
+// ---------------------------------------------------------------------------
+// 标准版生活偏好：20 题（4 题型）→ 6 个序数维（pace/size/social/language/visa/remote）
+// ---------------------------------------------------------------------------
+
+export type PreferenceOrdinals = Record<UserDimKey, number>;
+
+const clamp15 = (v: number): number => Math.min(5, Math.max(1, v));
+
+/**
+ * 聚合标准版偏好作答 → 每维 1-5 序数（多题均值，四舍五入到 0.1）。
+ * - choice / forced：按选项 ordinalMap 贡献
+ * - slider：作答编码 'p1-p2-p3-p4'（与 dims 顺序一致，和 = total）→ 每维 1 + 4·pct
+ * - rank：作答编码 'a>b>c>d' → RANK_ORDINALS（5 / 3.5 / 2.5 / 1）
+ */
+export function derivePreferenceOrdinals(lifestyle: Record<string, string>): PreferenceOrdinals {
+  const sums: Record<UserDimKey, { sum: number; count: number }> = {
+    pace: { sum: 0, count: 0 },
+    size: { sum: 0, count: 0 },
+    social: { sum: 0, count: 0 },
+    language: { sum: 0, count: 0 },
+    visa: { sum: 0, count: 0 },
+    remote: { sum: 0, count: 0 },
+  };
+
+  for (const q of proLifestyleQuestions) {
+    const raw = lifestyle[q.id];
+    if (!raw) continue;
+    const contrib: Partial<Record<UserDimKey, number>> = {};
+
+    if (q.kind === 'choice' || q.kind === 'forced') {
+      Object.assign(contrib, q.ordinalMap[raw] ?? {});
+    } else if (q.kind === 'slider') {
+      const parts = raw.split('-').map(Number);
+      q.dims.forEach((d, i) => {
+        const p = parts[i];
+        if (Number.isFinite(p) && p >= 0) contrib[d.key] = 1 + (p / q.total) * 4;
+      });
+    } else {
+      const order = raw.split('>');
+      q.items.forEach((it) => {
+        const pos = order.indexOf(it.value);
+        if (pos >= 0 && pos < RANK_ORDINALS.length) contrib[it.value] = RANK_ORDINALS[pos];
+      });
+    }
+
+    for (const [k, v] of Object.entries(contrib)) {
+      const key = k as UserDimKey;
+      if (typeof v !== 'number') continue;
+      sums[key].sum += clamp15(v);
+      sums[key].count += 1;
+    }
+  }
+
+  const round1 = (v: number): number => Math.round(v * 10) / 10;
+  return {
+    pace: sums.pace.count ? round1(sums.pace.sum / sums.pace.count) : 3,
+    size: sums.size.count ? round1(sums.size.sum / sums.size.count) : 3,
+    social: sums.social.count ? round1(sums.social.sum / sums.social.count) : 3,
+    language: sums.language.count ? round1(sums.language.sum / sums.language.count) : 3,
+    visa: sums.visa.count ? round1(sums.visa.sum / sums.visa.count) : 3,
+    remote: sums.remote.count ? round1(sums.remote.sum / sums.remote.count) : 3,
+  };
+}
+
+/** 按版本分发人格计算：pro → IPIP-NEO 计分；lite → OEJTS 计分 */
+export function getPersonality(answers: UserAnswers): {
+  typeCode: string;
+  traitVector: CityTraitVector;
+  axisScores: Record<AxisName, number>;
+  proProfile?: BigFiveProfile;
+} {
+  if (answers.version === 'pro') {
+    const profile = derivePersonalityPro(answers.mbti);
+    return {
+      typeCode: profile.typeCode,
+      traitVector: profile.traitVector,
+      axisScores: profile.axisScores,
+      proProfile: profile,
+    };
+  }
+  return derivePersonality(answers.mbti);
 }
 
 // ---------------------------------------------------------------------------
@@ -386,6 +607,7 @@ export function buildProfileTags(result: {
   typeCode: string;
   preferences: UserAnswers['lifestyle'];
   interests: string[];
+  version?: QuizVersion;
 }): string[] {
   const tags: string[] = [result.typeCode];
   for (const q of lifestyleQuestions) {
@@ -394,7 +616,7 @@ export function buildProfileTags(result: {
     if (option) tags.push(option.label);
   }
   for (const id of result.interests.slice(0, 6)) {
-    tags.push(interestLabelById.get(id) ?? id);
+    tags.push(interestLabelById.get(id) ?? interestLabelProById.get(id) ?? id);
   }
   return tags;
 }
@@ -411,8 +633,12 @@ export interface CityFits {
 }
 
 export function computeCityFits(city: City, answers: UserAnswers): CityFits {
-  const { traitVector } = derivePersonality(answers.mbti);
+  const { traitVector } = getPersonality(answers);
   const preferenceInputs = answers.lifestyle;
+  const isPro = answers.version === 'pro';
+
+  // 标准版：20 题聚合出 6 个序数维；budget/climate 仍走槽位题（P5/P6）
+  const prefOrd = isPro ? derivePreferenceOrdinals(preferenceInputs) : null;
 
   // 人格契合：城市未标注 traits（新城无编辑分析依据）→ null 降权，不编造
   const personalityFit: number | null = city.traits
@@ -424,18 +650,33 @@ export function computeCityFits(city: City, answers: UserAnswers): CityFits {
     : null;
 
   const fitValues: Record<string, number | null> = {
-    // 用户 8 维（lifestyle 答案驱动）
+    // 用户 8 维（lifestyle 答案驱动；pro 的 6 个序数维来自多题聚合）
     budget: costFit(city, preferenceInputs.budget ?? ''),
     climate: climateFit(city, preferenceInputs.climate ?? 'any'),
-    pace: ordinalFitNullable(ORDINAL_MAP.pace[preferenceInputs.pace ?? 'balanced'] ?? 3, city.pace),
-    size: ordinalFitNullable(ORDINAL_MAP.size[preferenceInputs.size ?? 'mid'] ?? 3, city.size),
-    social: ordinalFitNullable(ORDINAL_MAP.social[preferenceInputs.social ?? 'mid'] ?? 3, city.community),
+    pace: ordinalFitNullable(
+      prefOrd ? prefOrd.pace : ORDINAL_MAP.pace[preferenceInputs.pace ?? 'balanced'] ?? 3,
+      city.pace,
+    ),
+    size: ordinalFitNullable(
+      prefOrd ? prefOrd.size : ORDINAL_MAP.size[preferenceInputs.size ?? 'mid'] ?? 3,
+      city.size,
+    ),
+    social: ordinalFitNullable(
+      prefOrd ? prefOrd.social : ORDINAL_MAP.social[preferenceInputs.social ?? 'mid'] ?? 3,
+      city.community,
+    ),
     language: ordinalFitNullable(
-      ORDINAL_MAP.language[preferenceInputs.language ?? 'basic'] ?? 3,
+      prefOrd ? prefOrd.language : ORDINAL_MAP.language[preferenceInputs.language ?? 'basic'] ?? 3,
       city.english,
     ),
-    visa: ordinalFitNullable(ORDINAL_MAP.visa[preferenceInputs.visa ?? 'mid'] ?? 3, city.visaScore),
-    remote: ordinalFitNullable(ORDINAL_MAP.remote[preferenceInputs.remote ?? 'mid'] ?? 3, city.internet),
+    visa: ordinalFitNullable(
+      prefOrd ? prefOrd.visa : ORDINAL_MAP.visa[preferenceInputs.visa ?? 'mid'] ?? 3,
+      city.visaScore,
+    ),
+    remote: ordinalFitNullable(
+      prefOrd ? prefOrd.remote : ORDINAL_MAP.remote[preferenceInputs.remote ?? 'mid'] ?? 3,
+      city.internet,
+    ),
     // 客观 3 维（城市侧真实数据驱动）
     climateComfort: climateComfortFit(city.climateDetail),
     englishDepth: englishDepthFit(city),
@@ -453,7 +694,7 @@ export function computeCityFits(city: City, answers: UserAnswers): CityFits {
   }
   const preferenceFit: number | null = den > 0 ? num / den : null;
 
-  const interestFitScore = interestFit(answers.interests, city.tags);
+  const interestFitScore = interestFit(weightedUserTags(answers), city.tags);
 
   return { personalityFit, preferenceFit, interestFit: interestFitScore, fitValues };
 }
@@ -463,7 +704,8 @@ export function computeCityFits(city: City, answers: UserAnswers): CityFits {
 // ---------------------------------------------------------------------------
 
 export function assess(answers: UserAnswers): AssessmentResult {
-  const { typeCode, traitVector, axisScores } = derivePersonality(answers.mbti);
+  const personality = getPersonality(answers);
+  const { typeCode, traitVector, axisScores } = personality;
 
   const preferenceInputs = answers.lifestyle;
 
@@ -528,9 +770,11 @@ export function assess(answers: UserAnswers): AssessmentResult {
     typeCode,
     preferences: answers.lifestyle,
     interests: answers.interests,
+    version: answers.version,
   });
 
   return {
+    version: answers.version ?? 'lite',
     typeCode,
     traitVector,
     axisScores,
@@ -538,5 +782,6 @@ export function assess(answers: UserAnswers): AssessmentResult {
     interests: answers.interests,
     profileTags,
     matches: matches.slice(0, 5),
+    proProfile: personality.proProfile,
   };
 }

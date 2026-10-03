@@ -1,8 +1,9 @@
-// 我的 Tab：测验历史 / 收藏城市 / 已保存的对比
-import { useState } from 'react';
+// 我的 Tab：测验历史（简易/标准双版） / 收藏城市 / 已保存的对比 / 标准版虚拟订单
+import { useState, type JSX } from 'react';
 import { motion } from 'framer-motion';
 import CompassMark from './CompassMark';
 import * as storage from '../lib/storage';
+import { PRO_PRICE_CNY } from '../lib/storage';
 import { cities } from '../data';
 
 const ease = [0.22, 1, 0.36, 1] as const;
@@ -13,16 +14,32 @@ function fmtDate(ts: number): string {
   return `${d.getFullYear()}.${p(d.getMonth() + 1)}.${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`;
 }
 
+const CHANNEL_LABEL: Record<string, string> = {
+  alipay: '支付宝',
+  wechat: '微信支付',
+  card: '银行卡',
+};
+
 interface ProfileScreenProps {
-  onOpenQuiz: () => void;
-  onOpenHistory: () => void;
+  onOpenQuiz: (version?: 'lite' | 'pro') => void;
+  onOpenHistory: (version?: 'lite' | 'pro') => void;
   onOpenCompare: (seed?: string[]) => void;
+  onProIntro: () => void;
 }
 
-export default function ProfileScreen({ onOpenQuiz, onOpenHistory, onOpenCompare }: ProfileScreenProps) {
+export default function ProfileScreen({
+  onOpenQuiz,
+  onOpenHistory,
+  onOpenCompare,
+  onProIntro,
+}: ProfileScreenProps) {
   const [history] = useState(() => storage.loadHistory());
+  const [proHistory] = useState(() => storage.loadProHistory());
   const [favorites, setFavorites] = useState<string[]>(() => storage.loadFavorites());
   const [archives, setArchives] = useState(() => storage.loadArchives());
+  const [unlocked, setUnlocked] = useState(() => storage.isProUnlocked());
+  const [orders, setOrders] = useState(() => storage.loadOrders());
+  const [confirmReset, setConfirmReset] = useState(false);
 
   const cityById = new Map(cities.map((c) => [c.id, c]));
   const favCities = favorites
@@ -52,6 +69,85 @@ export default function ProfileScreen({ onOpenQuiz, onOpenHistory, onOpenCompare
     onOpenCompare(a.cities);
   }
 
+  /** 演示用：重置购买记录（二次确认后清空订单 + 解锁状态） */
+  function doResetBilling(): void {
+    storage.resetBilling();
+    setUnlocked(storage.isProUnlocked());
+    setOrders(storage.loadOrders());
+    setConfirmReset(false);
+  }
+
+  function HistoryCard({ version }: { version: 'lite' | 'pro' }): JSX.Element {
+    const entry = version === 'pro' ? proHistory : history;
+    if (!entry) {
+      return (
+        <div className="mt-4 rounded-[10px] border border-dashed border-ink/20 bg-card/60 p-5 text-center">
+          <p className="text-[13px] leading-[1.7] text-ink-soft">
+            {version === 'pro' ? '还没有标准版测评记录。' : '还没有简易版测评记录。'}
+          </p>
+          <button
+            type="button"
+            onClick={() => (version === 'pro' ? onProIntro() : onOpenQuiz())}
+            className="btn-ghost mt-3 font-mono text-[11px]"
+          >
+            {version === 'pro' ? '了解标准版 →' : '去做测评 →'}
+          </button>
+        </div>
+      );
+    }
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.45, ease }}
+        className="card-paper mt-4 p-5"
+      >
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <p className="font-mono text-[9.5px] uppercase tracking-eyebrow text-ink-soft">
+              {version === 'pro' ? 'STANDARD · ' : 'LITE · '}
+              {fmtDate(entry.savedAt)}
+            </p>
+            <p className="mt-1 flex items-center gap-2 font-data text-[24px] font-semibold tracking-wide text-ink">
+              {entry.result.typeCode}
+              {version === 'pro' && (
+                <span className="rounded border border-ochre px-1 py-0.5 font-data text-[9px] tracking-[0.15em] text-ochre">
+                  PRO
+                </span>
+              )}
+            </p>
+          </div>
+          <div className="text-right">
+            <p className="font-mono text-[9.5px] uppercase tracking-eyebrow text-ink-soft">Top 1</p>
+            <p className="mt-1 text-[13.5px] text-ink">
+              {entry.result.matches[0]?.city.nameZh ?? '—'}
+              <span className="ml-1.5 font-mono text-[12px] text-clay">
+                {entry.result.matches[0]?.match ?? '—'}%
+              </span>
+            </p>
+          </div>
+        </div>
+        <div className="mt-4 flex flex-wrap gap-1.5">
+          {entry.result.profileTags.slice(0, 6).map((t) => (
+            <span
+              key={t}
+              className="rounded-[4px] border border-ink/12 px-1.5 py-0.5 font-mono text-[9.5px] text-ink-soft"
+            >
+              {t}
+            </span>
+          ))}
+        </div>
+        <button
+          type="button"
+          onClick={() => onOpenHistory(version)}
+          className="btn-clay mt-5 w-full font-mono text-[11.5px]"
+        >
+          查看完整报告 →
+        </button>
+      </motion.div>
+    );
+  }
+
   return (
     <div className="mx-auto max-w-almanac px-6 pb-20 pt-10 md:px-10">
       <p className="eyebrow">my · 01</p>
@@ -61,55 +157,27 @@ export default function ProfileScreen({ onOpenQuiz, onOpenHistory, onOpenCompare
       </p>
 
       <div className="mt-10 grid gap-10 lg:grid-cols-2">
-        {/* 测验历史 */}
+        {/* 简易版历史 */}
         <section>
           <div className="flex items-center gap-2.5">
             <CompassMark size={18} />
-            <h2 className="font-heading text-[17px] font-bold">测验历史</h2>
+            <h2 className="font-heading text-[17px] font-bold">简易版 · 最近测评</h2>
           </div>
-          {history ? (
-            <motion.div
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.45, ease }}
-              className="card-paper mt-4 p-5"
-            >
-              <div className="flex items-start justify-between gap-3">
-                <div>
-                  <p className="font-mono text-[9.5px] uppercase tracking-eyebrow text-ink-soft">
-                    {fmtDate(history.savedAt)}
-                  </p>
-                  <p className="mt-1 font-data text-[26px] font-semibold tracking-wide text-ink">{history.result.typeCode}</p>
-                </div>
-                <div className="text-right">
-                  <p className="font-mono text-[9.5px] uppercase tracking-eyebrow text-ink-soft">Top 1</p>
-                  <p className="mt-1 text-[13.5px] text-ink">
-                    {history.result.matches[0]?.city.nameZh ?? '—'}
-                    <span className="ml-1.5 font-mono text-[12px] text-clay">
-                      {history.result.matches[0]?.match ?? '—'}%
-                    </span>
-                  </p>
-                </div>
-              </div>
-              <div className="mt-4 flex flex-wrap gap-1.5">
-                {history.result.profileTags.slice(0, 6).map((t) => (
-                  <span key={t} className="rounded-[4px] border border-ink/12 px-1.5 py-0.5 font-mono text-[9.5px] text-ink-soft">
-                    {t}
-                  </span>
-                ))}
-              </div>
-              <button type="button" onClick={onOpenHistory} className="btn-clay mt-5 w-full font-mono text-[11.5px]">
-                查看完整报告 →
-              </button>
-            </motion.div>
-          ) : (
-            <div className="mt-4 rounded-[10px] border border-dashed border-ink/20 bg-card/60 p-6 text-center">
-              <p className="text-[13px] leading-[1.7] text-ink-soft">还没有测评记录。</p>
-              <button type="button" onClick={onOpenQuiz} className="btn-ghost mt-3 font-mono text-[11px]">
-                去做测评 →
-              </button>
-            </div>
-          )}
+          <HistoryCard version="lite" />
+        </section>
+
+        {/* 标准版历史 */}
+        <section>
+          <div className="flex items-center gap-2.5">
+            <CompassMark size={18} />
+            <h2 className="font-heading text-[17px] font-bold">标准版 · 最近测评</h2>
+            {unlocked && (
+              <span className="rounded border border-moss/60 bg-moss/10 px-1.5 py-0.5 font-mono text-[9px] tracking-wider text-moss">
+                UNLOCKED
+              </span>
+            )}
+          </div>
+          <HistoryCard version="pro" />
         </section>
 
         {/* 收藏城市 */}
@@ -165,6 +233,104 @@ export default function ProfileScreen({ onOpenQuiz, onOpenHistory, onOpenCompare
               </button>
             </div>
           )}
+        </section>
+
+        {/* 标准版 · 虚拟订单 */}
+        <section>
+          <div className="flex items-center gap-2.5">
+            <CompassMark size={18} />
+            <h2 className="font-heading text-[17px] font-bold">标准版 · 订单记录</h2>
+          </div>
+          <div className="mt-4 rounded-[10px] border hairline bg-card/70 p-5">
+            <div className="mb-3 flex items-center justify-between">
+              <p className="text-[13px] text-ink-soft">
+                {unlocked ? (
+                  <>
+                    标准版<span className="font-medium text-moss">已解锁</span> · 永久有效
+                  </>
+                ) : (
+                  '标准版尚未解锁'
+                )}
+              </p>
+              {!unlocked && (
+                <button
+                  type="button"
+                  onClick={onProIntro}
+                  className="rounded-[6px] border border-clay/50 px-2.5 py-1 font-mono text-[10.5px] text-clay transition-colors hover:bg-clay hover:text-paper"
+                >
+                  ¥{PRO_PRICE_CNY.toFixed(1)} 解锁 →
+                </button>
+              )}
+            </div>
+
+            {orders.length > 0 ? (
+              <div className="divide-y divide-ink/10 border-t border-ink/10">
+                {orders.map((o) => (
+                  <div key={o.id} className="flex items-center justify-between gap-3 py-2.5">
+                    <div className="min-w-0">
+                      <p className="truncate font-data text-[12px] text-ink">{o.id}</p>
+                      <p className="font-mono text-[9.5px] text-ink-soft">
+                        {fmtDate(o.createdAt)} · {CHANNEL_LABEL[o.channel] ?? o.channel}
+                      </p>
+                    </div>
+                    <div className="flex shrink-0 items-center gap-2.5">
+                      <span className="font-data text-[13px] tabular-nums text-ink">
+                        ¥{o.amountCny.toFixed(1)}
+                      </span>
+                      <span className="rounded-full bg-moss/15 px-2 py-0.5 font-mono text-[9.5px] text-moss">
+                        {o.status === 'paid' ? '已支付' : o.status}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="border-t border-ink/10 pt-3 text-[12.5px] leading-relaxed text-ink-soft">
+                暂无订单。标准版为一次性买断（¥{PRO_PRICE_CNY.toFixed(1)}），
+                解锁后在此留痕。
+              </p>
+            )}
+
+            <p className="mt-3 font-mono text-[9.5px] text-ink-soft/70">
+              演示环境 · 虚拟计费，不产生真实扣款
+            </p>
+
+            {orders.length > 0 && (
+              <div className="mt-3 border-t border-ink/10 pt-3">
+                {confirmReset ? (
+                  <div className="flex items-center justify-between gap-3">
+                    <p className="text-[12px] text-clay-deep">
+                      确认重置？订单与解锁状态将被清空。
+                    </p>
+                    <div className="flex shrink-0 gap-2">
+                      <button
+                        type="button"
+                        onClick={doResetBilling}
+                        className="rounded-[6px] bg-clay-deep px-2.5 py-1 font-mono text-[10.5px] text-paper"
+                      >
+                        确认重置
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setConfirmReset(false)}
+                        className="rounded-[6px] border border-ink/15 px-2.5 py-1 font-mono text-[10.5px] text-ink-soft"
+                      >
+                        取消
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => setConfirmReset(true)}
+                    className="font-mono text-[10.5px] text-ink-soft underline-offset-4 transition-colors hover:text-clay-deep hover:underline"
+                  >
+                    重置购买记录（演示用）
+                  </button>
+                )}
+              </div>
+            )}
+          </div>
         </section>
       </div>
 

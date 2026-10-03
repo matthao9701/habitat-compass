@@ -15,6 +15,7 @@ import WeightDonut from './report/WeightDonut';
 import BreakdownSection from './report/BreakdownSection';
 import CityAnalysisSection from './report/CityAnalysisSection';
 import TrialSection from './report/TrialSection';
+import BigFiveSection from './report/BigFiveSection';
 import { MBTI_SOURCE } from '../data/questions';
 
 interface ReportProps {
@@ -201,6 +202,11 @@ export default function Report({ result, onRestart, isDemo = false, onStartQuiz 
           <RadarChart axes={RADAR_AXES} series={radarSeries} />
         </motion.div>
       </section>
+
+      {/* 标准版增强：Big Five 剖面 + 30 facets + 映射说明 + 两版对比 */}
+      {result.version === 'pro' && result.proProfile ? (
+        <BigFiveSection result={result} proProfile={result.proProfile} />
+      ) : null}
 
       {/* 细分拆解：兴趣 6 类 + 生活偏好 8 维（Top 1） */}
       {top ? <BreakdownSection top={top} userInterests={result.interests} /> : null}

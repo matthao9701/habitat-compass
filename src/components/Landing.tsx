@@ -8,8 +8,9 @@ import { REGION_LABEL, REGION_ORDER, subregionLabel } from '../data/regions';
 import { formatCost } from '../lib/engine';
 
 interface LandingProps {
-  onStart: () => void;
+  onStart: (version?: 'lite' | 'pro') => void;
   onDemo: (profileId: string) => void;
+  onProIntro: () => void;
 }
 
 const fadeUp = {
@@ -57,7 +58,7 @@ const STEPS = [
   },
 ];
 
-export default function Landing({ onStart, onDemo }: LandingProps) {
+export default function Landing({ onStart, onDemo, onProIntro }: LandingProps) {
   const marqueeList = [...cities, ...cities];
   const [atlasRegion, setAtlasRegion] = useState<string>('all');
   const atlasCities =
@@ -77,7 +78,7 @@ export default function Landing({ onStart, onDemo }: LandingProps) {
             </p>
           </div>
         </div>
-        <button type="button" onClick={onStart} className="btn-clay !px-6 !py-2.5 text-sm">
+        <button type="button" onClick={() => onStart()} className="btn-clay !px-6 !py-2.5 text-sm">
           开始测评
         </button>
       </header>
@@ -135,7 +136,7 @@ export default function Landing({ onStart, onDemo }: LandingProps) {
               custom={3}
               className="mt-9 flex flex-wrap items-center gap-4"
             >
-              <button type="button" onClick={onStart} className="btn-clay">
+              <button type="button" onClick={() => onStart()} className="btn-clay">
                 开始我的测评
                 <span className="font-mono text-xs opacity-80">→</span>
               </button>
@@ -398,17 +399,58 @@ export default function Landing({ onStart, onDemo }: LandingProps) {
         </div>
       </section>
 
-      {/* 结尾 CTA */}
+      {/* 结尾 CTA：版本选择 */}
       <section className="mx-auto max-w-almanac px-6 py-20 text-center md:px-10 md:py-28">
         <p className="eyebrow mb-5">04 / set sail</p>
         <h2 className="mx-auto max-w-2xl font-display text-3xl font-bold leading-snug tracking-tight md:text-[44px]">
           下一座城，不该靠运气决定。
         </h2>
         <p className="mx-auto mt-5 max-w-md text-[15px] leading-[1.9] text-ink-soft">
-          完成测评，让人格、预算与兴趣替你把 100 座城市排好序。
+          两套题库共享同一份 100 城数据底座与匹配引擎——选择适合你的深度。
         </p>
-        <button type="button" onClick={onStart} className="btn-clay mt-9">
-          免费生成我的报告
+
+        <div className="mx-auto mt-12 grid max-w-3xl gap-5 text-left md:grid-cols-2">
+          {/* 简易版卡片 */}
+          <div className="flex flex-col rounded-xl border border-line bg-card p-6 md:p-7">
+            <p className="eyebrow mb-2">lite edition · free</p>
+            <h3 className="font-heading text-xl font-bold text-ink">简易版测评</h3>
+            <p className="mt-2 text-sm leading-relaxed text-ink-soft">
+              56 道题 · 约 8 分钟。OEJTS 32 题七级量表 + 8 道情景选择题 + 16 个兴趣标签，基础报告。
+            </p>
+            <div className="mt-5 flex-1" />
+            <p className="mb-4 font-data text-2xl font-semibold text-pine">免费</p>
+            <button type="button" onClick={() => onStart()} className="btn-clay w-full">
+              开始简易版
+            </button>
+          </div>
+
+          {/* 标准版卡片（PRO） */}
+          <div className="relative flex flex-col rounded-xl border-2 border-ochre bg-card p-6 md:p-7">
+            <span className="absolute -top-2.5 right-5 rounded-full bg-ochre px-2.5 py-0.5 font-data text-[10px] font-medium tracking-[0.2em] text-paper">
+              PRO
+            </span>
+            <p className="eyebrow mb-2">standard edition · one-time</p>
+            <h3 className="font-heading text-xl font-bold text-ink">标准版测评</h3>
+            <p className="mt-2 text-sm leading-relaxed text-ink-soft">
+              168 道题 · 约 20-25 分钟。IPIP-NEO 120 题 Big Five 剖面 + 20 道混编偏好题 +
+              28 个兴趣标签（二级细化），报告含五维雷达与两版对比。
+            </p>
+            <div className="mt-5 flex-1" />
+            <p className="mb-4 font-data text-2xl font-semibold text-clay">
+              ¥29.9 <span className="text-xs font-normal text-ink-soft">一次性买断</span>
+            </p>
+            <button
+              type="button"
+              onClick={onProIntro}
+              className="w-full rounded-lg border border-clay px-4 py-2.5 text-sm font-medium text-clay transition-colors hover:bg-clay/10"
+            >
+              查看详情 / 解锁标准版
+            </button>
+          </div>
+        </div>
+
+        <button type="button" onClick={() => onStart()} className="mt-8 text-sm text-ink-soft underline-offset-4 transition-colors hover:text-clay hover:underline">
+          或直接免费生成我的报告
         </button>
       </section>
 

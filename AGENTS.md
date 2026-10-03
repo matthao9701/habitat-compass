@@ -2,7 +2,7 @@
 
 ## 项目概览
 
-面向数字游民、自由职业者、独立开发者与普通用户的海外城市定居辅助决策网站（纯前端 SPA，界面为简体中文，品牌名「栖居罗盘」）。三 Tab 架构（首页 / 城市对比 / 我的）：用户完成三段式测评（MBTI 32 题七级量表 + 生活偏好 8 题情景选择 + 兴趣 16 标签），系统对内置的 100 城加权打分，输出 MBTI 解读与 Top 5 城市报告，支持一键复制摘要；城市对比页支持临时权重重算（11 维）与最多 4 城对比，含大洲/次区域筛选；「我的」承载收藏城市、最近一次测评与对比存档。数据工程（第四轮）：100 城六洲覆盖 + GeoNames/Open-Meteo/Numbeo/EF EPI 真实数据管道，详见 `DATA.md`。
+面向数字游民、自由职业者、独立开发者与普通用户的海外城市定居辅助决策网站（纯前端 SPA，界面为简体中文，品牌名「栖居罗盘」）。三 Tab 架构（首页 / 城市对比 / 我的）：测评分**双版本**（第五轮）——简易版永久免费（MBTI 32 题七级量表 + 生活偏好 8 题情景选择 + 兴趣 16 标签，原样保留）、标准版一次性虚拟买断 ¥29.9（IPIP-NEO 120 题 Big Five + 20 道四题型偏好 + 28 兴趣标签二级细化，报告含五维剖面/30 facets/16 型映射卡/两版对比；购买流程 = 商品页 → 模拟支付弹窗 → localStorage 解锁 + 订单留痕，纯前端模拟无真实交易），系统对内置的 100 城加权打分，输出 16 型解读与 Top 5 城市报告，支持一键复制摘要；城市对比页支持临时权重重算（11 维）与最多 4 城对比，含大洲/次区域筛选；「我的」承载双版本测评记录、收藏城市、对比存档与标准版订单/重置入口。数据工程（第四轮）：100 城六洲覆盖 + GeoNames/Open-Meteo/Numbeo/EF EPI 真实数据管道，详见 `DATA.md`。
 
 ## 技术栈
 
@@ -42,22 +42,26 @@
 │   │   ├── Report.tsx       # 报告：人格解读/权重环图/Top5 卡片/徽标/复制/数据口径脚注/许可署名
 │   │   ├── ProfileScreen.tsx# 我的：最近测评入口/收藏城市网格/对比存档列表（载入/删除）
 │   │   ├── compare/         # 对比页模块：CompareScreen（选城含大洲/次区域筛选/11 维权重滑杆/排名/存档）、CompareCharts（多城雷达/逐维条形/语义色数值表，null→'—'）、CompareDataCards（成本卡+公开数据表，仅真实字段）
-│   │   ├── report/          # 报告增强模块：WeightDonut/BreakdownSection（11 维）/CityAnalysisSection/TrialSection/SemBar（语义色数据条，支持 null 值显示 '—'）
+│   │   ├── report/          # 报告增强模块：WeightDonut/BreakdownSection（11 维）/CityAnalysisSection/TrialSection/SemBar（语义色数据条，支持 null 值显示 '—'）/BigFiveSection（第五轮：五维雷达+30 facets 条+映射卡+两版对比）
+│   │   ├── billing/         # 第五轮虚拟计费：ProIntro（商品介绍页：对比表/题库结构/解锁 CTA，未购可预览）、PayModal（渠道选择+2s 模拟动画+成功态，顶部注明演示环境）
+│   │   ├── Quiz.tsx         # 测评（双版本）：version 分支——lite 原 56 题流程不动；pro = IPIP 120（5 点量表，6 题/页）+ 20 道四题型混编（choice/forced/slider/rank）+ 28 兴趣标签（含二级展开）；草稿按版本分键
 │   │   ├── RadarChart.tsx   # 六维雷达图（原生多序列 series: RadarSeries[]，对比页复用；缺维城自动剔除）
 │   │   ├── RouteChart.tsx   # 世界航线图（内含城市经纬度）
 │   │   └── CompassMark.tsx  # 罗盘花品牌符号
 │   ├── lib/
-│   │   ├── engine.ts        # MBTI 判定 + 加权匹配引擎 v2（PREFERENCE_WEIGHTS 11 维唯一事实源：用户 8 维 0.86 + 客观 3 维 0.14；computeCityFits 单城 8 维原始 fit；类/维 null 降权不惩罚）
+│   │   ├── engine.ts        # MBTI 判定 + 加权匹配引擎 v2（PREFERENCE_WEIGHTS 11 维唯一事实源：用户 8 维 0.86 + 客观 3 维 0.14；computeCityFits 单城 8 维原始 fit；类/维 null 降权不惩罚）；第五轮新增 derivePersonalityPro（IPIP 计分→Big Five→16 型映射，McCrae & Costa 1989）/derivePreferenceOrdinals（pro 偏好聚合）/buildProfileTags 子项强化（选子项的一级标签计双倍权重）
 │   │   ├── analysis.ts      # 报告增强规则层 v2：11 维偏好细分/优劣势（含医疗/日照/降水/签证待核实）/人格×城市/试住计划（全部 null 安全）
-│   │   ├── storage.ts       # localStorage 层（nomadmatch.v1: 前缀）：draft/history/favorites/compare/archives
+│   │   ├── storage.ts       # localStorage 层（nomadmatch.v1: 前缀）：draft/history/favorites/compare/archives；第五轮计费键：proUnlocked/orders/proDraft/proHistory（PRO_PRICE_CNY=29.9 常量；resetBilling 供演示重置）
 │   │   └── compare.ts       # 对比页计算层 v2：临时权重重算（null 维/类跳过，与引擎同口径）、rankRows、compareCost（双缺→'暂无数据'）、NEUTRAL_ANSWERS、weightShare 最大余数法
 │   └── data/
 │       ├── types.ts         # City v2：continent/subregion/population/timezone/climateDetail/六指数/rent1brUSD/mealUSD/visaStatus 三档/visaDetail/englishEpiBand；大量字段可空
 │       ├── index.ts         # 合并六大洲 JSON（europe/asia/africa/north-america/south-america/oceania）
 │       ├── regions.ts       # 大洲/次区域 key 顺序与中文标签（REGION_LABEL/SUBREGION_LABEL）
 │       ├── questions.ts     # 32 MBTI 七级双极题（OEJTS 1.2 结构）+ 8 生活偏好情景题
+│       ├── questionsPro.ts  # 第五轮标准版：IPIP-NEO 120 中文题（30 facets×4，keyed ±1，ref 附英文原句；IPIP 公有领域，见 DATA.md 第六节）+ 20 道四题型偏好题（UserDimKey 6 维 + choice slot 直写 budget/climate）
 │       ├── demoProfiles.ts  # 3 个演示档案预设答案（INTJ/ENTP/ESFJ，经 verify-iter1 校验）
-│       ├── interests.ts     # 16 个兴趣标签池（与城市 tags 同 id）
+│       ├── interests.ts     # 简易版 16 个兴趣标签池（与城市 tags 同 id）
+│       ├── interestsPro.ts  # 第五轮标准版：28 个一级标签（16 共用 + 12 新增，城市库已同步标注）+ interestSubs 二级细化（每类 3-5 子项）+ reinforcedTags
 │       ├── mbtiProfiles.ts  # 16 型人格游民视角解读
 │       └── cities/          # europe/asia/africa/north-america/south-america/oceania.json（共 100 城，assemble.mjs 产出勿手改）
 ├── DATA.md                  # 数据源/许可/派生规则/缺失约定/再生成流程
@@ -77,6 +81,7 @@
 - 引擎验证：`pnpm tsx scripts/try-engine.ts`
 - 迭代验证：`pnpm tsx scripts/verify-iter1.ts`、`pnpm tsx scripts/verify-iter2.ts`
 - 数据校验（第四轮）：`pnpm tsx scripts/verify-data-v2.ts`（依赖 /tmp/pipeline/climate.json 与 new-ids.txt，全量重跑见 DATA.md）
+- 题库校验（第五轮）：`pnpm tsx scripts/verify-quiz-v2.ts`（IPIP 120 完整性/计分键方向/Big Five→16 型映射回归/四题型覆盖/兴趣子项强化）
 
 ## 匹配引擎说明
 
