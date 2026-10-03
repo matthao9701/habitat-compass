@@ -105,6 +105,7 @@
 - i18n 校验（第七轮）：`pnpm tsx scripts/verify-i18n-v4.ts`（zh/en 键集合一致/IPIP ref 与题库词典双语/16 型与 facets/REVERSE_ZH 反查抽样/analysis 规则串反查覆盖率/HTML lang 同步/城市国家 nameEn 覆盖）
 - 第八轮校验：`pnpm tsx scripts/verify-onet-v5.ts`（RIASEC 30 题完整性/计分与 top2 单测/六维→标签映射全在池/风险 10 题 keyed 方向与计分/tagRepeats 有界叠加封顶 ×3/双语键/Quiz 流程接入；注意 verify-data-v2 依赖 /tmp/pipeline/climate.json 管道中间产物，被清理后需按 DATA.md 第五节重跑管道）
 - 第九轮校验：`pnpm tsx scripts/verify-passport-v6.ts`（护照枚举与默认值/65 国快照覆盖与枚举/CN+visaFree 过滤联动与快照独立重算一致/非 CN 降级全保留/两阶段排除无重复/引擎集成冒烟/双语键完整/reason 串与词典一致）
+- 第十轮校验：`pnpm tsx scripts/verify-engine-v7.ts`（分层权重表完整性/值域/三类相对优先级/Tier 3 上限/airFit 分档/冒险友好度与风险联动算例/RIASEC 迁移解耦/双版本回归/200 城覆盖）
 
 ## 匹配引擎说明
 
@@ -174,6 +175,15 @@
 - **展示**：共享组件 `report/PassportVisaBlock.tsx`（PassportVisaBlock 持当前护照签证卡 + LongStayBlock 长期定居注意）——报告页 CountryCards 与对比页 CityDetailModal 复用，非 CN 护照显示降级文案，固定免责声明「签证政策多变，出行前务必核实官方渠道」；对比页国家级对比行追加「税居天数」列（cmp.taxDays）。
 - **两阶段去重**：applyHardConstraints 的 pushExcluded 按 cityId 去重——放宽回填失败者不再重复登记（阶段 1 预算原因保留）。
 - **约束**：引擎 30/48/22 与 11 维不动；简易版题库与流程不动；标准版题量不变；visaPassport/longStay 均为参考信息层（引擎加权不消费）。
+
+## 第十轮：200 城扩容 + 引擎 v3 分层评分 + 空气质量
+
+- **城市库 200 城**：`scripts/pipeline/selection2.mjs`（100 新城清单 × GeoNames 匹配，queenstown 走 fallback 坐标兜底）→ `fetch-numbeo.mjs --new`（详情幂等补抓 + curl 转录脚本 `patch-numbeo-curl.mjs`，75/100 城有 rent/meal 详情，其余 Numbeo 无详情页 → null）→ `fetch-climate.mjs`（100 新城气候，argv 传展开后的数组底座）→ `assemble-v2.mjs` **以当前六大洲 JSON 为基底只追加**（旧 100 城数据值与顺序不变；`assemble.mjs` 会用当月 Numbeo 数据重建污染旧城，禁用）；分布 欧 68 / 亚 57 / 非 18 / 北美 22 / 南美 18 / 大洋 17。
+- **引擎 v3 分层**（`src/lib/engine.ts` 常量块为唯一事实源，设计依据见 DESIGN.md 第十轮章节）：`TIER2_WEIGHTS`（preference .42 / personality .30 / interest .18）+ `TIER3_WEIGHTS`（riasecBoost .05 / riskLink .03 / airFit .02，合计 ≤10%）+ `PREFERENCE_SPLIT`（user .86 / objective .14）；聚合入口 `aggregateV3Raw`（Tier 2 null 类降权归一 → Tier 3 任一存在才 0.9/0.1 混合，全缺回落纯 Tier 2）。`WEIGHTS` 别名（0.30/0.42/0.18）保留兼容。
+- **Tier 3 三信号**：① riasecFit——RIASEC 强化标签（`riasecBoostedTags` 差集）× 城市 tags 加权重合率，兴趣类本体分解耦（`tagRepeats(answers, { includeRiasec: false })`）；② riskFit——`riskLinkFit` = 100−|风险指数−冒险友好度|，`adventureFriendly` = safety .40 + 签证灵活 .30 + nightlife .20 + outdoor 标签覆盖 .10（null 分量剔除重归一）；③ airFit——WHO 分档映射 优 90/良 72/一般 48/差 25，**标准版专属**（lite 版 tier3Fit 恒 null）。风险画像仍只进报告，不单独进引擎。
+- **airQuality 数据**：`City.airQuality { pm25, band, period } | null`；`scripts/pipeline/snapshot-airquality.mjs` 幂等快照 200/200（Open-Meteo Air Quality CAMS 2022-08~2024-12 均值 + WHO 2021 分档，坐标 = GeoNames 匹配 + EXTRA_COORD 9 城兜底）；展示 = 详情弹层「空气质量」Stat + 对比页数据表列（`AIR_BAND_TONE` 语义色，`src/lib/colors.ts`）。
+- **全站文案 100→200**：Landing 统计/图集/CTA、ui/extra 词典 hero 与 atlas 描述、index.html og、title.ts 已同步；`air.*` 词典键（ui 域）双语齐全。
+- **验证**：`verify-engine-v7.ts`（55 项：分层权重/值域/优先级/Tier3 上限/airFit 分档算例/冒险友好度与风险联动/RIASEC 迁移解耦/双版本回归/200 城覆盖）；`verify-data-v2.ts` 200 城口径（NEW_ROUND_IDS 读 selection2，兼容数组或 {cities} 顶层）；`verify-iter1` 优劣势分代阈值（39 旧城 3+2 / 其余 1+1）；`verify-passport-v6` 保留区间改为 ≥5 且 < 全量；`verify-i18n-v4` nameEn 断言 cities.length >= 100。
 
 ## 编码规范
 

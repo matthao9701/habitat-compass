@@ -147,7 +147,7 @@ export default function Landing({ onStart, onDemo, onProIntro }: LandingProps) {
             <RouteChart cities={cities} compact className="text-paper/70 w-full" />
             <div className="mt-4 grid grid-cols-3 gap-px overflow-hidden rounded-[6px] border border-paper/15 text-center">
               {[
-                ['100', t('landing.stat.cities')],
+                ['200', t('landing.stat.cities')],
                 ['6', t('landing.stat.continents')],
                 ['0', t('landing.stat.threshold')],
               ].map(([v, l]) => (
@@ -370,7 +370,7 @@ export default function Landing({ onStart, onDemo, onProIntro }: LandingProps) {
       {/* 深色城市带 */}
       <section className="overflow-hidden border-y hairline bg-ink py-10">
         <p className="mx-auto mb-7 max-w-almanac px-6 font-mono text-[10px] uppercase tracking-eyebrow text-paper/50 md:px-10">
-          100 cities · 6 continents — from lisbon to nadi
+          200 cities · 6 continents — from lisbon to nadi
         </p>
         <div className="relative flex w-max animate-marquee gap-10 whitespace-nowrap">
           {marqueeList.map((c, i) => (

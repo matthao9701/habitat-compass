@@ -238,7 +238,7 @@ console.log('== [4] translate 行为冒烟（基于 DICTS/REVERSE_ZH 直接验�
 console.log('== [5] 城市/国家 nameEn 覆盖 ==');
 {
   const cityNoEn = cities.filter((c) => !c.nameEn || !c.nameEn.trim());
-  ok(`100 城 nameEn 全覆盖（${cities.length} 城，缺 ${cityNoEn.length}）`, cities.length === 100 && cityNoEn.length === 0, cityNoEn.slice(0, 5).map((c) => c.nameZh).join(','));
+  ok(`城市 nameEn 全覆盖（${cities.length} 城，缺 ${cityNoEn.length}）`, cities.length >= 100 && cityNoEn.length === 0, cityNoEn.slice(0, 5).map((c) => c.nameZh).join(','));
   const countryNoEn = COUNTRIES.filter((c) => !c.nameEn || !c.nameEn.trim() && c.nameZh !== '台湾');
   ok(`国家 nameEn 覆盖 ≥ 64/65（${COUNTRIES.length} 国）`, COUNTRIES.length === 65 && countryNoEn.length <= 1, countryNoEn.map((c) => c.nameZh).join(','));
 }

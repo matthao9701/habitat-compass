@@ -6,6 +6,7 @@ import {
   deriveRiasec,
   deriveRisk,
   tagRepeats,
+  riasecBoostedTags,
   type RiasecProfile,
   type RiskProfile,
 } from './riasec';
@@ -73,6 +74,8 @@ export interface CityMatch {
   personalityFit: number | null;
   preferenceFit: number | null;
   interestFit: number | null;
+  /** 引擎 v3 Tier 3 加分层分（0-100 取整；lite / 无 RIASEC 与风险信号时 null） */
+  tier3Fit?: number | null;
   /** 11 个生活偏好维度的单项得分（0-100）；null = 城市该维度无数据（已降权） */
   fitDetails: Record<string, number | null>;
   scores: DimensionScores;
@@ -141,17 +144,54 @@ const POLE_SIGN: Record<Pole, number> = {
   E: 1, I: -1, N: 1, S: -1, F: 1, T: -1, P: 1, J: -1,
 };
 
-export const WEIGHTS = {
+/**
+ * 引擎 v3 分层权重表（第十轮重构；设计依据见 DESIGN.md「引擎 v3 权重依据」）：
+ *
+ * Tier 1 硬约束过滤层（constraints.ts，语义不动）：
+ *   预算 / 签证 / 安全 / 护照免签——打分前一票否决，不参与权重。
+ *
+ * Tier 2 核心匹配层（三大类，Σ = 0.90 = 1 - TIER3_TOTAL_SHARE）：
+ *   保持 偏好 > 人格 > 兴趣 相对优先级（OECD Better Life「用户自定权重」方法论：
+ *   用户直接作答、可控性最高的偏好类占主导；人格同频是长期满意度预测因子；
+ *   兴趣标签稀疏（城市侧人工标注）适当降权以减少噪声）。
+ *   城市缺某类数据时按权重降权（分子分母同时剔除，不惩罚）。
+ */
+export const TIER2_WEIGHTS = {
+  preference: 0.42,
   personality: 0.3,
-  preference: 0.48,
-  interest: 0.22,
-};
+  interest: 0.18,
+} as const;
 
 /**
- * 偏好类内权重 v2（11 维，总和 = 1.0；三大类权重 30/48/22 不变）：
- * - 用户维度（8）：来自生活方式测评题的序数/区间打分
- * - 客观维度（3）：城市侧真实数据驱动（气候舒适 / 治安安全 / 英语普及），
- *   在用户维度之上补充参考信号
+ * Tier 3 加分项层（Σ = 0.10，上限 ≤10%）：
+ * - riasecBoost：RIASEC 强化标签与城市 tags 的加权重合率（第十轮起从兴趣类
+ *   本体分中迁出，避免双重计入）
+ * - riskLink：IPIP 风险指数 × 城市冒险友好度（adventureFriendly）距离联动
+ * 两项任一存在才计入；全缺时整体回落 Tier 2（降权不惩罚）。
+ */
+export const TIER3_WEIGHTS = {
+  riasecBoost: 0.05,
+  riskLink: 0.03,
+  airFit: 0.02,
+} as const;
+
+/** Tier 3 占总权重比例（= TIER3_WEIGHTS 合计，硬上限 10%） */
+export const TIER3_TOTAL_SHARE = 0.1;
+
+/**
+ * 偏好类内「用户主观 vs 客观数据」分层（声明层，供校验与文档引用）：
+ * 用户 8 维合计 0.86 / 客观 3 维合计 0.14（与 PREFERENCE_WEIGHTS 保持一致）。
+ */
+export const PREFERENCE_SPLIT = { user: 0.86, objective: 0.14 } as const;
+
+/** 兼容别名：旧引用（compare 等）继续可用，值 = Tier 2 三大类权重 */
+export const WEIGHTS = { personality: 0.3, preference: 0.42, interest: 0.18 };
+
+/**
+ * 偏好类内权重 v2（11 维，总和 = 1.0）：
+ * - 用户维度（8，合计 0.86 = PREFERENCE_SPLIT.user）：来自生活方式测评题
+ * - 客观维度（3，合计 0.14 = PREFERENCE_SPLIT.objective）：城市侧真实数据
+ *   （气候舒适 / 治安安全 / 英语普及），在用户维度之上补充参考信号
  * 城市某维度无数据（null）时，聚合按权重降权、不惩罚。
  */
 export const PREFERENCE_WEIGHTS: Record<string, number> = {
@@ -311,10 +351,17 @@ function interestFit(userTags: string[], cityTags: string[]): number | null {
 }
 
 /** 标准版标签权重强化：重复出现 = 权重加倍。信号源：二级子项 + RIASEC 高分维（叠加封顶 ×3，见 lib/riasec.ts） */
-export function weightedUserTags(answers: UserAnswers): string[] {
+/**
+ * 用户标签加权展开：勾选 1 次 = ×1；pro 的子项强化 +1；RIASEC 强化按 options 控制
+ * （第十轮引擎 v3：兴趣类本体分不含 RIASEC 强化 → includeRiasec: false）。
+ */
+export function weightedUserTags(
+  answers: UserAnswers,
+  options?: { includeRiasec?: boolean },
+): string[] {
   const base = answers.interests;
   if (answers.version !== 'pro') return base;
-  const repeats = tagRepeats(answers);
+  const repeats = tagRepeats(answers, options);
   if (repeats.size === 0) return base;
   const out = [...base];
   for (const [tag, n] of repeats) {
@@ -663,6 +710,12 @@ export interface CityFits {
   personalityFit: number | null;
   preferenceFit: number | null;
   interestFit: number | null;
+  /** Tier 3：RIASEC 强化标签 × 城市 tags 加权重合率（0-100，无强化信号为 null） */
+  riasecFit?: number | null;
+  /** Tier 3：风险指数 × 城市冒险友好度距离联动（0-100，任一侧缺失为 null） */
+  riskFit?: number | null;
+  /** Tier 3：空气质量分档映射分（0-100，城市无 airQuality 数据为 null） */
+  airFit?: number | null;
   fitValues: Record<string, number | null>;
 }
 
@@ -728,9 +781,110 @@ export function computeCityFits(city: City, answers: UserAnswers): CityFits {
   }
   const preferenceFit: number | null = den > 0 ? num / den : null;
 
-  const interestFitScore = interestFit(weightedUserTags(answers), city.tags);
+  // 兴趣类本体分：仅用户勾选 + 子项强化（第十轮起 RIASEC 强化迁出至 Tier 3）
+  const interestFitScore = interestFit(weightedUserTags(answers, { includeRiasec: false }), city.tags);
 
-  return { personalityFit, preferenceFit, interestFit: interestFitScore, fitValues };
+  // ---- Tier 3 加分项 ----
+  // riasecBoost：RIASEC 高分维强化的已选标签与城市 tags 的加权重合率
+  let riasecFit: number | null = null;
+  if (answers.riasec) {
+    const boosted = riasecBoostedTags(answers);
+    const totalW = [...boosted.values()].reduce((s, n) => s + n, 0);
+    if (totalW > 0 && city.tags.length > 0) {
+      const hit = [...boosted.entries()].reduce((s, [tag, w]) => s + (city.tags.includes(tag) ? w : 0), 0);
+      riasecFit = (hit / totalW) * 100;
+    }
+  }
+  // riskLink：用户风险指数与城市冒险友好度的距离联动
+  const riskFit = riskLinkFit(city, answers);
+  // airFit：WHO 分档映射（优 90 / 良 72 / 一般 48 / 差 25）——Tier 3 仅标准版消费（简易版 tier3Fit 保持 null），城市无数据 → null
+  const AIR_BAND_SCORE: Record<string, number> = { good: 90, fair: 72, moderate: 48, poor: 25 };
+  const airFit = isPro && city.airQuality ? AIR_BAND_SCORE[city.airQuality.band] ?? null : null;
+
+  return { personalityFit, preferenceFit, interestFit: interestFitScore, riasecFit, riskFit, airFit, fitValues };
+}
+
+/**
+ * 城市「冒险友好度」0-100（Tier 3 派生，非引擎主分）：
+ * 安全底盘 0.40 + 签证灵活 0.30（数字游民签证 true=100，否则 visaScore×20）
+ * + 夜生活标签 0.20 + 户外/冒险标签覆盖 0.10；分量缺失时剔除重归一（降权不惩罚）。
+ */
+export function adventureFriendly(city: City): number | null {
+  const parts: [number, number][] = [];
+  if (city.safety != null) parts.push([city.safety, 0.4]);
+  const visaFlex =
+    city.digitalNomadVisa === true
+      ? 100
+      : city.visaScore != null
+        ? clamp(city.visaScore * 20, 0, 100)
+        : null;
+  if (visaFlex != null) parts.push([visaFlex, 0.3]);
+  if (city.tags.length > 0) {
+    const tagSet = new Set(city.tags);
+    parts.push([tagSet.has('nightlife') ? 100 : 0, 0.2]);
+    const outdoorTags = ['outdoor', 'adventure-sports', 'watersports', 'skiing', 'nature'];
+    const hits = outdoorTags.filter((t) => tagSet.has(t)).length;
+    parts.push([(hits / outdoorTags.length) * 100, 0.1]);
+  }
+  const den = parts.reduce((s, [, w]) => s + w, 0);
+  if (den <= 0) return null;
+  return parts.reduce((s, [v, w]) => s + v * w, 0) / den;
+}
+
+/** Tier 3 风险联动：|风险指数 - 冒险友好度| 距离相似度（0-100），任一侧缺失 → null */
+export function riskLinkFit(city: City, answers: UserAnswers): number | null {
+  const risk = answers.risk ? deriveRisk(answers.risk) : null;
+  if (!risk) return null;
+  const af = adventureFriendly(city);
+  if (af == null) return null;
+  return clamp(100 - Math.abs(risk.score - af), 0, 100);
+}
+
+export interface V3Fits {
+  personalityFit: number | null;
+  preferenceFit: number | null;
+  interestFit: number | null;
+  riasecFit?: number | null;
+  riskFit?: number | null;
+  airFit?: number | null;
+}
+
+/**
+ * 引擎 v3 分层聚合（assess 与对比页临时权重重算共用，保证口径一致）：
+ * Tier 2 三大类 null 降权归一 → tier2Raw；
+ * Tier 3 两项任一存在才计入：raw = tier2Raw × 0.9 + tier3Raw × 0.1；
+ * Tier 3 全缺 → raw = tier2Raw（降权不惩罚，简易版自动回落）。
+ */
+export function aggregateV3Raw(f: V3Fits): number {
+  const t2Parts: [number | null, number][] = [
+    [f.personalityFit, TIER2_WEIGHTS.personality],
+    [f.preferenceFit, TIER2_WEIGHTS.preference],
+    [f.interestFit, TIER2_WEIGHTS.interest],
+  ];
+  let num = 0;
+  let den = 0;
+  for (const [v, w] of t2Parts) {
+    if (v == null) continue;
+    num += v * w;
+    den += w;
+  }
+  const tier2Raw = den > 0 ? num / den : 0;
+
+  const t3Parts: [number | null, number][] = [
+    [f.riasecFit ?? null, TIER3_WEIGHTS.riasecBoost],
+    [f.riskFit ?? null, TIER3_WEIGHTS.riskLink],
+    [f.airFit ?? null, TIER3_WEIGHTS.airFit],
+  ];
+  let t3n = 0;
+  let t3d = 0;
+  for (const [v, w] of t3Parts) {
+    if (v == null) continue;
+    t3n += v * w;
+    t3d += w;
+  }
+  if (t3d <= 0) return tier2Raw;
+  const tier3Raw = t3n / t3d;
+  return tier2Raw * (1 - TIER3_TOTAL_SHARE) + tier3Raw * TIER3_TOTAL_SHARE;
 }
 
 // ---------------------------------------------------------------------------
@@ -747,20 +901,30 @@ export function assess(answers: UserAnswers, cityPool?: City[]): AssessmentResul
     const fits = computeCityFits(city, answers);
     const { personalityFit, preferenceFit, interestFit: interestFitScore, fitValues } = fits;
 
-    // 三大类聚合：城市缺某类数据时按类权重降权（30/48/22 名义权重不变）
-    const classParts: [number | null, number][] = [
-      [personalityFit, WEIGHTS.personality],
-      [preferenceFit, WEIGHTS.preference],
-      [interestFitScore, WEIGHTS.interest],
+    // 引擎 v3 分层聚合：Tier 2（null 类降权）+ Tier 3 加分（≤10%，全缺回落）
+    const riasecFit = fits.riasecFit ?? null;
+    const riskFit = fits.riskFit ?? null;
+    const raw = aggregateV3Raw({
+      personalityFit,
+      preferenceFit,
+      interestFit: interestFitScore,
+      riasecFit,
+      riskFit,
+    });
+    // Tier 3 加分层独立分（仅展示口径：三信号按 TIER3_WEIGHTS 归一）
+    const t3Parts: [number | null, number][] = [
+      [riasecFit, TIER3_WEIGHTS.riasecBoost],
+      [riskFit, TIER3_WEIGHTS.riskLink],
+      [fits.airFit ?? null, TIER3_WEIGHTS.airFit],
     ];
-    let classNum = 0;
-    let classDen = 0;
-    for (const [v, w] of classParts) {
+    let t3n = 0;
+    let t3d = 0;
+    for (const [v, w] of t3Parts) {
       if (v == null) continue;
-      classNum += v * w;
-      classDen += w;
+      t3n += v * w;
+      t3d += w;
     }
-    const raw = classDen > 0 ? classNum / classDen : 0;
+    const tier3Fit = t3d > 0 ? t3n / t3d : null;
 
     // 校准到直观的匹配度区间（~66 – 97）
     const match = Math.round(clamp(52 + raw * 0.46, 0, 99));
@@ -792,6 +956,7 @@ export function assess(answers: UserAnswers, cityPool?: City[]): AssessmentResul
       personalityFit: round1(personalityFit),
       preferenceFit: round1(preferenceFit),
       interestFit: round1(interestFitScore),
+      tier3Fit: round1(tier3Fit),
       fitDetails,
       scores,
       reasons,

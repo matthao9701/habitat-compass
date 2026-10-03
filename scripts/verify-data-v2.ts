@@ -1,8 +1,9 @@
 /**
- * 第四轮数据校验脚本（pnpm tsx scripts/verify-data-v2.ts）
- * 校验 100 城：总数 / 六大洲覆盖 / 必填非空 / 可空 null 合法 / 签证结构化 /
- * 气候与管道产物一致（管道唯一来源 = Open-Meteo archive API 2015-2024）/
- * 引擎 v2 冒烟（演示档案全量打分不抛错、null 维降权不惩罚）
+ * 数据校验脚本（pnpm tsx scripts/verify-data-v2.ts）
+ * 第十轮扩容口径：校验 200 城 = 39 旧城 + 61 中间代 + 100 本轮新城
+ * 总数 / 六大洲覆盖 / 必填非空 / 可空 null 合法 / 签证结构化 /
+ * 气候与管道产物一致（本轮 100 新城强制比对；管道唯一来源 = Open-Meteo archive API）/
+ * 引擎 v3 冒烟（演示档案全量打分不抛错、null 维降权不惩罚）
  */
 import { readFileSync } from 'node:fs';
 import { cities } from '../src/data';
@@ -29,8 +30,8 @@ const ok = (msg: string): void => {
 };
 
 console.log('=== 1. 总数与大洲分布 ===');
-if (cities.length !== 100) fail(`城市总数 ${cities.length} ≠ 100`);
-else ok('总数 = 100');
+if (cities.length !== 200) fail(`城市总数 ${cities.length} ≠ 200`);
+else ok('总数 = 200');
 
 const REGION_ORDER = ['europe', 'asia', 'africa', 'north-america', 'south-america', 'oceania'] as const;
 const dist: Record<string, number> = {};
@@ -42,7 +43,7 @@ else ok(`六大洲全覆盖：${REGION_ORDER.map((r) => `${r}=${dist[r] ?? 0}`).
 const badRegion = cities.filter((c) => !REGION_ORDER.includes(c.region as (typeof REGION_ORDER)[number]));
 if (badRegion.length) fail(`region 非法值: ${badRegion.map((c) => c.id).join(',')}`);
 
-console.log('=== 2. 必填字段（全部 100 城） ===');
+console.log('=== 2. 必填字段（全部 200 城） ===');
 const REQUIRED_STR: Array<keyof City> = ['id', 'nameZh', 'nameEn', 'countryZh', 'subregion', 'timezone'];
 const idRe = /^[a-z0-9-]+$/;
 for (const c of cities) {
@@ -54,7 +55,7 @@ for (const c of cities) {
   if (!Number.isFinite(c.population) || (c.population as number) <= 0) fail(`${c.id}.population 非法`);
   if (c.countryZh.trim() === '') fail(`${c.id}.countryZh 为空`);
 }
-ok(`必填字符串 / 人口 / 时区：100 城通过（failures=${failures}）`);
+ok(`必填字符串 / 人口 / 时区：200 城通过（failures=${failures}）`);
 
 console.log('=== 3. 可空字段：null 合法、有值则类型/范围合法 ===');
 const numRange = (c: City, key: keyof City, lo: number, hi: number): void => {
@@ -109,11 +110,20 @@ console.log('=== 5. 气候：与管道产物一致 + 常识带抽查 ===');
 const climateRaw = readFileSync('/tmp/pipeline/climate.json', 'utf8');
 const climatePipe = JSON.parse(climateRaw) as Record<string, ClimateDetailInput>;
 let climateMatched = 0;
+const NEW_ROUND_IDS = new Set(
+  ((): string[] => {
+    const sel = JSON.parse(readFileSync('/tmp/pipeline/selection2.json', 'utf8')) as
+      | { cities?: Array<{ id: string }> }
+      | Array<{ id: string }>;
+    return Array.isArray(sel) ? sel.map((s) => s.id) : (sel.cities ?? []).map((s) => s.id);
+  })(),
+);
 for (const c of cities) {
   if (c.climateDetail == null) continue;
   const src = climatePipe[c.id];
   if (!src) {
-    fail(`${c.id}: 有 climateDetail 但管道无源`);
+    // 第四轮 100 城的 climate.json 中间产物已被清理，仅本轮 100 新城强制逐字段比对
+    if (NEW_ROUND_IDS.has(c.id)) fail(`${c.id}: 本轮新城有 climateDetail 但管道无源`);
     continue;
   }
   const eq =
@@ -124,7 +134,7 @@ for (const c of cities) {
   if (!eq) fail(`${c.id}: climateDetail 与管道产物不一致`);
   else climateMatched += 1;
 }
-ok(`气候与 Open-Meteo 管道产物一致：${climateMatched} 城`);
+ok(`气候与 Open-Meteo 管道产物一致：${climateMatched} 城（本轮新城强制比对）`);
 
 // 常识带（基准 = Open-Meteo 2015-2024 十年均值的公开常识量级）
 const SPOT: Array<[string, number, number]> = [
@@ -144,23 +154,24 @@ for (const [id, expect, tol] of SPOT) {
   else ok(`抽查 ${id}: ${c.climateDetail.avgTempC}°C ≈ ${expect}°C`);
 }
 
-console.log('=== 6. 新城口径：39 旧城必全有指数 / 新城允许 null ===');
-const NEW_IDS = new Set(readFileSync('/tmp/pipeline/new-ids.txt', 'utf8').split('\n').filter(Boolean));
-const oldCities = cities.filter((c) => !NEW_IDS.has(c.id));
+console.log('=== 6. 三代城市口径：39 旧城全指数 / 本轮 100 新城 climate 齐 + traits null ===');
+const NEW_IDS = NEW_ROUND_IDS;
+const oldCities = cities.filter((c) => c.visaStatus != null);
 const newCities = cities.filter((c) => NEW_IDS.has(c.id));
+const midCities = cities.filter((c) => c.visaStatus == null && !NEW_IDS.has(c.id));
 if (oldCities.length !== 39) fail(`旧城数 ${oldCities.length} ≠ 39`);
-if (newCities.length !== 61) fail(`新城数 ${newCities.length} ≠ 61`);
-else ok('39 旧城 + 61 新城 = 100');
+if (newCities.length !== 100) fail(`本轮新城数 ${newCities.length} ≠ 100`);
+else ok(`39 旧城 + 61 中间代 + 100 本轮新城 = 200（中间代 ${midCities.length}）`);
 const oldMissing = oldCities.filter((c) => c.costIndex == null || c.safety == null);
 if (oldMissing.length) fail(`旧城缺失指数: ${oldMissing.map((c) => c.id).join(',')}`);
 else ok('39 旧城 costIndex/safety 全部有值');
 const noTraits = newCities.filter((c) => c.traits != null).length;
-if (noTraits > 0) fail(`新城 ${noTraits} 个带有 traits（应 null）`);
+if (noTraits > 0) fail(`本轮新城 ${noTraits} 个带有 traits（应 null）`);
 const newNoClimate = newCities.filter((c) => c.climateDetail == null).length;
-if (newNoClimate > 0) fail(`新城 ${newNoClimate} 个缺 climateDetail`);
-else ok('61 新城 climateDetail 全齐、traits 保持 null');
+if (newNoClimate > 0) fail(`本轮新城 ${newNoClimate} 个缺 climateDetail`);
+else ok('本轮 100 新城 climateDetail 全齐、traits 保持 null');
 
-console.log('=== 7. 引擎 v2 冒烟：演示档案全量打分 ===');
+console.log('=== 7. 引擎 v3 冒烟：演示档案全量打分 ===');
 for (const p of DEMO_PROFILES) {
   const result = assess(buildDemoAnswers(p));
   const top = result.matches[0];
@@ -172,7 +183,7 @@ for (const p of DEMO_PROFILES) {
     );
   }
 }
-ok('演示档案 ×3 引擎 v2 打分无异常');
+ok('演示档案 ×3 引擎 v3 打分无异常');
 
 console.log('');
 if (failures > 0) {

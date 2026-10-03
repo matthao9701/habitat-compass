@@ -63,6 +63,11 @@
   "visaDetail": {
    "name": "适用哥伦比亚数字游民签证",
    "note": "适用哥伦比亚数字游民签证；高原首都气候凉爽、创业生态集中"
+  },
+  "airQuality": {
+   "pm25": 14,
+   "band": "fair",
+   "period": "2022-08 ~ 2024-12"
   }
  },
  {
@@ -130,6 +135,11 @@
   "visaDetail": {
    "name": "数字游民签证",
    "note": "数字游民签证免阿根廷境内所得税；多数护照另有 90 天免签"
+  },
+  "airQuality": {
+   "pm25": 8.4,
+   "band": "good",
+   "period": "2022-08 ~ 2024-12"
   }
  },
  {
@@ -187,7 +197,12 @@
    "nightlife",
    "outdoor"
   ],
-  "traits": null
+  "traits": null,
+  "airQuality": {
+   "pm25": 9.2,
+   "band": "good",
+   "period": "2022-08 ~ 2024-12"
+  }
  },
  {
   "id": "cuzco",
@@ -240,7 +255,12 @@
    "outdoor",
    "festivals"
   ],
-  "traits": null
+  "traits": null,
+  "airQuality": {
+   "pm25": 5.9,
+   "band": "good",
+   "period": "2022-08 ~ 2024-12"
+  }
  },
  {
   "id": "rio",
@@ -307,6 +327,11 @@
   "visaDetail": {
    "name": "数字游民签证",
    "note": "数字游民签证要求月收入约 2,000 美元；多数护照可免签停留 90 天"
+  },
+  "airQuality": {
+   "pm25": 22.1,
+   "band": "moderate",
+   "period": "2022-08 ~ 2024-12"
   }
  },
  {
@@ -372,6 +397,11 @@
   "visaDetail": {
    "name": null,
    "note": "多数护照免签停留 90-183 天；数字游民签证仍在立法推进中"
+  },
+  "airQuality": {
+   "pm25": 12,
+   "band": "fair",
+   "period": "2022-08 ~ 2024-12"
   }
  },
  {
@@ -437,6 +467,11 @@
   "visaDetail": {
    "name": "数字游民签证",
    "note": "数字游民签证 V 类，月收入约 900 美元起，最长 2 年"
+  },
+  "airQuality": {
+   "pm25": 13.2,
+   "band": "fair",
+   "period": "2022-08 ~ 2024-12"
   }
  },
  {
@@ -493,7 +528,12 @@
    "history",
    "outdoor"
   ],
-  "traits": null
+  "traits": null,
+  "airQuality": {
+   "pm25": 7.7,
+   "band": "good",
+   "period": "2022-08 ~ 2024-12"
+  }
  },
  {
   "id": "santiago",
@@ -549,6 +589,548 @@
    "outdoor",
    "arts"
   ],
-  "traits": null
+  "traits": null,
+  "airQuality": {
+   "pm25": 36.9,
+   "band": "poor",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "sao-paulo",
+  "nameZh": "圣保罗",
+  "nameEn": "São Paulo",
+  "countryZh": "巴西",
+  "countryEn": "Brazil",
+  "countryCode": "BR",
+  "continent": "south-america",
+  "subregion": "south-america",
+  "region": "south-america",
+  "population": 12400232,
+  "timezone": "America/Sao_Paulo",
+  "cost": [
+   1285,
+   1814
+  ],
+  "monthlyCostUSD": 1512,
+  "costIndex": 41.3,
+  "rent1brUSD": null,
+  "mealUSD": null,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": 30.2,
+  "healthcareIndex": 60.3,
+  "pollutionIndex": 78.9,
+  "trafficIndex": 51.2,
+  "purchasingPowerIndex": 53.1,
+  "climateIndex": 99,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 19.5,
+   "annualPrecipMm": 1253,
+   "precipDays": 155,
+   "sunshineHours": 3261,
+   "summary": "四季温和，降水适中，日照充足"
+  },
+  "community": null,
+  "english": 2,
+  "englishEpiBand": "low",
+  "englishEpiScore": 482,
+  "pace": null,
+  "size": 5,
+  "digitalNomadVisa": null,
+  "tags": [
+   "food",
+   "nightlife",
+   "arts",
+   "startup"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 23.8,
+   "band": "moderate",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "belo-horizonte",
+  "nameZh": "贝洛奥里藏特",
+  "nameEn": "Belo Horizonte",
+  "countryZh": "巴西",
+  "countryEn": "Brazil",
+  "countryCode": "BR",
+  "continent": "south-america",
+  "subregion": "south-america",
+  "region": "south-america",
+  "population": 2721564,
+  "timezone": "America/Sao_Paulo",
+  "cost": [
+   1068,
+   1507
+  ],
+  "monthlyCostUSD": 1256,
+  "costIndex": 34.9,
+  "rent1brUSD": null,
+  "mealUSD": null,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": 40.6,
+  "healthcareIndex": 64.4,
+  "pollutionIndex": 53,
+  "trafficIndex": 43.1,
+  "purchasingPowerIndex": 47.9,
+  "climateIndex": 98.5,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 21,
+   "annualPrecipMm": 1135,
+   "precipDays": 120,
+   "sunshineHours": 3742,
+   "summary": "四季温和，降水适中，日照充足"
+  },
+  "community": null,
+  "english": 2,
+  "englishEpiBand": "low",
+  "englishEpiScore": 482,
+  "pace": null,
+  "size": 3,
+  "digitalNomadVisa": null,
+  "tags": [
+   "food",
+   "nightlife",
+   "arts",
+   "history"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 11.4,
+   "band": "fair",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "curitiba",
+  "nameZh": "库里蒂巴",
+  "nameEn": "Curitiba",
+  "countryZh": "巴西",
+  "countryEn": "Brazil",
+  "countryCode": "BR",
+  "continent": "south-america",
+  "subregion": "south-america",
+  "region": "south-america",
+  "population": 1948626,
+  "timezone": "America/Sao_Paulo",
+  "cost": [
+   1102,
+   1555
+  ],
+  "monthlyCostUSD": 1296,
+  "costIndex": 35.9,
+  "rent1brUSD": 484.6,
+  "mealUSD": 7.68,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": 40.5,
+  "healthcareIndex": 67,
+  "pollutionIndex": 30.9,
+  "trafficIndex": 32.8,
+  "purchasingPowerIndex": 50.7,
+  "climateIndex": 99.6,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 17.5,
+   "annualPrecipMm": 1460,
+   "precipDays": 174,
+   "sunshineHours": 3037,
+   "summary": "四季温和，降水充沛，日照充足"
+  },
+  "community": null,
+  "english": 2,
+  "englishEpiBand": "low",
+  "englishEpiScore": 482,
+  "pace": null,
+  "size": 3,
+  "digitalNomadVisa": null,
+  "tags": [
+   "nature",
+   "food",
+   "outdoor",
+   "coffee"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 9.3,
+   "band": "good",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "cordoba-ar",
+  "nameZh": "科尔多瓦",
+  "nameEn": "Córdoba",
+  "countryZh": "阿根廷",
+  "countryEn": "Argentina",
+  "countryCode": "AR",
+  "continent": "south-america",
+  "subregion": "south-america",
+  "region": "south-america",
+  "population": 2106734,
+  "timezone": "America/Argentina/Cordoba",
+  "cost": [
+   1529,
+   2159
+  ],
+  "monthlyCostUSD": 1799,
+  "costIndex": 48.5,
+  "rent1brUSD": null,
+  "mealUSD": null,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": null,
+  "healthcareIndex": null,
+  "pollutionIndex": null,
+  "trafficIndex": null,
+  "purchasingPowerIndex": null,
+  "climateIndex": null,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 17.7,
+   "annualPrecipMm": 741,
+   "precipDays": 91,
+   "sunshineHours": 3625,
+   "summary": "四季温和，降水适中，日照充足"
+  },
+  "community": null,
+  "english": 4,
+  "englishEpiBand": "high",
+  "englishEpiScore": 575,
+  "pace": null,
+  "size": 3,
+  "digitalNomadVisa": null,
+  "tags": [
+   "history",
+   "food",
+   "nightlife",
+   "outdoor"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 5.1,
+   "band": "good",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "mendoza",
+  "nameZh": "门多萨",
+  "nameEn": "Mendoza",
+  "countryZh": "阿根廷",
+  "countryEn": "Argentina",
+  "countryCode": "AR",
+  "continent": "south-america",
+  "subregion": "south-america",
+  "region": "south-america",
+  "population": 114893,
+  "timezone": "America/Argentina/Mendoza",
+  "cost": null,
+  "monthlyCostUSD": null,
+  "costIndex": null,
+  "rent1brUSD": null,
+  "mealUSD": null,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": null,
+  "healthcareIndex": null,
+  "pollutionIndex": null,
+  "trafficIndex": null,
+  "purchasingPowerIndex": null,
+  "climateIndex": null,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 17,
+   "annualPrecipMm": 342,
+   "precipDays": 60,
+   "sunshineHours": 3862,
+   "summary": "四季温和，降水偏少，日照充足"
+  },
+  "community": null,
+  "english": 4,
+  "englishEpiBand": "high",
+  "englishEpiScore": 575,
+  "pace": null,
+  "size": 1,
+  "digitalNomadVisa": null,
+  "tags": [
+   "wine",
+   "nature",
+   "outdoor",
+   "food"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 6.1,
+   "band": "good",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "valparaiso",
+  "nameZh": "瓦尔帕莱索",
+  "nameEn": "Valparaíso",
+  "countryZh": "智利",
+  "countryEn": "Chile",
+  "countryCode": "CL",
+  "continent": "south-america",
+  "subregion": "south-america",
+  "region": "south-america",
+  "population": 282448,
+  "timezone": "America/Santiago",
+  "cost": null,
+  "monthlyCostUSD": null,
+  "costIndex": null,
+  "rent1brUSD": 455.99,
+  "mealUSD": 9.08,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": null,
+  "healthcareIndex": null,
+  "pollutionIndex": null,
+  "trafficIndex": null,
+  "purchasingPowerIndex": null,
+  "climateIndex": null,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 14.5,
+   "annualPrecipMm": 375,
+   "precipDays": 32,
+   "sunshineHours": 3842,
+   "summary": "四季温和，降水偏少，日照充足"
+  },
+  "community": null,
+  "english": 3,
+  "englishEpiBand": "moderate",
+  "englishEpiScore": 517,
+  "pace": null,
+  "size": 1,
+  "digitalNomadVisa": null,
+  "tags": [
+   "arts",
+   "history",
+   "food",
+   "street-art"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 10.6,
+   "band": "fair",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "cali",
+  "nameZh": "卡利",
+  "nameEn": "Cali",
+  "countryZh": "哥伦比亚",
+  "countryEn": "Colombia",
+  "countryCode": "CO",
+  "continent": "south-america",
+  "subregion": "south-america",
+  "region": "south-america",
+  "population": 2392877,
+  "timezone": "America/Bogota",
+  "cost": [
+   1040,
+   1469
+  ],
+  "monthlyCostUSD": 1224,
+  "costIndex": 34.1,
+  "rent1brUSD": 621.46,
+  "mealUSD": 7.25,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": null,
+  "healthcareIndex": null,
+  "pollutionIndex": null,
+  "trafficIndex": null,
+  "purchasingPowerIndex": null,
+  "climateIndex": null,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 21.6,
+   "annualPrecipMm": 3084,
+   "precipDays": 297,
+   "sunshineHours": 3321,
+   "summary": "四季温和，降水充沛，日照充足"
+  },
+  "community": null,
+  "english": 2,
+  "englishEpiBand": "low",
+  "englishEpiScore": 480,
+  "pace": null,
+  "size": 3,
+  "digitalNomadVisa": null,
+  "tags": [
+   "dance",
+   "nightlife",
+   "food",
+   "fitness"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 7.3,
+   "band": "good",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "bucaramanga",
+  "nameZh": "布卡拉曼加",
+  "nameEn": "Bucaramanga",
+  "countryZh": "哥伦比亚",
+  "countryEn": "Colombia",
+  "countryCode": "CO",
+  "continent": "south-america",
+  "subregion": "south-america",
+  "region": "south-america",
+  "population": 581130,
+  "timezone": "America/Bogota",
+  "cost": null,
+  "monthlyCostUSD": null,
+  "costIndex": null,
+  "rent1brUSD": 450.32,
+  "mealUSD": 5.29,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": null,
+  "healthcareIndex": null,
+  "pollutionIndex": null,
+  "trafficIndex": null,
+  "purchasingPowerIndex": null,
+  "climateIndex": null,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 21.6,
+   "annualPrecipMm": 4627,
+   "precipDays": 325,
+   "sunshineHours": 3564,
+   "summary": "四季温和，降水充沛，日照充足"
+  },
+  "community": null,
+  "english": 2,
+  "englishEpiBand": "low",
+  "englishEpiScore": 480,
+  "pace": null,
+  "size": 2,
+  "digitalNomadVisa": null,
+  "tags": [
+   "nature",
+   "food",
+   "outdoor",
+   "coffee"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 14.4,
+   "band": "fair",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "arequipa",
+  "nameZh": "阿雷基帕",
+  "nameEn": "Arequipa",
+  "countryZh": "秘鲁",
+  "countryEn": "Peru",
+  "countryCode": "PE",
+  "continent": "south-america",
+  "subregion": "south-america",
+  "region": "south-america",
+  "population": 1195700,
+  "timezone": "America/Lima",
+  "cost": null,
+  "monthlyCostUSD": null,
+  "costIndex": null,
+  "rent1brUSD": null,
+  "mealUSD": null,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": null,
+  "healthcareIndex": null,
+  "pollutionIndex": null,
+  "trafficIndex": null,
+  "purchasingPowerIndex": null,
+  "climateIndex": null,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 16.3,
+   "annualPrecipMm": 453,
+   "precipDays": 70,
+   "sunshineHours": 3948,
+   "summary": "四季温和，降水偏少，日照充足"
+  },
+  "community": null,
+  "english": 3,
+  "englishEpiBand": "moderate",
+  "englishEpiScore": 519,
+  "pace": null,
+  "size": 3,
+  "digitalNomadVisa": null,
+  "tags": [
+   "history",
+   "food",
+   "nature",
+   "outdoor"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 7.7,
+   "band": "good",
+   "period": "2022-08 ~ 2024-12"
+  }
  }
 ]

@@ -54,7 +54,12 @@
    "festivals",
    "outdoor"
   ],
-  "traits": null
+  "traits": null,
+  "airQuality": {
+   "pm25": 8.4,
+   "band": "good",
+   "period": "2022-08 ~ 2024-12"
+  }
  },
  {
   "id": "toronto",
@@ -111,7 +116,12 @@
    "shopping",
    "nightlife"
   ],
-  "traits": null
+  "traits": null,
+  "airQuality": {
+   "pm25": 12.4,
+   "band": "fair",
+   "period": "2022-08 ~ 2024-12"
+  }
  },
  {
   "id": "cancun",
@@ -168,7 +178,12 @@
    "food",
    "wellness"
   ],
-  "traits": null
+  "traits": null,
+  "airQuality": {
+   "pm25": 10.7,
+   "band": "fair",
+   "period": "2022-08 ~ 2024-12"
+  }
  },
  {
   "id": "los-angeles",
@@ -226,7 +241,12 @@
    "arts",
    "outdoor"
   ],
-  "traits": null
+  "traits": null,
+  "airQuality": {
+   "pm25": 21.9,
+   "band": "moderate",
+   "period": "2022-08 ~ 2024-12"
+  }
  },
  {
   "id": "miami",
@@ -283,7 +303,12 @@
    "food",
    "watersports"
   ],
-  "traits": null
+  "traits": null,
+  "airQuality": {
+   "pm25": 10,
+   "band": "good",
+   "period": "2022-08 ~ 2024-12"
+  }
  },
  {
   "id": "merida",
@@ -348,6 +373,11 @@
   "visaDetail": {
    "name": null,
    "note": "同享墨西哥 180 天免签与临时居民路径；城市安静、治安口碑好"
+  },
+  "airQuality": {
+   "pm25": 9.8,
+   "band": "good",
+   "period": "2022-08 ~ 2024-12"
   }
  },
  {
@@ -415,6 +445,11 @@
   "visaDetail": {
    "name": null,
    "note": "多数护照可免签停留 180 天；另有临时居民卡支持更长期停留"
+  },
+  "airQuality": {
+   "pm25": 21.4,
+   "band": "moderate",
+   "period": "2022-08 ~ 2024-12"
   }
  },
  {
@@ -481,6 +516,11 @@
   "visaDetail": {
    "name": null,
    "note": "同享墨西哥 180 天免签；加勒比海岸数字游民聚集、英语通行度高"
+  },
+  "airQuality": {
+   "pm25": 8.2,
+   "band": "good",
+   "period": "2022-08 ~ 2024-12"
   }
  },
  {
@@ -537,7 +577,12 @@
    "food",
    "nightlife"
   ],
-  "traits": null
+  "traits": null,
+  "airQuality": {
+   "pm25": 7.3,
+   "band": "good",
+   "period": "2022-08 ~ 2024-12"
+  }
  },
  {
   "id": "oaxaca",
@@ -590,7 +635,12 @@
    "history",
    "festivals"
   ],
-  "traits": null
+  "traits": null,
+  "airQuality": {
+   "pm25": 8,
+   "band": "good",
+   "period": "2022-08 ~ 2024-12"
+  }
  },
  {
   "id": "vancouver",
@@ -647,6 +697,683 @@
    "coffee",
    "fitness"
   ],
-  "traits": null
+  "traits": null,
+  "airQuality": {
+   "pm25": 11.9,
+   "band": "fair",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "guadalajara",
+  "nameZh": "瓜达拉哈拉",
+  "nameEn": "Guadalajara",
+  "countryZh": "墨西哥",
+  "countryEn": "Mexico",
+  "countryCode": "MX",
+  "continent": "north-america",
+  "subregion": "central-america",
+  "region": "north-america",
+  "population": 1385629,
+  "timezone": "America/Mexico_City",
+  "cost": [
+   1403,
+   1981
+  ],
+  "monthlyCostUSD": 1651,
+  "costIndex": 44.8,
+  "rent1brUSD": 865.09,
+  "mealUSD": 13.77,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": 37.6,
+  "healthcareIndex": 78.3,
+  "pollutionIndex": 59.3,
+  "trafficIndex": 41.6,
+  "purchasingPowerIndex": 44.5,
+  "climateIndex": 92.8,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 20.6,
+   "annualPrecipMm": 661,
+   "precipDays": 100,
+   "sunshineHours": 3943,
+   "summary": "四季温和，降水偏少，日照充足"
+  },
+  "community": null,
+  "english": 1,
+  "englishEpiBand": "very low",
+  "englishEpiScore": 440,
+  "pace": null,
+  "size": 3,
+  "digitalNomadVisa": null,
+  "tags": [
+   "food",
+   "culture",
+   "nightlife",
+   "startup"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 11.6,
+   "band": "fair",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "monterrey",
+  "nameZh": "蒙特雷",
+  "nameEn": "Monterrey",
+  "countryZh": "墨西哥",
+  "countryEn": "Mexico",
+  "countryCode": "MX",
+  "continent": "north-america",
+  "subregion": "central-america",
+  "region": "north-america",
+  "population": 1135512,
+  "timezone": "America/Monterrey",
+  "cost": [
+   1607,
+   2268
+  ],
+  "monthlyCostUSD": 1890,
+  "costIndex": 50.8,
+  "rent1brUSD": 971.85,
+  "mealUSD": 13.77,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": 52.1,
+  "healthcareIndex": 68.8,
+  "pollutionIndex": 70.9,
+  "trafficIndex": 31.9,
+  "purchasingPowerIndex": 54.1,
+  "climateIndex": 80.4,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 21.9,
+   "annualPrecipMm": 611,
+   "precipDays": 86,
+   "sunshineHours": 3673,
+   "summary": "四季温和，降水偏少，日照充足"
+  },
+  "community": null,
+  "english": 1,
+  "englishEpiBand": "very low",
+  "englishEpiScore": 440,
+  "pace": null,
+  "size": 3,
+  "digitalNomadVisa": null,
+  "tags": [
+   "startup",
+   "food",
+   "outdoor",
+   "shopping"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 12,
+   "band": "fair",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "san-miguel",
+  "nameZh": "圣米格尔-德阿连德",
+  "nameEn": "San Miguel de Allende",
+  "countryZh": "墨西哥",
+  "countryEn": "Mexico",
+  "countryCode": "MX",
+  "continent": "north-america",
+  "subregion": "central-america",
+  "region": "north-america",
+  "population": 174615,
+  "timezone": "America/Mexico_City",
+  "cost": [
+   1658,
+   2340
+  ],
+  "monthlyCostUSD": 1950,
+  "costIndex": 52.3,
+  "rent1brUSD": null,
+  "mealUSD": null,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": null,
+  "healthcareIndex": null,
+  "pollutionIndex": null,
+  "trafficIndex": null,
+  "purchasingPowerIndex": null,
+  "climateIndex": null,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 17.9,
+   "annualPrecipMm": 579,
+   "precipDays": 85,
+   "sunshineHours": 3996,
+   "summary": "四季温和，降水偏少，日照充足"
+  },
+  "community": null,
+  "english": 1,
+  "englishEpiBand": "very low",
+  "englishEpiScore": 440,
+  "pace": null,
+  "size": 1,
+  "digitalNomadVisa": null,
+  "tags": [
+   "arts",
+   "food",
+   "history",
+   "wellness"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 9.4,
+   "band": "good",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "san-diego",
+  "nameZh": "圣地亚哥",
+  "nameEn": "San Diego",
+  "countryZh": "美国",
+  "countryEn": "United States",
+  "countryCode": "US",
+  "continent": "north-america",
+  "subregion": "northern-america",
+  "region": "north-america",
+  "population": 1404452,
+  "timezone": "America/Los_Angeles",
+  "cost": [
+   2722,
+   3842
+  ],
+  "monthlyCostUSD": 3202,
+  "costIndex": 83.7,
+  "rent1brUSD": null,
+  "mealUSD": null,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": 60.1,
+  "healthcareIndex": 67.1,
+  "pollutionIndex": 39.3,
+  "trafficIndex": 34.9,
+  "purchasingPowerIndex": 123.9,
+  "climateIndex": 97.1,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 17.1,
+   "annualPrecipMm": 337,
+   "precipDays": 39,
+   "sunshineHours": 3790,
+   "summary": "四季温和，降水偏少，日照充足"
+  },
+  "community": null,
+  "english": null,
+  "englishEpiBand": null,
+  "englishEpiScore": null,
+  "pace": null,
+  "size": 3,
+  "digitalNomadVisa": null,
+  "tags": [
+   "beach",
+   "outdoor",
+   "fitness",
+   "food",
+   "watersports"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 15.6,
+   "band": "moderate",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "las-vegas",
+  "nameZh": "拉斯维加斯",
+  "nameEn": "Las Vegas",
+  "countryZh": "美国",
+  "countryEn": "United States",
+  "countryCode": "US",
+  "continent": "north-america",
+  "subregion": "northern-america",
+  "region": "north-america",
+  "population": 641903,
+  "timezone": "America/Los_Angeles",
+  "cost": [
+   2312,
+   3264
+  ],
+  "monthlyCostUSD": 2720,
+  "costIndex": 71.6,
+  "rent1brUSD": null,
+  "mealUSD": null,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": 44.6,
+  "healthcareIndex": 53.6,
+  "pollutionIndex": 51.5,
+  "trafficIndex": 27.1,
+  "purchasingPowerIndex": 126.9,
+  "climateIndex": 57.4,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 21.4,
+   "annualPrecipMm": 123,
+   "precipDays": 25,
+   "sunshineHours": 4054,
+   "summary": "四季温和，降水偏少，日照充足"
+  },
+  "community": null,
+  "english": null,
+  "englishEpiBand": null,
+  "englishEpiScore": null,
+  "pace": null,
+  "size": 2,
+  "digitalNomadVisa": null,
+  "tags": [
+   "nightlife",
+   "entertainment",
+   "food",
+   "shopping"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 7.7,
+   "band": "good",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "portland",
+  "nameZh": "波特兰",
+  "nameEn": "Portland",
+  "countryZh": "美国",
+  "countryEn": "United States",
+  "countryCode": "US",
+  "continent": "north-america",
+  "subregion": "northern-america",
+  "region": "north-america",
+  "population": 652503,
+  "timezone": "America/Los_Angeles",
+  "cost": [
+   2718,
+   3838
+  ],
+  "monthlyCostUSD": 3198,
+  "costIndex": 83.6,
+  "rent1brUSD": 1967.62,
+  "mealUSD": 25,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": 41.9,
+  "healthcareIndex": 65.4,
+  "pollutionIndex": 35.7,
+  "trafficIndex": 37.4,
+  "purchasingPowerIndex": 142.8,
+  "climateIndex": 89.6,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 12,
+   "annualPrecipMm": 1358,
+   "precipDays": 148,
+   "sunshineHours": 3013,
+   "summary": "冬季偏凉，降水充沛，日照充足"
+  },
+  "community": null,
+  "english": null,
+  "englishEpiBand": null,
+  "englishEpiScore": null,
+  "pace": null,
+  "size": 2,
+  "digitalNomadVisa": null,
+  "tags": [
+   "coffee",
+   "food",
+   "outdoor",
+   "nature"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 7.8,
+   "band": "good",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "chicago",
+  "nameZh": "芝加哥",
+  "nameEn": "Chicago",
+  "countryZh": "美国",
+  "countryEn": "United States",
+  "countryCode": "US",
+  "continent": "north-america",
+  "subregion": "northern-america",
+  "region": "north-america",
+  "population": 2664452,
+  "timezone": "America/Chicago",
+  "cost": [
+   2454,
+   3464
+  ],
+  "monthlyCostUSD": 2887,
+  "costIndex": 75.8,
+  "rent1brUSD": 2400,
+  "mealUSD": 21.25,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": 34.8,
+  "healthcareIndex": 64.8,
+  "pollutionIndex": 50.3,
+  "trafficIndex": 41.7,
+  "purchasingPowerIndex": 141.6,
+  "climateIndex": 66.1,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 10.5,
+   "annualPrecipMm": 1177,
+   "precipDays": 132,
+   "sunshineHours": 3091,
+   "summary": "冬季偏凉，降水适中，日照充足"
+  },
+  "community": null,
+  "english": null,
+  "englishEpiBand": null,
+  "englishEpiScore": null,
+  "pace": null,
+  "size": 3,
+  "digitalNomadVisa": null,
+  "tags": [
+   "arts",
+   "food",
+   "nightlife",
+   "shopping"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 11.8,
+   "band": "fair",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "phoenix",
+  "nameZh": "菲尼克斯",
+  "nameEn": "Phoenix",
+  "countryZh": "美国",
+  "countryEn": "United States",
+  "countryCode": "US",
+  "continent": "north-america",
+  "subregion": "northern-america",
+  "region": "north-america",
+  "population": 1650070,
+  "timezone": "America/Phoenix",
+  "cost": [
+   2457,
+   3469
+  ],
+  "monthlyCostUSD": 2891,
+  "costIndex": 75.9,
+  "rent1brUSD": 1777.5,
+  "mealUSD": 20,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": 46.7,
+  "healthcareIndex": 66,
+  "pollutionIndex": 58,
+  "trafficIndex": 32.7,
+  "purchasingPowerIndex": 131.5,
+  "climateIndex": 53.8,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 23.8,
+   "annualPrecipMm": 282,
+   "precipDays": 34,
+   "sunshineHours": 3994,
+   "summary": "四季温和，降水偏少，日照充足"
+  },
+  "community": null,
+  "english": null,
+  "englishEpiBand": null,
+  "englishEpiScore": null,
+  "pace": null,
+  "size": 3,
+  "digitalNomadVisa": null,
+  "tags": [
+   "outdoor",
+   "golf",
+   "food",
+   "wellness"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 11.9,
+   "band": "fair",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "montreal",
+  "nameZh": "蒙特利尔",
+  "nameEn": "Montreal",
+  "countryZh": "加拿大",
+  "countryEn": "Canada",
+  "countryCode": "CA",
+  "continent": "north-america",
+  "subregion": "northern-america",
+  "region": "north-america",
+  "population": 1762949,
+  "timezone": "America/Toronto",
+  "cost": [
+   1861,
+   2627
+  ],
+  "monthlyCostUSD": 2189,
+  "costIndex": 58.3,
+  "rent1brUSD": 1254.31,
+  "mealUSD": 18.95,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": 67,
+  "healthcareIndex": 61.9,
+  "pollutionIndex": 33.7,
+  "trafficIndex": 40.1,
+  "purchasingPowerIndex": 121.8,
+  "climateIndex": 52.4,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 6.4,
+   "annualPrecipMm": 1144,
+   "precipDays": 141,
+   "sunshineHours": 2957,
+   "summary": "冬季偏凉，降水适中，日照充足"
+  },
+  "community": null,
+  "english": null,
+  "englishEpiBand": null,
+  "englishEpiScore": null,
+  "pace": null,
+  "size": 3,
+  "digitalNomadVisa": null,
+  "tags": [
+   "arts",
+   "food",
+   "festivals",
+   "nightlife"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 11.1,
+   "band": "fair",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "calgary",
+  "nameZh": "卡尔加里",
+  "nameEn": "Calgary",
+  "countryZh": "加拿大",
+  "countryEn": "Canada",
+  "countryCode": "CA",
+  "continent": "north-america",
+  "subregion": "northern-america",
+  "region": "north-america",
+  "population": 1306784,
+  "timezone": "America/Edmonton",
+  "cost": [
+   2051,
+   2896
+  ],
+  "monthlyCostUSD": 2413,
+  "costIndex": 63.9,
+  "rent1brUSD": 1218.85,
+  "mealUSD": 17.55,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": 62.1,
+  "healthcareIndex": 73,
+  "pollutionIndex": 23.6,
+  "trafficIndex": 29.4,
+  "purchasingPowerIndex": 116.7,
+  "climateIndex": 33.1,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 4.5,
+   "annualPrecipMm": 480,
+   "precipDays": 95,
+   "sunshineHours": 3371,
+   "summary": "冬季偏凉，降水偏少，日照充足"
+  },
+  "community": null,
+  "english": null,
+  "englishEpiBand": null,
+  "englishEpiScore": null,
+  "pace": null,
+  "size": 3,
+  "digitalNomadVisa": null,
+  "tags": [
+   "outdoor",
+   "nature",
+   "food",
+   "fitness"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 9.9,
+   "band": "good",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "ottawa",
+  "nameZh": "渥太华",
+  "nameEn": "Ottawa",
+  "countryZh": "加拿大",
+  "countryEn": "Canada",
+  "countryCode": "CA",
+  "continent": "north-america",
+  "subregion": "northern-america",
+  "region": "north-america",
+  "population": 1017449,
+  "timezone": "America/Toronto",
+  "cost": [
+   2000,
+   2824
+  ],
+  "monthlyCostUSD": 2353,
+  "costIndex": 62.4,
+  "rent1brUSD": 1479.9,
+  "mealUSD": 18.25,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": 69.1,
+  "healthcareIndex": 68.4,
+  "pollutionIndex": 24.3,
+  "trafficIndex": 32.6,
+  "purchasingPowerIndex": 136.9,
+  "climateIndex": 44.5,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 7.3,
+   "annualPrecipMm": 1111,
+   "precipDays": 141,
+   "sunshineHours": 2914,
+   "summary": "冬季偏凉，降水适中，日照充足"
+  },
+  "community": null,
+  "english": null,
+  "englishEpiBand": null,
+  "englishEpiScore": null,
+  "pace": null,
+  "size": 3,
+  "digitalNomadVisa": null,
+  "tags": [
+   "history",
+   "nature",
+   "food",
+   "arts"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 7.8,
+   "band": "good",
+   "period": "2022-08 ~ 2024-12"
+  }
  }
 ]

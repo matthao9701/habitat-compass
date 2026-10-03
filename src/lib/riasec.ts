@@ -81,8 +81,15 @@ export function deriveRiasec(riasecAnswers: Record<string, number>): RiasecProfi
  * 1. 二级子项强化（原有机制：选中子项的一级标签 +1 次重复）
  * 2. RIASEC 高分维（percent ≥ RIASEC_BOOST_THRESHOLD）的映射标签 +1 次重复
  * 只强化用户已选中的标签（与原机制一致，不凭空新增兴趣）。
+ *
+ * 第十轮引擎 v3：RIASEC 强化从兴趣类本体分中迁出，单独进 Tier 3 加分层——
+ * options.includeRiasec = false 时返回仅含子项强化的基线（供兴趣类与差集计算）。
  */
-export function tagRepeats(answers: UserAnswers): Map<string, number> {
+export function tagRepeats(
+  answers: UserAnswers,
+  options?: { includeRiasec?: boolean },
+): Map<string, number> {
+  const includeRiasec = options?.includeRiasec ?? true;
   const repeats = new Map<string, number>();
   if (answers.version !== 'pro') return repeats;
 
@@ -94,7 +101,7 @@ export function tagRepeats(answers: UserAnswers): Map<string, number> {
   if (answers.interestSubs) {
     for (const t of reinforcedTags(answers.interestSubs)) add(t);
   }
-  if (answers.riasec) {
+  if (includeRiasec && answers.riasec) {
     const prof = deriveRiasec(answers.riasec);
     for (const dim of RIASEC_DIMS) {
       if (prof.percent[dim] >= RIASEC_BOOST_THRESHOLD) {
@@ -105,6 +112,20 @@ export function tagRepeats(answers: UserAnswers): Map<string, number> {
 
   for (const [tag, n] of repeats) repeats.set(tag, Math.min(n, RIASEC_REPEAT_CAP));
   return repeats;
+}
+
+/**
+ * RIASEC 强化增量标签（Tier 3 专用）：全信号重复数 > 基线（仅子项强化）重复数的
+ * 标签集合及其最终权重。空 Map = 无 RIASEC 强化信号（Tier 3 该项 null 降权）。
+ */
+export function riasecBoostedTags(answers: UserAnswers): Map<string, number> {
+  const withR = tagRepeats(answers);
+  const withoutR = tagRepeats(answers, { includeRiasec: false });
+  const boosted = new Map<string, number>();
+  for (const [tag, n] of withR) {
+    if (n > (withoutR.get(tag) ?? 0)) boosted.set(tag, n);
+  }
+  return boosted;
 }
 
 /** IPIP Risk-Taking 计分：keyed 反向题折算后取均值 ×100 */

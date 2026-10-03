@@ -2,9 +2,10 @@
 // 注意：这里的重算只作用于对比页展示，不回写引擎与报告。
 import { PREFERENCE_DIMENSIONS } from './analysis';
 import {
+  aggregateV3Raw,
   computeCityFits,
   PREFERENCE_WEIGHTS,
-  WEIGHTS,
+  TIER3_WEIGHTS,
   type UserAnswers,
 } from './engine';
 import type { City } from '../data/types';
@@ -91,11 +92,13 @@ export function weightShare(weights: Record<string, number>, key: string): numbe
 export interface CompareRow {
   city: City;
   color: string;
-  /** 对比综合分（与引擎同校准：52 + raw*0.46；缺失类按权重降权） */
+  /** 对比综合分（与引擎同校准：52 + raw*0.46；缺失类按权重降权；v3 含 Tier 3） */
   composite: number;
   personalityFit: number | null;
   prefWeighted: number | null;
   interestFit: number | null;
+  /** 引擎 v3 Tier 3 加分层（lite / 无信号时 null） */
+  tier3Fit: number | null;
   fitDetails: Record<string, number | null>;
 }
 
@@ -106,6 +109,8 @@ export function buildCompareRow(
   weights: Record<string, number>,
 ): CompareRow {
   const fits = computeCityFits(city, answers);
+  const riasecFit = fits.riasecFit ?? null;
+  const riskFit = fits.riskFit ?? null;
 
   // 临时权重聚合：null 维（无数据）跳过 → 降权不惩罚；0 权重维同样剔除
   let num = 0;
@@ -119,20 +124,31 @@ export function buildCompareRow(
   }
   const prefWeighted: number | null = den > 0 ? num / den : null;
 
-  // 类聚合与引擎同口径：缺失类按权重降权（30/48/22 名义权重不变）
-  const parts: [number | null, number][] = [
-    [fits.personalityFit, WEIGHTS.personality],
-    [prefWeighted, WEIGHTS.preference],
-    [fits.interestFit, WEIGHTS.interest],
+  // 引擎 v3 分层聚合（与 assess 同口径：Tier 2 降权 + Tier 3 ≤10% 加分）
+  const airFit = fits.airFit ?? null;
+  const raw = aggregateV3Raw({
+    personalityFit: fits.personalityFit,
+    preferenceFit: prefWeighted,
+    interestFit: fits.interestFit,
+    riasecFit,
+    riskFit,
+    airFit,
+  });
+
+  // Tier 3 独立展示分（三信号按 TIER3_WEIGHTS 归一）
+  const t3Parts: [number | null, number][] = [
+    [riasecFit, TIER3_WEIGHTS.riasecBoost],
+    [riskFit, TIER3_WEIGHTS.riskLink],
+    [airFit, TIER3_WEIGHTS.airFit],
   ];
-  let classNum = 0;
-  let classDen = 0;
-  for (const [v, w] of parts) {
+  let t3n = 0;
+  let t3d = 0;
+  for (const [v, w] of t3Parts) {
     if (v == null) continue;
-    classNum += v * w;
-    classDen += w;
+    t3n += v * w;
+    t3d += w;
   }
-  const raw = classDen > 0 ? classNum / classDen : 0;
+  const tier3Fit = t3d > 0 ? t3n / t3d : null;
 
   const r1 = (v: number | null): number | null => (v == null ? null : Math.round(v));
   const fitDetails: Record<string, number | null> = {};
@@ -148,6 +164,7 @@ export function buildCompareRow(
     personalityFit: r1(fits.personalityFit),
     prefWeighted: r1(prefWeighted),
     interestFit: r1(fits.interestFit),
+    tier3Fit: r1(tier3Fit),
     fitDetails,
   };
 }

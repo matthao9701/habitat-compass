@@ -53,7 +53,12 @@
    "food",
    "nightlife"
   ],
-  "traits": null
+  "traits": null,
+  "airQuality": {
+   "pm25": 23,
+   "band": "moderate",
+   "period": "2022-08 ~ 2024-12"
+  }
  },
  {
   "id": "yerevan",
@@ -109,7 +114,12 @@
    "coffee",
    "food"
   ],
-  "traits": null
+  "traits": null,
+  "airQuality": {
+   "pm25": 9.3,
+   "band": "good",
+   "period": "2022-08 ~ 2024-12"
+  }
  },
  {
   "id": "amman",
@@ -164,7 +174,12 @@
    "food",
    "coffee"
   ],
-  "traits": null
+  "traits": null,
+  "airQuality": {
+   "pm25": 15.4,
+   "band": "moderate",
+   "period": "2022-08 ~ 2024-12"
+  }
  },
  {
   "id": "bali",
@@ -231,6 +246,11 @@
   "visaDetail": {
    "name": "B211A 签证",
    "note": "B211A 签证可停留约 6 个月；KITAS 远程工作签证可逐年续签"
+  },
+  "airQuality": {
+   "pm25": 10.9,
+   "band": "fair",
+   "period": "2022-08 ~ 2024-12"
   }
  },
  {
@@ -288,7 +308,12 @@
    "nightlife",
    "fitness"
   ],
-  "traits": null
+  "traits": null,
+  "airQuality": {
+   "pm25": 20.4,
+   "band": "moderate",
+   "period": "2022-08 ~ 2024-12"
+  }
  },
  {
   "id": "penang",
@@ -353,6 +378,11 @@
   "visaDetail": {
    "name": "DE Rantau",
    "note": "数字游民准证（DE Rantau）最长 24 个月，月收入约 2,400 美元起"
+  },
+  "airQuality": {
+   "pm25": 16.7,
+   "band": "moderate",
+   "period": "2022-08 ~ 2024-12"
   }
  },
  {
@@ -410,7 +440,12 @@
    "nature",
    "festivals"
   ],
-  "traits": null
+  "traits": null,
+  "airQuality": {
+   "pm25": 62,
+   "band": "poor",
+   "period": "2022-08 ~ 2024-12"
+  }
  },
  {
   "id": "dali",
@@ -464,7 +499,12 @@
    "festivals",
    "outdoor"
   ],
-  "traits": null
+  "traits": null,
+  "airQuality": {
+   "pm25": 12,
+   "band": "fair",
+   "period": "2022-08 ~ 2024-12"
+  }
  },
  {
   "id": "dubai",
@@ -521,7 +561,12 @@
    "nightlife",
    "fitness"
   ],
-  "traits": null
+  "traits": null,
+  "airQuality": {
+   "pm25": 40.3,
+   "band": "poor",
+   "period": "2022-08 ~ 2024-12"
+  }
  },
  {
   "id": "tokyo",
@@ -587,6 +632,11 @@
   "visaDetail": {
    "name": "6 个月，年收入约 1,000 万日元门槛",
    "note": "数字游民签证（6 个月，年收入约 1,000 万日元门槛），不可续签"
+  },
+  "airQuality": {
+   "pm25": 24.5,
+   "band": "moderate",
+   "period": "2022-08 ~ 2024-12"
   }
  },
  {
@@ -640,7 +690,12 @@
    "beach",
    "shopping"
   ],
-  "traits": null
+  "traits": null,
+  "airQuality": {
+   "pm25": 13.8,
+   "band": "fair",
+   "period": "2022-08 ~ 2024-12"
+  }
  },
  {
   "id": "busan",
@@ -694,7 +749,12 @@
    "nature",
    "outdoor"
   ],
-  "traits": null
+  "traits": null,
+  "airQuality": {
+   "pm25": 17.2,
+   "band": "moderate",
+   "period": "2022-08 ~ 2024-12"
+  }
  },
  {
   "id": "goa",
@@ -748,7 +808,12 @@
    "nightlife",
    "outdoor"
   ],
-  "traits": null
+  "traits": null,
+  "airQuality": {
+   "pm25": 22.1,
+   "band": "moderate",
+   "period": "2022-08 ~ 2024-12"
+  }
  },
  {
   "id": "hanoi",
@@ -804,7 +869,12 @@
    "coffee",
    "nightlife"
   ],
-  "traits": null
+  "traits": null,
+  "airQuality": {
+   "pm25": 41.4,
+   "band": "poor",
+   "period": "2022-08 ~ 2024-12"
+  }
  },
  {
   "id": "ho-chi-minh",
@@ -869,6 +939,11 @@
   "visaDetail": {
    "name": null,
    "note": "电子签停留最长 90 天；数字游民签证尚未落地，多靠续签循环"
+  },
+  "airQuality": {
+   "pm25": 24.2,
+   "band": "moderate",
+   "period": "2022-08 ~ 2024-12"
   }
  },
  {
@@ -934,6 +1009,11 @@
   "visaDetail": {
    "name": "适用 DE Rantau 数字游民准证",
    "note": "适用 DE Rantau 数字游民准证；都会基础设施成熟、英语通用"
+  },
+  "airQuality": {
+   "pm25": 38.8,
+   "band": "poor",
+   "period": "2022-08 ~ 2024-12"
   }
  },
  {
@@ -989,7 +1069,12 @@
    "food",
    "nightlife"
   ],
-  "traits": null
+  "traits": null,
+  "airQuality": {
+   "pm25": 17.3,
+   "band": "moderate",
+   "period": "2022-08 ~ 2024-12"
+  }
  },
  {
   "id": "kyoto",
@@ -1043,7 +1128,12 @@
    "nature",
    "wellness"
   ],
-  "traits": null
+  "traits": null,
+  "airQuality": {
+   "pm25": 11.6,
+   "band": "fair",
+   "period": "2022-08 ~ 2024-12"
+  }
  },
  {
   "id": "colombo",
@@ -1099,7 +1189,12 @@
    "history",
    "shopping"
   ],
-  "traits": null
+  "traits": null,
+  "airQuality": {
+   "pm25": 21.6,
+   "band": "moderate",
+   "period": "2022-08 ~ 2024-12"
+  }
  },
  {
   "id": "bangkok",
@@ -1166,6 +1261,11 @@
   "visaDetail": {
    "name": "DTV",
    "note": "数字游民签证（DTV）最长 5 年，每次入境停留 180 天，需资金与远程工作证明"
+  },
+  "airQuality": {
+   "pm25": 35,
+   "band": "poor",
+   "period": "2022-08 ~ 2024-12"
   }
  },
  {
@@ -1232,6 +1332,11 @@
   "visaDetail": {
    "name": "适用泰国 DTV",
    "note": "适用泰国 DTV；海岛度假配套成熟，拉威等地数字游民集中"
+  },
+  "airQuality": {
+   "pm25": 9.9,
+   "band": "good",
+   "period": "2022-08 ~ 2024-12"
   }
  },
  {
@@ -1299,6 +1404,11 @@
   "visaDetail": {
    "name": "适用泰国 DTV",
    "note": "适用泰国 DTV 数字游民签证；长期游民传统聚集地，生活成本低"
+  },
+  "airQuality": {
+   "pm25": 20.9,
+   "band": "moderate",
+   "period": "2022-08 ~ 2024-12"
   }
  },
  {
@@ -1356,7 +1466,12 @@
    "startup",
    "arts"
   ],
-  "traits": null
+  "traits": null,
+  "airQuality": {
+   "pm25": 46.6,
+   "band": "poor",
+   "period": "2022-08 ~ 2024-12"
+  }
  },
  {
   "id": "seoul",
@@ -1422,6 +1537,11 @@
   "visaDetail": {
    "name": "1-2 年",
    "note": "工作假期签证面向部分国家青年；数字游民签证（1-2 年）已试点推行"
+  },
+  "airQuality": {
+   "pm25": 27.8,
+   "band": "poor",
+   "period": "2022-08 ~ 2024-12"
   }
  },
  {
@@ -1479,7 +1599,12 @@
    "food",
    "outdoor"
   ],
-  "traits": null
+  "traits": null,
+  "airQuality": {
+   "pm25": 7.4,
+   "band": "good",
+   "period": "2022-08 ~ 2024-12"
+  }
  },
  {
   "id": "taipei",
@@ -1546,6 +1671,11 @@
   "visaDetail": {
    "name": null,
    "note": "金卡就业（Employment Gold Card）含远程工作居留，1-3 年、门槛较高"
+  },
+  "airQuality": {
+   "pm25": 20.4,
+   "band": "moderate",
+   "period": "2022-08 ~ 2024-12"
   }
  },
  {
@@ -1600,7 +1730,12 @@
    "food",
    "lgbtq"
   ],
-  "traits": null
+  "traits": null,
+  "airQuality": {
+   "pm25": 15.9,
+   "band": "moderate",
+   "period": "2022-08 ~ 2024-12"
+  }
  },
  {
   "id": "da-nang",
@@ -1665,6 +1800,11 @@
   "visaDetail": {
    "name": null,
    "note": "越南电子签 90 天；海滨小城节奏慢，适合长住与深度工作"
+  },
+  "airQuality": {
+   "pm25": 19,
+   "band": "moderate",
+   "period": "2022-08 ~ 2024-12"
   }
  },
  {
@@ -1722,7 +1862,12 @@
    "nightlife",
    "startup"
   ],
-  "traits": null
+  "traits": null,
+  "airQuality": {
+   "pm25": 29.6,
+   "band": "poor",
+   "period": "2022-08 ~ 2024-12"
+  }
  },
  {
   "id": "singapore",
@@ -1788,6 +1933,1622 @@
   "visaDetail": {
    "name": null,
    "note": "ONE Pass 工作准证面向高薪远程人才（月薪约 2.2 万新元），门槛高"
+  },
+  "airQuality": {
+   "pm25": 17.1,
+   "band": "moderate",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "pattaya",
+  "nameZh": "芭提雅",
+  "nameEn": "Pattaya",
+  "countryZh": "泰国",
+  "countryEn": "Thailand",
+  "countryCode": "TH",
+  "continent": "asia",
+  "subregion": "south-eastern-asia",
+  "region": "asia",
+  "population": 116417,
+  "timezone": "Asia/Bangkok",
+  "cost": [
+   1170,
+   1651
+  ],
+  "monthlyCostUSD": 1376,
+  "costIndex": 37.9,
+  "rent1brUSD": 577.53,
+  "mealUSD": 3.59,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": 54.9,
+  "healthcareIndex": 75.1,
+  "pollutionIndex": 87,
+  "trafficIndex": 21.9,
+  "purchasingPowerIndex": 32.3,
+  "climateIndex": 75,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 27.9,
+   "annualPrecipMm": 1412,
+   "precipDays": 193,
+   "sunshineHours": 3544,
+   "summary": "夏季偏热，降水充沛，日照充足"
+  },
+  "community": null,
+  "english": 1,
+  "englishEpiBand": "very low",
+  "englishEpiScore": 402,
+  "pace": null,
+  "size": 1,
+  "digitalNomadVisa": null,
+  "tags": [
+   "beach",
+   "nightlife",
+   "watersports",
+   "food"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 14.6,
+   "band": "fair",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "koh-samui",
+  "nameZh": "苏梅岛",
+  "nameEn": "Koh Samui",
+  "countryZh": "泰国",
+  "countryEn": "Thailand",
+  "countryCode": "TH",
+  "continent": "asia",
+  "subregion": "south-eastern-asia",
+  "region": "asia",
+  "population": 50000,
+  "timezone": "Asia/Bangkok",
+  "cost": null,
+  "monthlyCostUSD": null,
+  "costIndex": null,
+  "rent1brUSD": null,
+  "mealUSD": null,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": null,
+  "healthcareIndex": null,
+  "pollutionIndex": null,
+  "trafficIndex": null,
+  "purchasingPowerIndex": null,
+  "climateIndex": null,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 27.4,
+   "annualPrecipMm": 1647,
+   "precipDays": 225,
+   "sunshineHours": 3574,
+   "summary": "夏季偏热，降水充沛，日照充足"
+  },
+  "community": null,
+  "english": 1,
+  "englishEpiBand": "very low",
+  "englishEpiScore": 402,
+  "pace": null,
+  "size": 1,
+  "digitalNomadVisa": null,
+  "tags": [
+   "beach",
+   "wellness",
+   "watersports",
+   "food"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 9.1,
+   "band": "good",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "krabi",
+  "nameZh": "甲米",
+  "nameEn": "Krabi",
+  "countryZh": "泰国",
+  "countryEn": "Thailand",
+  "countryCode": "TH",
+  "continent": "asia",
+  "subregion": "south-eastern-asia",
+  "region": "asia",
+  "population": 31219,
+  "timezone": "Asia/Bangkok",
+  "cost": null,
+  "monthlyCostUSD": null,
+  "costIndex": null,
+  "rent1brUSD": null,
+  "mealUSD": null,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": null,
+  "healthcareIndex": null,
+  "pollutionIndex": null,
+  "trafficIndex": null,
+  "purchasingPowerIndex": null,
+  "climateIndex": null,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 26.9,
+   "annualPrecipMm": 2216,
+   "precipDays": 251,
+   "sunshineHours": 3424,
+   "summary": "夏季偏热，降水充沛，日照充足"
+  },
+  "community": null,
+  "english": 1,
+  "englishEpiBand": "very low",
+  "englishEpiScore": 402,
+  "pace": null,
+  "size": 1,
+  "digitalNomadVisa": null,
+  "tags": [
+   "beach",
+   "nature",
+   "watersports",
+   "outdoor"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 9,
+   "band": "good",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "chiang-rai",
+  "nameZh": "清莱",
+  "nameEn": "Chiang Rai",
+  "countryZh": "泰国",
+  "countryEn": "Thailand",
+  "countryCode": "TH",
+  "continent": "asia",
+  "subregion": "south-eastern-asia",
+  "region": "asia",
+  "population": 78756,
+  "timezone": "Asia/Bangkok",
+  "cost": null,
+  "monthlyCostUSD": null,
+  "costIndex": null,
+  "rent1brUSD": null,
+  "mealUSD": null,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": null,
+  "healthcareIndex": null,
+  "pollutionIndex": null,
+  "trafficIndex": null,
+  "purchasingPowerIndex": null,
+  "climateIndex": null,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 24.6,
+   "annualPrecipMm": 1822,
+   "precipDays": 170,
+   "sunshineHours": 3486,
+   "summary": "夏季偏热，降水充沛，日照充足"
+  },
+  "community": null,
+  "english": 1,
+  "englishEpiBand": "very low",
+  "englishEpiScore": 402,
+  "pace": null,
+  "size": 1,
+  "digitalNomadVisa": null,
+  "tags": [
+   "nature",
+   "history",
+   "coffee",
+   "wellness"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 16.9,
+   "band": "moderate",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "da-lat",
+  "nameZh": "大叻",
+  "nameEn": "Da Lat",
+  "countryZh": "越南",
+  "countryEn": "Vietnam",
+  "countryCode": "VN",
+  "continent": "asia",
+  "subregion": "south-eastern-asia",
+  "region": "asia",
+  "population": 258014,
+  "timezone": "Asia/Ho_Chi_Minh",
+  "cost": null,
+  "monthlyCostUSD": null,
+  "costIndex": null,
+  "rent1brUSD": null,
+  "mealUSD": null,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": null,
+  "healthcareIndex": null,
+  "pollutionIndex": null,
+  "trafficIndex": null,
+  "purchasingPowerIndex": null,
+  "climateIndex": null,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 18.3,
+   "annualPrecipMm": 1825,
+   "precipDays": 224,
+   "sunshineHours": 3516,
+   "summary": "四季温和，降水充沛，日照充足"
+  },
+  "community": null,
+  "english": 3,
+  "englishEpiBand": "moderate",
+  "englishEpiScore": 500,
+  "pace": null,
+  "size": 1,
+  "digitalNomadVisa": null,
+  "tags": [
+   "nature",
+   "food",
+   "coffee",
+   "outdoor"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 8.1,
+   "band": "good",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "nha-trang",
+  "nameZh": "芽庄",
+  "nameEn": "Nha Trang",
+  "countryZh": "越南",
+  "countryEn": "Vietnam",
+  "countryCode": "VN",
+  "continent": "asia",
+  "subregion": "south-eastern-asia",
+  "region": "asia",
+  "population": 579000,
+  "timezone": "Asia/Ho_Chi_Minh",
+  "cost": null,
+  "monthlyCostUSD": null,
+  "costIndex": null,
+  "rent1brUSD": null,
+  "mealUSD": null,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": null,
+  "healthcareIndex": null,
+  "pollutionIndex": null,
+  "trafficIndex": null,
+  "purchasingPowerIndex": null,
+  "climateIndex": null,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 26.7,
+   "annualPrecipMm": 1643,
+   "precipDays": 190,
+   "sunshineHours": 3725,
+   "summary": "夏季偏热，降水充沛，日照充足"
+  },
+  "community": null,
+  "english": 3,
+  "englishEpiBand": "moderate",
+  "englishEpiScore": 500,
+  "pace": null,
+  "size": 2,
+  "digitalNomadVisa": null,
+  "tags": [
+   "beach",
+   "watersports",
+   "food",
+   "nightlife"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 12.6,
+   "band": "fair",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "jakarta",
+  "nameZh": "雅加达",
+  "nameEn": "Jakarta",
+  "countryZh": "印度尼西亚",
+  "countryEn": "Indonesia",
+  "countryCode": "ID",
+  "continent": "asia",
+  "subregion": "south-eastern-asia",
+  "region": "asia",
+  "population": 8540121,
+  "timezone": "Asia/Jakarta",
+  "cost": [
+   858,
+   1211
+  ],
+  "monthlyCostUSD": 1009,
+  "costIndex": 28.7,
+  "rent1brUSD": 365.2,
+  "mealUSD": 2.66,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": 47.3,
+  "healthcareIndex": 57.2,
+  "pollutionIndex": 84.6,
+  "trafficIndex": 53.5,
+  "purchasingPowerIndex": 41,
+  "climateIndex": 63.8,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 26.9,
+   "annualPrecipMm": 2271,
+   "precipDays": 266,
+   "sunshineHours": 3584,
+   "summary": "夏季偏热，降水充沛，日照充足"
+  },
+  "community": null,
+  "english": 2,
+  "englishEpiBand": "low",
+  "englishEpiScore": 471,
+  "pace": null,
+  "size": 4,
+  "digitalNomadVisa": null,
+  "tags": [
+   "food",
+   "shopping",
+   "nightlife",
+   "startup"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 62.4,
+   "band": "poor",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "yogyakarta",
+  "nameZh": "日惹",
+  "nameEn": "Yogyakarta",
+  "countryZh": "印度尼西亚",
+  "countryEn": "Indonesia",
+  "countryCode": "ID",
+  "continent": "asia",
+  "subregion": "south-eastern-asia",
+  "region": "asia",
+  "population": 375699,
+  "timezone": "Asia/Jakarta",
+  "cost": null,
+  "monthlyCostUSD": null,
+  "costIndex": null,
+  "rent1brUSD": 214.22,
+  "mealUSD": 1.12,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": null,
+  "healthcareIndex": null,
+  "pollutionIndex": null,
+  "trafficIndex": null,
+  "purchasingPowerIndex": null,
+  "climateIndex": null,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 25.7,
+   "annualPrecipMm": 2584,
+   "precipDays": 255,
+   "sunshineHours": 3369,
+   "summary": "夏季偏热，降水充沛，日照充足"
+  },
+  "community": null,
+  "english": 2,
+  "englishEpiBand": "low",
+  "englishEpiScore": 471,
+  "pace": null,
+  "size": 2,
+  "digitalNomadVisa": null,
+  "tags": [
+   "history",
+   "arts",
+   "food",
+   "nature"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 17.5,
+   "band": "moderate",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "johor-bahru",
+  "nameZh": "新山",
+  "nameEn": "Johor Bahru",
+  "countryZh": "马来西亚",
+  "countryEn": "Malaysia",
+  "countryCode": "MY",
+  "continent": "asia",
+  "subregion": "south-eastern-asia",
+  "region": "asia",
+  "population": 858118,
+  "timezone": "Asia/Kuala_Lumpur",
+  "cost": null,
+  "monthlyCostUSD": null,
+  "costIndex": null,
+  "rent1brUSD": null,
+  "mealUSD": null,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": null,
+  "healthcareIndex": null,
+  "pollutionIndex": null,
+  "trafficIndex": null,
+  "purchasingPowerIndex": null,
+  "climateIndex": null,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 26.6,
+   "annualPrecipMm": 3063,
+   "precipDays": 301,
+   "sunshineHours": 3389,
+   "summary": "夏季偏热，降水充沛，日照充足"
+  },
+  "community": null,
+  "english": 4,
+  "englishEpiBand": "high",
+  "englishEpiScore": 581,
+  "pace": null,
+  "size": 2,
+  "digitalNomadVisa": null,
+  "tags": [
+   "food",
+   "shopping",
+   "family",
+   "nightlife"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 19.1,
+   "band": "moderate",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "kota-kinabalu",
+  "nameZh": "亚庇",
+  "nameEn": "Kota Kinabalu",
+  "countryZh": "马来西亚",
+  "countryEn": "Malaysia",
+  "countryCode": "MY",
+  "continent": "asia",
+  "subregion": "south-eastern-asia",
+  "region": "asia",
+  "population": 500421,
+  "timezone": "Asia/Kuching",
+  "cost": null,
+  "monthlyCostUSD": null,
+  "costIndex": null,
+  "rent1brUSD": null,
+  "mealUSD": null,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": null,
+  "healthcareIndex": null,
+  "pollutionIndex": null,
+  "trafficIndex": null,
+  "purchasingPowerIndex": null,
+  "climateIndex": null,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 26.6,
+   "annualPrecipMm": 2762,
+   "precipDays": 264,
+   "sunshineHours": 3416,
+   "summary": "夏季偏热，降水充沛，日照充足"
+  },
+  "community": null,
+  "english": 4,
+  "englishEpiBand": "high",
+  "englishEpiScore": 581,
+  "pace": null,
+  "size": 2,
+  "digitalNomadVisa": null,
+  "tags": [
+   "beach",
+   "nature",
+   "watersports",
+   "food"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 9.6,
+   "band": "good",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "manila",
+  "nameZh": "马尼拉",
+  "nameEn": "Manila",
+  "countryZh": "菲律宾",
+  "countryEn": "Philippines",
+  "countryCode": "PH",
+  "continent": "asia",
+  "subregion": "south-eastern-asia",
+  "region": "asia",
+  "population": 1600000,
+  "timezone": "Asia/Manila",
+  "cost": [
+   1047,
+   1478
+  ],
+  "monthlyCostUSD": 1232,
+  "costIndex": 34.3,
+  "rent1brUSD": 545.14,
+  "mealUSD": 5.59,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": 35.4,
+  "healthcareIndex": 62.5,
+  "pollutionIndex": 89.4,
+  "trafficIndex": 50.7,
+  "purchasingPowerIndex": 35.8,
+  "climateIndex": 61.2,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 27.3,
+   "annualPrecipMm": 2177,
+   "precipDays": 214,
+   "sunshineHours": 3623,
+   "summary": "夏季偏热，降水充沛，日照充足"
+  },
+  "community": null,
+  "english": 4,
+  "englishEpiBand": "high",
+  "englishEpiScore": 569,
+  "pace": null,
+  "size": 3,
+  "digitalNomadVisa": null,
+  "tags": [
+   "food",
+   "shopping",
+   "nightlife",
+   "history"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 17.2,
+   "band": "moderate",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "davao",
+  "nameZh": "达沃",
+  "nameEn": "Davao",
+  "countryZh": "菲律宾",
+  "countryEn": "Philippines",
+  "countryCode": "PH",
+  "continent": "asia",
+  "subregion": "south-eastern-asia",
+  "region": "asia",
+  "population": 1848947,
+  "timezone": "Asia/Manila",
+  "cost": [
+   912,
+   1288
+  ],
+  "monthlyCostUSD": 1073,
+  "costIndex": 30.3,
+  "rent1brUSD": 276.43,
+  "mealUSD": 4.79,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": 71.2,
+  "healthcareIndex": 73.6,
+  "pollutionIndex": 58,
+  "trafficIndex": 27.4,
+  "purchasingPowerIndex": 21,
+  "climateIndex": 58.6,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 26.7,
+   "annualPrecipMm": 2570,
+   "precipDays": 255,
+   "sunshineHours": 3552,
+   "summary": "夏季偏热，降水充沛，日照充足"
+  },
+  "community": null,
+  "english": 4,
+  "englishEpiBand": "high",
+  "englishEpiScore": 569,
+  "pace": null,
+  "size": 3,
+  "digitalNomadVisa": null,
+  "tags": [
+   "nature",
+   "food",
+   "outdoor",
+   "fruit"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 8.9,
+   "band": "good",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "osaka",
+  "nameZh": "大阪",
+  "nameEn": "Osaka",
+  "countryZh": "日本",
+  "countryEn": "Japan",
+  "countryCode": "JP",
+  "continent": "asia",
+  "subregion": "eastern-asia",
+  "region": "asia",
+  "population": 2753862,
+  "timezone": "Asia/Tokyo",
+  "cost": [
+   1332,
+   1880
+  ],
+  "monthlyCostUSD": 1567,
+  "costIndex": 42.7,
+  "rent1brUSD": 701.15,
+  "mealUSD": 6.34,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": null,
+  "healthcareIndex": null,
+  "pollutionIndex": null,
+  "trafficIndex": null,
+  "purchasingPowerIndex": null,
+  "climateIndex": null,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 16.2,
+   "annualPrecipMm": 1758,
+   "precipDays": 128,
+   "sunshineHours": 3136,
+   "summary": "四季温和，降水充沛，日照充足"
+  },
+  "community": null,
+  "english": 1,
+  "englishEpiBand": "very low",
+  "englishEpiScore": 446,
+  "pace": null,
+  "size": 3,
+  "digitalNomadVisa": null,
+  "tags": [
+   "food",
+   "nightlife",
+   "shopping",
+   "arts"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 16.8,
+   "band": "moderate",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "sapporo",
+  "nameZh": "札幌",
+  "nameEn": "Sapporo",
+  "countryZh": "日本",
+  "countryEn": "Japan",
+  "countryCode": "JP",
+  "continent": "asia",
+  "subregion": "eastern-asia",
+  "region": "asia",
+  "population": 1973832,
+  "timezone": "Asia/Tokyo",
+  "cost": null,
+  "monthlyCostUSD": null,
+  "costIndex": null,
+  "rent1brUSD": 456.17,
+  "mealUSD": 6.34,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": null,
+  "healthcareIndex": null,
+  "pollutionIndex": null,
+  "trafficIndex": null,
+  "purchasingPowerIndex": null,
+  "climateIndex": null,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 8.2,
+   "annualPrecipMm": 1240,
+   "precipDays": 167,
+   "sunshineHours": 3048,
+   "summary": "冬季偏凉，降水适中，日照充足"
+  },
+  "community": null,
+  "english": 1,
+  "englishEpiBand": "very low",
+  "englishEpiScore": 446,
+  "pace": null,
+  "size": 3,
+  "digitalNomadVisa": null,
+  "tags": [
+   "food",
+   "nature",
+   "winter-sports",
+   "beer-culture"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 9.6,
+   "band": "good",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "jeju",
+  "nameZh": "济州市",
+  "nameEn": "Jeju City",
+  "countryZh": "韩国",
+  "countryEn": "South Korea",
+  "countryCode": "KR",
+  "continent": "asia",
+  "subregion": "eastern-asia",
+  "region": "asia",
+  "population": 488844,
+  "timezone": "Asia/Seoul",
+  "cost": null,
+  "monthlyCostUSD": null,
+  "costIndex": null,
+  "rent1brUSD": null,
+  "mealUSD": null,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": null,
+  "healthcareIndex": null,
+  "pollutionIndex": null,
+  "trafficIndex": null,
+  "purchasingPowerIndex": null,
+  "climateIndex": null,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 16.4,
+   "annualPrecipMm": 1989,
+   "precipDays": 160,
+   "sunshineHours": 2819,
+   "summary": "四季温和，降水充沛，日照充足"
+  },
+  "community": null,
+  "english": 3,
+  "englishEpiBand": "moderate",
+  "englishEpiScore": 522,
+  "pace": null,
+  "size": 2,
+  "digitalNomadVisa": null,
+  "tags": [
+   "nature",
+   "beach",
+   "wellness",
+   "food"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 14.1,
+   "band": "fair",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "kaohsiung",
+  "nameZh": "高雄",
+  "nameEn": "Kaohsiung",
+  "countryZh": "中国台湾",
+  "countryEn": "Taiwan",
+  "countryCode": "TW",
+  "continent": "asia",
+  "subregion": "eastern-asia",
+  "region": "asia",
+  "population": 2737660,
+  "timezone": "Asia/Taipei",
+  "cost": [
+   1437,
+   2029
+  ],
+  "monthlyCostUSD": 1691,
+  "costIndex": 45.8,
+  "rent1brUSD": 407.48,
+  "mealUSD": 5.5,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": null,
+  "healthcareIndex": null,
+  "pollutionIndex": null,
+  "trafficIndex": null,
+  "purchasingPowerIndex": null,
+  "climateIndex": null,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 24.8,
+   "annualPrecipMm": 1931,
+   "precipDays": 151,
+   "sunshineHours": 3527,
+   "summary": "夏季偏热，降水充沛，日照充足"
+  },
+  "community": null,
+  "english": null,
+  "englishEpiBand": null,
+  "englishEpiScore": null,
+  "pace": null,
+  "size": 3,
+  "digitalNomadVisa": null,
+  "tags": [
+   "food",
+   "nightlife",
+   "arts",
+   "shopping"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 26.2,
+   "band": "poor",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "kunming",
+  "nameZh": "昆明",
+  "nameEn": "Kunming",
+  "countryZh": "中国",
+  "countryEn": "China",
+  "countryCode": "CN",
+  "continent": "asia",
+  "subregion": "eastern-asia",
+  "region": "asia",
+  "population": 5950578,
+  "timezone": "Asia/Shanghai",
+  "cost": null,
+  "monthlyCostUSD": null,
+  "costIndex": null,
+  "rent1brUSD": null,
+  "mealUSD": null,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": null,
+  "healthcareIndex": null,
+  "pollutionIndex": null,
+  "trafficIndex": null,
+  "purchasingPowerIndex": null,
+  "climateIndex": null,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 15.4,
+   "annualPrecipMm": 1474,
+   "precipDays": 174,
+   "sunshineHours": 3318,
+   "summary": "四季温和，降水充沛，日照充足"
+  },
+  "community": null,
+  "english": 2,
+  "englishEpiBand": "low",
+  "englishEpiScore": 464,
+  "pace": null,
+  "size": 4,
+  "digitalNomadVisa": null,
+  "tags": [
+   "nature",
+   "food",
+   "outdoor",
+   "coffee"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 19,
+   "band": "moderate",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "sanya",
+  "nameZh": "三亚",
+  "nameEn": "Sanya",
+  "countryZh": "中国",
+  "countryEn": "China",
+  "countryCode": "CN",
+  "continent": "asia",
+  "subregion": "eastern-asia",
+  "region": "asia",
+  "population": 1031396,
+  "timezone": "Asia/Shanghai",
+  "cost": null,
+  "monthlyCostUSD": null,
+  "costIndex": null,
+  "rent1brUSD": null,
+  "mealUSD": null,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": null,
+  "healthcareIndex": null,
+  "pollutionIndex": null,
+  "trafficIndex": null,
+  "purchasingPowerIndex": null,
+  "climateIndex": null,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 25.8,
+   "annualPrecipMm": 1378,
+   "precipDays": 159,
+   "sunshineHours": 3675,
+   "summary": "夏季偏热，降水充沛，日照充足"
+  },
+  "community": null,
+  "english": 2,
+  "englishEpiBand": "low",
+  "englishEpiScore": 464,
+  "pace": null,
+  "size": 3,
+  "digitalNomadVisa": null,
+  "tags": [
+   "beach",
+   "watersports",
+   "wellness",
+   "food"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 12.5,
+   "band": "fair",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "xian",
+  "nameZh": "西安",
+  "nameEn": "Xi'an",
+  "countryZh": "中国",
+  "countryEn": "China",
+  "countryCode": "CN",
+  "continent": "asia",
+  "subregion": "eastern-asia",
+  "region": "asia",
+  "population": 12952907,
+  "timezone": "Asia/Shanghai",
+  "cost": [
+   807,
+   1139
+  ],
+  "monthlyCostUSD": 949,
+  "costIndex": 27.2,
+  "rent1brUSD": 314.32,
+  "mealUSD": 2.68,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": null,
+  "healthcareIndex": null,
+  "pollutionIndex": null,
+  "trafficIndex": null,
+  "purchasingPowerIndex": null,
+  "climateIndex": null,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 14.9,
+   "annualPrecipMm": 695,
+   "precipDays": 83,
+   "sunshineHours": 2910,
+   "summary": "四季温和，降水偏少，日照充足"
+  },
+  "community": null,
+  "english": 2,
+  "englishEpiBand": "low",
+  "englishEpiScore": 464,
+  "pace": null,
+  "size": 5,
+  "digitalNomadVisa": null,
+  "tags": [
+   "history",
+   "food",
+   "culture",
+   "street-markets"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 53.5,
+   "band": "poor",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "hangzhou",
+  "nameZh": "杭州",
+  "nameEn": "Hangzhou",
+  "countryZh": "中国",
+  "countryEn": "China",
+  "countryCode": "CN",
+  "continent": "asia",
+  "subregion": "eastern-asia",
+  "region": "asia",
+  "population": 11936010,
+  "timezone": "Asia/Shanghai",
+  "cost": [
+   1105,
+   1560
+  ],
+  "monthlyCostUSD": 1300,
+  "costIndex": 36,
+  "rent1brUSD": 619.9,
+  "mealUSD": 3.73,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": null,
+  "healthcareIndex": null,
+  "pollutionIndex": null,
+  "trafficIndex": null,
+  "purchasingPowerIndex": null,
+  "climateIndex": null,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 17.5,
+   "annualPrecipMm": 1642,
+   "precipDays": 152,
+   "sunshineHours": 2567,
+   "summary": "四季温和，降水充沛，日照充足"
+  },
+  "community": null,
+  "english": 2,
+  "englishEpiBand": "low",
+  "englishEpiScore": 464,
+  "pace": null,
+  "size": 5,
+  "digitalNomadVisa": null,
+  "tags": [
+   "nature",
+   "tea-culture",
+   "startup",
+   "food"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 48,
+   "band": "poor",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "delhi",
+  "nameZh": "德里",
+  "nameEn": "Delhi",
+  "countryZh": "印度",
+  "countryEn": "India",
+  "countryCode": "IN",
+  "continent": "asia",
+  "subregion": "southern-asia",
+  "region": "asia",
+  "population": 11034555,
+  "timezone": "Asia/Kolkata",
+  "cost": [
+   634,
+   895
+  ],
+  "monthlyCostUSD": 746,
+  "costIndex": 22.1,
+  "rent1brUSD": 269.66,
+  "mealUSD": 3.64,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": 41,
+  "healthcareIndex": 65.8,
+  "pollutionIndex": 90.4,
+  "trafficIndex": 57.4,
+  "purchasingPowerIndex": 66.6,
+  "climateIndex": 58.9,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 24.4,
+   "annualPrecipMm": 752,
+   "precipDays": 84,
+   "sunshineHours": 3677,
+   "summary": "夏季偏热，降水适中，日照充足"
+  },
+  "community": null,
+  "english": 2,
+  "englishEpiBand": "low",
+  "englishEpiScore": 484,
+  "pace": null,
+  "size": 5,
+  "digitalNomadVisa": null,
+  "tags": [
+   "history",
+   "street-markets",
+   "food",
+   "culture"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 68.9,
+   "band": "poor",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "mumbai",
+  "nameZh": "孟买",
+  "nameEn": "Mumbai",
+  "countryZh": "印度",
+  "countryEn": "India",
+  "countryCode": "IN",
+  "continent": "asia",
+  "subregion": "southern-asia",
+  "region": "asia",
+  "population": 12691836,
+  "timezone": "Asia/Kolkata",
+  "cost": [
+   759,
+   1072
+  ],
+  "monthlyCostUSD": 893,
+  "costIndex": 25.8,
+  "rent1brUSD": 616.1,
+  "mealUSD": 5.2,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": 56.1,
+  "healthcareIndex": 65.5,
+  "pollutionIndex": 83.3,
+  "trafficIndex": 55.2,
+  "purchasingPowerIndex": 63.1,
+  "climateIndex": 71.5,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 26.7,
+   "annualPrecipMm": 2266,
+   "precipDays": 131,
+   "sunshineHours": 3511,
+   "summary": "夏季偏热，降水充沛，日照充足"
+  },
+  "community": null,
+  "english": 2,
+  "englishEpiBand": "low",
+  "englishEpiScore": 484,
+  "pace": null,
+  "size": 5,
+  "digitalNomadVisa": null,
+  "tags": [
+   "nightlife",
+   "food",
+   "shopping",
+   "film"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 44.2,
+   "band": "poor",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "pune",
+  "nameZh": "浦那",
+  "nameEn": "Pune",
+  "countryZh": "印度",
+  "countryEn": "India",
+  "countryCode": "IN",
+  "continent": "asia",
+  "subregion": "southern-asia",
+  "region": "asia",
+  "population": 3124458,
+  "timezone": "Asia/Kolkata",
+  "cost": [
+   638,
+   900
+  ],
+  "monthlyCostUSD": 750,
+  "costIndex": 22.2,
+  "rent1brUSD": 255.18,
+  "mealUSD": 4.16,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": 58.7,
+  "healthcareIndex": 65.6,
+  "pollutionIndex": 71.3,
+  "trafficIndex": 44.2,
+  "purchasingPowerIndex": 141.2,
+  "climateIndex": 74.3,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 24.7,
+   "annualPrecipMm": 1096,
+   "precipDays": 125,
+   "sunshineHours": 3548,
+   "summary": "夏季偏热，降水适中，日照充足"
+  },
+  "community": null,
+  "english": 2,
+  "englishEpiBand": "low",
+  "englishEpiScore": 484,
+  "pace": null,
+  "size": 4,
+  "digitalNomadVisa": null,
+  "tags": [
+   "startup",
+   "food",
+   "history",
+   "coffee"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 28.7,
+   "band": "poor",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "jaipur",
+  "nameZh": "斋普尔",
+  "nameEn": "Jaipur",
+  "countryZh": "印度",
+  "countryEn": "India",
+  "countryCode": "IN",
+  "continent": "asia",
+  "subregion": "southern-asia",
+  "region": "asia",
+  "population": 3046163,
+  "timezone": "Asia/Kolkata",
+  "cost": [
+   542,
+   766
+  ],
+  "monthlyCostUSD": 638,
+  "costIndex": 19.4,
+  "rent1brUSD": 217.29,
+  "mealUSD": 4.16,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": 64.3,
+  "healthcareIndex": 72.9,
+  "pollutionIndex": 61.1,
+  "trafficIndex": 42.1,
+  "purchasingPowerIndex": 56.6,
+  "climateIndex": 57.8,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 25,
+   "annualPrecipMm": 628,
+   "precipDays": 73,
+   "sunshineHours": 3694,
+   "summary": "夏季偏热，降水偏少，日照充足"
+  },
+  "community": null,
+  "english": 2,
+  "englishEpiBand": "low",
+  "englishEpiScore": 484,
+  "pace": null,
+  "size": 4,
+  "digitalNomadVisa": null,
+  "tags": [
+   "history",
+   "arts",
+   "street-markets",
+   "food"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 36.9,
+   "band": "poor",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "abu-dhabi",
+  "nameZh": "阿布扎比",
+  "nameEn": "Abu Dhabi",
+  "countryZh": "阿联酋",
+  "countryEn": "United Arab Emirates",
+  "countryCode": "AE",
+  "continent": "asia",
+  "subregion": "western-asia",
+  "region": "asia",
+  "population": 1807000,
+  "timezone": "Asia/Dubai",
+  "cost": [
+   1753,
+   2474
+  ],
+  "monthlyCostUSD": 2062,
+  "costIndex": 55.1,
+  "rent1brUSD": null,
+  "mealUSD": null,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": 88.6,
+  "healthcareIndex": 72.3,
+  "pollutionIndex": 45.5,
+  "trafficIndex": 29.8,
+  "purchasingPowerIndex": 98.2,
+  "climateIndex": 43.9,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 28.6,
+   "annualPrecipMm": 57,
+   "precipDays": 7,
+   "sunshineHours": 3979,
+   "summary": "夏季偏热，降水偏少，日照充足"
+  },
+  "community": null,
+  "english": 2,
+  "englishEpiBand": "low",
+  "englishEpiScore": 487,
+  "pace": null,
+  "size": 3,
+  "digitalNomadVisa": null,
+  "tags": [
+   "beach",
+   "shopping",
+   "food",
+   "family"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 35.9,
+   "band": "poor",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "jerusalem",
+  "nameZh": "耶路撒冷",
+  "nameEn": "Jerusalem",
+  "countryZh": "以色列",
+  "countryEn": "Israel",
+  "countryCode": "IL",
+  "continent": "asia",
+  "subregion": "western-asia",
+  "region": "asia",
+  "population": 971800,
+  "timezone": "Asia/Jerusalem",
+  "cost": [
+   2993,
+   4225
+  ],
+  "monthlyCostUSD": 3521,
+  "costIndex": 91.7,
+  "rent1brUSD": 1872.83,
+  "mealUSD": 23.26,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": null,
+  "healthcareIndex": null,
+  "pollutionIndex": null,
+  "trafficIndex": null,
+  "purchasingPowerIndex": null,
+  "climateIndex": null,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 18,
+   "annualPrecipMm": 298,
+   "precipDays": 53,
+   "sunshineHours": 3984,
+   "summary": "四季温和，降水偏少，日照充足"
+  },
+  "community": null,
+  "english": 3,
+  "englishEpiBand": "moderate",
+  "englishEpiScore": 524,
+  "pace": null,
+  "size": 2,
+  "digitalNomadVisa": null,
+  "tags": [
+   "history",
+   "street-markets",
+   "food",
+   "culture"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 15.8,
+   "band": "moderate",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "siem-reap",
+  "nameZh": "暹粒",
+  "nameEn": "Siem Reap",
+  "countryZh": "柬埔寨",
+  "countryEn": "Cambodia",
+  "countryCode": "KH",
+  "continent": "asia",
+  "subregion": "south-eastern-asia",
+  "region": "asia",
+  "population": 139458,
+  "timezone": "Asia/Phnom_Penh",
+  "cost": [
+   936,
+   1321
+  ],
+  "monthlyCostUSD": 1101,
+  "costIndex": 31,
+  "rent1brUSD": null,
+  "mealUSD": null,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": null,
+  "healthcareIndex": null,
+  "pollutionIndex": null,
+  "trafficIndex": null,
+  "purchasingPowerIndex": null,
+  "climateIndex": null,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 27.8,
+   "annualPrecipMm": 1633,
+   "precipDays": 192,
+   "sunshineHours": 3583,
+   "summary": "夏季偏热，降水充沛，日照充足"
+  },
+  "community": null,
+  "english": 1,
+  "englishEpiBand": "very low",
+  "englishEpiScore": 390,
+  "pace": null,
+  "size": 1,
+  "digitalNomadVisa": null,
+  "tags": [
+   "history",
+   "food",
+   "nightlife",
+   "wellness"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 12.3,
+   "band": "fair",
+   "period": "2022-08 ~ 2024-12"
   }
  }
 ]

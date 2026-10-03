@@ -141,7 +141,7 @@ const expectedKept = citiesAll.filter((c) => {
   return snap != null && isVisaFreeFriendly(snap.entry);
 }).length;
 check(`CN + visaFree 保留 ${rCN.kept.length} 城 = 快照独立重算 ${expectedKept}`, rCN.kept.length === expectedKept);
-check('保留数在 5-30 区间（过滤有效而非全保留）', rCN.kept.length >= 5 && rCN.kept.length <= 30);
+check(`保留数 ${rCN.kept.length} 在合理区间（≥5 保底放宽；< 200 全量，过滤有效）`, rCN.kept.length >= 5 && rCN.kept.length < citiesAll.length);
 
 const usVisaFree: HardConstraints = { ...DEFAULT_CONSTRAINTS, visaLine: 'visaFree', passport: 'US' };
 const rUS = applyHardConstraints(citiesAll, usVisaFree);

@@ -22,6 +22,7 @@ import {
   deriveRisk,
   riskBandOf,
   tagRepeats,
+  riasecBoostedTags,
   RIASEC_BOOST_THRESHOLD,
   RIASEC_REPEAT_CAP,
 } from '../src/lib/riasec';
@@ -154,6 +155,12 @@ section('5. 引擎联动（标签强化有界叠加）');
     JSON.stringify(tagRepeats(base as UserAnswers)) === JSON.stringify(tagRepeats(base as UserAnswers)) &&
       tagRepeats(base as UserAnswers).get('outdoor') === 1,
   );
+
+  // 第十轮引擎 v3：兴趣类本体分与 RIASEC 强化解耦（computeCityFits 用 includeRiasec:false）
+  const repBaseOnly = tagRepeats(ans, { includeRiasec: false });
+  check('v3: includeRiasec:false → 仅子项强化（outdoor 重复 1）', repBaseOnly.get('outdoor') === 1);
+  const boosted = riasecBoostedTags(ans);
+  check('v3: riasecBoostedTags 差集含强化标签（outdoor ×2 封顶）', boosted.get('outdoor') === RIASEC_REPEAT_CAP);
 }
 
 // ── 6. 双语词典键 ─────────────────────────────────────────────────────

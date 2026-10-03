@@ -11,3 +11,11 @@ export const CHART_COLORS = {
   sea: '#4A8DB7',
   moss: '#2E8B74',
 } as const;
+
+/** 空气质量 WHO 分档 → 语义色 tailwind 类（第十轮；绿=优 蓝=良 金=一般 橙=差） */
+export const AIR_BAND_TONE: Record<'good' | 'fair' | 'moderate' | 'poor', string> = {
+  good: 'text-moss',
+  fair: 'text-sea',
+  moderate: 'text-ochre',
+  poor: 'text-clay-deep',
+} as const;

@@ -5,6 +5,7 @@ import type { CompareRow } from '../../lib/compare';
 import { useI18n, getCurrentLang } from '../../i18n';
 import { cityName, countryName, formatDate } from '../../lib/format';
 import { PassportVisaBlock, LongStayBlock } from '../report/PassportVisaBlock';
+import { AIR_BAND_TONE } from '../../lib/colors';
 
 /**
  * CityDetailModal — 对比页城市详情弹层（第六轮）
@@ -104,6 +105,15 @@ export default function CityDetailModal({
               }
             />
             <Stat
+              label={t('cmp.data.air')}
+              value={
+                city.airQuality != null
+                  ? `${t('air.pm25')} ${city.airQuality.pm25} μg/m³ · ${t(`air.band.${city.airQuality.band}`)}`
+                  : t('air.nodata')
+              }
+              tone={city.airQuality ? AIR_BAND_TONE[city.airQuality.band] : undefined}
+            />
+            <Stat
               label={t('cmp.data.visa')}
               value={city.digitalNomadVisa === true ? t('report.copy.visaYes') : city.digitalNomadVisa === false ? '—' : t('profile.visa.pending')}
             />
@@ -112,6 +122,9 @@ export default function CityDetailModal({
             <p className="mt-3 rounded-[6px] bg-paper-deep/70 px-3.5 py-2.5 text-[12px] leading-[1.7] text-ink">
               {city.visaLabel}
             </p>
+          ) : null}
+          {city.airQuality ? (
+            <p className="mt-2 font-mono text-[9px] leading-[1.8] text-ink-soft/75">{t('air.note')}</p>
           ) : null}
         </div>
 
@@ -167,11 +180,11 @@ export default function CityDetailModal({
   );
 }
 
-function Stat({ label, value, accent = false }: { label: string; value: string; accent?: boolean }) {
+function Stat({ label, value, accent = false, tone }: { label: string; value: string; accent?: boolean; tone?: string }) {
   return (
     <div>
       <dt className="text-[10.5px] text-ink-soft">{label}</dt>
-      <dd className={`mt-0.5 font-data text-[12px] tabular-nums ${accent ? 'text-clay' : 'text-ink'}`}>
+      <dd className={`mt-0.5 font-data text-[12px] tabular-nums ${tone ?? (accent ? 'text-clay' : 'text-ink')}`}>
         {value}
       </dd>
     </div>

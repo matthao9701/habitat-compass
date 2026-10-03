@@ -7,6 +7,7 @@ import { getCountry } from '../../data/countries';
 import type { Country } from '../../data/types';
 import { useI18n, getCurrentLang } from '../../i18n';
 import { cityName, countryName, formatMoney, formatDate } from '../../lib/format';
+import { AIR_BAND_TONE } from '../../lib/colors';
 
 const fmt = (n: number): string => `$${n.toLocaleString('en-US')}`;
 
@@ -48,6 +49,11 @@ export default function CompareDataCards({ rows }: { rows: CompareRow[] }) {
     { label: t('cmp.data.safety'), valueOf: (r) => (r.city.safety != null ? `${r.city.safety}/100` : '—') },
     { label: t('cmp.data.healthcare'), valueOf: (r) => (r.city.healthcareIndex != null ? `${r.city.healthcareIndex}` : '—') },
     { label: t('cmp.data.pollution'), valueOf: (r) => (r.city.pollutionIndex != null ? `${r.city.pollutionIndex}` : '—') },
+    {
+      label: t('cmp.data.air'),
+      valueOf: (r) => (r.city.airQuality != null ? `${r.city.airQuality.pm25} · ${t(`air.band.${r.city.airQuality.band}`)}` : '—'),
+      toneOf: (r) => (r.city.airQuality ? AIR_BAND_TONE[r.city.airQuality.band] : 'text-ink-soft'),
+    },
     { label: t('cd.traffic'), valueOf: (r) => (r.city.trafficIndex != null ? `${r.city.trafficIndex}` : '—') },
     { label: t('cd.purchasing'), valueOf: (r) => (r.city.purchasingPowerIndex != null ? `${r.city.purchasingPowerIndex}` : '—') },
     { label: t('rep.stat.community'), valueOf: (r) => (r.city.community != null ? `${r.city.community}/5` : '—') },

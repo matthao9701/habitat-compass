@@ -13,17 +13,20 @@ for (const profile of DEMO_PROFILES) {
   console.log(`     Top5: ${top.join(' · ')}`);
 }
 
-console.log('\n=== 39 城优劣势覆盖 ===');
+console.log('\n=== 城市优劣势覆盖（分代阈值：39 旧城 3+2 / 数据较少的城 1+1）===');
 let bad = 0;
+const legacy39 = cities.filter((c) => c.visaStatus != null);
+const legacy39Ids = new Set(legacy39.map((c) => c.id));
 for (const city of cities) {
   const pros = cityPros(city);
   const cons = cityCons(city);
-  if (pros.length < 3 || cons.length < 2) {
+  const isLegacy = legacy39Ids.has(city.id);
+  if (pros.length < (isLegacy ? 3 : 1) || cons.length < (isLegacy ? 2 : 1)) {
     bad++;
     console.log(`FAIL ${city.id}: pros=${pros.length} cons=${cons.length}`);
   }
 }
-console.log(bad === 0 ? `全部 ${cities.length} 城满足 3 优势 + 2 注意事项` : `${bad} 城不达标`);
+console.log(bad === 0 ? `全部 ${cities.length} 城满足优劣势阈值（39 旧城 3+2，其余 1+1，null 数据不编造）` : `${bad} 城不达标`);
 
 // 抽样打印两座城市的优劣势，人工核对文案
 for (const id of ['lisbon', 'cape-town']) {

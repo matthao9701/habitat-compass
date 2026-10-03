@@ -97,6 +97,10 @@ export interface City {
   /** Open-Meteo 十年聚合气候明细 */
   climateDetail: CityClimateDetail | null;
 
+  // ---- 空气质量（第十轮，Open-Meteo Air Quality / CAMS，CC BY 4.0）----
+  /** PM2.5 年均浓度（μg/m³，2022-08 ~ 2024-12 全期均值）与 WHO 口径分档；无数据 null */
+  airQuality: { pm25: number; band: 'good' | 'fair' | 'moderate' | 'poor'; period: string } | null;
+
   // ---- 引擎序数输入（1-5；无可靠来源 null，引擎自动降权）----
   visaScore: number | null;
   visaLabel: string | null;

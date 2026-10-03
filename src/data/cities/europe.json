@@ -55,7 +55,12 @@
    "coffee",
    "outdoor"
   ],
-  "traits": null
+  "traits": null,
+  "airQuality": {
+   "pm25": 9.5,
+   "band": "good",
+   "period": "2022-08 ~ 2024-12"
+  }
  },
  {
   "id": "oslo",
@@ -111,7 +116,12 @@
    "arts",
    "coffee"
   ],
-  "traits": null
+  "traits": null,
+  "airQuality": {
+   "pm25": 7.5,
+   "band": "good",
+   "period": "2022-08 ~ 2024-12"
+  }
  },
  {
   "id": "barcelona",
@@ -178,6 +188,11 @@
   "visaDetail": {
    "name": "2023 年推出数字游民签证",
    "note": "2023 年推出数字游民签证，月收入约 2,762 欧元，1 年起可续 3 年"
+  },
+  "airQuality": {
+   "pm25": 14.7,
+   "band": "fair",
+   "period": "2022-08 ~ 2024-12"
   }
  },
  {
@@ -244,6 +259,11 @@
   "visaDetail": {
    "name": "Freiberufler",
    "note": "自由职业者居留（Freiberufler）需客户与资质证明；英语工作环境成熟"
+  },
+  "airQuality": {
+   "pm25": 9.8,
+   "band": "good",
+   "period": "2022-08 ~ 2024-12"
   }
  },
  {
@@ -300,7 +320,12 @@
    "history",
    "festivals"
   ],
-  "traits": null
+  "traits": null,
+  "airQuality": {
+   "pm25": 21,
+   "band": "moderate",
+   "period": "2022-08 ~ 2024-12"
+  }
  },
  {
   "id": "porto",
@@ -365,6 +390,11 @@
   "visaDetail": {
    "name": "同享葡萄牙 D8 数字游民签证",
    "note": "同享葡萄牙 D8 数字游民签证与居留路径，生活成本低于里斯本"
+  },
+  "airQuality": {
+   "pm25": 11.7,
+   "band": "fair",
+   "period": "2022-08 ~ 2024-12"
   }
  },
  {
@@ -432,6 +462,11 @@
   "visaDetail": {
    "name": "White Card",
    "note": "数字游民白卡（White Card），月收入约 2,100 欧元，最长停留 2 年"
+  },
+  "airQuality": {
+   "pm25": 15.6,
+   "band": "moderate",
+   "period": "2022-08 ~ 2024-12"
   }
  },
  {
@@ -488,7 +523,12 @@
    "nightlife",
    "history"
   ],
-  "traits": null
+  "traits": null,
+  "airQuality": {
+   "pm25": 16.9,
+   "band": "moderate",
+   "period": "2022-08 ~ 2024-12"
+  }
  },
  {
   "id": "prague",
@@ -554,6 +594,11 @@
   "visaDetail": {
    "name": null,
    "note": "非欧盟居民多走 živnostenský 自雇营业许可，手续繁琐；欧盟公民自由居住"
+  },
+  "airQuality": {
+   "pm25": 12,
+   "band": "fair",
+   "period": "2022-08 ~ 2024-12"
   }
  },
  {
@@ -620,6 +665,11 @@
   "visaDetail": {
    "name": null,
    "note": "多数护照免签停留最长 1 年，另有 Remotely from Georgia 计划，税负极低"
+  },
+  "airQuality": {
+   "pm25": 12.1,
+   "band": "fair",
+   "period": "2022-08 ~ 2024-12"
   }
  },
  {
@@ -673,7 +723,12 @@
    "watersports",
    "food"
   ],
-  "traits": null
+  "traits": null,
+  "airQuality": {
+   "pm25": 8.8,
+   "band": "good",
+   "period": "2022-08 ~ 2024-12"
+  }
  },
  {
   "id": "florence",
@@ -738,6 +793,11 @@
   "visaDetail": {
    "name": "年入约 2.8 万欧起",
    "note": "2024 年起数字游民签证（年入约 2.8 万欧起），符合条件可享税收减免"
+  },
+  "airQuality": {
+   "pm25": 12,
+   "band": "fair",
+   "period": "2022-08 ~ 2024-12"
   }
  },
  {
@@ -795,7 +855,12 @@
    "fitness",
    "arts"
   ],
-  "traits": null
+  "traits": null,
+  "airQuality": {
+   "pm25": 7.1,
+   "band": "good",
+   "period": "2022-08 ~ 2024-12"
+  }
  },
  {
   "id": "helsinki",
@@ -851,7 +916,12 @@
    "coffee",
    "arts"
   ],
-  "traits": null
+  "traits": null,
+  "airQuality": {
+   "pm25": 5.2,
+   "band": "good",
+   "period": "2022-08 ~ 2024-12"
+  }
  },
  {
   "id": "krakow",
@@ -907,7 +977,12 @@
    "nightlife",
    "arts"
   ],
-  "traits": null
+  "traits": null,
+  "airQuality": {
+   "pm25": 21.4,
+   "band": "moderate",
+   "period": "2022-08 ~ 2024-12"
+  }
  },
  {
   "id": "riga",
@@ -963,7 +1038,12 @@
    "food",
    "nightlife"
   ],
-  "traits": null
+  "traits": null,
+  "airQuality": {
+   "pm25": 9.7,
+   "band": "good",
+   "period": "2022-08 ~ 2024-12"
+  }
  },
  {
   "id": "lisbon",
@@ -1030,6 +1110,11 @@
   "visaDetail": {
    "name": "D8 数字游民签证",
    "note": "D8 数字游民签证，月收入门槛约 3,480 欧元，可续签并转入长期居留"
+  },
+  "airQuality": {
+   "pm25": 10.9,
+   "band": "fair",
+   "period": "2022-08 ~ 2024-12"
   }
  },
  {
@@ -1093,6 +1178,11 @@
   "visaDetail": {
    "name": "葡萄牙 D8 签证",
    "note": "葡萄牙 D8 签证；海岛有官方数字游民村项目，社区组织成熟"
+  },
+  "airQuality": {
+   "pm25": 6.7,
+   "band": "good",
+   "period": "2022-08 ~ 2024-12"
   }
  },
  {
@@ -1160,6 +1250,11 @@
   "visaDetail": {
    "name": "适用西班牙数字游民签证",
    "note": "适用西班牙数字游民签证；作为首都居留与商业资源最集中"
+  },
+  "airQuality": {
+   "pm25": 9.7,
+   "band": "good",
+   "period": "2022-08 ~ 2024-12"
   }
  },
  {
@@ -1217,7 +1312,12 @@
    "outdoor",
    "nightlife"
   ],
-  "traits": null
+  "traits": null,
+  "airQuality": {
+   "pm25": 9.2,
+   "band": "good",
+   "period": "2022-08 ~ 2024-12"
+  }
  },
  {
   "id": "mallorca",
@@ -1282,6 +1382,11 @@
   "visaDetail": {
    "name": "适用西班牙数字游民签证",
    "note": "适用西班牙数字游民签证；淡季安静、旺季欧洲度假客流涌入"
+  },
+  "airQuality": {
+   "pm25": 8.4,
+   "band": "good",
+   "period": "2022-08 ~ 2024-12"
   }
  },
  {
@@ -1347,6 +1452,11 @@
   "visaDetail": {
    "name": "数字游民居留",
    "note": "数字游民居留最长 12 个月；内陆首都，咖啡馆文化浓厚"
+  },
+  "airQuality": {
+   "pm25": 18.1,
+   "band": "moderate",
+   "period": "2022-08 ~ 2024-12"
   }
  },
  {
@@ -1404,7 +1514,12 @@
    "arts",
    "outdoor"
   ],
-  "traits": null
+  "traits": null,
+  "airQuality": {
+   "pm25": 11.4,
+   "band": "fair",
+   "period": "2022-08 ~ 2024-12"
+  }
  },
  {
   "id": "stockholm",
@@ -1461,7 +1576,12 @@
    "coffee",
    "outdoor"
   ],
-  "traits": null
+  "traits": null,
+  "airQuality": {
+   "pm25": 5.5,
+   "band": "good",
+   "period": "2022-08 ~ 2024-12"
+  }
  },
  {
   "id": "split",
@@ -1526,6 +1646,11 @@
   "visaDetail": {
    "name": "数字游民居留",
    "note": "数字游民居留最长 12 个月且免征境内所得税；欧盟护照自由居住"
+  },
+  "airQuality": {
+   "pm25": 9.9,
+   "band": "good",
+   "period": "2022-08 ~ 2024-12"
   }
  },
  {
@@ -1583,7 +1708,12 @@
    "shopping",
    "fitness"
   ],
-  "traits": null
+  "traits": null,
+  "airQuality": {
+   "pm25": 8.7,
+   "band": "good",
+   "period": "2022-08 ~ 2024-12"
+  }
  },
  {
   "id": "tallinn",
@@ -1647,6 +1777,11 @@
   "visaDetail": {
    "name": "首批数字游民签证",
    "note": "首批数字游民签证国之一，月收入门槛约 4,500 欧元，最长停留 12 个月"
+  },
+  "airQuality": {
+   "pm25": 6.2,
+   "band": "good",
+   "period": "2022-08 ~ 2024-12"
   }
  },
  {
@@ -1703,7 +1838,12 @@
    "watersports",
    "food"
   ],
-  "traits": null
+  "traits": null,
+  "airQuality": {
+   "pm25": 10.6,
+   "band": "fair",
+   "period": "2022-08 ~ 2024-12"
+  }
  },
  {
   "id": "valencia",
@@ -1768,6 +1908,11 @@
   "visaDetail": {
    "name": "适用西班牙数字游民签证",
    "note": "适用西班牙数字游民签证；海滨城市性价比在西欧属第一梯队"
+  },
+  "airQuality": {
+   "pm25": 9.7,
+   "band": "good",
+   "period": "2022-08 ~ 2024-12"
   }
  },
  {
@@ -1824,7 +1969,12 @@
    "food",
    "coffee"
   ],
-  "traits": null
+  "traits": null,
+  "airQuality": {
+   "pm25": 9.7,
+   "band": "good",
+   "period": "2022-08 ~ 2024-12"
+  }
  },
  {
   "id": "vienna",
@@ -1881,7 +2031,12 @@
    "food",
    "shopping"
   ],
-  "traits": null
+  "traits": null,
+  "airQuality": {
+   "pm25": 10.8,
+   "band": "fair",
+   "period": "2022-08 ~ 2024-12"
+  }
  },
  {
   "id": "athens",
@@ -1946,6 +2101,11 @@
   "visaDetail": {
    "name": "数字游民签证",
    "note": "数字游民签证要求月收入约 3,500 欧元，有效期 1-2 年"
+  },
+  "airQuality": {
+   "pm25": 13.8,
+   "band": "fair",
+   "period": "2022-08 ~ 2024-12"
   }
  },
  {
@@ -2011,6 +2171,2134 @@
   "visaDetail": {
    "name": null,
    "note": "多数护照可办电子签短期停留；长期居留许可近年政策收紧"
+  },
+  "airQuality": {
+   "pm25": 20.2,
+   "band": "moderate",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "coimbra",
+  "nameZh": "科英布拉",
+  "nameEn": "Coimbra",
+  "countryZh": "葡萄牙",
+  "countryEn": "Portugal",
+  "countryCode": "PT",
+  "continent": "europe",
+  "subregion": "southern-europe",
+  "region": "europe",
+  "population": 140796,
+  "timezone": "Europe/Lisbon",
+  "cost": [
+   1488,
+   2101
+  ],
+  "monthlyCostUSD": 1751,
+  "costIndex": 47.3,
+  "rent1brUSD": 874.71,
+  "mealUSD": 13.51,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": null,
+  "healthcareIndex": null,
+  "pollutionIndex": null,
+  "trafficIndex": null,
+  "purchasingPowerIndex": null,
+  "climateIndex": null,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 15.7,
+   "annualPrecipMm": 961,
+   "precipDays": 106,
+   "sunshineHours": 3534,
+   "summary": "四季温和，降水适中，日照充足"
+  },
+  "community": null,
+  "english": 5,
+  "englishEpiBand": "very high",
+  "englishEpiScore": 612,
+  "pace": null,
+  "size": 1,
+  "digitalNomadVisa": null,
+  "tags": [
+   "history",
+   "food",
+   "coffee",
+   "arts"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 9.8,
+   "band": "good",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "braga",
+  "nameZh": "布拉加",
+  "nameEn": "Braga",
+  "countryZh": "葡萄牙",
+  "countryEn": "Portugal",
+  "countryCode": "PT",
+  "continent": "europe",
+  "subregion": "southern-europe",
+  "region": "europe",
+  "population": 193324,
+  "timezone": "Europe/Lisbon",
+  "cost": [
+   1451,
+   2048
+  ],
+  "monthlyCostUSD": 1707,
+  "costIndex": 46.2,
+  "rent1brUSD": 921.61,
+  "mealUSD": 11.26,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": null,
+  "healthcareIndex": null,
+  "pollutionIndex": null,
+  "trafficIndex": null,
+  "purchasingPowerIndex": null,
+  "climateIndex": null,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 14.9,
+   "annualPrecipMm": 1588,
+   "precipDays": 124,
+   "sunshineHours": 3445,
+   "summary": "四季温和，降水充沛，日照充足"
+  },
+  "community": null,
+  "english": 5,
+  "englishEpiBand": "very high",
+  "englishEpiScore": 612,
+  "pace": null,
+  "size": 1,
+  "digitalNomadVisa": null,
+  "tags": [
+   "history",
+   "food",
+   "coffee",
+   "outdoor"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 11.3,
+   "band": "fair",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "faro",
+  "nameZh": "法鲁",
+  "nameEn": "Faro",
+  "countryZh": "葡萄牙",
+  "countryEn": "Portugal",
+  "countryCode": "PT",
+  "continent": "europe",
+  "subregion": "southern-europe",
+  "region": "europe",
+  "population": 70347,
+  "timezone": "Europe/Lisbon",
+  "cost": null,
+  "monthlyCostUSD": null,
+  "costIndex": null,
+  "rent1brUSD": 1027.25,
+  "mealUSD": 13.51,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": null,
+  "healthcareIndex": null,
+  "pollutionIndex": null,
+  "trafficIndex": null,
+  "purchasingPowerIndex": null,
+  "climateIndex": null,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 18.5,
+   "annualPrecipMm": 429,
+   "precipDays": 56,
+   "sunshineHours": 3926,
+   "summary": "四季温和，降水偏少，日照充足"
+  },
+  "community": null,
+  "english": 5,
+  "englishEpiBand": "very high",
+  "englishEpiScore": 612,
+  "pace": null,
+  "size": 1,
+  "digitalNomadVisa": null,
+  "tags": [
+   "beach",
+   "watersports",
+   "food",
+   "outdoor"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 7.4,
+   "band": "good",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "bilbao",
+  "nameZh": "毕尔巴鄂",
+  "nameEn": "Bilbao",
+  "countryZh": "西班牙",
+  "countryEn": "Spain",
+  "countryCode": "ES",
+  "continent": "europe",
+  "subregion": "southern-europe",
+  "region": "europe",
+  "population": 347342,
+  "timezone": "Europe/Madrid",
+  "cost": [
+   1746,
+   2465
+  ],
+  "monthlyCostUSD": 2054,
+  "costIndex": 54.9,
+  "rent1brUSD": 1266.47,
+  "mealUSD": 21.39,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": null,
+  "healthcareIndex": null,
+  "pollutionIndex": null,
+  "trafficIndex": null,
+  "purchasingPowerIndex": null,
+  "climateIndex": null,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 14.8,
+   "annualPrecipMm": 1166,
+   "precipDays": 162,
+   "sunshineHours": 3019,
+   "summary": "四季温和，降水适中，日照充足"
+  },
+  "community": null,
+  "english": 3,
+  "englishEpiBand": "moderate",
+  "englishEpiScore": 540,
+  "pace": null,
+  "size": 2,
+  "digitalNomadVisa": null,
+  "tags": [
+   "arts",
+   "food",
+   "shopping",
+   "outdoor"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 10.2,
+   "band": "fair",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "granada",
+  "nameZh": "格拉纳达",
+  "nameEn": "Granada",
+  "countryZh": "西班牙",
+  "countryEn": "Spain",
+  "countryCode": "ES",
+  "continent": "europe",
+  "subregion": "southern-europe",
+  "region": "europe",
+  "population": 233532,
+  "timezone": "Europe/Madrid",
+  "cost": [
+   1512,
+   2135
+  ],
+  "monthlyCostUSD": 1779,
+  "costIndex": 48,
+  "rent1brUSD": 873.58,
+  "mealUSD": 15.76,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": null,
+  "healthcareIndex": null,
+  "pollutionIndex": null,
+  "trafficIndex": null,
+  "purchasingPowerIndex": null,
+  "climateIndex": null,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 16.8,
+   "annualPrecipMm": 558,
+   "precipDays": 73,
+   "sunshineHours": 3919,
+   "summary": "四季温和，降水偏少，日照充足"
+  },
+  "community": null,
+  "english": 3,
+  "englishEpiBand": "moderate",
+  "englishEpiScore": 540,
+  "pace": null,
+  "size": 1,
+  "digitalNomadVisa": null,
+  "tags": [
+   "history",
+   "food",
+   "nightlife",
+   "outdoor"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 10.7,
+   "band": "fair",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "tenerife",
+  "nameZh": "特内里费",
+  "nameEn": "Santa Cruz de Tenerife",
+  "countryZh": "西班牙",
+  "countryEn": "Spain",
+  "countryCode": "ES",
+  "continent": "europe",
+  "subregion": "southern-europe",
+  "region": "europe",
+  "population": 211359,
+  "timezone": "Atlantic/Canary",
+  "cost": null,
+  "monthlyCostUSD": null,
+  "costIndex": null,
+  "rent1brUSD": null,
+  "mealUSD": null,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": null,
+  "healthcareIndex": null,
+  "pollutionIndex": null,
+  "trafficIndex": null,
+  "purchasingPowerIndex": null,
+  "climateIndex": null,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 20.1,
+   "annualPrecipMm": 276,
+   "precipDays": 71,
+   "sunshineHours": 4034,
+   "summary": "四季温和，降水偏少，日照充足"
+  },
+  "community": null,
+  "english": 3,
+  "englishEpiBand": "moderate",
+  "englishEpiScore": 540,
+  "pace": null,
+  "size": 1,
+  "digitalNomadVisa": null,
+  "tags": [
+   "beach",
+   "watersports",
+   "food",
+   "nature"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 9.2,
+   "band": "good",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "bologna",
+  "nameZh": "博洛尼亚",
+  "nameEn": "Bologna",
+  "countryZh": "意大利",
+  "countryEn": "Italy",
+  "countryCode": "IT",
+  "continent": "europe",
+  "subregion": "southern-europe",
+  "region": "europe",
+  "population": 394843,
+  "timezone": "Europe/Rome",
+  "cost": [
+   2176,
+   3072
+  ],
+  "monthlyCostUSD": 2560,
+  "costIndex": 67.6,
+  "rent1brUSD": 1142.72,
+  "mealUSD": 22.51,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": 51.2,
+  "healthcareIndex": 76.1,
+  "pollutionIndex": 59.6,
+  "trafficIndex": 32.5,
+  "purchasingPowerIndex": 83.2,
+  "climateIndex": 88.1,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 14.7,
+   "annualPrecipMm": 840,
+   "precipDays": 103,
+   "sunshineHours": 3399,
+   "summary": "四季温和，降水适中，日照充足"
+  },
+  "community": null,
+  "english": 3,
+  "englishEpiBand": "moderate",
+  "englishEpiScore": 513,
+  "pace": null,
+  "size": 2,
+  "digitalNomadVisa": null,
+  "tags": [
+   "food",
+   "history",
+   "arts",
+   "nightlife"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 14.5,
+   "band": "fair",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "naples",
+  "nameZh": "那不勒斯",
+  "nameEn": "Naples",
+  "countryZh": "意大利",
+  "countryEn": "Italy",
+  "countryCode": "IT",
+  "continent": "europe",
+  "subregion": "southern-europe",
+  "region": "europe",
+  "population": 909048,
+  "timezone": "Europe/Rome",
+  "cost": [
+   1891,
+   2670
+  ],
+  "monthlyCostUSD": 2225,
+  "costIndex": 59.2,
+  "rent1brUSD": 991.79,
+  "mealUSD": 16.89,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": 37.7,
+  "healthcareIndex": 59.6,
+  "pollutionIndex": 77.9,
+  "trafficIndex": 43.8,
+  "purchasingPowerIndex": 81,
+  "climateIndex": 95.8,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 16.8,
+   "annualPrecipMm": 1036,
+   "precipDays": 119,
+   "sunshineHours": 3679,
+   "summary": "四季温和，降水适中，日照充足"
+  },
+  "community": null,
+  "english": 3,
+  "englishEpiBand": "moderate",
+  "englishEpiScore": 513,
+  "pace": null,
+  "size": 2,
+  "digitalNomadVisa": null,
+  "tags": [
+   "history",
+   "food",
+   "arts"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 12.9,
+   "band": "fair",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "palermo",
+  "nameZh": "巴勒莫",
+  "nameEn": "Palermo",
+  "countryZh": "意大利",
+  "countryEn": "Italy",
+  "countryCode": "IT",
+  "continent": "europe",
+  "subregion": "southern-europe",
+  "region": "europe",
+  "population": 648260,
+  "timezone": "Europe/Rome",
+  "cost": [
+   1753,
+   2474
+  ],
+  "monthlyCostUSD": 2062,
+  "costIndex": 55.1,
+  "rent1brUSD": 741.12,
+  "mealUSD": 15.2,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": null,
+  "healthcareIndex": null,
+  "pollutionIndex": null,
+  "trafficIndex": null,
+  "purchasingPowerIndex": null,
+  "climateIndex": null,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 18.7,
+   "annualPrecipMm": 774,
+   "precipDays": 104,
+   "sunshineHours": 3827,
+   "summary": "四季温和，降水适中，日照充足"
+  },
+  "community": null,
+  "english": 3,
+  "englishEpiBand": "moderate",
+  "englishEpiScore": 513,
+  "pace": null,
+  "size": 2,
+  "digitalNomadVisa": null,
+  "tags": [
+   "history",
+   "food",
+   "street-markets"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 9.1,
+   "band": "good",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "catania",
+  "nameZh": "卡塔尼亚",
+  "nameEn": "Catania",
+  "countryZh": "意大利",
+  "countryEn": "Italy",
+  "countryCode": "IT",
+  "continent": "europe",
+  "subregion": "southern-europe",
+  "region": "europe",
+  "population": 311584,
+  "timezone": "Europe/Rome",
+  "cost": [
+   1729,
+   2441
+  ],
+  "monthlyCostUSD": 2034,
+  "costIndex": 54.4,
+  "rent1brUSD": 607.9,
+  "mealUSD": 16.89,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": null,
+  "healthcareIndex": null,
+  "pollutionIndex": null,
+  "trafficIndex": null,
+  "purchasingPowerIndex": null,
+  "climateIndex": null,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 18.9,
+   "annualPrecipMm": 563,
+   "precipDays": 70,
+   "sunshineHours": 3840,
+   "summary": "四季温和，降水偏少，日照充足"
+  },
+  "community": null,
+  "english": 3,
+  "englishEpiBand": "moderate",
+  "englishEpiScore": 513,
+  "pace": null,
+  "size": 2,
+  "digitalNomadVisa": null,
+  "tags": [
+   "history",
+   "food",
+   "nature",
+   "outdoor"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 11.2,
+   "band": "fair",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "verona",
+  "nameZh": "维罗纳",
+  "nameEn": "Verona",
+  "countryZh": "意大利",
+  "countryEn": "Italy",
+  "countryCode": "IT",
+  "continent": "europe",
+  "subregion": "southern-europe",
+  "region": "europe",
+  "population": 258031,
+  "timezone": "Europe/Rome",
+  "cost": [
+   2132,
+   3010
+  ],
+  "monthlyCostUSD": 2508,
+  "costIndex": 66.3,
+  "rent1brUSD": 977.53,
+  "mealUSD": 18.01,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": null,
+  "healthcareIndex": null,
+  "pollutionIndex": null,
+  "trafficIndex": null,
+  "purchasingPowerIndex": null,
+  "climateIndex": null,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 14.5,
+   "annualPrecipMm": 928,
+   "precipDays": 112,
+   "sunshineHours": 3458,
+   "summary": "四季温和，降水适中，日照充足"
+  },
+  "community": null,
+  "english": 3,
+  "englishEpiBand": "moderate",
+  "englishEpiScore": 513,
+  "pace": null,
+  "size": 1,
+  "digitalNomadVisa": null,
+  "tags": [
+   "history",
+   "arts",
+   "food",
+   "coffee"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 24.2,
+   "band": "moderate",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "hamburg",
+  "nameZh": "汉堡",
+  "nameEn": "Hamburg",
+  "countryZh": "德国",
+  "countryEn": "Germany",
+  "countryCode": "DE",
+  "continent": "europe",
+  "subregion": "western-europe",
+  "region": "europe",
+  "population": 1973896,
+  "timezone": "Europe/Berlin",
+  "cost": [
+   2285,
+   3226
+  ],
+  "monthlyCostUSD": 2688,
+  "costIndex": 70.8,
+  "rent1brUSD": 1289.96,
+  "mealUSD": 16.89,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": 59.3,
+  "healthcareIndex": 74.3,
+  "pollutionIndex": 27.3,
+  "trafficIndex": 30.5,
+  "purchasingPowerIndex": 127.1,
+  "climateIndex": 82.8,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 10.5,
+   "annualPrecipMm": 814,
+   "precipDays": 151,
+   "sunshineHours": 2750,
+   "summary": "冬季偏凉，降水适中，日照充足"
+  },
+  "community": null,
+  "english": null,
+  "englishEpiBand": null,
+  "englishEpiScore": null,
+  "pace": null,
+  "size": 3,
+  "digitalNomadVisa": null,
+  "tags": [
+   "nightlife",
+   "arts",
+   "food",
+   "startup"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 9.6,
+   "band": "good",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "munich",
+  "nameZh": "慕尼黑",
+  "nameEn": "Munich",
+  "countryZh": "德国",
+  "countryEn": "Germany",
+  "countryCode": "DE",
+  "continent": "europe",
+  "subregion": "western-europe",
+  "region": "europe",
+  "population": 1505005,
+  "timezone": "Europe/Berlin",
+  "cost": [
+   2508,
+   3541
+  ],
+  "monthlyCostUSD": 2951,
+  "costIndex": 77.4,
+  "rent1brUSD": 1688.89,
+  "mealUSD": 18.29,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": 78.3,
+  "healthcareIndex": 77,
+  "pollutionIndex": 24.7,
+  "trafficIndex": 28.2,
+  "purchasingPowerIndex": 129.7,
+  "climateIndex": 76,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 9.8,
+   "annualPrecipMm": 1064,
+   "precipDays": 158,
+   "sunshineHours": 2975,
+   "summary": "冬季偏凉，降水适中，日照充足"
+  },
+  "community": null,
+  "english": null,
+  "englishEpiBand": null,
+  "englishEpiScore": null,
+  "pace": null,
+  "size": 3,
+  "digitalNomadVisa": null,
+  "tags": [
+   "outdoor",
+   "beer-culture",
+   "food",
+   "fitness",
+   "arts"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 9.1,
+   "band": "good",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "leipzig",
+  "nameZh": "莱比锡",
+  "nameEn": "Leipzig",
+  "countryZh": "德国",
+  "countryEn": "Germany",
+  "countryCode": "DE",
+  "continent": "europe",
+  "subregion": "western-europe",
+  "region": "europe",
+  "population": 504971,
+  "timezone": "Europe/Berlin",
+  "cost": [
+   2105,
+   2972
+  ],
+  "monthlyCostUSD": 2477,
+  "costIndex": 65.5,
+  "rent1brUSD": 773.26,
+  "mealUSD": 16.89,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": null,
+  "healthcareIndex": null,
+  "pollutionIndex": null,
+  "trafficIndex": null,
+  "purchasingPowerIndex": null,
+  "climateIndex": null,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 11.1,
+   "annualPrecipMm": 635,
+   "precipDays": 133,
+   "sunshineHours": 2893,
+   "summary": "冬季偏凉，降水偏少，日照充足"
+  },
+  "community": null,
+  "english": null,
+  "englishEpiBand": null,
+  "englishEpiScore": null,
+  "pace": null,
+  "size": 2,
+  "digitalNomadVisa": null,
+  "tags": [
+   "arts",
+   "startup",
+   "nightlife",
+   "food"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 8.9,
+   "band": "good",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "rotterdam",
+  "nameZh": "鹿特丹",
+  "nameEn": "Rotterdam",
+  "countryZh": "荷兰",
+  "countryEn": "Netherlands",
+  "countryCode": "NL",
+  "continent": "europe",
+  "subregion": "western-europe",
+  "region": "europe",
+  "population": 868135,
+  "timezone": "Europe/Amsterdam",
+  "cost": [
+   2495,
+   3522
+  ],
+  "monthlyCostUSD": 2935,
+  "costIndex": 77,
+  "rent1brUSD": 1972.31,
+  "mealUSD": 20.83,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": 70,
+  "healthcareIndex": 79.2,
+  "pollutionIndex": 23.8,
+  "trafficIndex": 21.3,
+  "purchasingPowerIndex": 124.6,
+  "climateIndex": 87.9,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 11.3,
+   "annualPrecipMm": 873,
+   "precipDays": 158,
+   "sunshineHours": 2950,
+   "summary": "冬季偏凉，降水适中，日照充足"
+  },
+  "community": null,
+  "english": 5,
+  "englishEpiBand": "very high",
+  "englishEpiScore": 624,
+  "pace": null,
+  "size": 2,
+  "digitalNomadVisa": null,
+  "tags": [
+   "arts",
+   "startup",
+   "food",
+   "shopping"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 10,
+   "band": "good",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "geneva",
+  "nameZh": "日内瓦",
+  "nameEn": "Geneva",
+  "countryZh": "瑞士",
+  "countryEn": "Switzerland",
+  "countryCode": "CH",
+  "continent": "europe",
+  "subregion": "western-europe",
+  "region": "europe",
+  "population": 201741,
+  "timezone": "Europe/Zurich",
+  "cost": [
+   3658,
+   5164
+  ],
+  "monthlyCostUSD": 4303,
+  "costIndex": 111.3,
+  "rent1brUSD": 2801.08,
+  "mealUSD": 30.17,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": 70.5,
+  "healthcareIndex": 69.3,
+  "pollutionIndex": 26.5,
+  "trafficIndex": 32.6,
+  "purchasingPowerIndex": 155.1,
+  "climateIndex": 82.6,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 11.7,
+   "annualPrecipMm": 1206,
+   "precipDays": 142,
+   "sunshineHours": 3301,
+   "summary": "冬季偏凉，降水适中，日照充足"
+  },
+  "community": null,
+  "english": 4,
+  "englishEpiBand": "high",
+  "englishEpiScore": 564,
+  "pace": null,
+  "size": 1,
+  "digitalNomadVisa": null,
+  "tags": [
+   "nature",
+   "outdoor",
+   "coffee",
+   "shopping"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 8.6,
+   "band": "good",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "salzburg",
+  "nameZh": "萨尔茨堡",
+  "nameEn": "Salzburg",
+  "countryZh": "奥地利",
+  "countryEn": "Austria",
+  "countryCode": "AT",
+  "continent": "europe",
+  "subregion": "western-europe",
+  "region": "europe",
+  "population": 157245,
+  "timezone": "Europe/Vienna",
+  "cost": [
+   2491,
+   3517
+  ],
+  "monthlyCostUSD": 2931,
+  "costIndex": 76.9,
+  "rent1brUSD": 1435.33,
+  "mealUSD": 18.01,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": null,
+  "healthcareIndex": null,
+  "pollutionIndex": null,
+  "trafficIndex": null,
+  "purchasingPowerIndex": null,
+  "climateIndex": null,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 10.2,
+   "annualPrecipMm": 1533,
+   "precipDays": 179,
+   "sunshineHours": 2952,
+   "summary": "冬季偏凉，降水充沛，日照充足"
+  },
+  "community": null,
+  "english": 5,
+  "englishEpiBand": "very high",
+  "englishEpiScore": 616,
+  "pace": null,
+  "size": 1,
+  "digitalNomadVisa": null,
+  "tags": [
+   "history",
+   "arts",
+   "nature",
+   "outdoor"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 9.6,
+   "band": "good",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "brno",
+  "nameZh": "布尔诺",
+  "nameEn": "Brno",
+  "countryZh": "捷克",
+  "countryEn": "Czech Republic",
+  "countryCode": "CZ",
+  "continent": "europe",
+  "subregion": "eastern-europe",
+  "region": "europe",
+  "population": 404296,
+  "timezone": "Europe/Prague",
+  "cost": [
+   1681,
+   2374
+  ],
+  "monthlyCostUSD": 1978,
+  "costIndex": 53,
+  "rent1brUSD": 969.84,
+  "mealUSD": 9.21,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": 75.2,
+  "healthcareIndex": 76.1,
+  "pollutionIndex": 39.9,
+  "trafficIndex": 26.2,
+  "purchasingPowerIndex": 92.7,
+  "climateIndex": 78.2,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 10.7,
+   "annualPrecipMm": 624,
+   "precipDays": 112,
+   "sunshineHours": 2978,
+   "summary": "冬季偏凉，降水偏少，日照充足"
+  },
+  "community": null,
+  "english": 4,
+  "englishEpiBand": "high",
+  "englishEpiScore": 582,
+  "pace": null,
+  "size": 2,
+  "digitalNomadVisa": null,
+  "tags": [
+   "startup",
+   "coffee",
+   "nightlife",
+   "food"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 12.3,
+   "band": "fair",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "wroclaw",
+  "nameZh": "弗罗茨瓦夫",
+  "nameEn": "Wrocław",
+  "countryZh": "波兰",
+  "countryEn": "Poland",
+  "countryCode": "PL",
+  "continent": "europe",
+  "subregion": "eastern-europe",
+  "region": "europe",
+  "population": 672545,
+  "timezone": "Europe/Warsaw",
+  "cost": [
+   1553,
+   2192
+  ],
+  "monthlyCostUSD": 1827,
+  "costIndex": 49.2,
+  "rent1brUSD": 839.11,
+  "mealUSD": 10.27,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": 74.8,
+  "healthcareIndex": 57.5,
+  "pollutionIndex": 61.6,
+  "trafficIndex": 34.8,
+  "purchasingPowerIndex": 95.8,
+  "climateIndex": 78.4,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 10.8,
+   "annualPrecipMm": 692,
+   "precipDays": 133,
+   "sunshineHours": 2918,
+   "summary": "冬季偏凉，降水偏少，日照充足"
+  },
+  "community": null,
+  "english": 5,
+  "englishEpiBand": "very high",
+  "englishEpiScore": 600,
+  "pace": null,
+  "size": 2,
+  "digitalNomadVisa": null,
+  "tags": [
+   "history",
+   "food",
+   "nightlife",
+   "startup"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 16.7,
+   "band": "moderate",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "cluj-napoca",
+  "nameZh": "克卢日-纳波卡",
+  "nameEn": "Cluj-Napoca",
+  "countryZh": "罗马尼亚",
+  "countryEn": "Romania",
+  "countryCode": "RO",
+  "continent": "europe",
+  "subregion": "eastern-europe",
+  "region": "europe",
+  "population": 286598,
+  "timezone": "Europe/Bucharest",
+  "cost": [
+   1451,
+   2048
+  ],
+  "monthlyCostUSD": 1707,
+  "costIndex": 46.2,
+  "rent1brUSD": null,
+  "mealUSD": null,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": 77.5,
+  "healthcareIndex": 66.6,
+  "pollutionIndex": 42.7,
+  "trafficIndex": 29.9,
+  "purchasingPowerIndex": 77.6,
+  "climateIndex": 74.3,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 10.6,
+   "annualPrecipMm": 715,
+   "precipDays": 124,
+   "sunshineHours": 3292,
+   "summary": "冬季偏凉，降水适中，日照充足"
+  },
+  "community": null,
+  "english": 5,
+  "englishEpiBand": "very high",
+  "englishEpiScore": 605,
+  "pace": null,
+  "size": 1,
+  "digitalNomadVisa": null,
+  "tags": [
+   "startup",
+   "nightlife",
+   "food",
+   "history"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 14.6,
+   "band": "fair",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "thessaloniki",
+  "nameZh": "塞萨洛尼基",
+  "nameEn": "Thessaloniki",
+  "countryZh": "希腊",
+  "countryEn": "Greece",
+  "countryCode": "GR",
+  "continent": "europe",
+  "subregion": "southern-europe",
+  "region": "europe",
+  "population": 317778,
+  "timezone": "Europe/Athens",
+  "cost": [
+   1777,
+   2508
+  ],
+  "monthlyCostUSD": 2090,
+  "costIndex": 55.8,
+  "rent1brUSD": 630.42,
+  "mealUSD": 16.89,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": 48.2,
+  "healthcareIndex": 57.4,
+  "pollutionIndex": 54.2,
+  "trafficIndex": 27.9,
+  "purchasingPowerIndex": 59.6,
+  "climateIndex": 88.4,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 16.6,
+   "annualPrecipMm": 682,
+   "precipDays": 89,
+   "sunshineHours": 3657,
+   "summary": "四季温和，降水偏少，日照充足"
+  },
+  "community": null,
+  "english": 4,
+  "englishEpiBand": "high",
+  "englishEpiScore": 592,
+  "pace": null,
+  "size": 2,
+  "digitalNomadVisa": null,
+  "tags": [
+   "food",
+   "nightlife",
+   "history",
+   "coffee"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 13.4,
+   "band": "fair",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "rijeka",
+  "nameZh": "里耶卡",
+  "nameEn": "Rijeka",
+  "countryZh": "克罗地亚",
+  "countryEn": "Croatia",
+  "countryCode": "HR",
+  "continent": "europe",
+  "subregion": "southern-europe",
+  "region": "europe",
+  "population": 107964,
+  "timezone": "Europe/Zagreb",
+  "cost": [
+   1702,
+   2402
+  ],
+  "monthlyCostUSD": 2002,
+  "costIndex": 53.6,
+  "rent1brUSD": 699.09,
+  "mealUSD": 13.51,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": 76.9,
+  "healthcareIndex": 67.2,
+  "pollutionIndex": 31.9,
+  "trafficIndex": 17,
+  "purchasingPowerIndex": 78.4,
+  "climateIndex": 94.9,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 14.9,
+   "annualPrecipMm": 2276,
+   "precipDays": 138,
+   "sunshineHours": 3298,
+   "summary": "四季温和，降水充沛，日照充足"
+  },
+  "community": null,
+  "english": 5,
+  "englishEpiBand": "very high",
+  "englishEpiScore": 617,
+  "pace": null,
+  "size": 1,
+  "digitalNomadVisa": null,
+  "tags": [
+   "beach",
+   "history",
+   "food",
+   "arts"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 10.7,
+   "band": "fair",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "novi-sad",
+  "nameZh": "诺维萨德",
+  "nameEn": "Novi Sad",
+  "countryZh": "塞尔维亚",
+  "countryEn": "Serbia",
+  "countryCode": "RS",
+  "continent": "europe",
+  "subregion": "southern-europe",
+  "region": "europe",
+  "population": 215400,
+  "timezone": "Europe/Belgrade",
+  "cost": [
+   1482,
+   2092
+  ],
+  "monthlyCostUSD": 1743,
+  "costIndex": 47.1,
+  "rent1brUSD": null,
+  "mealUSD": null,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": 61.6,
+  "healthcareIndex": 50.2,
+  "pollutionIndex": 53.4,
+  "trafficIndex": 18,
+  "purchasingPowerIndex": 63,
+  "climateIndex": 84,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 13.2,
+   "annualPrecipMm": 632,
+   "precipDays": 109,
+   "sunshineHours": 3264,
+   "summary": "冬季偏凉，降水偏少，日照充足"
+  },
+  "community": null,
+  "english": 4,
+  "englishEpiBand": "high",
+  "englishEpiScore": 578,
+  "pace": null,
+  "size": 1,
+  "digitalNomadVisa": null,
+  "tags": [
+   "festivals",
+   "nightlife",
+   "food",
+   "history"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 17.3,
+   "band": "moderate",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "debrecen",
+  "nameZh": "德布勒森",
+  "nameEn": "Debrecen",
+  "countryZh": "匈牙利",
+  "countryEn": "Hungary",
+  "countryCode": "HU",
+  "continent": "europe",
+  "subregion": "eastern-europe",
+  "region": "europe",
+  "population": 202402,
+  "timezone": "Europe/Budapest",
+  "cost": [
+   1546,
+   2183
+  ],
+  "monthlyCostUSD": 1819,
+  "costIndex": 49,
+  "rent1brUSD": 612.8,
+  "mealUSD": 13.75,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": null,
+  "healthcareIndex": null,
+  "pollutionIndex": null,
+  "trafficIndex": null,
+  "purchasingPowerIndex": null,
+  "climateIndex": null,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 12.2,
+   "annualPrecipMm": 632,
+   "precipDays": 109,
+   "sunshineHours": 3122,
+   "summary": "冬季偏凉，降水偏少，日照充足"
+  },
+  "community": null,
+  "english": 4,
+  "englishEpiBand": "high",
+  "englishEpiScore": 590,
+  "pace": null,
+  "size": 1,
+  "digitalNomadVisa": null,
+  "tags": [
+   "history",
+   "food",
+   "wellness"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 13.7,
+   "band": "fair",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "gothenburg",
+  "nameZh": "哥德堡",
+  "nameEn": "Gothenburg",
+  "countryZh": "瑞典",
+  "countryEn": "Sweden",
+  "countryCode": "SE",
+  "continent": "europe",
+  "subregion": "northern-europe",
+  "region": "europe",
+  "population": 608462,
+  "timezone": "Europe/Stockholm",
+  "cost": [
+   2068,
+   2920
+  ],
+  "monthlyCostUSD": 2433,
+  "costIndex": 64.4,
+  "rent1brUSD": 1027.57,
+  "mealUSD": 12.95,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": 54.2,
+  "healthcareIndex": 69.4,
+  "pollutionIndex": 22.3,
+  "trafficIndex": 24.3,
+  "purchasingPowerIndex": 147.7,
+  "climateIndex": 77.5,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 8.5,
+   "annualPrecipMm": 1044,
+   "precipDays": 170,
+   "sunshineHours": 2834,
+   "summary": "冬季偏凉，降水适中，日照充足"
+  },
+  "community": null,
+  "english": 5,
+  "englishEpiBand": "very high",
+  "englishEpiScore": 609,
+  "pace": null,
+  "size": 2,
+  "digitalNomadVisa": null,
+  "tags": [
+   "coffee",
+   "food",
+   "nature",
+   "outdoor"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 6.2,
+   "band": "good",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "bergen",
+  "nameZh": "卑尔根",
+  "nameEn": "Bergen",
+  "countryZh": "挪威",
+  "countryEn": "Norway",
+  "countryCode": "NO",
+  "continent": "europe",
+  "subregion": "northern-europe",
+  "region": "europe",
+  "population": 294029,
+  "timezone": "Europe/Oslo",
+  "cost": [
+   2922,
+   4126
+  ],
+  "monthlyCostUSD": 3438,
+  "costIndex": 89.6,
+  "rent1brUSD": 1426.06,
+  "mealUSD": 23.29,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": 74.9,
+  "healthcareIndex": 72.7,
+  "pollutionIndex": 25.9,
+  "trafficIndex": 32,
+  "purchasingPowerIndex": 130.9,
+  "climateIndex": 78.8,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 7.2,
+   "annualPrecipMm": 2583,
+   "precipDays": 219,
+   "sunshineHours": 2370,
+   "summary": "冬季偏凉，降水充沛，日照适中"
+  },
+  "community": null,
+  "english": 5,
+  "englishEpiBand": "very high",
+  "englishEpiScore": 613,
+  "pace": null,
+  "size": 1,
+  "digitalNomadVisa": null,
+  "tags": [
+   "nature",
+   "outdoor",
+   "history",
+   "food"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 5.1,
+   "band": "good",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "tromso",
+  "nameZh": "特罗姆瑟",
+  "nameEn": "Tromsø",
+  "countryZh": "挪威",
+  "countryEn": "Norway",
+  "countryCode": "NO",
+  "continent": "europe",
+  "subregion": "northern-europe",
+  "region": "europe",
+  "population": 41915,
+  "timezone": "Europe/Oslo",
+  "cost": null,
+  "monthlyCostUSD": null,
+  "costIndex": null,
+  "rent1brUSD": 1507.5,
+  "mealUSD": 33.79,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": null,
+  "healthcareIndex": null,
+  "pollutionIndex": null,
+  "trafficIndex": null,
+  "purchasingPowerIndex": null,
+  "climateIndex": null,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 2.9,
+   "annualPrecipMm": 1374,
+   "precipDays": 201,
+   "sunshineHours": 2036,
+   "summary": "冬季偏凉，降水充沛，日照适中"
+  },
+  "community": null,
+  "english": 5,
+  "englishEpiBand": "very high",
+  "englishEpiScore": 613,
+  "pace": null,
+  "size": 1,
+  "digitalNomadVisa": null,
+  "tags": [
+   "nature",
+   "outdoor",
+   "watersports"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 2.9,
+   "band": "good",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "aarhus",
+  "nameZh": "奥胡斯",
+  "nameEn": "Aarhus",
+  "countryZh": "丹麦",
+  "countryEn": "Denmark",
+  "countryCode": "DK",
+  "continent": "europe",
+  "subregion": "northern-europe",
+  "region": "europe",
+  "population": 285273,
+  "timezone": "Europe/Copenhagen",
+  "cost": [
+   2614,
+   3690
+  ],
+  "monthlyCostUSD": 3075,
+  "costIndex": 80.5,
+  "rent1brUSD": null,
+  "mealUSD": null,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": null,
+  "healthcareIndex": null,
+  "pollutionIndex": null,
+  "trafficIndex": null,
+  "purchasingPowerIndex": null,
+  "climateIndex": null,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 9.4,
+   "annualPrecipMm": 793,
+   "precipDays": 150,
+   "sunshineHours": 2854,
+   "summary": "冬季偏凉，降水适中，日照充足"
+  },
+  "community": null,
+  "english": 5,
+  "englishEpiBand": "very high",
+  "englishEpiScore": 611,
+  "pace": null,
+  "size": 1,
+  "digitalNomadVisa": null,
+  "tags": [
+   "arts",
+   "food",
+   "coffee",
+   "history"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 6.5,
+   "band": "good",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "tampere",
+  "nameZh": "坦佩雷",
+  "nameEn": "Tampere",
+  "countryZh": "芬兰",
+  "countryEn": "Finland",
+  "countryCode": "FI",
+  "continent": "europe",
+  "subregion": "northern-europe",
+  "region": "europe",
+  "population": 260646,
+  "timezone": "Europe/Helsinki",
+  "cost": [
+   2186,
+   3086
+  ],
+  "monthlyCostUSD": 2572,
+  "costIndex": 67.9,
+  "rent1brUSD": 969.55,
+  "mealUSD": 16.32,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": null,
+  "healthcareIndex": null,
+  "pollutionIndex": null,
+  "trafficIndex": null,
+  "purchasingPowerIndex": null,
+  "climateIndex": null,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 5.9,
+   "annualPrecipMm": 734,
+   "precipDays": 138,
+   "sunshineHours": 2536,
+   "summary": "冬季偏凉，降水适中，日照充足"
+  },
+  "community": null,
+  "english": 5,
+  "englishEpiBand": "very high",
+  "englishEpiScore": 603,
+  "pace": null,
+  "size": 1,
+  "digitalNomadVisa": null,
+  "tags": [
+   "nature",
+   "wellness",
+   "coffee",
+   "arts"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 5,
+   "band": "good",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "kaunas",
+  "nameZh": "考纳斯",
+  "nameEn": "Kaunas",
+  "countryZh": "立陶宛",
+  "countryEn": "Lithuania",
+  "countryCode": "LT",
+  "continent": "europe",
+  "subregion": "northern-europe",
+  "region": "europe",
+  "population": 289380,
+  "timezone": "Europe/Vilnius",
+  "cost": [
+   1647,
+   2326
+  ],
+  "monthlyCostUSD": 1938,
+  "costIndex": 52,
+  "rent1brUSD": 629.67,
+  "mealUSD": 12.04,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": 63.2,
+  "healthcareIndex": 74.7,
+  "pollutionIndex": 25.3,
+  "trafficIndex": 26,
+  "purchasingPowerIndex": 92.6,
+  "climateIndex": 68.9,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 8.8,
+   "annualPrecipMm": 701,
+   "precipDays": 138,
+   "sunshineHours": 2740,
+   "summary": "冬季偏凉，降水适中，日照充足"
+  },
+  "community": null,
+  "english": 3,
+  "englishEpiBand": "moderate",
+  "englishEpiScore": 543,
+  "pace": null,
+  "size": 1,
+  "digitalNomadVisa": null,
+  "tags": [
+   "history",
+   "arts",
+   "food",
+   "coffee"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 9.2,
+   "band": "good",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "tartu",
+  "nameZh": "塔尔图",
+  "nameEn": "Tartu",
+  "countryZh": "爱沙尼亚",
+  "countryEn": "Estonia",
+  "countryCode": "EE",
+  "continent": "europe",
+  "subregion": "northern-europe",
+  "region": "europe",
+  "population": 91407,
+  "timezone": "Europe/Tallinn",
+  "cost": [
+   1824,
+   2575
+  ],
+  "monthlyCostUSD": 2146,
+  "costIndex": 57.2,
+  "rent1brUSD": 626.72,
+  "mealUSD": 16.89,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": null,
+  "healthcareIndex": null,
+  "pollutionIndex": null,
+  "trafficIndex": null,
+  "purchasingPowerIndex": null,
+  "climateIndex": null,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 7.1,
+   "annualPrecipMm": 673,
+   "precipDays": 140,
+   "sunshineHours": 2645,
+   "summary": "冬季偏凉，降水偏少，日照充足"
+  },
+  "community": null,
+  "english": 4,
+  "englishEpiBand": "high",
+  "englishEpiScore": 561,
+  "pace": null,
+  "size": 1,
+  "digitalNomadVisa": null,
+  "tags": [
+   "history",
+   "coffee",
+   "arts",
+   "food"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 6.5,
+   "band": "good",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "sliema",
+  "nameZh": "斯利马",
+  "nameEn": "Sliema",
+  "countryZh": "马耳他",
+  "countryEn": "Malta",
+  "countryCode": "MT",
+  "continent": "europe",
+  "subregion": "southern-europe",
+  "region": "europe",
+  "population": 22591,
+  "timezone": "Europe/Malta",
+  "cost": [
+   1980,
+   2795
+  ],
+  "monthlyCostUSD": 2329,
+  "costIndex": 61.8,
+  "rent1brUSD": 1760.67,
+  "mealUSD": 19.7,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": null,
+  "healthcareIndex": null,
+  "pollutionIndex": null,
+  "trafficIndex": null,
+  "purchasingPowerIndex": null,
+  "climateIndex": null,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 19.9,
+   "annualPrecipMm": 350,
+   "precipDays": 59,
+   "sunshineHours": 3959,
+   "summary": "四季温和，降水偏少，日照充足"
+  },
+  "community": null,
+  "english": null,
+  "englishEpiBand": null,
+  "englishEpiScore": null,
+  "pace": null,
+  "size": 1,
+  "digitalNomadVisa": null,
+  "tags": [
+   "beach",
+   "watersports",
+   "food",
+   "coffee"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 9.7,
+   "band": "good",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "batumi",
+  "nameZh": "巴统",
+  "nameEn": "Batumi",
+  "countryZh": "格鲁吉亚",
+  "countryEn": "Georgia",
+  "countryCode": "GE",
+  "continent": "europe",
+  "subregion": "southern-europe",
+  "region": "europe",
+  "population": 186949,
+  "timezone": "Asia/Tbilisi",
+  "cost": [
+   1004,
+   1417
+  ],
+  "monthlyCostUSD": 1181,
+  "costIndex": 33,
+  "rent1brUSD": 503.95,
+  "mealUSD": 11.52,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": null,
+  "healthcareIndex": null,
+  "pollutionIndex": null,
+  "trafficIndex": null,
+  "purchasingPowerIndex": null,
+  "climateIndex": null,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 15.2,
+   "annualPrecipMm": 2391,
+   "precipDays": 178,
+   "sunshineHours": 2931,
+   "summary": "四季温和，降水充沛，日照充足"
+  },
+  "community": null,
+  "english": 3,
+  "englishEpiBand": "moderate",
+  "englishEpiScore": 541,
+  "pace": null,
+  "size": 1,
+  "digitalNomadVisa": null,
+  "tags": [
+   "beach",
+   "food",
+   "nature",
+   "nightlife"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 7.5,
+   "band": "good",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "antalya",
+  "nameZh": "安塔利亚",
+  "nameEn": "Antalya",
+  "countryZh": "土耳其",
+  "countryEn": "Turkey",
+  "countryCode": "TR",
+  "continent": "europe",
+  "subregion": "southern-europe",
+  "region": "europe",
+  "population": 1335002,
+  "timezone": "Europe/Istanbul",
+  "cost": [
+   1278,
+   1805
+  ],
+  "monthlyCostUSD": 1504,
+  "costIndex": 41.1,
+  "rent1brUSD": 613.7,
+  "mealUSD": 9.67,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": 70.9,
+  "healthcareIndex": 73.7,
+  "pollutionIndex": 44.7,
+  "trafficIndex": 36.2,
+  "purchasingPowerIndex": 61.5,
+  "climateIndex": 91.5,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 19.1,
+   "annualPrecipMm": 995,
+   "precipDays": 80,
+   "sunshineHours": 3862,
+   "summary": "四季温和，降水适中，日照充足"
+  },
+  "community": null,
+  "english": 2,
+  "englishEpiBand": "low",
+  "englishEpiScore": 488,
+  "pace": null,
+  "size": 3,
+  "digitalNomadVisa": null,
+  "tags": [
+   "beach",
+   "history",
+   "watersports",
+   "food"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 10.7,
+   "band": "fair",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "izmir",
+  "nameZh": "伊兹密尔",
+  "nameEn": "Izmir",
+  "countryZh": "土耳其",
+  "countryEn": "Turkey",
+  "countryCode": "TR",
+  "continent": "europe",
+  "subregion": "southern-europe",
+  "region": "europe",
+  "population": 2938292,
+  "timezone": "Europe/Istanbul",
+  "cost": [
+   1366,
+   1928
+  ],
+  "monthlyCostUSD": 1607,
+  "costIndex": 43.7,
+  "rent1brUSD": 605.95,
+  "mealUSD": 10.18,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": 66.7,
+  "healthcareIndex": 73.3,
+  "pollutionIndex": 60.2,
+  "trafficIndex": 39.9,
+  "purchasingPowerIndex": 69.3,
+  "climateIndex": 96.9,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 18,
+   "annualPrecipMm": 670,
+   "precipDays": 73,
+   "sunshineHours": 3870,
+   "summary": "四季温和，降水偏少，日照充足"
+  },
+  "community": null,
+  "english": 2,
+  "englishEpiBand": "low",
+  "englishEpiScore": 488,
+  "pace": null,
+  "size": 3,
+  "digitalNomadVisa": null,
+  "tags": [
+   "food",
+   "history",
+   "beach",
+   "coffee"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 18.9,
+   "band": "moderate",
+   "period": "2022-08 ~ 2024-12"
   }
  }
 ]

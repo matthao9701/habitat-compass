@@ -37,6 +37,38 @@ const CITY_COUNTRY = {
   dakar: 'Senegal', accra: 'Ghana', 'port-louis': 'Mauritius',
   sydney: 'Australia', melbourne: 'Australia', brisbane: 'Australia', perth: 'Australia',
   auckland: 'New Zealand', wellington: 'New Zealand', nadi: 'Fiji',
+  // ---- 第十轮扩容 100 新城 ----
+  coimbra: 'Portugal', braga: 'Portugal', faro: 'Portugal',
+  bilbao: 'Spain', granada: 'Spain', tenerife: 'Spain',
+  bologna: 'Italy', naples: 'Italy', palermo: 'Italy', catania: 'Italy', verona: 'Italy', pisa: 'Italy',
+  hamburg: 'Germany', munich: 'Germany', leipzig: 'Germany',
+  rotterdam: 'Netherlands', geneva: 'Switzerland', salzburg: 'Austria',
+  brno: 'Czech Republic', wroclaw: 'Poland', 'cluj-napoca': 'Romania',
+  thessaloniki: 'Greece', rijeka: 'Croatia', 'novi-sad': 'Serbia',
+  gothenburg: 'Sweden', bergen: 'Norway', tromso: 'Norway', aarhus: 'Denmark',
+  tampere: 'Finland', kaunas: 'Lithuania', tartu: 'Estonia', sliema: 'Malta', debrecen: 'Hungary',
+  pattaya: 'Thailand', 'ko-samui': 'Thailand', krabi: 'Thailand', 'chiang-rai': 'Thailand',
+  'da-lat': 'Vietnam', 'nha-trang': 'Vietnam',
+  jakarta: 'Indonesia', yogyakarta: 'Indonesia',
+  'johor-bahru': 'Malaysia', 'kota-kinabalu': 'Malaysia',
+  manila: 'Philippines', davao: 'Philippines',
+  osaka: 'Japan', sapporo: 'Japan', jeju: 'South Korea', kaohsiung: 'Taiwan',
+  kunming: 'China', sanya: 'China', xian: 'China', hangzhou: 'China',
+  delhi: 'India', mumbai: 'India', pune: 'India', jaipur: 'India',
+  'abu-dhabi': 'United Arab Emirates', jerusalem: 'Israel', batumi: 'Georgia',
+  antalya: 'Turkey', izmir: 'Turkey', 'siem-reap': 'Cambodia',
+  guadalajara: 'Mexico', monterrey: 'Mexico', 'san-miguel-de-allende': 'Mexico',
+  'san-diego': 'United States', 'las-vegas': 'United States', portland: 'United States',
+  chicago: 'United States', phoenix: 'United States',
+  montreal: 'Canada', calgary: 'Canada', ottawa: 'Canada',
+  'sao-paulo': 'Brazil', 'belo-horizonte': 'Brazil', curitiba: 'Brazil',
+  cordoba: 'Argentina', mendoza: 'Argentina', valparaiso: 'Chile',
+  cali: 'Colombia', bucaramanga: 'Colombia', arequipa: 'Peru',
+  alexandria: 'Egypt', hurghada: 'Egypt', casablanca: 'Morocco', tangier: 'Morocco',
+  pretoria: 'South Africa', durban: 'South Africa', mombasa: 'Kenya', kumasi: 'Ghana',
+  adelaide: 'Australia', canberra: 'Australia', 'gold-coast': 'Australia', hobart: 'Australia', cairns: 'Australia',
+  hamilton: 'New Zealand', christchurch: 'New Zealand', dunedin: 'New Zealand', queenstown: 'New Zealand',
+  suva: 'Fiji',
 };
 
 // Numbeo 上的城市拼写与排名表/详情 URL 名
@@ -46,6 +78,9 @@ const NUMBEO_NAME = {
   'port-louis': 'Port Louis', 'tel-aviv': 'Tel Aviv-Yafo', goa: 'Panaji', 'da-nang': 'Da Nang',
   'hong-kong': 'Hong Kong', phuket: 'Phuket', 'chiang-mai': 'Chiang Mai', 'kuala-lumpur': 'Kuala Lumpur',
   'cape-town': 'Cape Town', 'san-juan': 'San Juan', dali: 'Dali', 'playa-del-carmen': 'Playa del Carmen',
+  tenerife: 'Santa Cruz de Tenerife', xian: "Xi'an", 'cluj-napoca': 'Cluj-Napoca', 'san-miguel-de-allende': 'San Miguel de Allende',
+  batumi: 'Batumi, Ajara', 'san-diego': 'San Diego, CA', 'las-vegas': 'Las Vegas, NV',
+  portland: 'Portland, OR', chicago: 'Chicago, IL', phoenix: 'Phoenix, AZ',
 };
 
 function stripTags(s) {
@@ -144,7 +179,19 @@ async function main() {
     byCountry.set(key, r);
   }
   const order = Object.keys(CITY_COUNTRY);
-  const targets = batchArg === '--details' ? order : order.slice(batch * batchSize, (batch + 1) * batchSize);
+  let scope = order;
+  if (batchArg === '--new') {
+    // --new：只抓当前城市库尚不存在的城（第十轮扩容增量）
+    const existingIds = new Set(
+      ['europe', 'asia', 'africa', 'north-america', 'south-america', 'oceania']
+        .flatMap((r) => JSON.parse(fs.readFileSync(`src/data/cities/${r}.json`, 'utf8')))
+        .map((c) => c.id),
+    );
+    scope = order.filter((id) => !existingIds.has(id));
+    console.log(`--new scope: ${scope.length}/${order.length}`);
+  }
+  const list = batchArg === '--new' ? scope : (batchArg === '--details' ? order : scope.slice(batch * batchSize, (batch + 1) * batchSize));
+  const targets = batchArg === '--new' ? list : (batchArg === '--details' ? order : list);
 
   for (const id of targets) {
     if (details[id]) continue;

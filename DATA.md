@@ -125,3 +125,31 @@ pnpm tsx scripts/verify-data-v2.ts
 - 快照脚本幂等可重跑：`node scripts/pipeline/snapshot-passport.mjs`（直接读写 `src/data/countries.json`，仅回填 `visaPassport` / `longStay` 与对应 sources，不动其他字段）。
 - 断言：`scripts/verify-passport-v6.ts`（护照枚举与默认值 / 65 国覆盖与枚举合法性 / CN+visaFree 过滤联动与快照独立重算一致 / 非 CN 降级全保留 / 两阶段排除无重复 / 引擎集成冒烟 / 双语键完整 / reason 串与词典一致）。
 - 参考信息层定位不变：两块快照均不进引擎加权；过滤联动仅消费 `visaPassport.entry`（用户显式勾选底线时的一票否决）。
+
+## 十一、第十轮：200 城扩容 + 空气质量快照 + 引擎 v3 数据口径
+
+### 11.1 城市库扩容（100 → 200）
+
+- 新增 100 城清单：`scripts/pipeline/selection2.mjs`（手工清单 × GeoNames cities15000 匹配，queenstown 人口不足门槛用 fallback 坐标兜底）→ `/tmp/pipeline/selection2.json`（中间产物）。
+- 分布（新旧合计 200 城）：欧洲 65 / 亚洲 60 / 北美 22 / 南美 18 / 非洲 18 / 大洋洲 17；国家覆盖 65+。
+- 装配：`scripts/pipeline/assemble-v2.mjs`——以当前六大洲 JSON 为基底**只追加**新城（旧 100 城数据值不变、顺序不变），非 `assemble.mjs` 重建（避免 Numbeo 当月值变化污染旧城）。
+- 新城逐字段口径与第四轮一致：GeoNames（CC BY 4.0）坐标/人口/时区、Open-Meteo archive 2015-2024 十年均值气候、Numbeo rankings（COL/QoL 表）指数、EF EPI 国家英语带；**成本月估沿用 39 旧城最小二乘拟合**（判据 = `visaStatus != null` 的城，≈39.9x−135.5 ±15/20%）；签证沿用旧城人工快照口径，新城 null 待核实。
+- Numbeo 详情页（`rent1brUSD` / `mealUSD` 转录）仅大城提供：100 新城中 75 城有详情（`scripts/pipeline/patch-numbeo-curl.mjs` curl 转录，UA 伪装 + 限速），其余城 Numbeo 无独立详情页（rankings 表有指数但无价格页）→ `rent1brUSD`/`mealUSD` 为 null，UI 显示「—」，**不编造**。
+
+### 11.2 空气质量快照（`scripts/pipeline/snapshot-airquality.mjs`）
+
+| 字段 | 来源 | 许可 / 口径 |
+| --- | --- | --- |
+| `airQuality.pm25` | Open-Meteo Air Quality API（CAMS 全球再分析），2022-08-01 ~ 2024-12-31 逐时 PM2.5 全期均值（µg/m³） | CC BY 4.0；有效样本 < 1000 小时（约 42 天）视为数据不足 → null |
+| `airQuality.band` | WHO 2021 空气质量指南年均口径分档 | good ≤10 / fair ≤15 / moderate ≤25 / poor >25（对应指导值 5 与过渡目标 IT-4=10 / IT-3=15 / IT-2=25，取最接近的可达档） |
+| `airQuality.period` | 固定字符串 `2022-08 ~ 2024-12` | 展示用快照区间 |
+
+- 覆盖：200/200 城（城市坐标：旧城取 GeoNames cities15000 按名+国家匹配，新城取 selection2 清单；9 个岛名/异名城 madeira/mallorca/seville/zurich/bali/penang/goa/cebu/marrakech 用 EXTRA_COORD 兜底表）。
+- 幂等：已有 `airQuality` 的城跳过；400ms 限速（免费档 600 req/min）；重跑命令 `node scripts/pipeline/snapshot-airquality.mjs`。
+- 引擎定位：进 **Tier 3 小权重（airFit 2%，`TIER3_WEIGHTS` 合计仍 0.10）**，与气候舒适（Tier 2 客观维）互补——评估逻辑见 DESIGN.md 第十轮章节；分档映射分 优 90 / 良 72 / 一般 48 / 差 25，null 降权不惩罚。
+- 语义色与 UI：good=绿 / fair=蓝 / moderate=金 / poor=红（`AIR_BAND_TONE`，`src/lib/colors.ts`）；城市详情弹层与对比页数据表展示。
+
+### 11.3 引擎 v3 权重口径（数据侧摘要）
+
+- 权重唯一事实源迁至 `src/lib/engine.ts` 顶部常量块：`TIER2_WEIGHTS`（preference .42 / personality .30 / interest .18）、`TIER3_WEIGHTS`（riasecBoost .06 / riskLink .04）、`TIER3_TOTAL_SHARE` = 0.10、`PREFERENCE_SPLIT`（user .86 / objective .14）；设计依据详见 DESIGN.md 第十轮章节。
+- 断言：`scripts/verify-engine-v7.ts`（分层权重完整性 / 值域 / 相对优先级 / Tier3 上限 / 冒险友好度与风险联动算例 / RIASEC 迁移解耦 / 双版本回归 / 200 城覆盖）。

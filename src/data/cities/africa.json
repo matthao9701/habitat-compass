@@ -53,7 +53,12 @@
    "arts",
    "nightlife"
   ],
-  "traits": null
+  "traits": null,
+  "airQuality": {
+   "pm25": 17.4,
+   "band": "moderate",
+   "period": "2022-08 ~ 2024-12"
+  }
  },
  {
   "id": "dakar",
@@ -107,7 +112,12 @@
    "festivals",
    "watersports"
   ],
-  "traits": null
+  "traits": null,
+  "airQuality": {
+   "pm25": 25.8,
+   "band": "poor",
+   "period": "2022-08 ~ 2024-12"
+  }
  },
  {
   "id": "kigali",
@@ -163,7 +173,12 @@
    "outdoor",
    "wellness"
   ],
-  "traits": null
+  "traits": null,
+  "airQuality": {
+   "pm25": 23.8,
+   "band": "moderate",
+   "period": "2022-08 ~ 2024-12"
+  }
  },
  {
   "id": "cairo",
@@ -218,7 +233,12 @@
    "food",
    "shopping"
   ],
-  "traits": null
+  "traits": null,
+  "airQuality": {
+   "pm25": 25.9,
+   "band": "poor",
+   "period": "2022-08 ~ 2024-12"
+  }
  },
  {
   "id": "cape-town",
@@ -285,6 +305,11 @@
   "visaDetail": {
    "name": "远程工作签证",
    "note": "远程工作签证最长 12 个月、不可续签；需满足月收入与最低资金证明"
+  },
+  "airQuality": {
+   "pm25": 20.1,
+   "band": "moderate",
+   "period": "2022-08 ~ 2024-12"
   }
  },
  {
@@ -338,7 +363,12 @@
    "watersports",
    "nature"
   ],
-  "traits": null
+  "traits": null,
+  "airQuality": {
+   "pm25": 8.5,
+   "band": "good",
+   "period": "2022-08 ~ 2024-12"
+  }
  },
  {
   "id": "marrakech",
@@ -403,6 +433,11 @@
   "visaDetail": {
    "name": null,
    "note": "多数护照可免签停留 90 天；长期居留需办理居留卡并提供财力证明"
+  },
+  "airQuality": {
+   "pm25": 10.8,
+   "band": "fair",
+   "period": "2022-08 ~ 2024-12"
   }
  },
  {
@@ -459,7 +494,12 @@
    "food",
    "festivals"
   ],
-  "traits": null
+  "traits": null,
+  "airQuality": {
+   "pm25": 16.2,
+   "band": "moderate",
+   "period": "2022-08 ~ 2024-12"
+  }
  },
  {
   "id": "addis-ababa",
@@ -515,7 +555,12 @@
    "coffee",
    "festivals"
   ],
-  "traits": null
+  "traits": null,
+  "airQuality": {
+   "pm25": 17,
+   "band": "moderate",
+   "period": "2022-08 ~ 2024-12"
+  }
  },
  {
   "id": "johannesburg",
@@ -572,6 +617,490 @@
    "shopping",
    "nature"
   ],
-  "traits": null
+  "traits": null,
+  "airQuality": {
+   "pm25": 25.7,
+   "band": "poor",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "alexandria",
+  "nameZh": "亚历山大",
+  "nameEn": "Alexandria",
+  "countryZh": "埃及",
+  "countryEn": "Egypt",
+  "countryCode": "EG",
+  "continent": "africa",
+  "subregion": "northern-africa",
+  "region": "africa",
+  "population": 5263542,
+  "timezone": "Africa/Cairo",
+  "cost": [
+   600,
+   847
+  ],
+  "monthlyCostUSD": 706,
+  "costIndex": 21.1,
+  "rent1brUSD": 137.14,
+  "mealUSD": 4.26,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": 55.3,
+  "healthcareIndex": 45.4,
+  "pollutionIndex": 74.2,
+  "trafficIndex": 46.3,
+  "purchasingPowerIndex": 20.7,
+  "climateIndex": 95.5,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 21,
+   "annualPrecipMm": 168,
+   "precipDays": 35,
+   "sunshineHours": 4076,
+   "summary": "四季温和，降水偏少，日照充足"
+  },
+  "community": null,
+  "english": 2,
+  "englishEpiBand": "low",
+  "englishEpiScore": 458,
+  "pace": null,
+  "size": 4,
+  "digitalNomadVisa": null,
+  "tags": [
+   "history",
+   "beach",
+   "food",
+   "culture"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 15.3,
+   "band": "moderate",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "hurghada",
+  "nameZh": "赫尔格达",
+  "nameEn": "Hurghada",
+  "countryZh": "埃及",
+  "countryEn": "Egypt",
+  "countryCode": "EG",
+  "continent": "africa",
+  "subregion": "northern-africa",
+  "region": "africa",
+  "population": 207132,
+  "timezone": "Africa/Cairo",
+  "cost": null,
+  "monthlyCostUSD": null,
+  "costIndex": null,
+  "rent1brUSD": null,
+  "mealUSD": null,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": null,
+  "healthcareIndex": null,
+  "pollutionIndex": null,
+  "trafficIndex": null,
+  "purchasingPowerIndex": null,
+  "climateIndex": null,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 25.1,
+   "annualPrecipMm": 10,
+   "precipDays": 2,
+   "sunshineHours": 4155,
+   "summary": "夏季偏热，降水偏少，日照充足"
+  },
+  "community": null,
+  "english": 2,
+  "englishEpiBand": "low",
+  "englishEpiScore": 458,
+  "pace": null,
+  "size": 1,
+  "digitalNomadVisa": null,
+  "tags": [
+   "beach",
+   "watersports",
+   "wellness",
+   "food"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 12,
+   "band": "fair",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "casablanca",
+  "nameZh": "卡萨布兰卡",
+  "nameEn": "Casablanca",
+  "countryZh": "摩洛哥",
+  "countryEn": "Morocco",
+  "countryCode": "MA",
+  "continent": "africa",
+  "subregion": "northern-africa",
+  "region": "africa",
+  "population": 3665954,
+  "timezone": "Africa/Casablanca",
+  "cost": [
+   1061,
+   1498
+  ],
+  "monthlyCostUSD": 1248,
+  "costIndex": 34.7,
+  "rent1brUSD": 600.95,
+  "mealUSD": 4.69,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": 44.8,
+  "healthcareIndex": 44.5,
+  "pollutionIndex": 81.9,
+  "trafficIndex": 44,
+  "purchasingPowerIndex": 47,
+  "climateIndex": 98.1,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 18.3,
+   "annualPrecipMm": 310,
+   "precipDays": 53,
+   "sunshineHours": 3854,
+   "summary": "四季温和，降水偏少，日照充足"
+  },
+  "community": null,
+  "english": 2,
+  "englishEpiBand": "low",
+  "englishEpiScore": 492,
+  "pace": null,
+  "size": 4,
+  "digitalNomadVisa": null,
+  "tags": [
+   "food",
+   "history",
+   "shopping",
+   "coffee"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 13.8,
+   "band": "fair",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "tangier",
+  "nameZh": "丹吉尔",
+  "nameEn": "Tangier",
+  "countryZh": "摩洛哥",
+  "countryEn": "Morocco",
+  "countryCode": "MA",
+  "continent": "africa",
+  "subregion": "northern-africa",
+  "region": "africa",
+  "population": 1035141,
+  "timezone": "Africa/Casablanca",
+  "cost": [
+   1115,
+   1574
+  ],
+  "monthlyCostUSD": 1312,
+  "costIndex": 36.3,
+  "rent1brUSD": 476.34,
+  "mealUSD": 5.1,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": null,
+  "healthcareIndex": null,
+  "pollutionIndex": null,
+  "trafficIndex": null,
+  "purchasingPowerIndex": null,
+  "climateIndex": null,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 18.2,
+   "annualPrecipMm": 626,
+   "precipDays": 70,
+   "sunshineHours": 3856,
+   "summary": "四季温和，降水偏少，日照充足"
+  },
+  "community": null,
+  "english": 2,
+  "englishEpiBand": "low",
+  "englishEpiScore": 492,
+  "pace": null,
+  "size": 3,
+  "digitalNomadVisa": null,
+  "tags": [
+   "history",
+   "beach",
+   "food",
+   "arts"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 9.6,
+   "band": "good",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "pretoria",
+  "nameZh": "比勒陀利亚",
+  "nameEn": "Pretoria",
+  "countryZh": "南非",
+  "countryEn": "South Africa",
+  "countryCode": "ZA",
+  "continent": "africa",
+  "subregion": "southern-africa",
+  "region": "africa",
+  "population": 2112693,
+  "timezone": "Africa/Johannesburg",
+  "cost": [
+   1318,
+   1861
+  ],
+  "monthlyCostUSD": 1551,
+  "costIndex": 42.3,
+  "rent1brUSD": 453.92,
+  "mealUSD": 9.01,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": 18.3,
+  "healthcareIndex": 66.5,
+  "pollutionIndex": 57.1,
+  "trafficIndex": 43.7,
+  "purchasingPowerIndex": 97.1,
+  "climateIndex": 95.8,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 18.5,
+   "annualPrecipMm": 558,
+   "precipDays": 74,
+   "sunshineHours": 3909,
+   "summary": "四季温和，降水偏少，日照充足"
+  },
+  "community": null,
+  "english": 5,
+  "englishEpiBand": "very high",
+  "englishEpiScore": 602,
+  "pace": null,
+  "size": 3,
+  "digitalNomadVisa": null,
+  "tags": [
+   "history",
+   "nature",
+   "food",
+   "outdoor"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 19.3,
+   "band": "moderate",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "durban",
+  "nameZh": "德班",
+  "nameEn": "Durban",
+  "countryZh": "南非",
+  "countryEn": "South Africa",
+  "countryCode": "ZA",
+  "continent": "africa",
+  "subregion": "southern-africa",
+  "region": "africa",
+  "population": 3338026,
+  "timezone": "Africa/Johannesburg",
+  "cost": [
+   1136,
+   1603
+  ],
+  "monthlyCostUSD": 1336,
+  "costIndex": 36.9,
+  "rent1brUSD": 464.46,
+  "mealUSD": 7.81,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": 19.5,
+  "healthcareIndex": 58.3,
+  "pollutionIndex": 53.2,
+  "trafficIndex": 25.3,
+  "purchasingPowerIndex": 99.7,
+  "climateIndex": 95.6,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 20.8,
+   "annualPrecipMm": 880,
+   "precipDays": 109,
+   "sunshineHours": 3489,
+   "summary": "四季温和，降水适中，日照充足"
+  },
+  "community": null,
+  "english": 5,
+  "englishEpiBand": "very high",
+  "englishEpiScore": 602,
+  "pace": null,
+  "size": 4,
+  "digitalNomadVisa": null,
+  "tags": [
+   "beach",
+   "watersports",
+   "food",
+   "nature"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 14.9,
+   "band": "fair",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "mombasa",
+  "nameZh": "蒙巴萨",
+  "nameEn": "Mombasa",
+  "countryZh": "肯尼亚",
+  "countryEn": "Kenya",
+  "countryCode": "KE",
+  "continent": "africa",
+  "subregion": "eastern-africa",
+  "region": "africa",
+  "population": 1208333,
+  "timezone": "Africa/Nairobi",
+  "cost": null,
+  "monthlyCostUSD": null,
+  "costIndex": null,
+  "rent1brUSD": 233.86,
+  "mealUSD": 2.34,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": null,
+  "healthcareIndex": null,
+  "pollutionIndex": null,
+  "trafficIndex": null,
+  "purchasingPowerIndex": null,
+  "climateIndex": null,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 26.3,
+   "annualPrecipMm": 1285,
+   "precipDays": 225,
+   "sunshineHours": 3943,
+   "summary": "夏季偏热，降水适中，日照充足"
+  },
+  "community": null,
+  "english": 4,
+  "englishEpiBand": "high",
+  "englishEpiScore": 593,
+  "pace": null,
+  "size": 3,
+  "digitalNomadVisa": null,
+  "tags": [
+   "beach",
+   "history",
+   "watersports",
+   "food"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 9.7,
+   "band": "good",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "kumasi",
+  "nameZh": "库马西",
+  "nameEn": "Kumasi",
+  "countryZh": "加纳",
+  "countryEn": "Ghana",
+  "countryCode": "GH",
+  "continent": "africa",
+  "subregion": "western-africa",
+  "region": "africa",
+  "population": 2544530,
+  "timezone": "Africa/Accra",
+  "cost": null,
+  "monthlyCostUSD": null,
+  "costIndex": null,
+  "rent1brUSD": null,
+  "mealUSD": null,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": null,
+  "healthcareIndex": null,
+  "pollutionIndex": null,
+  "trafficIndex": null,
+  "purchasingPowerIndex": null,
+  "climateIndex": null,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 25.9,
+   "annualPrecipMm": 1440,
+   "precipDays": 211,
+   "sunshineHours": 3192,
+   "summary": "夏季偏热，降水充沛，日照充足"
+  },
+  "community": null,
+  "english": 3,
+  "englishEpiBand": "moderate",
+  "englishEpiScore": 540,
+  "pace": null,
+  "size": 3,
+  "digitalNomadVisa": null,
+  "tags": [
+   "history",
+   "street-markets",
+   "culture",
+   "food"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 22.2,
+   "band": "moderate",
+   "period": "2022-08 ~ 2024-12"
+  }
  }
 ]
