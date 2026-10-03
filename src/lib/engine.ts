@@ -21,28 +21,29 @@ export interface UserAnswers {
 
 export interface DimensionScores {
   /** 生活成本契合 */
-  cost: number;
+  cost: number | null;
   /** 远程办公（网络） */
-  internet: number;
+  internet: number | null;
   /** 安全指数 */
-  safety: number;
+  safety: number | null;
   /** 数字游民社区 */
-  community: number;
+  community: number | null;
   /** 英语友好度 */
-  english: number;
+  english: number | null;
   /** 签证灵活度 */
-  visa: number;
+  visa: number | null;
 }
 
 export interface CityMatch {
   city: City;
   /** 展示用匹配度 0-100 */
   match: number;
-  personalityFit: number;
-  preferenceFit: number;
-  interestFit: number;
-  /** 8 个生活偏好维度的单项得分（0-100），键与 lifestyleQuestions 的 id 对应 */
-  fitDetails: Record<string, number>;
+  /** null = 城市缺该类数据，聚合时降权（不惩罚） */
+  personalityFit: number | null;
+  preferenceFit: number | null;
+  interestFit: number | null;
+  /** 11 个生活偏好维度的单项得分（0-100）；null = 城市该维度无数据（已降权） */
+  fitDetails: Record<string, number | null>;
   scores: DimensionScores;
   reasons: string[];
 }
@@ -75,16 +76,33 @@ export const WEIGHTS = {
   interest: 0.22,
 };
 
+/**
+ * 偏好类内权重 v2（11 维，总和 = 1.0；三大类权重 30/48/22 不变）：
+ * - 用户维度（8）：来自生活方式测评题的序数/区间打分
+ * - 客观维度（3）：城市侧真实数据驱动（气候舒适 / 治安安全 / 英语普及），
+ *   在用户维度之上补充参考信号
+ * 城市某维度无数据（null）时，聚合按权重降权、不惩罚。
+ */
 export const PREFERENCE_WEIGHTS: Record<string, number> = {
-  budget: 0.22,
-  climate: 0.14,
-  pace: 0.12,
-  size: 0.1,
-  social: 0.12,
-  language: 0.1,
-  visa: 0.1,
-  remote: 0.1,
+  // 用户 8 维（合计 0.86）
+  budget: 0.18,
+  climate: 0.12,
+  pace: 0.1,
+  size: 0.09,
+  social: 0.1,
+  language: 0.09,
+  visa: 0.09,
+  remote: 0.09,
+  // 客观 3 维（合计 0.14）
+  climateComfort: 0.05,
+  englishDepth: 0.04,
+  safety: 0.05,
 };
+
+export const PREFERENCE_KEYS = Object.keys(PREFERENCE_WEIGHTS);
+
+/** 客观维度键（打分不依赖用户答案，中性基准模式同样生效） */
+export const OBJECTIVE_KEYS = ['climateComfort', 'englishDepth', 'safety'];
 
 const ORDINAL_MAP: Record<string, Record<string, number>> = {
   pace: { slow: 1, balanced: 3, fast: 5 },
@@ -143,6 +161,7 @@ export function scoreLevel(v: number): string {
 }
 
 export function formatCost(city: City): string {
+  if (!city.cost) return '成本数据暂缺';
   return `$${city.cost[0].toLocaleString('en-US')} – $${city.cost[1].toLocaleString('en-US')}`;
 }
 
@@ -150,7 +169,8 @@ export function formatCost(city: City): string {
 // 单项打分
 // ---------------------------------------------------------------------------
 
-function costFit(city: City, tierValue: string): number {
+function costFit(city: City, tierValue: string): number | null {
+  if (!city.cost) return null;
   const tier = BUDGET_TIERS[tierValue];
   if (!tier) return 70;
   const mid = (city.cost[0] + city.cost[1]) / 2;
@@ -159,8 +179,9 @@ function costFit(city: City, tierValue: string): number {
   return clamp(100 - over * 0.12 - under * 0.02, 5, 100);
 }
 
-function climateFit(city: City, pref: string): number {
+function climateFit(city: City, pref: string): number | null {
   if (pref === 'any') return 80;
+  if (!city.climate) return null;
   return CLIMATE_COMPAT[pref]?.[city.climate] ?? 30;
 }
 
@@ -168,7 +189,44 @@ function ordinalFit(user: number, cityValue: number): number {
   return clamp(100 - 26 * Math.abs(user - cityValue), 0, 100);
 }
 
-function interestFit(userTags: string[], cityTags: string[]): number {
+/** 用户序数答案 × 城市可空序数；城市无数据 → null（降权） */
+function ordinalFitNullable(user: number, cityValue: number | null): number | null {
+  if (cityValue == null) return null;
+  return ordinalFit(user, cityValue);
+}
+
+/** 气候舒适（客观）：年均温舒适带（19°C 最优锚）+ 日照 / 降水微调，规则透明 */
+function climateComfortFit(detail: City['climateDetail']): number | null {
+  if (!detail) return null;
+  const tempScore = 100 - Math.abs(detail.avgTempC - 19) * 6;
+  const sunBonus = detail.sunshineHours >= 2500 ? 5 : detail.sunshineHours >= 1800 ? 2 : -4;
+  const precipPenalty = detail.annualPrecipMm >= 1800 ? -5 : detail.annualPrecipMm >= 1400 ? -2 : 0;
+  return clamp(tempScore + sunBonus + precipPenalty, 5, 100);
+}
+
+/** 英语普及（客观）：EF EPI 官方评级 → 分值；缺 EPI 回退 english 序数 × 20 */
+const EPI_BAND_SCORE: Record<string, number> = {
+  'very high': 95,
+  high: 85,
+  moderate: 72,
+  low: 55,
+  'very low': 40,
+};
+
+function englishDepthFit(city: City): number | null {
+  if (city.englishEpiBand) return EPI_BAND_SCORE[city.englishEpiBand] ?? null;
+  if (city.english != null) return city.english * 20;
+  return null;
+}
+
+/** 治安（客观）：Numbeo Safety Index（0-100）直接映射 */
+function safetyObjFit(safety: number | null): number | null {
+  if (safety == null) return null;
+  return clamp(safety, 5, 100);
+}
+
+function interestFit(userTags: string[], cityTags: string[]): number | null {
+  if (cityTags.length === 0) return null; // 城市无标签数据 → 兴趣维度降权，不编造
   if (userTags.length === 0) return 72;
   const matched = userTags.filter((t) => cityTags.includes(t)).length;
   const precision = (matched / userTags.length) * 70;
@@ -253,25 +311,28 @@ function buildReasons(
     preferences: UserAnswers['lifestyle'];
     interests: string[];
     scores: DimensionScores;
-    costFitScore: number;
+    costFitScore: number | null;
   },
 ): string[] {
   const reasons: string[] = [];
 
-  // 人格契合（四轴中契合最高的一条）
-  const axisKeys: AxisName[] = ['EI', 'SN', 'TF', 'JP'];
-  const traitDiffs = axisKeys.map((axis) => {
-    const key = axis.toLowerCase() as 'ei' | 'sn' | 'tf' | 'jp';
-    return { axis, diff: Math.abs(result.traitVector[key] - city.traits[key]) };
-  });
-  traitDiffs.sort((x, y) => x.diff - y.diff);
-  const best = traitDiffs[0];
-  if (best.diff <= 40) {
-    const cityIsPositive = city.traits[best.axis.toLowerCase() as 'ei' | 'sn' | 'tf' | 'jp'] >= 0;
-    const persona = cityIsPositive
-      ? TRAIT_NAME[best.axis].positive
-      : TRAIT_NAME[best.axis].negative;
-    reasons.push(`城市气质偏${persona}，与你的人格倾向同频`);
+  // 人格契合（四轴中契合最高的一条）；城市未标注 traits 时跳过
+  if (city.traits) {
+    const axisKeys: AxisName[] = ['EI', 'SN', 'TF', 'JP'];
+    const traits = city.traits;
+    const traitDiffs = axisKeys.map((axis) => {
+      const key = axis.toLowerCase() as 'ei' | 'sn' | 'tf' | 'jp';
+      return { axis, diff: Math.abs(result.traitVector[key] - traits[key]) };
+    });
+    traitDiffs.sort((x, y) => x.diff - y.diff);
+    const best = traitDiffs[0];
+    if (best.diff <= 40) {
+      const cityIsPositive = traits[best.axis.toLowerCase() as 'ei' | 'sn' | 'tf' | 'jp'] >= 0;
+      const persona = cityIsPositive
+        ? TRAIT_NAME[best.axis].positive
+        : TRAIT_NAME[best.axis].negative;
+      reasons.push(`城市气质偏${persona}，与你的人格倾向同频`);
+    }
   }
 
   // 兴趣重合
@@ -285,27 +346,27 @@ function buildReasons(
   }
 
   // 预算
-  if (result.costFitScore >= 80) {
+  if (result.costFitScore != null && result.costFitScore >= 80) {
     reasons.push(`月生活成本 ${formatCost(city)}，与你的预算区间高度匹配`);
   }
 
   // 英语
-  if (result.scores.english >= 80) {
+  if (result.scores.english != null && result.scores.english >= 80) {
     reasons.push('英语友好度高，办事、就医与日常沟通门槛低');
   }
 
   // 签证
-  if (result.scores.visa >= 80) {
+  if (result.scores.visa != null && result.scores.visa >= 80) {
     reasons.push('签证 / 居留路径灵活，适合反复进出或长期停留');
   }
 
   // 网络
-  if (result.scores.internet >= 80) {
+  if (result.scores.internet != null && result.scores.internet >= 80) {
     reasons.push('网络基础设施出色，远程办公与视频会议稳定');
   }
 
   // 安全
-  if (result.scores.safety >= 72) {
+  if (result.scores.safety != null && result.scores.safety >= 72) {
     reasons.push(`安全指数 ${city.safety}，夜间出行与长住更安心`);
   }
 
@@ -343,44 +404,54 @@ export function buildProfileTags(result: {
 // ---------------------------------------------------------------------------
 
 export interface CityFits {
-  personalityFit: number;
-  preferenceFit: number;
-  interestFit: number;
-  fitValues: Record<string, number>;
+  personalityFit: number | null;
+  preferenceFit: number | null;
+  interestFit: number | null;
+  fitValues: Record<string, number | null>;
 }
 
 export function computeCityFits(city: City, answers: UserAnswers): CityFits {
   const { traitVector } = derivePersonality(answers.mbti);
   const preferenceInputs = answers.lifestyle;
 
-  const axisKeys: AxisName[] = ['EI', 'SN', 'TF', 'JP'];
-  const personalityFit =
-    axisKeys.reduce((sum: number, axis) => {
-      const key = axis.toLowerCase() as 'ei' | 'sn' | 'tf' | 'jp';
-      const dist = Math.abs(traitVector[key] - city.traits[key]);
-      return sum + clamp(100 - dist / 2, 0, 100);
-    }, 0) / axisKeys.length;
+  // 人格契合：城市未标注 traits（新城无编辑分析依据）→ null 降权，不编造
+  const personalityFit: number | null = city.traits
+    ? (['EI', 'SN', 'TF', 'JP'] as AxisName[]).reduce((sum: number, axis) => {
+        const key = axis.toLowerCase() as 'ei' | 'sn' | 'tf' | 'jp';
+        const dist = Math.abs(traitVector[key] - city.traits![key]);
+        return sum + clamp(100 - dist / 2, 0, 100);
+      }, 0) / 4
+    : null;
 
-  const fitValues: Record<string, number> = {
+  const fitValues: Record<string, number | null> = {
+    // 用户 8 维（lifestyle 答案驱动）
     budget: costFit(city, preferenceInputs.budget ?? ''),
     climate: climateFit(city, preferenceInputs.climate ?? 'any'),
-    pace: ordinalFit(ORDINAL_MAP.pace[preferenceInputs.pace ?? 'balanced'] ?? 3, city.pace),
-    size: ordinalFit(ORDINAL_MAP.size[preferenceInputs.size ?? 'mid'] ?? 3, city.size),
-    social: ordinalFit(ORDINAL_MAP.social[preferenceInputs.social ?? 'mid'] ?? 3, city.community),
-    language: ordinalFit(
+    pace: ordinalFitNullable(ORDINAL_MAP.pace[preferenceInputs.pace ?? 'balanced'] ?? 3, city.pace),
+    size: ordinalFitNullable(ORDINAL_MAP.size[preferenceInputs.size ?? 'mid'] ?? 3, city.size),
+    social: ordinalFitNullable(ORDINAL_MAP.social[preferenceInputs.social ?? 'mid'] ?? 3, city.community),
+    language: ordinalFitNullable(
       ORDINAL_MAP.language[preferenceInputs.language ?? 'basic'] ?? 3,
       city.english,
     ),
-    visa: ordinalFit(ORDINAL_MAP.visa[preferenceInputs.visa ?? 'mid'] ?? 3, city.visaScore),
-    remote: ordinalFit(ORDINAL_MAP.remote[preferenceInputs.remote ?? 'mid'] ?? 3, city.internet),
+    visa: ordinalFitNullable(ORDINAL_MAP.visa[preferenceInputs.visa ?? 'mid'] ?? 3, city.visaScore),
+    remote: ordinalFitNullable(ORDINAL_MAP.remote[preferenceInputs.remote ?? 'mid'] ?? 3, city.internet),
+    // 客观 3 维（城市侧真实数据驱动）
+    climateComfort: climateComfortFit(city.climateDetail),
+    englishDepth: englishDepthFit(city),
+    safety: safetyObjFit(city.safety),
   };
 
-  const weightSum = Object.keys(PREFERENCE_WEIGHTS).reduce((s, k) => s + PREFERENCE_WEIGHTS[k], 0);
-  const preferenceFit =
-    Object.keys(PREFERENCE_WEIGHTS).reduce(
-      (sum, k) => sum + fitValues[k] * PREFERENCE_WEIGHTS[k],
-      0,
-    ) / weightSum;
+  // 偏好聚合：无数据维度按权重降权（从分子分母同时剔除，不惩罚）
+  let num = 0;
+  let den = 0;
+  for (const k of PREFERENCE_KEYS) {
+    const v = fitValues[k];
+    if (v == null) continue;
+    num += v * PREFERENCE_WEIGHTS[k];
+    den += PREFERENCE_WEIGHTS[k];
+  }
+  const preferenceFit: number | null = den > 0 ? num / den : null;
 
   const interestFitScore = interestFit(answers.interests, city.tags);
 
@@ -398,24 +469,34 @@ export function assess(answers: UserAnswers): AssessmentResult {
 
   const matches: CityMatch[] = cities.map((city: City) => {
     const fits = computeCityFits(city, answers);
-    const { personalityFit, preferenceFit, fitValues } = fits;
-    const interestsFitScore = fits.interestFit;
+    const { personalityFit, preferenceFit, interestFit: interestFitScore, fitValues } = fits;
 
-    const raw =
-      personalityFit * WEIGHTS.personality +
-      preferenceFit * WEIGHTS.preference +
-      interestsFitScore * WEIGHTS.interest;
+    // 三大类聚合：城市缺某类数据时按类权重降权（30/48/22 名义权重不变）
+    const classParts: [number | null, number][] = [
+      [personalityFit, WEIGHTS.personality],
+      [preferenceFit, WEIGHTS.preference],
+      [interestFitScore, WEIGHTS.interest],
+    ];
+    let classNum = 0;
+    let classDen = 0;
+    for (const [v, w] of classParts) {
+      if (v == null) continue;
+      classNum += v * w;
+      classDen += w;
+    }
+    const raw = classDen > 0 ? classNum / classDen : 0;
 
     // 校准到直观的匹配度区间（~66 – 97）
     const match = Math.round(clamp(52 + raw * 0.46, 0, 99));
 
+    const round1 = (v: number | null): number | null => (v == null ? null : Math.round(v));
     const scores: DimensionScores = {
-      cost: Math.round(fitValues.budget),
-      internet: city.internet * 20,
-      safety: city.safety,
-      community: city.community * 20,
-      english: city.english * 20,
-      visa: city.visaScore * 20,
+      cost: round1(fitValues.budget),
+      internet: city.internet == null ? null : city.internet * 20,
+      safety: city.safety == null ? null : Math.round(city.safety),
+      community: city.community == null ? null : city.community * 20,
+      english: city.english == null ? null : city.english * 20,
+      visa: city.visaScore == null ? null : city.visaScore * 20,
     };
 
     const reasons = buildReasons(city, {
@@ -426,22 +507,16 @@ export function assess(answers: UserAnswers): AssessmentResult {
       costFitScore: fitValues.budget,
     });
 
+    const fitDetails: Record<string, number | null> = {};
+    for (const k of PREFERENCE_KEYS) fitDetails[k] = round1(fitValues[k]);
+
     return {
       city,
       match,
-      personalityFit: Math.round(personalityFit),
-      preferenceFit: Math.round(preferenceFit),
-      interestFit: Math.round(interestsFitScore),
-      fitDetails: {
-        budget: Math.round(fitValues.budget),
-        climate: Math.round(fitValues.climate),
-        pace: Math.round(fitValues.pace),
-        size: Math.round(fitValues.size),
-        social: Math.round(fitValues.social),
-        language: Math.round(fitValues.language),
-        visa: Math.round(fitValues.visa),
-        remote: Math.round(fitValues.remote),
-      },
+      personalityFit: round1(personalityFit),
+      preferenceFit: round1(preferenceFit),
+      interestFit: round1(interestFitScore),
+      fitDetails,
       scores,
       reasons,
     };

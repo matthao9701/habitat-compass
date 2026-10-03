@@ -4,10 +4,10 @@ import { WEIGHTS } from '../../lib/engine';
 const ease = [0.22, 1, 0.36, 1] as const;
 
 interface WeightDonutProps {
-  /** Top1 城市的三项子分数（0-100） */
-  personality: number;
-  lifestyle: number;
-  interest: number;
+  /** Top1 城市的三项子分数（0-100）；null = 该城市无此维数据，段保持弱色 */
+  personality: number | null;
+  lifestyle: number | null;
+  interest: number | null;
   /** Top1 匹配度总分 */
   total: number;
 }
@@ -16,7 +16,7 @@ interface Segment {
   key: 'personality' | 'lifestyle' | 'interest';
   label: string;
   weight: number;
-  score: number;
+  score: number | null;
   color: string;
 }
 
@@ -54,7 +54,10 @@ export default function WeightDonut({ personality, lifestyle, interest, total }:
                 strokeWidth="15"
                 strokeDasharray={dash}
                 initial={{ strokeDashoffset: -rotation, opacity: 0 }}
-                animate={{ strokeDashoffset: -rotation, opacity: 0.45 + (seg.score / 100) * 0.55 }}
+                animate={{
+                  strokeDashoffset: -rotation,
+                  opacity: seg.score != null ? 0.45 + (seg.score / 100) * 0.55 : 0.22,
+                }}
                 transition={{ duration: 0.9, delay: 0.35 + i * 0.15, ease }}
               />
             );
@@ -91,15 +94,21 @@ export default function WeightDonut({ personality, lifestyle, interest, total }:
             </div>
             <div className="mt-1 flex items-center gap-2">
               <div className="h-[3px] flex-1 overflow-hidden rounded-full bg-paper/10">
-                <motion.div
-                  className="h-full rounded-full"
-                  style={{ backgroundColor: seg.color }}
-                  initial={{ width: 0 }}
-                  animate={{ width: `${seg.score}%` }}
-                  transition={{ duration: 0.9, delay: 0.55 + i * 0.12, ease }}
-                />
+                {seg.score != null ? (
+                  <motion.div
+                    className="h-full rounded-full"
+                    style={{ backgroundColor: seg.color }}
+                    initial={{ width: 0 }}
+                    animate={{ width: `${seg.score}%` }}
+                    transition={{ duration: 0.9, delay: 0.55 + i * 0.12, ease }}
+                  />
+                ) : null}
               </div>
-              <span className="w-9 text-right font-mono text-[11px] text-paper">{seg.score}</span>
+              {seg.score != null ? (
+                <span className="w-9 text-right font-mono text-[11px] text-paper">{seg.score}</span>
+              ) : (
+                <span className="w-9 text-right font-mono text-[11px] text-paper/35">—</span>
+              )}
             </div>
           </motion.div>
         ))}

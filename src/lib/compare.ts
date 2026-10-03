@@ -46,7 +46,7 @@ export const NEUTRAL_ANSWERS: UserAnswers = {
 
 // ---- 权重 ----
 
-/** 有测评结果时的默认滑杆值：引擎 8 维权重 ×10，份额与引擎完全一致 */
+/** 有测评结果时的默认滑杆值：引擎 11 维权重 ×10，份额与引擎完全一致 */
 export function defaultWeights(): Record<string, number> {
   return Object.fromEntries(
     PREFERENCE_DIMENSIONS.map((d) => [d.key, PREFERENCE_WEIGHTS[d.key] * 10]),
@@ -91,12 +91,12 @@ export function weightShare(weights: Record<string, number>, key: string): numbe
 export interface CompareRow {
   city: City;
   color: string;
-  /** 对比综合分（与引擎同校准：52 + raw*0.46） */
+  /** 对比综合分（与引擎同校准：52 + raw*0.46；缺失类按权重降权） */
   composite: number;
-  personalityFit: number;
-  prefWeighted: number;
-  interestFit: number;
-  fitDetails: Record<string, number>;
+  personalityFit: number | null;
+  prefWeighted: number | null;
+  interestFit: number | null;
+  fitDetails: Record<string, number | null>;
 }
 
 export function buildCompareRow(
@@ -106,34 +106,48 @@ export function buildCompareRow(
   weights: Record<string, number>,
 ): CompareRow {
   const fits = computeCityFits(city, answers);
-  const wsum = PREFERENCE_DIMENSIONS.reduce(
-    (s, d) => s + Math.max(0, weights[d.key] ?? 0),
-    0,
-  );
-  const safeSum = wsum > 0 ? wsum : 1;
-  const prefWeighted =
-    PREFERENCE_DIMENSIONS.reduce(
-      (sum, d) => sum + fits.fitValues[d.key] * Math.max(0, weights[d.key] ?? 0),
-      0,
-    ) / safeSum;
 
-  const raw =
-    fits.personalityFit * WEIGHTS.personality +
-    prefWeighted * WEIGHTS.preference +
-    fits.interestFit * WEIGHTS.interest;
-
-  const fitDetails: Record<string, number> = {};
+  // 临时权重聚合：null 维（无数据）跳过 → 降权不惩罚；0 权重维同样剔除
+  let num = 0;
+  let den = 0;
   for (const d of PREFERENCE_DIMENSIONS) {
-    fitDetails[d.key] = Math.round(fits.fitValues[d.key]);
+    const v = fits.fitValues[d.key];
+    if (v == null) continue;
+    const w = Math.max(0, weights[d.key] ?? 0);
+    num += v * w;
+    den += w;
+  }
+  const prefWeighted: number | null = den > 0 ? num / den : null;
+
+  // 类聚合与引擎同口径：缺失类按权重降权（30/48/22 名义权重不变）
+  const parts: [number | null, number][] = [
+    [fits.personalityFit, WEIGHTS.personality],
+    [prefWeighted, WEIGHTS.preference],
+    [fits.interestFit, WEIGHTS.interest],
+  ];
+  let classNum = 0;
+  let classDen = 0;
+  for (const [v, w] of parts) {
+    if (v == null) continue;
+    classNum += v * w;
+    classDen += w;
+  }
+  const raw = classDen > 0 ? classNum / classDen : 0;
+
+  const r1 = (v: number | null): number | null => (v == null ? null : Math.round(v));
+  const fitDetails: Record<string, number | null> = {};
+  for (const d of PREFERENCE_DIMENSIONS) {
+    const v = fits.fitValues[d.key];
+    fitDetails[d.key] = v == null ? null : Math.round(v);
   }
 
   return {
     city,
     color,
     composite: Math.round(clamp(52 + raw * 0.46, 0, 99)),
-    personalityFit: Math.round(fits.personalityFit),
-    prefWeighted: Math.round(prefWeighted),
-    interestFit: Math.round(fits.interestFit),
+    personalityFit: r1(fits.personalityFit),
+    prefWeighted: r1(prefWeighted),
+    interestFit: r1(fits.interestFit),
     fitDetails,
   };
 }
@@ -147,27 +161,67 @@ export function rankRows(rows: CompareRow[]): CompareRow[] {
 export interface CostComparison {
   aName: string;
   bName: string;
-  diffUSD: number;
-  diffPct: number;
-  diffIndex: number;
+  diffUSD: number | null;
+  diffPct: number | null;
+  diffIndex: number | null;
   conclusion: string;
 }
 
 export function compareCost(a: City, b: City): CostComparison {
-  const diffUSD = a.monthlyCostUSD - b.monthlyCostUSD;
-  const lower = Math.min(a.monthlyCostUSD, b.monthlyCostUSD) || 1;
-  const diffPct = Math.round((Math.abs(diffUSD) / lower) * 100);
-  const diffIndex = a.costIndex - b.costIndex;
-  const hi = diffUSD >= 0 ? a : b;
-  const lo = diffUSD >= 0 ? b : a;
-  const usd = Math.abs(diffUSD).toLocaleString('en-US');
+  const hasCost = a.monthlyCostUSD != null && b.monthlyCostUSD != null;
+  const hasIndex = a.costIndex != null && b.costIndex != null;
 
-  let conclusion: string;
-  if (diffUSD === 0) {
-    conclusion = `${a.nameZh} 与 ${b.nameZh} 的月均综合成本估算相同（~$${a.monthlyCostUSD.toLocaleString('en-US')}），差异主要体现在租金结构与消费习惯上。`;
-  } else {
-    conclusion = `${hi.nameZh} 月均综合成本约 $${hi.monthlyCostUSD.toLocaleString('en-US')}，比 ${lo.nameZh}（~$${lo.monthlyCostUSD.toLocaleString('en-US')}）高约 $${usd}（约 ${diffPct}%，以较低者为基准）；生活成本指数相差 ${Math.abs(diffIndex)} 点（Numbeo 口径，NYC=100）。`;
+  if (!hasCost && !hasIndex) {
+    return {
+      aName: a.nameZh,
+      bName: b.nameZh,
+      diffUSD: null,
+      diffPct: null,
+      diffIndex: null,
+      conclusion: `${a.nameZh} 与 ${b.nameZh} 的成本数据暂缺，无法生成结论——建议在 Numbeo 官网查询最新数据后对比。`,
+    };
   }
 
-  return { aName: a.nameZh, bName: b.nameZh, diffUSD, diffPct, diffIndex, conclusion };
+  if (hasCost) {
+    const ac = a.monthlyCostUSD!;
+    const bc = b.monthlyCostUSD!;
+    const diffUSD = ac - bc;
+    const lower = Math.min(ac, bc) || 1;
+    const diffPct = Math.round((Math.abs(diffUSD) / lower) * 100);
+    const diffIndex = hasIndex ? a.costIndex! - b.costIndex! : null;
+    const hi = diffUSD >= 0 ? a : b;
+    const lo = diffUSD >= 0 ? b : a;
+    const usd = Math.abs(diffUSD).toLocaleString('en-US');
+
+    let conclusion: string;
+    if (diffUSD === 0) {
+      conclusion = `${a.nameZh} 与 ${b.nameZh} 的月均综合成本估算相同（~$${ac.toLocaleString('en-US')}），差异主要体现在租金结构与消费习惯上。`;
+    } else {
+      const indexPart = hasIndex
+        ? `；生活成本指数相差 ${Math.abs(diffIndex!)} 点（Numbeo 口径，NYC=100）`
+        : '';
+      conclusion = `${hi.nameZh} 月均综合成本约 $${hi.monthlyCostUSD!.toLocaleString('en-US')}，比 ${lo.nameZh}（~$${lo.monthlyCostUSD!.toLocaleString('en-US')}）高约 $${usd}（约 ${diffPct}%，以较低者为基准）${indexPart}。`;
+    }
+    return {
+      aName: a.nameZh,
+      bName: b.nameZh,
+      diffUSD,
+      diffPct,
+      diffIndex,
+      conclusion,
+    };
+  }
+
+  // 仅指数可比
+  const diffIndex = a.costIndex! - b.costIndex!;
+  const hi = diffIndex >= 0 ? a : b;
+  const lo = diffIndex >= 0 ? b : a;
+  return {
+    aName: a.nameZh,
+    bName: b.nameZh,
+    diffUSD: null,
+    diffPct: null,
+    diffIndex,
+    conclusion: `${hi.nameZh} 的生活成本指数比 ${lo.nameZh} 高 ${Math.abs(diffIndex)} 点（Numbeo 口径，NYC=100）；月均综合成本绝对值数据暂缺。`,
+  };
 }

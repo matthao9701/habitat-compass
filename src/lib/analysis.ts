@@ -54,17 +54,20 @@ export function interestBreakdown(userTags: string[], cityTags: string[]): Inter
 }
 
 // ---------------------------------------------------------------------------
-// 生活偏好细分（8 维单项得分，来自引擎 fitDetails）
+// 生活偏好细分（11 维单项得分，来自引擎 fitDetails；null = 城市无数据已降权）
 // ---------------------------------------------------------------------------
 
-export const PREFERENCE_DIMENSIONS: { key: string; label: string; desc: string }[] = [
+export const PREFERENCE_DIMENSIONS: { key: string; label: string; desc: string; objective?: boolean }[] = [
   { key: 'budget', label: '居住成本', desc: '月预算 × 城市成本区间' },
   { key: 'climate', label: '气候环境', desc: '偏好气候 × 城市气候类型' },
+  { key: 'climateComfort', label: '气候舒适', desc: '年均温 / 降水 / 日照客观舒适带', objective: true },
   { key: 'pace', label: '生活节奏', desc: '节奏偏好 × 城市节奏' },
   { key: 'size', label: '城市规模', desc: '规模偏好 × 城市体量' },
   { key: 'social', label: '社交氛围', desc: '社交偏好 × 游民社区规模' },
   { key: 'language', label: '英语友好', desc: '语言需求 × 城市英语度' },
+  { key: 'englishDepth', label: '英语普及', desc: 'EF EPI 评级与英语环境', objective: true },
   { key: 'visa', label: '签证便利', desc: '签证诉求 × 签证灵活度' },
+  { key: 'safety', label: '治安安全', desc: 'Numbeo Safety Index 客观分', objective: true },
   { key: 'remote', label: '远程办公', desc: '办公条件 × 网络质量' },
 ];
 
@@ -72,51 +75,55 @@ export interface PreferenceDimScore {
   key: string;
   label: string;
   desc: string;
-  score: number;
+  score: number | null;
 }
 
-export function preferenceBreakdown(fitDetails: Record<string, number>): PreferenceDimScore[] {
+export function preferenceBreakdown(fitDetails: Record<string, number | null>): PreferenceDimScore[] {
   return PREFERENCE_DIMENSIONS.map((d) => ({
     key: d.key,
     label: d.label,
     desc: d.desc,
-    score: fitDetails[d.key] ?? 0,
-  })).sort((a, b) => b.score - a.score);
+    score: fitDetails[d.key] ?? null,
+  })).sort((a, b) => (b.score ?? -1) - (a.score ?? -1));
 }
 
 // ---------------------------------------------------------------------------
 // 城市优势 / 注意事项（规则从真实字段提取）
 // ---------------------------------------------------------------------------
 
-/** 优势项：按规则优先级取前 3 条，全部基于城市库真实数据 */
+/** 优势项：按规则优先级取前 3 条，全部基于城市库真实数据（null 字段自动跳过） */
 export function cityPros(city: City): string[] {
   const pros: string[] = [];
   const push = (cond: boolean, text: string): void => {
     if (cond && pros.length < 3) pros.push(text);
   };
+  const has = (v: number | null | undefined): v is number => v != null;
 
-  push(city.internetMbps >= 120, `网络速度快（固定宽带中位 ${city.internetMbps} Mbps）`);
-  push(city.digitalNomadVisa, '提供数字游民签证，远程停留路径清晰');
-  push(city.safety >= 75, `治安良好（安全指数 ${city.safety}/100）`);
-  push(city.community >= 4, `数字游民社区成熟（${city.community}/5）`);
-  push(city.english >= 4, '英语环境友好，日常沟通门槛低');
-  push(city.costIndex <= 38, `综合生活成本低（成本指数 ${city.costIndex} · NYC=100）`);
+  push(has(city.internetMbps) && city.internetMbps >= 120, `网络速度快（固定宽带中位 ${city.internetMbps} Mbps）`);
+  push(city.digitalNomadVisa === true, '提供数字游民签证，远程停留路径清晰');
+  push(has(city.safety) && city.safety >= 75, `治安良好（安全指数 ${city.safety}/100）`);
+  push(has(city.healthcareIndex) && city.healthcareIndex >= 75, `医疗服务指数 ${city.healthcareIndex}/100，长住就医安心`);
+  push(has(city.community) && city.community >= 4, `数字游民社区成熟（${city.community}/5）`);
+  push(has(city.english) && city.english >= 4, '英语环境友好，日常沟通门槛低');
+  push(has(city.costIndex) && city.costIndex <= 38, `综合生活成本低（成本指数 ${city.costIndex} · NYC=100）`);
   push(
-    city.climate === 'mediterranean' && city.tempC <= 23,
+    city.climate === 'mediterranean' && has(city.tempC) && city.tempC <= 23,
     `地中海气候温润宜人（年均 ${city.tempC}°C）`,
   );
   push(
     city.climate === 'tropical' || city.climate === 'subtropical',
-    `气候全年温暖（年均 ${city.tempC}°C）`,
+    `气候全年温暖${has(city.tempC) ? `（年均 ${city.tempC}°C）` : ''}`,
   );
-  push(city.climate === 'desert', `日照充足、气候干燥温暖（年均 ${city.tempC}°C）`);
-  push(city.internetMbps >= 90, `网络条件良好（${city.internetMbps} Mbps）`);
-  push(city.safety >= 65, `治安中上（安全指数 ${city.safety}/100）`);
-  push(city.community >= 3, `游民社区初具规模（${city.community}/5）`);
+  push(city.climate === 'desert', `日照充足、气候干燥温暖${has(city.tempC) ? `（年均 ${city.tempC}°C）` : ''}`);
+  push(has(city.internetMbps) && city.internetMbps >= 90, `网络条件良好（${city.internetMbps} Mbps）`);
+  push(has(city.safety) && city.safety >= 65 && city.safety < 75, `治安中上（安全指数 ${city.safety}/100）`);
+  push(has(city.community) && city.community >= 3 && city.community < 4, `游民社区初具规模（${city.community}/5）`);
   push(
-    city.tempC >= 12 && city.tempC <= 26,
+    has(city.tempC) && city.tempC >= 12 && city.tempC <= 26,
     `气温温和（年均 ${city.tempC}°C），全年户外活动窗口长`,
   );
+  const sun = city.climateDetail?.sunshineHours;
+  push(sun != null && sun >= 2500, `年日照约 ${sun} 小时，白昼充裕`);
   return pros.slice(0, 3);
 }
 
@@ -126,26 +133,36 @@ export function cityCons(city: City): string[] {
   const push = (cond: boolean, text: string): void => {
     if (cond && cons.length < 2) cons.push(text);
   };
+  const has = (v: number | null | undefined): v is number => v != null;
+  const money = (v: number | null): string => (has(v) ? `$${v.toLocaleString('en-US')}` : '—');
 
-  push(!city.digitalNomadVisa, '暂无数字游民签证，需走常规居留 / 工作许可路径');
-  push(city.english <= 2, '非英语环境，日常事务需基础当地语言');
+  push(city.digitalNomadVisa === false, '暂无数字游民签证，需走常规居留 / 工作许可路径');
+  push(has(city.english) && city.english <= 2, '非英语环境，日常事务需基础当地语言');
   push(
-    city.internetMbps < 80,
+    has(city.internetMbps) && city.internetMbps < 80,
     `宽带中位 ${city.internetMbps} Mbps 偏低，重网络工作建议备移动热点方案`,
   );
-  push(city.safety < 62, `治安指数 ${city.safety}/100 偏低，夜间出行需留意区域选择`);
+  push(has(city.safety) && city.safety < 62, `治安指数 ${city.safety}/100 偏低，夜间出行需留意区域选择`);
   push(
-    city.costIndex >= 50,
+    has(city.costIndex) && city.costIndex >= 50,
     `成本指数 ${city.costIndex}（NYC=100）处于中上水平，预算建议预留 10-15% 缓冲`,
   );
-  push(city.tempC >= 23.5, `年均 ${city.tempC}°C 偏热，夏季办公环境需留意降温`);
-  push(city.monthlyCostUSD >= 1800, `月均综合成本约 $${city.monthlyCostUSD.toLocaleString('en-US')}，一居室租金占大头`);
-  push(city.community <= 2, `游民社区规模有限（${city.community}/5），社交需主动拓展`);
-  push(city.pace >= 4, '生活节奏偏快，需要主动安排休整');
+  push(has(city.tempC) && city.tempC >= 23.5, `年均 ${city.tempC}°C 偏热，夏季办公环境需留意降温`);
+  push(
+    has(city.monthlyCostUSD) && city.monthlyCostUSD >= 1800,
+    `月均综合成本约 ${money(city.monthlyCostUSD)}，一居室租金占大头`,
+  );
+  push(has(city.community) && city.community <= 2, `游民社区规模有限（${city.community}/5），社交需主动拓展`);
+  push(has(city.pace) && city.pace >= 4, '生活节奏偏快，需要主动安排休整');
+  const precip = city.climateDetail?.annualPrecipMm;
+  push(precip != null && precip >= 1600, `年降水约 ${precip} mm，雨季出行需备伞`);
 
   // 兜底：仍不足 2 条时，用真实字段的通用提示补齐
-  if (cons.length < 2) {
-    push(true, `气候类型为${CLIMATE_LABEL[city.climate] ?? city.climate}（年均 ${city.tempC}°C），与日常习惯的契合度建议实地确认`);
+  if (cons.length < 2 && city.climate) {
+    push(true, `气候类型为${CLIMATE_LABEL[city.climate] ?? city.climate}${has(city.tempC) ? `（年均 ${city.tempC}°C）` : ''}，与日常习惯的契合度建议实地确认`);
+  }
+  if (cons.length < 2 && city.visaStatus == null) {
+    push(true, '签证 / 居留政策待核实，出发前请以官方最新信息为准');
   }
   if (cons.length < 2) {
     push(true, '签证 / 居留政策随政策周期变动，出发前请以官方最新信息为准');
@@ -222,9 +239,9 @@ const AXIS_TRAIT: Record<AxisName, { posLetter: string; negLetter: string; env: 
 
 export function personalityCityAnalysis(
   axisScores: Record<AxisName, number>,
-  traitVector: CityTraitVector,
+  traitVector: CityTraitVector | null,
   city: City,
-  fitDetails: Record<string, number>,
+  fitDetails: Record<string, number | null>,
 ): PersonalityCityAnalysis {
   // 理想环境特征：按四轴主导字母取 2 条最强倾向
   const axes: AxisName[] = ['EI', 'SN', 'TF', 'JP'];
@@ -238,18 +255,25 @@ export function personalityCityAnalysis(
 
   // 关键匹配因素：四轴同向且强度足够的轴 + 偏好契合最高的两个维度
   const factors: string[] = [];
-  const aligned = axes.filter((axis) => {
-    const key = axis.toLowerCase() as 'ei' | 'sn' | 'tf' | 'jp';
-    return traitVector[key] * city.traits[key] > 0 && Math.min(Math.abs(traitVector[key]), Math.abs(city.traits[key])) >= 25;
-  });
-  if (aligned.length > 0) {
+  const aligned =
+    city.traits && traitVector
+      ? axes.filter((axis) => {
+          const key = axis.toLowerCase() as 'ei' | 'sn' | 'tf' | 'jp';
+          return (
+            traitVector[key] * city.traits![key] > 0 &&
+            Math.min(Math.abs(traitVector[key]), Math.abs(city.traits![key])) >= 25
+          );
+        })
+      : [];
+  if (aligned.length > 0 && traitVector) {
     const first = aligned[0];
     const key = first.toLowerCase() as 'ei' | 'sn' | 'tf' | 'jp';
     const letter = traitVector[key] > 0 ? AXIS_TRAIT[first].posLetter : AXIS_TRAIT[first].negLetter;
     factors.push(`气质同频：城市偏「${letter}」倾向，与你 ${axisScores[first]}% 的偏好方向一致`);
   }
   const topDims = Object.entries(fitDetails)
-    .sort((a, b) => b[1] - a[1])
+    .filter(([, v]) => v != null)
+    .sort((a, b) => (b[1] as number) - (a[1] as number))
     .slice(0, 2);
   for (const [dimKey, score] of topDims) {
     const dim = PREFERENCE_DIMENSIONS.find((d) => d.key === dimKey);
@@ -264,19 +288,19 @@ export function personalityCityAnalysis(
   if (axisScores.EI <= 45) {
     challenges.push('内向倾向明显：社交资源需要主动搭建，建议从固定 co-working 或兴趣社群切入');
   }
-  if (axisScores.JP <= 45 && city.pace >= 4) {
+  if (axisScores.JP <= 45 && (city.pace ?? 3) >= 4) {
     challenges.push('城市节奏偏快，与你偏好规划的 J 倾向有张力——提前锁定长租与固定办公位');
   }
-  if (axisScores.EI >= 55 && city.community <= 2) {
+  if (axisScores.EI >= 55 && (city.community ?? 3) <= 2) {
     challenges.push('城市游民社群较小，外向型的社交密度需求需要更主动经营');
   }
-  if (axisScores.SN <= 45 && city.size <= 2) {
+  if (axisScores.SN <= 45 && (city.size ?? 3) <= 2) {
     challenges.push('小城服务半径有限，安家与办事需预留往返周边城市的时间');
   }
   if (axisScores.SN >= 55 && city.tags.filter((t) => ['arts', 'history', 'festivals'].includes(t)).length === 0) {
     challenges.push('本地文化场景标签较少，探索型需求可能需要向周边城市延伸');
   }
-  if (axisScores.TF >= 55 && city.safety < 62) {
+  if (axisScores.TF >= 55 && (city.safety ?? 65) < 62) {
     challenges.push('治安指数偏低，安全感的建立需重点考察居住街区的夜间环境');
   }
   if (challenges.length === 0) {
@@ -306,32 +330,57 @@ export interface TrialPlan {
 export function trialPlan(match: number, city: City): TrialPlan {
   const days = match >= 60 ? '14-21 天' : match >= 50 ? '21-30 天' : '30 天起';
   const daysMid = match >= 60 ? 17.5 : match >= 50 ? 25 : 30;
-  const budget = Math.round((city.monthlyCostUSD / 30) * daysMid);
+  const has = (v: number | null | undefined): v is number => v != null;
+  const budget = has(city.monthlyCostUSD) ? Math.round((city.monthlyCostUSD / 30) * daysMid) : null;
 
   const intro = `${city.nameZh}建议先试住 ${days}：用一份短期租约验证报告结论，再决定是否长期停靠。`;
+
+  const climateItem = city.climateDetail
+    ? `${city.climateDetail.summary}（年均 ${city.climateDetail.avgTempC}°C · 年降水 ${city.climateDetail.annualPrecipMm} mm · 年日照约 ${city.climateDetail.sunshineHours} 小时）——试住期至少覆盖几个降雨日与一个温度极值日`
+    : city.climate
+      ? `${CLIMATE_LABEL[city.climate] ?? city.climate}，年均 ${city.tempC}°C——试住期至少覆盖几个降雨日与一个温度极值日`
+      : '气候数据待补充——试住期记录逐日体感与降水';
+  const budgetItem = budget
+    ? `按月均综合成本 ~$${city.monthlyCostUSD!.toLocaleString('en-US')} 折算，试住期预算约 $${budget.toLocaleString('en-US')}`
+    : '月均综合成本数据暂缺——试住期逐日记账建立本地成本基线';
+  const costIndexItem = has(city.costIndex)
+    ? `对照成本指数 ${city.costIndex}（NYC=100）记录房租 / 餐饮 / 通勤三项与日常账单的偏差`
+    : '记录房租 / 餐饮 / 通勤三项实际支出，作为本地成本基线';
+  const mealItem = has(city.mealUSD)
+    ? `普通餐厅一顿约 $${city.mealUSD}——按自己的外出就餐频率估算伙食月支出`
+    : '按自己的外出就餐频率估算伙食月支出';
+  const rentItem = has(city.rent1brUSD)
+    ? `市中心一居室月租约 $${city.rent1brUSD!.toLocaleString('en-US')}——实地看 2-3 处备选房源`
+    : '实地看 2-3 处备选房源，确认实际租金水位';
 
   const checklist: TrialChecklistGroup[] = [
     {
       title: '气候体感',
       items: [
-        `${CLIMATE_LABEL[city.climate] ?? city.climate}，年均 ${city.tempC}°C——试住期至少覆盖几个降雨日与一个温度极值日`,
+        climateItem,
         '在不同时段步行通勤 20 分钟，记录体感、日照与湿度',
       ],
     },
     {
       title: '生活成本实测',
       items: [
-        `按月均综合成本 ~$${city.monthlyCostUSD.toLocaleString('en-US')} 折算，试住期预算约 $${budget.toLocaleString('en-US')}`,
-        `对照成本指数 ${city.costIndex}（NYC=100）记录房租 / 餐饮 / 通勤三项与日常账单的偏差`,
+        budgetItem,
+        costIndexItem,
+        mealItem,
+        rentItem,
       ],
     },
     {
       title: '社交与远程工作条件',
       items: [
-        `固定宽带中位 ${city.internetMbps} Mbps——实测晚间高峰期的视频会议稳定性`,
-        city.digitalNomadVisa
+        has(city.internetMbps)
+          ? `固定宽带中位 ${city.internetMbps} Mbps——实测晚间高峰期的视频会议稳定性`
+          : '实测晚间高峰期的视频会议稳定性与移动热点可用性',
+        city.digitalNomadVisa === true && city.visaLabel
           ? `签证口径：${city.visaLabel}`
-          : `暂无数字游民签证——试住期请确认免签或旅游签的停留天数上限（${city.visaLabel}）`,
+          : city.visaLabel
+            ? `暂无数字游民签证——试住期请确认免签或旅游签的停留天数上限（${city.visaLabel}）`
+            : '签证 / 居留政策待核实——出发前确认免签或旅游签停留天数上限',
         '参加 1 次本地数字游民或行业聚会，评估社群与协作氛围',
       ],
     },

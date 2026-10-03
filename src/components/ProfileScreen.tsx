@@ -128,8 +128,13 @@ export default function ProfileScreen({ onOpenQuiz, onOpenHistory, onOpenCompare
                     <span className="font-mono text-[10px] text-ink-soft">{c.countryZh}</span>
                   </div>
                   <p className="mt-1.5 font-mono text-[10.5px] text-ink-soft">
-                    ~${c.monthlyCostUSD.toLocaleString('en-US')}/月 · {c.internetMbps} Mbps ·{' '}
-                    {c.digitalNomadVisa ? <span className="text-moss">签证有</span> : <span>签证 —</span>}
+                    {c.monthlyCostUSD != null ? `~$${c.monthlyCostUSD.toLocaleString('en-US')}/月` : '成本数据暂缺'} ·{' '}
+                    {c.internetMbps != null ? `${c.internetMbps} Mbps` : '— Mbps'} ·{' '}
+                    {c.digitalNomadVisa === true ? (
+                      <span className="text-moss">签证有</span>
+                    ) : (
+                      <span>签证 {c.digitalNomadVisa === false ? '—' : '待核实'}</span>
+                    )}
                   </p>
                   <div className="mt-3 flex gap-2">
                     <button

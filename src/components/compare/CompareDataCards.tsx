@@ -16,18 +16,43 @@ export default function CompareDataCards({ rows }: { rows: CompareRow[] }) {
   const bi = biRaw >= rows.length || biRaw === ai ? (ai + 1) % rows.length : biRaw;
   const costDiff = compareCost(rows[ai].city, rows[bi].city);
 
-  /** 公开数据表：仅列城市数据库实际存在的字段（无医疗等字段，不编造） */
+  /** 公开数据表：仅列城市数据库实际字段；null = 未入库，显示 — 不编造 */
   const dataRows: { label: string; valueOf: (r: CompareRow) => string; toneOf?: (r: CompareRow) => string }[] = [
-    { label: '气候类型', valueOf: (r) => CLIMATE_LABEL[r.city.climate] ?? r.city.climate },
-    { label: '年均气温', valueOf: (r) => `${r.city.tempC}°C` },
-    { label: '月均综合成本', valueOf: (r) => `~${fmt(r.city.monthlyCostUSD)}` },
-    { label: '成本指数 · NYC=100', valueOf: (r) => `${r.city.costIndex}` },
-    { label: '宽带中位', valueOf: (r) => `${r.city.internetMbps} Mbps` },
-    { label: '安全指数', valueOf: (r) => `${r.city.safety}/100` },
-    { label: '游民社区', valueOf: (r) => `${r.city.community}/5` },
-    { label: '英语友好', valueOf: (r) => `${r.city.english}/5` },
-    { label: '生活节奏', valueOf: (r) => `${r.city.pace}/5` },
-    { label: '数字游民签证', valueOf: (r) => (r.city.digitalNomadVisa ? '有' : '—'), toneOf: (r) => (r.city.digitalNomadVisa ? 'text-moss' : 'text-ink-soft') },
+    {
+      label: '气候',
+      valueOf: (r) =>
+        r.city.climate != null
+          ? CLIMATE_LABEL[r.city.climate]
+          : (r.city.climateDetail?.summary ?? '—'),
+    },
+    {
+      label: '年均气温',
+      valueOf: (r) =>
+        r.city.tempC != null
+          ? `${r.city.tempC}°C`
+          : r.city.climateDetail != null
+            ? `${r.city.climateDetail.avgTempC}°C`
+            : '—',
+    },
+    { label: '月均综合成本', valueOf: (r) => (r.city.monthlyCostUSD != null ? `~${fmt(r.city.monthlyCostUSD)}` : '—') },
+    { label: '成本指数 · NYC=100', valueOf: (r) => (r.city.costIndex != null ? `${r.city.costIndex}` : '—') },
+    { label: '市中心 1 居租金', valueOf: (r) => (r.city.rent1brUSD != null ? fmt(r.city.rent1brUSD) : '—') },
+    { label: '平价一餐', valueOf: (r) => (r.city.mealUSD != null ? fmt(r.city.mealUSD) : '—') },
+    { label: '宽带中位', valueOf: (r) => (r.city.internetMbps != null ? `${r.city.internetMbps} Mbps` : '—') },
+    { label: '安全指数', valueOf: (r) => (r.city.safety != null ? `${r.city.safety}/100` : '—') },
+    { label: '医疗指数', valueOf: (r) => (r.city.healthcareIndex != null ? `${r.city.healthcareIndex}` : '—') },
+    { label: '污染指数', valueOf: (r) => (r.city.pollutionIndex != null ? `${r.city.pollutionIndex}` : '—') },
+    { label: '通勤指数', valueOf: (r) => (r.city.trafficIndex != null ? `${r.city.trafficIndex}` : '—') },
+    { label: '购买力指数', valueOf: (r) => (r.city.purchasingPowerIndex != null ? `${r.city.purchasingPowerIndex}` : '—') },
+    { label: '游民社区', valueOf: (r) => (r.city.community != null ? `${r.city.community}/5` : '—') },
+    { label: '英语友好', valueOf: (r) => (r.city.english != null ? `${r.city.english}/5` : '—') },
+    { label: '生活节奏', valueOf: (r) => (r.city.pace != null ? `${r.city.pace}/5` : '—') },
+    {
+      label: '数字游民签证',
+      valueOf: (r) =>
+        r.city.digitalNomadVisa === true ? '有' : r.city.digitalNomadVisa === false ? '—' : '待核实',
+      toneOf: (r) => (r.city.digitalNomadVisa === true ? 'text-moss' : 'text-ink-soft'),
+    },
   ];
 
   return (
@@ -67,15 +92,19 @@ export default function CompareDataCards({ rows }: { rows: CompareRow[] }) {
             <div className="mt-5 grid grid-cols-3 gap-3 border-y hairline py-4 text-center">
               <div>
                 <p className="font-mono text-[9.5px] uppercase tracking-eyebrow text-ink-soft">成本差</p>
-                <p className="mt-1 font-mono text-[17px] text-ink">${Math.abs(costDiff.diffUSD).toLocaleString('en-US')}</p>
+                <p className="mt-1 font-mono text-[17px] text-ink">
+                  {costDiff.diffUSD != null ? `$${Math.abs(costDiff.diffUSD).toLocaleString('en-US')}` : '—'}
+                </p>
               </div>
               <div>
                 <p className="font-mono text-[9.5px] uppercase tracking-eyebrow text-ink-soft">相对差</p>
-                <p className="mt-1 font-mono text-[17px] text-ink">{costDiff.diffPct}%</p>
+                <p className="mt-1 font-mono text-[17px] text-ink">{costDiff.diffPct != null ? `${costDiff.diffPct}%` : '—'}</p>
               </div>
               <div>
                 <p className="font-mono text-[9.5px] uppercase tracking-eyebrow text-ink-soft">指数差</p>
-                <p className="mt-1 font-mono text-[17px] text-ink">{Math.abs(costDiff.diffIndex)}</p>
+                <p className="mt-1 font-mono text-[17px] text-ink">
+                  {costDiff.diffIndex != null ? Math.abs(costDiff.diffIndex) : '—'}
+                </p>
               </div>
             </div>
 

@@ -62,7 +62,7 @@ export default {
       animation: {
         'dash-drift': 'dash-drift 1.6s linear infinite',
         'soft-pulse': 'soft-pulse 2.4s ease-in-out infinite',
-        marquee: 'marquee 60s linear infinite',
+        marquee: 'marquee 150s linear infinite',
       },
     },
   },

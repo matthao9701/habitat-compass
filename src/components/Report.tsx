@@ -36,19 +36,22 @@ export default function Report({ result, onRestart, isDemo = false, onStartQuiz 
   const [copied, setCopied] = useState(false);
   const top = result.matches[0];
 
-  const radarSeries = result.matches.slice(0, 3).map((m, i) => ({
-    id: m.city.id,
-    label: m.city.nameZh,
-    color: RADAR_COLORS[i],
-    values: [
-      m.scores.cost,
-      m.scores.internet,
-      m.scores.safety,
-      m.scores.community,
-      m.scores.english,
-      m.scores.visa,
-    ],
-  }));
+  const radarSeries = result.matches
+    .slice(0, 3)
+    .map((m, i) => ({
+      id: m.city.id,
+      label: m.city.nameZh,
+      color: RADAR_COLORS[i],
+      values: [
+        m.scores.cost,
+        m.scores.internet,
+        m.scores.safety,
+        m.scores.community,
+        m.scores.english,
+        m.scores.visa,
+      ] as (number | null)[],
+    }))
+    .filter((s): s is typeof s & { values: number[] } => s.values.every((v): v is number => v != null));
 
   async function copySummary(): Promise<void> {
     const text = buildSummaryText(result);
@@ -214,8 +217,9 @@ export default function Report({ result, onRestart, isDemo = false, onStartQuiz 
 
         <p className="mt-8 border-t hairline pt-5 font-mono text-[9.5px] leading-[1.9] text-ink-soft/80">
           数据口径 · 月均综合生活成本为「市区一居室租金 + 水电网 + 餐饮 + 交通」的估算值（USD），
-          成本指数采用 Numbeo 口径（NYC=100），宽带速度为固定宽带中位数——均转录自 2026 年初公开榜单，
-          生活成本因个人生活方式而异；数字游民签证为 2026 年初政策快照，出行前请以官方最新信息为准。
+          成本指数采用 Numbeo 口径（NYC=100），宽带速度为固定宽带中位数；气候指标为 Open-Meteo 历史再分析
+          2015–2024 十年均值；安全/医疗/污染/通勤/气候等指数沿用 Numbeo Quality of Life 口径（0–100，NYC=100）。
+          城市缺数据的维度以「—」标示，不参与打分。签证信息为 2026 年初政策快照，出行前请以官方最新信息为准。
         </p>
       </section>
 
@@ -285,6 +289,10 @@ export default function Report({ result, onRestart, isDemo = false, onStartQuiz 
           </p>
           <p className="mt-4 max-w-3xl text-[11px] font-light leading-relaxed text-paper/45">
             字体：思源黑体 / IBM Plex Mono / Source Serif 4（OFL 开源许可）
+          </p>
+          <p className="mt-1 max-w-3xl text-[11px] font-light leading-relaxed text-paper/45">
+            数据来源：GeoNames（CC BY 4.0）· Open-Meteo Historical Weather API（CC BY 4.0）·
+            Numbeo 公开指数（口径脚注见上）· EF English Proficiency Index
           </p>
           <p className="mt-6 font-mono text-[10px] text-paper/35">
             © 2025 栖居罗盘 · OVERSEAS SETTLEMENT ALMANAC
@@ -360,16 +368,37 @@ function CityCard({ match, rank }: CityCardProps) {
 
           <dl className="mt-6 space-y-2.5 text-[12.5px]">
             <Stat label="月生活成本" value={formatCost(city)} />
-            <Stat label="综合月均" value={`~$${city.monthlyCostUSD.toLocaleString('en-US')}`} />
-            <Stat label="成本指数" value={`${city.costIndex} · NYC=100`} />
+            <Stat
+              label="综合月均"
+              value={city.monthlyCostUSD != null ? `~$${city.monthlyCostUSD.toLocaleString('en-US')}` : '—'}
+            />
+            <Stat label="成本指数" value={city.costIndex != null ? `${city.costIndex} · NYC=100` : '—'} />
             <Stat
               label="宽带中位"
-              value={`${city.internetMbps} Mbps · ${INTERNET_LABEL[city.internet]}`}
+              value={
+                city.internetMbps != null && city.internet != null
+                  ? `${city.internetMbps} Mbps · ${INTERNET_LABEL[city.internet]}`
+                  : city.internetMbps != null
+                    ? `${city.internetMbps} Mbps`
+                    : '—'
+              }
             />
-            <Stat label="气候" value={`${CLIMATE_LABEL[city.climate]} · 年均 ${city.tempC}°C`} />
-            <Stat label="安全指数" value={`${city.safety} / 100`} />
-            <Stat label="数字游民签证" value={city.digitalNomadVisa ? '有' : '—'} />
-            <Stat label="游民社区" value={`${city.community} / 5`} />
+            <Stat
+              label="气候"
+              value={
+                city.climate != null && city.tempC != null
+                  ? `${CLIMATE_LABEL[city.climate]} · 年均 ${city.tempC}°C`
+                  : city.climateDetail != null
+                    ? `年均 ${city.climateDetail.avgTempC}°C · ${city.climateDetail.summary}`
+                    : '—'
+              }
+            />
+            <Stat label="安全指数" value={city.safety != null ? `${city.safety} / 100` : '—'} />
+            <Stat
+              label="数字游民签证"
+              value={city.digitalNomadVisa === true ? '有' : city.digitalNomadVisa === false ? '—' : '待核实'}
+            />
+            <Stat label="游民社区" value={city.community != null ? `${city.community} / 5` : '—'} />
           </dl>
         </div>
 
@@ -496,7 +525,18 @@ function AxisBar({ left, right, percent, delay }: AxisBarProps) {
   );
 }
 
-function DimensionBar({ label, value }: { label: string; value: number }) {
+function DimensionBar({ label, value }: { label: string; value: number | null }) {
+  if (value == null) {
+    return (
+      <div>
+        <div className="mb-1 flex items-baseline justify-between">
+          <span className="text-[11.5px] text-ink-soft">{label}</span>
+          <span className="font-mono text-[10.5px] text-ink-soft">—</span>
+        </div>
+        <div className="h-[4px] overflow-hidden rounded-full bg-ink/10" />
+      </div>
+    );
+  }
   const tone =
     value >= 75
       ? { bar: 'bg-moss', text: 'text-moss' }
@@ -573,8 +613,8 @@ function buildSummaryText(result: AssessmentResult): string {
   result.matches.forEach((m, i) => {
     lines.push(
       `${i + 1}. ${m.city.nameZh}（${m.city.countryZh}）匹配度 ${m.match}%` +
-        `｜综合月均 ~$${m.city.monthlyCostUSD.toLocaleString('en-US')}` +
-        `｜宽带 ${m.city.internetMbps} Mbps` +
+        `｜综合月均 ${m.city.monthlyCostUSD != null ? `~$${m.city.monthlyCostUSD.toLocaleString('en-US')}` : '暂缺'}` +
+        `｜宽带 ${m.city.internetMbps ?? '—'} Mbps` +
         `｜数字游民签证 ${m.city.digitalNomadVisa ? '有' : '—'}｜${m.reasons[0]}`,
     );
   });

@@ -19,6 +19,7 @@ import {
 import { type AssessmentResult, type UserAnswers } from '../../lib/engine';
 import * as storage from '../../lib/storage';
 import { cities } from '../../data';
+import { REGION_LABEL, REGION_ORDER, subregionLabel } from '../../data/regions';
 import CompareCharts from './CompareCharts';
 import CompareDataCards from './CompareDataCards';
 
@@ -75,6 +76,8 @@ export default function CompareScreen({ result, answers, seedCities, onOpenQuiz 
   const [cityNotes, setCityNotes] = useState<Record<string, string>>(() => storage.loadCompareState()?.cityNotes ?? {});
   const [overallNote, setOverallNote] = useState<string>(() => storage.loadCompareState()?.overallNote ?? '');
   const [query, setQuery] = useState('');
+  const [regionFilter, setRegionFilter] = useState<string>('all');
+  const [subFilter, setSubFilter] = useState<string>('all');
   const [pendingCity, setPendingCity] = useState<string | null>(null);
   const [savedToast, setSavedToast] = useState(false);
   const [favIds, setFavIds] = useState<string[]>(() => storage.loadFavorites());
@@ -120,14 +123,23 @@ export default function CompareScreen({ result, answers, seedCities, onOpenQuiz 
   const ranked = useMemo(() => rankRows(rows), [rows]);
 
   const queryLower = query.trim().toLowerCase();
-  const filtered = queryLower
-    ? cities.filter(
-        (c) =>
-          c.nameZh.includes(query.trim()) ||
-          c.nameEn.toLowerCase().includes(queryLower) ||
-          c.countryZh.includes(query.trim()),
-      )
-    : [];
+  // 大洲 → 次区域级联；query 与筛选器任一生效即显示候选列表
+  const subOptions = useMemo(() => {
+    const pool =
+      regionFilter === 'all' ? cities : cities.filter((c) => c.region === regionFilter);
+    return [...new Set(pool.map((c) => c.subregion).filter((s): s is string => s != null))];
+  }, [regionFilter]);
+
+  const filtered = cities.filter(
+    (c) =>
+      (regionFilter === 'all' || c.region === regionFilter) &&
+      (subFilter === 'all' || c.subregion === subFilter) &&
+      (queryLower === '' ||
+        c.nameZh.includes(query.trim()) ||
+        c.nameEn.toLowerCase().includes(queryLower) ||
+        c.countryZh.includes(query.trim())),
+  );
+  const showCandidates = queryLower !== '' || regionFilter !== 'all' || subFilter !== 'all';
 
   // ---- 操作 ----
   function addCity(id: string): void {
@@ -211,10 +223,42 @@ export default function CompareScreen({ result, answers, seedCities, onOpenQuiz 
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="输入中文 / 英文名或国家筛选 39 城…"
+              placeholder="输入中文 / 英文名或国家搜索…"
               className="mt-3 w-full rounded-[8px] border border-ink/15 bg-card px-4 py-2.5 text-[13px] text-ink placeholder:text-ink-soft/60 outline-none transition-colors focus:border-clay"
             />
-            {queryLower && (
+            {/* 大洲 / 次区域筛选 */}
+            <div className="mt-2.5 flex flex-wrap gap-2">
+              <select
+                value={regionFilter}
+                onChange={(e) => {
+                  setRegionFilter(e.target.value);
+                  setSubFilter('all');
+                }}
+                aria-label="按大洲筛选"
+                className="rounded-[6px] border border-ink/15 bg-card px-2.5 py-1.5 font-mono text-[11px] text-ink outline-none focus:border-clay"
+              >
+                <option value="all">全部大洲（{cities.length} 城）</option>
+                {REGION_ORDER.map((r) => (
+                  <option key={r} value={r}>
+                    {REGION_LABEL[r]}
+                  </option>
+                ))}
+              </select>
+              <select
+                value={subFilter}
+                onChange={(e) => setSubFilter(e.target.value)}
+                aria-label="按次区域筛选"
+                className="rounded-[6px] border border-ink/15 bg-card px-2.5 py-1.5 font-mono text-[11px] text-ink outline-none focus:border-clay"
+              >
+                <option value="all">全部次区域</option>
+                {subOptions.map((s) => (
+                  <option key={s} value={s}>
+                    {subregionLabel(s)}
+                  </option>
+                ))}
+              </select>
+            </div>
+            {showCandidates && (
               <div className="mt-3 grid max-h-[280px] gap-1.5 overflow-y-auto pr-1">
                 {filtered.length === 0 && (
                   <p className="px-1 py-3 font-mono text-[11px] text-ink-soft">没有匹配的城市</p>
@@ -238,7 +282,9 @@ export default function CompareScreen({ result, answers, seedCities, onOpenQuiz 
                       >
                         <span className={`text-[12.5px] ${added ? 'text-ink-soft/60' : 'text-ink'}`}>
                           {c.nameZh}
-                          <span className="ml-2 font-mono text-[10px] text-ink-soft">{c.countryZh}</span>
+                          <span className="ml-2 font-mono text-[10px] text-ink-soft">
+                            {c.countryZh} · {subregionLabel(c.subregion)}
+                          </span>
                         </span>
                         <span className="font-mono text-[10px] text-ink-soft">{added ? '已添加' : '+ 添加'}</span>
                       </button>
@@ -340,7 +386,7 @@ export default function CompareScreen({ result, answers, seedCities, onOpenQuiz 
           <div className="flex flex-wrap items-end justify-between gap-3">
             <div>
               <p className="eyebrow">chart 02 · 我最在意什么</p>
-              <h2 className="mt-2 font-display text-[22px] font-bold tracking-tight md:text-[26px]">调整 8 维偏好权重</h2>
+              <h2 className="mt-2 font-display text-[22px] font-bold tracking-tight md:text-[26px]">调整 11 维偏好权重</h2>
             </div>
             <div className="flex items-center gap-3">
               {!isDefaultWeights(weights, personalized) && (
@@ -354,8 +400,8 @@ export default function CompareScreen({ result, answers, seedCities, onOpenQuiz 
             </div>
           </div>
           <p className="mt-2 max-w-2xl text-[12.5px] leading-[1.7] text-ink-soft">
-            滑杆重新分配生活偏好 48% 的内部占比，人格 30% 与兴趣 22% 保持不变；综合分实时重算并重排序——
-            这是对比场景的临时权重，不会回写引擎与报告。
+            滑杆重新分配生活偏好 48% 的内部占比（你的 8 维情景偏好 + 3 维客观数据），人格 30% 与兴趣 22% 保持不变；
+            综合分实时重算并重排序——这是对比场景的临时权重，不会回写引擎与报告。城市缺某维数据时该维自动跳过（降权不惩罚）。
           </p>
 
           <div className="mt-6 grid gap-x-10 gap-y-4 sm:grid-cols-2">
@@ -364,7 +410,14 @@ export default function CompareScreen({ result, answers, seedCities, onOpenQuiz 
               return (
                 <div key={d.key}>
                   <div className="mb-1 flex items-baseline justify-between">
-                    <label htmlFor={`w-${d.key}`} className="text-[12px] text-ink">{d.label}</label>
+                    <label htmlFor={`w-${d.key}`} className="text-[12px] text-ink">
+                      {d.label}
+                      {d.objective && (
+                        <span className="ml-1.5 rounded-[3px] border border-teal/45 px-1 py-px font-mono text-[8.5px] text-teal">
+                          客观
+                        </span>
+                      )}
+                    </label>
                     <span className="font-mono text-[10.5px] text-clay">{share}%</span>
                   </div>
                   <input
@@ -374,6 +427,7 @@ export default function CompareScreen({ result, answers, seedCities, onOpenQuiz 
                     max={5}
                     step={0.1}
                     value={weights[d.key] ?? 1}
+                    title={d.desc}
                     onChange={(e) => setWeights((prev) => ({ ...prev, [d.key]: Number(e.target.value) }))}
                     className="w-full accent-[#BE5A38]"
                   />
@@ -421,7 +475,7 @@ export default function CompareScreen({ result, answers, seedCities, onOpenQuiz 
                       />
                     </div>
                     <span className="shrink-0 font-mono text-[9.5px] text-ink-soft">
-                      人格 {r.personalityFit} · 偏好 {r.prefWeighted} · 兴趣 {r.interestFit}
+                      人格 {r.personalityFit ?? '—'} · 偏好 {r.prefWeighted ?? '—'} · 兴趣 {r.interestFit ?? '—'}
                     </span>
                   </div>
                 </div>

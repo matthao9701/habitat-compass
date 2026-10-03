@@ -27,15 +27,17 @@ if (!profile) {
 }
 const answers = buildDemoAnswers(profile);
 
-// ---- 1. computeCityFits 与 assess 输出一致（提取未改变引擎行为） ----
+// ---- 1. computeCityFits 与 assess 输出一致（提取未改变引擎行为；v2 起类级分数可空） ----
+const eqRound = (a: number | null, b: number | null): boolean =>
+  a == null ? b == null : b != null && Math.round(a) === Math.round(b);
 for (const m of assess(answers).matches.slice(0, 3)) {
   const fits = computeCityFits(m.city, answers);
   check(
     `computeCityFits 一致性 · ${m.city.id}`,
-    Math.round(fits.personalityFit) === m.personalityFit &&
-      Math.round(fits.preferenceFit) === m.preferenceFit &&
-      Math.round(fits.interestFit) === m.interestFit,
-    `(${Math.round(fits.personalityFit)}/${m.personalityFit}, ${Math.round(fits.preferenceFit)}/${m.preferenceFit}, ${Math.round(fits.interestFit)}/${m.interestFit})`,
+    eqRound(fits.personalityFit, m.personalityFit) &&
+      eqRound(fits.preferenceFit, m.preferenceFit) &&
+      eqRound(fits.interestFit, m.interestFit),
+    `(${fits.personalityFit == null ? 'null' : Math.round(fits.personalityFit)}/${m.personalityFit}, ${fits.preferenceFit == null ? 'null' : Math.round(fits.preferenceFit)}/${m.preferenceFit}, ${fits.interestFit == null ? 'null' : Math.round(fits.interestFit)}/${m.interestFit})`,
   );
 }
 

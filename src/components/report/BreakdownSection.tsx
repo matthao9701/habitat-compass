@@ -69,7 +69,7 @@ export default function BreakdownSection({ top, userInterests }: BreakdownSectio
           <div className="mb-5 flex items-baseline justify-between">
             <p className="font-heading text-lg font-bold">生活偏好细分</p>
             <p className="font-mono text-[9.5px] uppercase tracking-eyebrow text-ink-soft">
-              8 维 · 序数距离
+              11 维 · 序数 / 客观数据
             </p>
           </div>
           <div className="space-y-3.5">

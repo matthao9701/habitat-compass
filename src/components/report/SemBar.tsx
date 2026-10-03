@@ -24,15 +24,16 @@ export const TONE_TEXT_COLOR: Record<'good' | 'mid' | 'low', string> = {
 
 interface SemBarProps {
   label: string;
-  value: number;
+  /** null = 该维度无数据，显示占位不渲染条 */
+  value: number | null;
   /** 标签右侧的补充说明（如「选 3」） */
   note?: string;
   delay?: number;
 }
 
-/** 好差分色数据条：右标数值，颜色按 75 / 50 阈值切换 */
+/** 好差分色数据条：右标数值，颜色按 75 / 50 阈值切换；无数据显示 — */
 export function SemBar({ label, value, note, delay = 0 }: SemBarProps) {
-  const tone = semTone(value);
+  const tone = value != null ? semTone(value) : null;
   return (
     <div>
       <div className="mb-1 flex items-baseline justify-between gap-2">
@@ -40,17 +41,25 @@ export function SemBar({ label, value, note, delay = 0 }: SemBarProps) {
           {label}
           {note ? <span className="ml-1.5 font-mono text-[10px] text-ink-soft">{note}</span> : null}
         </span>
-        <span className={`font-mono text-[10.5px] ${TONE_TEXT_COLOR[tone]}`}>{value}</span>
+        {value != null && tone ? (
+          <span className={`font-mono text-[10.5px] ${TONE_TEXT_COLOR[tone]}`}>{value}</span>
+        ) : (
+          <span className="font-mono text-[10.5px] text-ink-soft">—</span>
+        )}
       </div>
-      <div className="h-[5px] overflow-hidden rounded-full bg-ink/10">
-        <motion.div
-          className={`h-full rounded-full ${TONE_BAR_COLOR[tone]}`}
-          initial={{ width: 0 }}
-          whileInView={{ width: `${value}%` }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.9, delay, ease }}
-        />
-      </div>
+      {value != null && tone ? (
+        <div className="h-[5px] overflow-hidden rounded-full bg-ink/10">
+          <motion.div
+            className={`h-full rounded-full ${TONE_BAR_COLOR[tone]}`}
+            initial={{ width: 0 }}
+            whileInView={{ width: `${value}%` }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.9, delay, ease }}
+          />
+        </div>
+      ) : (
+        <div className="h-[5px] overflow-hidden rounded-full bg-ink/10" />
+      )}
     </div>
   );
 }

@@ -1,8 +1,10 @@
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import CompassMark from './CompassMark';
 import RouteChart from './RouteChart';
 import { cities } from '../data';
 import { DEMO_PROFILES } from '../data/demoProfiles';
+import { REGION_LABEL, REGION_ORDER, subregionLabel } from '../data/regions';
 import { formatCost } from '../lib/engine';
 
 interface LandingProps {
@@ -46,7 +48,7 @@ const STEPS = [
   {
     no: '02',
     title: '引擎加权计算',
-    desc: '人格特质契合 30% + 生活偏好 48% + 兴趣重合 22%，对 39 座城市逐一打分。',
+    desc: '人格特质契合 30% + 生活偏好 48% + 兴趣重合 22%，对全球 100 座城市逐一打分，气候、安全与医疗等客观数据同步纳入。',
   },
   {
     no: '03',
@@ -57,6 +59,10 @@ const STEPS = [
 
 export default function Landing({ onStart, onDemo }: LandingProps) {
   const marqueeList = [...cities, ...cities];
+  const [atlasRegion, setAtlasRegion] = useState<string>('all');
+  const atlasCities =
+    atlasRegion === 'all' ? cities : cities.filter((c) => c.region === atlasRegion);
+  const regionCount = (r: string) => cities.filter((c) => c.region === r).length;
 
   return (
     <div className="grain min-h-screen bg-paper text-ink">
@@ -119,8 +125,8 @@ export default function Landing({ onStart, onDemo }: LandingProps) {
               className="mt-6 max-w-md text-[15.5px] leading-[1.9] text-ink-soft"
             >
               一份结合 MBTI 人格、生活偏好与兴趣图谱的综合测评，
-              为数字游民、自由职业者与独立开发者，从全球 39
-              座热门城市中计算出你的 Top 5 定居之选。
+              为数字游民、自由职业者与独立开发者，从全球 100
+              座城市中计算出你的 Top 5 定居之选。
             </motion.p>
             <motion.div
               variants={fadeUp}
@@ -148,14 +154,14 @@ export default function Landing({ onStart, onDemo }: LandingProps) {
           >
             <div className="mb-4 flex items-center justify-between text-paper">
               <p className="font-mono text-[10px] uppercase tracking-eyebrow text-paper/60">
-                chart 39 · nomad routes
+                chart 100 · nomad routes
               </p>
               <CompassMark size={26} className="text-paper/70" />
             </div>
             <RouteChart cities={cities} compact className="text-paper/70 w-full" />
             <div className="mt-4 grid grid-cols-3 gap-px overflow-hidden rounded-[6px] border border-paper/15 text-center">
               {[
-                ['39', '收录城市'],
+                ['100', '收录城市'],
                 ['6', '大洲覆盖'],
                 ['0', '注册门槛'],
               ].map(([v, l]) => (
@@ -274,10 +280,111 @@ export default function Landing({ onStart, onDemo }: LandingProps) {
         </div>
       </section>
 
+      {/* 城市图集：按大洲浏览 */}
+      <section className="border-y hairline bg-card/50">
+        <div className="mx-auto max-w-almanac px-6 py-16 md:px-10 md:py-20">
+          <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
+            <div>
+              <p className="eyebrow mb-3">03 / the atlas</p>
+              <h2 className="font-display text-3xl font-bold tracking-tight md:text-4xl">城市图集</h2>
+            </div>
+            <p className="hidden max-w-xs text-sm leading-relaxed text-ink-soft md:block">
+              100 座城市、六大洲的公开数据快照；想逐城对比权重与成本，请进「城市对比」页。
+            </p>
+          </div>
+
+          <div className="mb-7 flex flex-wrap gap-2">
+            <button
+              type="button"
+              onClick={() => setAtlasRegion('all')}
+              className={`rounded-full border px-4 py-1.5 font-mono text-[11px] transition-colors ${
+                atlasRegion === 'all'
+                  ? 'border-clay bg-clay/10 text-clay'
+                  : 'border-ink/15 bg-card text-ink-soft hover:border-clay/50'
+              }`}
+            >
+              全部 · {cities.length}
+            </button>
+            {REGION_ORDER.map((r) => (
+              <button
+                key={r}
+                type="button"
+                onClick={() => setAtlasRegion(r)}
+                className={`rounded-full border px-4 py-1.5 font-mono text-[11px] transition-colors ${
+                  atlasRegion === r
+                    ? 'border-clay bg-clay/10 text-clay'
+                    : 'border-ink/15 bg-card text-ink-soft hover:border-clay/50'
+                }`}
+              >
+                {REGION_LABEL[r]} · {regionCount(r)}
+              </button>
+            ))}
+          </div>
+
+          {atlasRegion === 'all' ? (
+            <div className="grid gap-6 md:grid-cols-2">
+              {REGION_ORDER.map((r) => {
+                const pool = cities.filter((c) => c.region === r);
+                return (
+                  <div key={r} className="rounded-[10px] border hairline bg-card p-5">
+                    <div className="mb-3 flex items-baseline justify-between">
+                      <h3 className="font-heading text-base font-bold">{REGION_LABEL[r]}</h3>
+                      <span className="font-mono text-[10px] text-ink-soft">{pool.length} 城</span>
+                    </div>
+                    <div className="flex flex-wrap gap-1.5">
+                      {pool.map((c) => (
+                        <button
+                          key={c.id}
+                          type="button"
+                          onClick={() => setAtlasRegion(r)}
+                          className="rounded-[5px] border border-ink/10 bg-paper px-2 py-1 text-[11.5px] text-ink transition-colors hover:border-clay/60 hover:text-clay"
+                        >
+                          {c.nameZh}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <div className="overflow-hidden rounded-[10px] border hairline bg-card">
+              {atlasCities.map((c, i) => (
+                <div
+                  key={c.id}
+                  className="flex items-baseline justify-between gap-4 border-b hairline px-5 py-3 last:border-b-0"
+                >
+                  <div className="flex min-w-0 items-baseline gap-3">
+                    <span className="w-6 shrink-0 font-mono text-[10px] text-ink-soft/70">
+                      {String(i + 1).padStart(2, '0')}
+                    </span>
+                    <span className="text-[13.5px] font-medium text-ink">{c.nameZh}</span>
+                    <span className="shrink-0 font-mono text-[10px] text-ink-soft">
+                      {c.countryZh} · {subregionLabel(c.subregion)}
+                    </span>
+                  </div>
+                  <div className="hidden shrink-0 items-baseline gap-4 sm:flex">
+                    <span className="font-mono text-[10.5px] text-ink-soft">
+                      {c.monthlyCostUSD != null ? `~$${c.monthlyCostUSD.toLocaleString('en-US')}/月` : '成本 —'}
+                    </span>
+                    <span className="max-w-[220px] truncate text-[11px] text-ink-soft">
+                      {c.climateDetail?.summary ?? '气候 —'}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+          <p className="mt-4 font-mono text-[10px] text-ink-soft">
+            数据口径与来源见报告页脚注 · GeoNames / Open-Meteo / Numbeo / EF EPI
+          </p>
+        </div>
+      </section>
+
       {/* 深色城市带 */}
       <section className="overflow-hidden border-y hairline bg-ink py-10">
         <p className="mx-auto mb-7 max-w-almanac px-6 font-mono text-[10px] uppercase tracking-eyebrow text-paper/50 md:px-10">
-          39 cities · europe — asia — americas — africa
+          100 cities · 6 continents — from lisbon to nadi
         </p>
         <div className="relative flex w-max animate-marquee gap-10 whitespace-nowrap">
           {marqueeList.map((c, i) => (
@@ -293,12 +400,12 @@ export default function Landing({ onStart, onDemo }: LandingProps) {
 
       {/* 结尾 CTA */}
       <section className="mx-auto max-w-almanac px-6 py-20 text-center md:px-10 md:py-28">
-        <p className="eyebrow mb-5">03 / set sail</p>
+        <p className="eyebrow mb-5">04 / set sail</p>
         <h2 className="mx-auto max-w-2xl font-display text-3xl font-bold leading-snug tracking-tight md:text-[44px]">
           下一座城，不该靠运气决定。
         </h2>
         <p className="mx-auto mt-5 max-w-md text-[15px] leading-[1.9] text-ink-soft">
-          完成测评，让人格、预算与兴趣替你把 39 座城市排好序。
+          完成测评，让人格、预算与兴趣替你把 100 座城市排好序。
         </p>
         <button type="button" onClick={onStart} className="btn-clay mt-9">
           免费生成我的报告
@@ -313,6 +420,9 @@ export default function Landing({ onStart, onDemo }: LandingProps) {
           </div>
           <div className="flex flex-col gap-1 md:items-end">
             <p>生活成本与签证政策为参考快照，请以官方最新信息为准</p>
+            <p className="font-light">
+              数据：GeoNames (CC BY 4.0) / Open-Meteo (CC BY 4.0) / Numbeo / EF EPI
+            </p>
             <p className="font-light">字体：思源黑体 / IBM Plex Mono / Source Serif 4（OFL 开源许可）</p>
           </div>
         </div>

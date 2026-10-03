@@ -8,35 +8,37 @@ const ease = [0.22, 1, 0.36, 1] as const;
 
 const RADAR_AXES = ['居住成本', '网络', '安全', '社区', '英语', '签证'];
 
-/** 雷达六维：与报告页 CityMatch.scores 同源同公式 */
-function radarValues(row: CompareRow): number[] {
+/** 雷达六维：与报告页 CityMatch.scores 同源同公式；null = 城市缺该维数据 */
+function radarValues(row: CompareRow): (number | null)[] {
   const c = row.city;
   return [
     row.fitDetails.budget,
-    c.internet * 20,
+    c.internet != null ? c.internet * 20 : null,
     c.safety,
-    c.community * 20,
-    c.english * 20,
-    c.visaScore * 20,
+    c.community != null ? c.community * 20 : null,
+    c.english != null ? c.english * 20 : null,
+    c.visaScore != null ? c.visaScore * 20 : null,
   ];
 }
 
 export default function CompareCharts({ rows }: { rows: CompareRow[] }) {
   if (rows.length === 0) return null;
 
-  const series = rows.map((r) => ({
+  // 任一轴缺数据的城市不进雷达（避免 0 值误导），仍在条形与数值表中以 — 展示
+  const radarReady = rows.filter((r) => radarValues(r).every((v): v is number => v != null));
+  const series = radarReady.map((r) => ({
     id: r.city.id,
     label: r.city.nameZh,
     color: r.color,
-    values: radarValues(r),
+    values: radarValues(r) as number[],
   }));
 
-  /** 逐维条形：人格 + 8 偏好 + 兴趣 */
-  const dimRows: { label: string; valueOf: (r: CompareRow) => number }[] = [
+  /** 逐维条形：人格 + 11 偏好 + 兴趣 */
+  const dimRows: { label: string; valueOf: (r: CompareRow) => number | null }[] = [
     { label: '人格契合', valueOf: (r) => r.personalityFit },
     ...PREFERENCE_DIMENSIONS.map((d) => ({
       label: d.label,
-      valueOf: (r: CompareRow) => r.fitDetails[d.key] ?? 0,
+      valueOf: (r: CompareRow) => r.fitDetails[d.key],
     })),
     { label: '兴趣重合', valueOf: (r) => r.interestFit },
   ];
@@ -50,15 +52,28 @@ export default function CompareCharts({ rows }: { rows: CompareRow[] }) {
         <div className="mt-8 grid gap-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)]">
           {/* 多城雷达 */}
           <div className="card-paper p-5 md:p-7">
-            <RadarChart axes={RADAR_AXES} series={series} size={320} />
+            {series.length > 0 ? (
+              <RadarChart axes={RADAR_AXES} series={series} size={320} />
+            ) : (
+              <p className="flex h-[320px] items-center justify-center text-center text-[12px] leading-[1.8] text-ink-soft">
+                所选城市的雷达维度数据不全，暂不绘制雷达图——
+                <br />
+                完整数值见右侧逐维对比。
+              </p>
+            )}
             <div className="mt-4 flex flex-wrap justify-center gap-x-5 gap-y-1.5">
-              {rows.map((r) => (
+              {radarReady.map((r) => (
                 <span key={r.city.id} className="flex items-center gap-1.5 font-mono text-[10.5px] text-ink-soft">
                   <span className="inline-block h-2 w-2 rounded-[2px]" style={{ backgroundColor: r.color }} />
                   {r.city.nameZh}
                 </span>
               ))}
             </div>
+            {radarReady.length < rows.length ? (
+              <p className="mt-2 text-center font-mono text-[9.5px] text-ink-soft/70">
+                注：数据不全的城市未计入雷达图
+              </p>
+            ) : null}
           </div>
 
           {/* 逐维条形 + 数值表 */}
@@ -79,17 +94,23 @@ export default function CompareCharts({ rows }: { rows: CompareRow[] }) {
                       return (
                         <div key={r.city.id} className="flex items-center gap-2">
                           <span className="h-[7px] w-[7px] shrink-0 rounded-[2px]" style={{ backgroundColor: r.color }} />
-                          <div className="h-[5px] flex-1 overflow-hidden rounded-full bg-ink/10">
-                            <motion.div
-                              className="h-full rounded-full"
-                              style={{ backgroundColor: r.color }}
-                              initial={{ width: 0 }}
-                              whileInView={{ width: `${v}%` }}
-                              viewport={{ once: true }}
-                              transition={{ duration: 0.8, delay: Math.min(di * 0.03, 0.2), ease }}
-                            />
-                          </div>
-                          <span className="w-7 shrink-0 text-right font-mono text-[10px] text-ink-soft">{v}</span>
+                          {v != null ? (
+                            <>
+                              <div className="h-[5px] flex-1 overflow-hidden rounded-full bg-ink/10">
+                                <motion.div
+                                  className="h-full rounded-full"
+                                  style={{ backgroundColor: r.color }}
+                                  initial={{ width: 0 }}
+                                  whileInView={{ width: `${v}%` }}
+                                  viewport={{ once: true }}
+                                  transition={{ duration: 0.8, delay: Math.min(di * 0.03, 0.2), ease }}
+                                />
+                              </div>
+                              <span className="w-7 shrink-0 text-right font-mono text-[10px] text-ink-soft">{v}</span>
+                            </>
+                          ) : (
+                            <span className="flex-1 text-right font-mono text-[10px] text-ink-soft/70">— 无数据</span>
+                          )}
                         </div>
                       );
                     })}
@@ -120,10 +141,10 @@ export default function CompareCharts({ rows }: { rows: CompareRow[] }) {
                       <td className="py-1.5 pr-3 text-ink-soft">{dim.label}</td>
                       {rows.map((r) => {
                         const v = dim.valueOf(r);
-                        const tone = v >= 75 ? 'text-moss' : v >= 50 ? 'text-sea' : 'text-clay-deep';
+                        const tone = v == null ? 'text-ink-soft/60' : v >= 75 ? 'text-moss' : v >= 50 ? 'text-sea' : 'text-clay-deep';
                         return (
                           <td key={r.city.id} className={`py-1.5 pr-3 text-right ${tone}`}>
-                            {v}
+                            {v ?? '—'}
                           </td>
                         );
                       })}

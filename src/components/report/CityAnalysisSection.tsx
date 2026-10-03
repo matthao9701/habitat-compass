@@ -20,7 +20,7 @@ const PANELS: { key: 'ideal' | 'factors' | 'challenges'; title: string; mark: st
 export default function CityAnalysisSection({ top, axisScores }: CityAnalysisSectionProps) {
   const analysis = personalityCityAnalysis(
     axisScores,
-    top.city.traits,
+    top.city.traits ?? null,
     top.city,
     top.fitDetails,
   );
