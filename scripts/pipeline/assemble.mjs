@@ -7,7 +7,7 @@
  * - /tmp/pipeline/cost-rankings.json  公开统计生活成本 / 生活质量指数榜（NYC=100 口径）
  * - /tmp/pipeline/cost-details.json   公开统计城市详情页（平价一餐 / 市中心 1 居租金，USD）
  * - /tmp/pipeline/climate.json    Open-Meteo 近 10 年聚合（CC BY 4.0）
- * - /tmp/pipeline/epi.json        EF EPI 英语普及度（ISO2 → score/band）
+ * - /tmp/pipeline/epi.json        英语能力年度公开排名（ISO2 → score/band）
  * - src/data/cities/*.json        既有 39 城手工库（保留其编辑性字段与原 livingScore）
  *
  * 估算口径（DATA.md 同步记录）：新城 monthlyCostUSD = round(a·livingScore + b)，
@@ -166,7 +166,7 @@ const NEW_TAGS = {
   nadi: ['beach', 'watersports', 'wellness', 'nature'],
 };
 
-// EF EPI band → 1-5 序数（english 维度展示值）
+// 英语能力公开排名 band → 1-5 序数（english 维度展示值）
 const BAND_ORDINAL = { 'very high': 5, high: 4, moderate: 3, low: 2, 'very low': 1 };
 
 // 公开统计 rankings 中城市名与库内 id 的覆盖映射（归一匹配失败的才需要）

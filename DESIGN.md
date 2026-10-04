@@ -52,7 +52,7 @@
   - 正文：`font-body`（默认继承 body）Regular(400)，行高 1.8-1.9。
   - 辅助说明 / 脚注：Light(300) 或 Regular + 灰度降一档（text-ink-soft）。
 - 数字与数据：**IBM Plex Mono**（OFL，`@fontsource/ibm-plex-mono` 400/500/600），token `font-data`；评分/成本/指数表/雷达数值启用等宽与 `tabular-nums` 保证纵向对齐。
-- 英文点缀：**Source Serif 4**（OFL，`@fontsource/source-serif-4` 400/400-italic），token `font-serif-accent`——仅用于 Hero 英文副标（小写 `nomadmatch` + 宽字距）与引用；不与中文混排，中文一律黑体。
+- 英文点缀：**Source Serif 4**（OFL，`@fontsource/source-serif-4` 400/400-italic），token `font-serif-accent`——仅用于 Hero 英文副标（小写 `habitat compass` + 宽字距）与引用；不与中文混排，中文一律黑体。
 - 页脚署名：「字体：思源黑体 / IBM Plex Mono / Source Serif 4（OFL 开源许可）」极小字，与数据口径脚注并列（Landing 页脚 + 报告免责区）。
 - 节奏：杂志式编号章节（`01 / 02 / 03`）、宽字距 eyebrow 标签、大量细线分隔；数字是视觉锚点。
 
@@ -198,7 +198,7 @@
 
 ### 命名与商标自查备注（第十三轮留档）
 
-- 产品命名：中文名「栖居罗盘」为品牌主名；英文名 **NomadMatch**（与 localStorage 技术键前缀 nomadmatch.v1 一脉相承）。早期产物中的「Siju Compass」为弃用命名，已全站清零（verify-legal 断言把关）。
+- 产品命名：中文名「栖居罗盘」为品牌主名；英文名 **Habitat Compass**（与 localStorage 技术键前缀 nomadmatch.v1 一脉相承）。早期产物中的「Siju Compass」为弃用命名，已全站清零（verify-legal 断言把关）。
 - 商标边界：人格测评部分为自研映射与开源题库（OEJTS 1.2 结构 CC BY-NC-SA 4.0 / IPIP-NEO 公有领域 / O*NET CC BY 4.0），全站文案不使用 MBTI、Myers-Briggs、16Personalities 等第三方商标词，人格表述统一为「16 型人格画像 / Big Five 五维」。代码内部标识符（mbtiQuestions 等）为技术命名，不出现在任何页面文案。
 - 字体：Noto Sans SC / IBM Plex Mono / Source Serif 4 均为 SIL Open Font License 1.1，经 @fontsource 包自托管（OFL 允许网页嵌入，无需页面署名；许可副本随 node_modules 分发，方法论页另有声明）。
 - 图标/素材：全站图标为自绘几何 SVG（TabBar/CompassMark 等），无第三方图标库文件复制、无外部图片、无 Google Fonts 外链、生产构建无任何第三方脚本外链（verify-legal 第 9 节全 dist 扫描）。

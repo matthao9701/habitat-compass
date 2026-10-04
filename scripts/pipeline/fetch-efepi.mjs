@@ -1,5 +1,5 @@
 /**
- * EF EPI（EF English Proficiency Index，国别年度公开报告，引用口径）抓取
+ * 英语能力年度公开排名（国别年度公开报告，引用口径）抓取
  * 来源：https://www.ef.com/wwen/epi/ 页面内嵌数据（countrySlug + efEpiScore + proficiencySlug）
  * 输出：/tmp/pipeline/epi.json { ISO2: { score, band } }
  * band 直接采用 EF 官方 proficiencySlug（very-high / high / moderate / low / very-low）
@@ -38,5 +38,5 @@ while ((m = re.exec(html))) {
 }
 
 fs.writeFileSync('/tmp/pipeline/epi.json', JSON.stringify(out, null, 1));
-console.log(`EF EPI countries mapped: ${Object.keys(out).length}`);
+console.log(`English proficiency countries mapped: ${Object.keys(out).length}`);
 console.log('sample:', JSON.stringify({ PT: out.PT, TH: out.TH, JP: out.JP, MX: out.MX }));

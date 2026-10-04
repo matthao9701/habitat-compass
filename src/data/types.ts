@@ -14,7 +14,7 @@ export type Region = 'europe' | 'asia' | 'africa' | 'north-america' | 'south-ame
 /** 数字游民签证状态三档；null = 无可靠来源，未核实（界面隐藏） */
 export type VisaStatus = 'official' | 'alternative' | 'none' | null;
 
-/** EF EPI 英语普及度官方评级（国别年度报告，引用口径） */
+/** 公开英语能力排名官方评级（国别年度报告，引用口径） */
 export type EnglishBand = 'very high' | 'high' | 'moderate' | 'low' | 'very low';
 
 /**

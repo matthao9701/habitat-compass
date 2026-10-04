@@ -99,7 +99,9 @@ export default function VersionPicker({ open, onClose, onPick }: VersionPickerPr
                   </span>
                 </span>
                 <span className="shrink-0 text-right">
-                  <span className="block font-data text-base font-semibold text-clay">¥29.9</span>
+                  <span className="block font-data text-base font-semibold text-clay">
+                    {t('landing.picker.freeBadge')}
+                  </span>
                   <span className="block font-heading text-[12px] font-medium text-clay">
                     {t('landing.picker.proCta')} →
                   </span>

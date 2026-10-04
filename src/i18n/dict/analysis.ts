@@ -56,7 +56,7 @@ const zh: D = {
   // 注意
   'an.con.visaNone': '暂无数字游民签证，需走常规居留 / 工作许可路径',
   'an.con.noEnglish': '非英语环境，日常事务需基础当地语言',
-  'an.con.netSlow': '宽带中位 {n} Mbps 偏低，重网络工作建议备移动热点方案',
+  'an.con.netSlow': '宽带中位 {n} Mbps 偏低，网络密集型工作建议备移动热点方案',
   'an.con.safetyLow': '治安指数 {n}/100 偏低，夜间出行需留意区域选择',
   'an.con.costMid': '成本指数 {n}（NYC=100）处于中上水平，预算建议预留 10-15% 缓冲',
   'an.con.hot': '年均 {n}°C 偏热，夏季办公环境需留意降温',

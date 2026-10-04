@@ -65,7 +65,7 @@ export const PREFERENCE_DIMENSIONS: { key: string; label: string; desc: string; 
   { key: 'size', label: '城市规模', desc: '规模偏好 × 城市体量' },
   { key: 'social', label: '社交氛围', desc: '社交偏好 × 游民社区规模' },
   { key: 'language', label: '英语友好', desc: '语言需求 × 城市英语度' },
-  { key: 'englishDepth', label: '英语普及', desc: 'EF EPI 评级与英语环境', objective: true },
+  { key: 'englishDepth', label: '英语普及', desc: '公开英语排名分档与英语环境', objective: true },
   { key: 'visa', label: '签证便利', desc: '签证诉求 × 签证灵活度' },
   { key: 'safety', label: '治安安全', desc: '公开统计测算 · 客观安全分', objective: true },
   { key: 'remote', label: '远程办公', desc: '办公条件 × 网络质量' },
@@ -140,7 +140,7 @@ export function cityCons(city: City): string[] {
   push(has(city.english) && city.english <= 2, '非英语环境，日常事务需基础当地语言');
   push(
     has(city.internetMbps) && city.internetMbps < 80,
-    `宽带中位 ${city.internetMbps} Mbps 偏低，重网络工作建议备移动热点方案`,
+    `宽带中位 ${city.internetMbps} Mbps 偏低，网络密集型工作建议备移动热点方案`,
   );
   push(has(city.safety) && city.safety < 62, `治安指数 ${city.safety}/100 偏低，夜间出行需留意区域选择`);
   push(

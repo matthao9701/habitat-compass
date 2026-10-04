@@ -71,7 +71,7 @@ for (const { rel, lang, kind } of pages) {
 
 console.log('\n══ 二、隐私政策关键要素（GDPR 信息义务） ══');
 const PRIV_ZH: Array<[string, string]> = [
-  ['控制者与占位邮箱', 'privacy@nomadmatch.app'],
+  ['控制者与占位邮箱', 'privacy@habitatcompass.app'],
   ['存储键披露', 'nomadmatch.v1'],
   ['法律基础 Art. 6(1)(b)', '6(1)(b)'],
   ['ePrivacy strictly necessary', 'strictly necessary'],
@@ -96,7 +96,7 @@ const PRIV_ZH: Array<[string, string]> = [
 ];
 for (const [name, kw] of PRIV_ZH) check(`zh 隐私页：${name}`, htmls['privacy/index.html']?.includes(kw) ?? false, kw);
 const PRIV_EN: Array<[string, string]> = [
-  ['placeholder mailbox', 'privacy@nomadmatch.app'],
+  ['placeholder mailbox', 'privacy@habitatcompass.app'],
   ['key prefix disclosure', 'nomadmatch.v1'],
   ['Art. 6(1)(b)', 'Art. 6(1)(b)'],
   ['Art. 5(3) ePrivacy', 'Art. 5(3)'],
@@ -141,44 +141,41 @@ const TERMS_ZH: Array<[string, string]> = [
   ['第三方快照可能过时', '可能过时或存在误差'],
   ['签证以官方渠道为准', '通过官方渠道核实'],
   ['责任限制', '责任限制'],
-  ['演示性付费 ¥29.9', '¥29.9'],
-  ['无真实扣款', '不会产生任何真实扣款'],
-  ['无退款流程', '无真实收款与退款流程'],
-  ['本地解锁记录', 'proUnlocked / orders'],
+  ['全量免费（计费节已删）', '全部功能<strong>无需付费</strong>'],
   ['去品牌化：来源统一表述', '官方开放数据（Open Data）与公开统计测算'],
   ['GeoNames CC BY', 'GeoNames（CC BY 4.0）'],
   ['Open-Meteo CC BY', 'Open-Meteo'],
   ['OEJTS 许可', 'CC BY-NC-SA 4.0'],
   ['适用法域占位', '占位：待正式部署后补充法域与管辖条款'],
-  ['不退款条款', '所有数字商品一经售出概不退款'],
-  ['即时交付与撤回权放弃（指令措辞）', '用户在购买确认时明确同意即时交付，并据此依法放弃法定撤回权（包括欧盟消费者权利指令下的 14 天撤回权）'],
-  ['EU 撤回权机制（指令措辞）', '依法放弃法定撤回权（包括欧盟消费者权利指令下的 14 天撤回权）'],
-  ['即时交付确认', '明确同意即时交付'],
-  ['不退款英文对照', 'All sales are final; no refunds'],
+  ['无付费残留', '¥29.9|退款|撤回权|订单|计费|买断'],
 ];
-for (const [name, kw] of TERMS_ZH) check(`zh 协议页：${name}`, htmls['terms/index.html']?.includes(kw) ?? false, kw);
+for (const [name, kw] of TERMS_ZH) {
+  if (name === '无付费残留') {
+    check(`zh 协议页：${name}`, !new RegExp(kw).test(htmls['terms/index.html'] ?? ''), kw);
+  } else {
+    check(`zh 协议页：${name}`, htmls['terms/index.html']?.includes(kw) ?? false, kw);
+  }
+}
 const TERMS_EN: Array<[string, string]> = [
   ['as-is', 'as is'],
   ['not professional advice (unified wording)', 'not immigration, visa, legal, tax, medical, or financial advice'],
   ['snapshots may be outdated', 'may be outdated or imprecise'],
   ['verify official channels', 'verify with official channels'],
   ['limitation of liability', 'Limitation of liability'],
-  ['¥29.9 demo billing', '¥29.9'],
-  ['no real charge', 'no real charge is ever made'],
-  ['no refund process', 'no real collection or refund process'],
-  ['local unlock log', 'proUnlocked / orders'],
+  ['free of charge (billing removed)', 'free of charge'],
   ['open data wording', 'official open data & public statistical estimates'],
   ['GeoNames CC BY', 'GeoNames (CC BY 4.0)'],
   ['OEJTS licence', 'CC BY-NC-SA 4.0'],
   ['governing law placeholder', 'placeholder: jurisdiction and venue to be added'],
-  ['no-refund clause', 'All sales are final; no refunds'],
-  ['EU withdrawal (statutory wording)', 'you thereby lose your statutory right of withdrawal (including the 14-day right under the EU Consumer Rights Directive)'],
-  ['immediate delivery wording', 'delivery is deemed complete upon commencement of streaming/download or access'],
-  ['EU directive citation', 'EU Consumer Rights Directive'],
-  ['immediate delivery consent', 'you expressly consent to immediate delivery'],
-  ['immediate delivery & deemed complete', 'delivery is deemed complete upon commencement of streaming/download or access'],
+  ['no paid residue', '¥29\\.9|no refunds|withdrawal|orders|billing|one-time purchase'],
 ];
-for (const [name, kw] of TERMS_EN) check(`en 协议页：${name}`, htmls['en/terms/index.html']?.includes(kw) ?? false, kw);
+for (const [name, kw] of TERMS_EN) {
+  if (name === 'no paid residue') {
+    check(`en 协议页：${name}`, !new RegExp(kw).test(htmls['en/terms/index.html'] ?? ''), kw);
+  } else {
+    check(`en 协议页：${name}`, htmls['en/terms/index.html']?.includes(kw) ?? false, kw);
+  }
+}
 
 console.log('\n══ 五、法律页互链与页脚链接 ══');
 for (const { rel, lang, kind } of pages) {
@@ -247,14 +244,19 @@ const DISC_EN: Array<[string, string]> = [
 ];
 for (const [name, kw] of DISC_EN) check(`en 免责页：${name}`, htmls['en/disclaimer/index.html']?.includes(kw) ?? false, kw);
 
-console.log('\n══ 八、PayModal 欧盟撤回权确认（不退款条款的合规兜底） ══');
-const paySrc = fs.readFileSync(path.join(ROOT, 'src/components/billing/PayModal.tsx'), 'utf8');
-const uiSrc = fs.readFileSync(path.join(ROOT, 'src/i18n/dict/ui.ts'), 'utf8') + fs.readFileSync(path.join(ROOT, 'src/i18n/dict/extra.ts'), 'utf8');
-check('PayModal 含 euAck 状态与 checkbox', paySrc.includes('euAck') && paySrc.includes('type="checkbox"'));
-check('确认按钮未勾选时禁用（disabled={!euAck}）', paySrc.includes('disabled={!euAck}'));
-check('打开弹窗时重置勾选', paySrc.includes('setEuAck(false)'));
-check('词典键 bill.pay.euNotice（zh+en，指令措辞）', uiSrc.includes("'bill.pay.euNotice': '我明确同意即时交付数字内容") && uiSrc.includes("'bill.pay.euNotice': 'I expressly consent to immediate delivery"));
-check('确认表述含法定撤回权放弃', uiSrc.includes('依法放弃法定撤回权') && uiSrc.includes('EU Consumer Rights Directive'));
+console.log('\n══ 八、付费系统全量下线（第十四轮：功能全免费开放） ══');
+check('PayModal 组件已删除', !fs.existsSync(path.join(ROOT, 'src/components/billing/PayModal.tsx')));
+check('ProIntro 组件已删除', !fs.existsSync(path.join(ROOT, 'src/components/billing/ProIntro.tsx')));
+const spaSrc = ['src/App.tsx', 'src/components/Landing.tsx', 'src/components/ProfileScreen.tsx', 'src/components/VersionPicker.tsx', 'src/lib/storage.ts', 'src/lib/telemetry.ts']
+  .map((f) => fs.readFileSync(path.join(ROOT, f), 'utf8'))
+  .join('\n');
+for (const token of ['proUnlocked', 'createProOrder', 'resetBilling', 'PRO_PRICE_CNY', 'PayChannel', 'ProOrder', 'PayModal', 'ProIntro', 'pro_intro_view', 'pay_click', 'unlock_success']) {
+  check(`SPA 无付费残留：${token}`, !spaSrc.includes(token), token);
+}
+const dictSrc = fs.readFileSync(path.join(ROOT, 'src/i18n/dict/ui.ts'), 'utf8') + fs.readFileSync(path.join(ROOT, 'src/i18n/dict/extra.ts'), 'utf8');
+for (const token of ["'bill.", "'pi.", 'pf.orders', 'pf.pro', 'proIntro', 'unlockCta', '29.9']) {
+  check(`词典无付费残留：${token}`, !dictSrc.includes(token), token);
+}
 
 console.log('\n══ 九、合规扫描（商标词/命名/外链/署名） ══');
 // 9.1 全 dist 无第三方脚本外链
@@ -275,7 +277,7 @@ const trademark = allHtml.filter((p) => /MBTI|Myers|Briggs|16personalities/i.tes
 check('dist 全部 HTML 无 MBTI/Myers-Briggs/16Personalities 商标词', trademark.length === 0, trademark.slice(0, 3).map((p) => path.relative(ROOT, p)).join(', '));
 // 9.3 全 dist 无弃用品牌名 Siju
 const siju = allHtml.filter((p) => fs.readFileSync(p, 'utf8').includes('Siju'));
-check('dist 全部 HTML 无弃用命名 "Siju"（已统一 NomadMatch）', siju.length === 0, siju.slice(0, 3).join(', '));
+check('dist 全部 HTML 无弃用命名 "Siju"（已统一 Habitat Compass）', siju.length === 0, siju.slice(0, 3).join(', '));
 // 9.0 受限商业源品牌（拼接构造，避免本文件自身在全库 grep 中命中）
 const NB = ['num', 'beo'].join('');
 const BRANDED_UNDERSCORE = 'nb' + '_';

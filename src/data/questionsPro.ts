@@ -31,7 +31,7 @@ export const DOMAIN_SHORT: Record<BigFiveDomain, string> = {
 export const IPIP_SCALE = [
   { value: 1, label: '非常不准确' },
   { value: 2, label: '较不准确' },
-  { value: 3, label: '不好确定' },
+  { value: 3, label: '不确定' },
   { value: 4, label: '较准确' },
   { value: 5, label: '非常准确' },
 ] as const;

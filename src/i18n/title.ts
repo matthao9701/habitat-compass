@@ -1,7 +1,7 @@
 /** 每种语言的 SEO 标题（运行时随语言切换写入 document.title） */
 export const TITLE_BY_LANG: Record<'zh' | 'en', string> = {
   zh: '栖居罗盘 · 海外定居指南',
-  en: 'Compass Living · Overseas Settlement Guide',
+  en: 'Habitat Compass · Overseas Settlement Guide',
 };
 
 /** index.html 静态 meta 的双语 description（构建期默认 zh，运行时标题随语言切换） */

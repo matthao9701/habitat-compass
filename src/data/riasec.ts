@@ -1,7 +1,7 @@
 /**
  * O*NET Interest Profiler Short Form（RIASEC 六维）——30 题精选
  * 来源：O*NET Resource Center「Interest Profiler Short Form」（Public Domain，美国劳工部赞助）
- * 口径：每维 5 题 × 5 点喜好量表（1=非常不喜欢 … 5=非常感兴趣），维度分 5~25。
+ * 口径：每维 5 题 × 5 点喜好量表（1=非常不喜欢 … 5=非常喜欢），维度分 5~25。
  * 题面：text 为中文题干；ref 为对应 O*NET 官方 activity 英文短语（en 模式渲染 ref）。
  * 详细来源与许可见 DATA.md 第九节。
  */
@@ -21,9 +21,9 @@ export interface RiasecQuestion {
 export const RIASEC_SCALE: { value: number; label: string }[] = [
   { value: 1, label: '非常不喜欢' },
   { value: 2, label: '不太喜欢' },
-  { value: 3, label: '不好确定' },
+  { value: 3, label: '不确定' },
   { value: 4, label: '比较喜欢' },
-  { value: 5, label: '非常感兴趣' },
+  { value: 5, label: '非常喜欢' },
 ];
 
 export const RIASEC_DIMS: RiasecKey[] = ['R', 'I', 'A', 'S', 'E', 'C'];

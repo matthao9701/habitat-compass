@@ -1,8 +1,7 @@
 /**
  * telemetry.ts — 第六轮：轻量埋点（纯前端 localStorage 计数，无后端、无个人身份信息）
  *
- * 记录事件：版本选择 / 各阶段开始与完成 / 报告生成 / 硬约束使用 /
- * 付费页曝光 / 支付点击 / 解锁成功。
+ * 记录事件：版本选择 / 各阶段开始与完成 / 报告生成 / 硬约束使用。
  * 存储：nomadmatch.v1:funnel → Record<eventKey, { count, last }>
  * 命名约定：eventKey = 事件名（可带阶段后缀），如 'stage_start_1_personality'。
  */
@@ -12,10 +11,7 @@ export type FunnelEvent =
   | 'quiz_version_lite'
   | 'quiz_version_pro'
   | 'report_generated'
-  | 'hard_constraints_used'
-  | 'pro_intro_view'
-  | 'pay_click'
-  | 'unlock_success';
+  | 'hard_constraints_used';
 
 interface FunnelEntry {
   count: number;

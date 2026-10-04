@@ -315,7 +315,7 @@ function climateComfortFit(detail: City['climateDetail']): number | null {
   return clamp(tempScore + sunBonus + precipPenalty, 5, 100);
 }
 
-/** 英语普及（客观）：EF EPI 官方评级 → 分值；缺 EPI 回退 english 序数 × 20 */
+/** 英语普及（客观）：公开英语能力排名官方评级 → 分值；缺评级回退 english 序数 × 20 */
 const BAND_SCORE: Record<string, number> = {
   'very high': 95,
   high: 85,

@@ -72,7 +72,7 @@ check('固定宽带网速快照覆盖率 ≥ 90%', COUNTRIES.filter((c) => c.int
 check('网速取值合理 5-500 Mbps（非空者）', COUNTRIES.every((c) => c.internetMbpsFixed == null || (c.internetMbpsFixed >= 5 && c.internetMbpsFixed <= 500)));
 check('GPI / 网速来源标注为手工快照口径', COUNTRIES.every((c) => {
   const g = c.gpi == null || (c.sources.gpi ?? '').includes('GPI');
-  const n = c.internetMbpsFixed == null || (c.sources.internetMbpsFixed ?? '').includes('Speedtest');
+  const n = c.internetMbpsFixed == null || (c.sources.internetMbpsFixed ?? '').includes('公开网速榜单');
   return g && n;
 }));
 check(

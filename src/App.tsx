@@ -3,7 +3,6 @@ import { AnimatePresence, motion } from 'framer-motion';
 import Landing from './components/Landing';
 import Quiz from './components/Quiz';
 import Report from './components/Report';
-import ProIntro from './components/billing/ProIntro';
 import TabBar, { type TabId } from './components/TabBar';
 import Footer from './components/Footer';
 import CompareScreen from './components/compare/CompareScreen';
@@ -16,9 +15,9 @@ import { track, trackStage } from './lib/telemetry';
 import { cities as CITIES } from './data';
 import { I18nProvider } from './i18n';
 
-type Screen = 'landing' | 'quiz' | 'report' | 'compare' | 'profile' | 'pro-intro';
+type Screen = 'landing' | 'quiz' | 'report' | 'compare' | 'profile';
 
-/** Tab 栏仅在三个常驻页面显示（quiz / report / pro-intro 为专注模式） */
+/** Tab 栏仅在三个常驻页面显示（quiz / report 为专注模式） */
 const TAB_SCREENS: Screen[] = ['landing', 'compare', 'profile'];
 
 export default function App() {
@@ -38,13 +37,9 @@ export default function App() {
     go(tab);
   }
 
-  /** 进入测评：标准版未解锁时跳商品介绍页（可预览，不可答题） */
+  /** 进入测评：两版全量免费开放 */
   function startQuiz(version: QuizVersion = 'lite'): void {
     track(version === 'pro' ? 'quiz_version_pro' : 'quiz_version_lite');
-    if (version === 'pro' && !storage.isProUnlocked()) {
-      go('pro-intro');
-      return;
-    }
     setQuizVersion(version);
     go('quiz');
   }
@@ -128,11 +123,6 @@ export default function App() {
     go('compare');
   }
 
-  /** 标准版商品介绍页（未购买可预览） */
-  function openProIntro(): void {
-    go('pro-intro');
-  }
-
   return (
     <I18nProvider>
       <div className="min-h-screen bg-paper">
@@ -148,13 +138,7 @@ export default function App() {
             transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
           >
             {screen === 'landing' && (
-              <Landing onStart={startQuiz} onDemo={openDemo} onProIntro={openProIntro} />
-            )}
-            {screen === 'pro-intro' && (
-              <ProIntro
-                onStartPro={() => startQuiz('pro')}
-                onExit={exitQuiz}
-              />
+              <Landing onStart={startQuiz} onDemo={openDemo} />
             )}
             {screen === 'quiz' && (
               <Quiz onComplete={completeQuiz} onExit={exitQuiz} version={quizVersion} />
@@ -175,7 +159,6 @@ export default function App() {
                 onOpenQuiz={startQuiz}
                 onOpenHistory={openHistory}
                 onOpenCompare={openCompare}
-                onProIntro={openProIntro}
               />
             )}
           </motion.div>

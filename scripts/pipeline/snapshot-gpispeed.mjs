@@ -1,11 +1,11 @@
 // 第七轮国家数据补录：GPI（IEP Global Peace Index 2024）与固定宽带网速
-// （Ookla Speedtest Global Index 国家级中位数下行）手工快照 → src/data/countries.json
+// （公开网速榜单 国家级中位数下行）手工快照 → src/data/countries.json
 //
 // 口径与声明：
 // - GPI：IEP Global Peace Index 2024（163 国/地区榜单）。score = 1-5（越低越和平），rank = 全球排名。
 //   本文件数值为「公开报道整理的手工快照」，为近似参考值，以 IEP 原报告为准（引用口径，非转载全文）。
-// - 网速：Ookla Speedtest Global Index 国家级中位数（固定宽带，下行 Mbps）公开榜单快照（2025 年内），
-//   为近似参考值，以 Ookla 原始口径为准。
+// - 网速：公开网速榜单 国家级中位数（固定宽带，下行 Mbps）快照（2025 年内），
+//   为近似参考值，以榜单原始口径为准。
 // - 两源均为「参考信息层」，不参与引擎加权打分（与国家宏观数据同层）。
 // - 库内 65 国中个别不在 GPI 163 国榜单（如 HK 作为地区不单列）时保持 null 并在 sources 注明原因。
 //
@@ -112,7 +112,7 @@ const NOT_IN_GPI = {
 };
 
 const NET_DOWN_MBPS = {
-  // code: [中位数下行 Mbps, 快照期] — Ookla Speedtest Global Index（固定宽带），近似快照
+  // code: [中位数下行 Mbps, 快照期] — 公开网速榜单（固定宽带），近似快照
   SG: [310, '2025H1'],
   HK: [270, '2025H1'],
   CL: [231, '2025H1'],
@@ -197,7 +197,7 @@ const NET_DOWN_MBPS = {
 const GPI_SOURCE =
   'GPI = IEP Global Peace Index 2024（163 国榜单；公开报道整理的手工快照，近似参考值，以 IEP 原报告为准；score 1-5 越低越和平，rank 为全球排名）';
 const NET_SOURCE =
-  'Ookla Speedtest Global Index（国家级中位数 · 固定宽带下行 Mbps；公开榜单手工快照，近似参考值，以 Ookla 口径为准）';
+  '公开网速榜单（国家级中位数 · 固定宽带下行 Mbps；公开榜单手工快照，近似参考值，以榜单原始口径为准）';
 
 const list = JSON.parse(readFileSync(TARGET, 'utf-8'));
 let gpiHit = 0;

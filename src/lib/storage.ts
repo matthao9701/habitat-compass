@@ -119,59 +119,6 @@ export function removeArchive(id: string): void {
   );
 }
 
-// ---- 虚拟计费（演示环境：不产生真实扣款） ----
-
-export const PRO_PRICE_CNY = 29.9;
-
-export type PayChannel = 'alipay' | 'wechat' | 'card';
-
-export interface ProOrder {
-  id: string;
-  createdAt: number;
-  amountCny: number;
-  channel: PayChannel;
-  /** 虚拟订单状态，演示环境固定 paid */
-  status: 'paid';
-}
-
-export function isProUnlocked(): boolean {
-  return read<boolean>('proUnlocked', false);
-}
-
-export function setProUnlocked(v: boolean): void {
-  write('proUnlocked', v);
-}
-
-export function loadOrders(): ProOrder[] {
-  return read<ProOrder[]>('orders', []);
-}
-
-function saveOrders(list: ProOrder[]): void {
-  write('orders', list);
-}
-
-/** 生成虚拟订单并解锁标准版 */
-export function createProOrder(channel: PayChannel): ProOrder {
-  const order: ProOrder = {
-    id: `VM${Date.now().toString(36).toUpperCase()}${Math.floor(Math.random() * 900 + 100)}`,
-    createdAt: Date.now(),
-    amountCny: PRO_PRICE_CNY,
-    channel,
-    status: 'paid',
-  };
-  const list = loadOrders();
-  list.unshift(order);
-  saveOrders(list.slice(0, 20));
-  setProUnlocked(true);
-  return order;
-}
-
-/** 演示用：重置购买记录（清空订单 + 解锁状态），需二次确认 */
-export function resetBilling(): void {
-  remove('orders');
-  setProUnlocked(false);
-}
-
 // ---- 标准版草稿与历史（与简易版分开存，互不覆盖） ----
 
 export function loadProDraft(): UserAnswers | null {

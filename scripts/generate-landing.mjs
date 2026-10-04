@@ -172,7 +172,7 @@ ${Object.entries(hreflang).map(([k, v]) => `<link rel="alternate" hreflang="${k 
 <meta property="og:description" content="${esc(desc)}">
 <meta property="og:url" content="${esc(canonical)}">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="栖居罗盘 · NomadMatch">
+<meta property="og:site_name" content="栖居罗盘 · Habitat Compass">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="${esc(title)}">
 <meta name="twitter:description" content="${esc(desc)}">
@@ -181,7 +181,7 @@ ${jsonLd.map((j) => `<script type="application/ld+json">\n${JSON.stringify(j, nu
 </head>
 <body>
 <header><div class="wrap hd">
-<a class="brand" href="${lang === 'zh' ? '/' : '/en/'}"><span class="dot">栖</span>栖居罗盘 · NomadMatch</a>
+<a class="brand" href="${lang === 'zh' ? '/' : '/en/'}"><span class="dot">栖</span>栖居罗盘 · Habitat Compass</a>
 <nav>
 <a href="${lang === 'zh' ? '/cities/' : '/en/cities/'}">${lang === 'zh' ? '城市索引' : 'Cities'}</a>
 <a href="${lang === 'zh' ? '/countries/' : '/en/countries/'}">${lang === 'zh' ? '国家索引' : 'Countries'}</a>
@@ -194,7 +194,7 @@ ${langSwitch}
 <p>${lang === 'zh'
     ? '数据来源：官方开放数据（Open Data）与公开统计测算 · Open-Meteo（CC BY 4.0）· GeoNames（CC BY 4.0）· WHO 2021 空气质量指导值分档 · 快照日期见各数据卡。签证与政策多变，出行前务必核实官方渠道；本站为决策辅助工具，不构成任何投资、法律或移民建议。'
     : 'Data sources: official open data & public statistical estimates · Open-Meteo (CC BY 4.0) · GeoNames (CC BY 4.0) · WHO 2021 air quality guideline bands · snapshot dates on each card. Visa policies change frequently — always verify with official channels before travelling. This site is a decision-support tool and is not immigration, visa, legal, tax, medical, or financial advice.'}</p>
-<p style="margin-top:6px">${lang === 'zh' ? '匹配口径与数据许可详见' : 'Scoring methodology & data licences:'} <a href="${lang === 'zh' ? '/methodology/' : '/en/methodology/'}" style="color:var(--pine)">${lang === 'zh' ? '方法论页' : 'Methodology'}</a> · <a href="${lang === 'zh' ? '/privacy/' : '/en/privacy/'}" style="color:var(--pine)">${lang === 'zh' ? '隐私政策' : 'Privacy'}</a> · <a href="${lang === 'zh' ? '/terms/' : '/en/terms/'}" style="color:var(--pine)">${lang === 'zh' ? '用户协议' : 'Terms'}</a> · <a href="${lang === 'zh' ? '/disclaimer/' : '/en/disclaimer/'}" style="color:var(--pine)">${lang === 'zh' ? '免责声明' : 'Disclaimer'}</a> · © 栖居罗盘 NomadMatch</p>
+<p style="margin-top:6px">${lang === 'zh' ? '匹配口径与数据许可详见' : 'Scoring methodology & data licences:'} <a href="${lang === 'zh' ? '/methodology/' : '/en/methodology/'}" style="color:var(--pine)">${lang === 'zh' ? '方法论页' : 'Methodology'}</a> · <a href="${lang === 'zh' ? '/privacy/' : '/en/privacy/'}" style="color:var(--pine)">${lang === 'zh' ? '隐私政策' : 'Privacy'}</a> · <a href="${lang === 'zh' ? '/terms/' : '/en/terms/'}" style="color:var(--pine)">${lang === 'zh' ? '用户协议' : 'Terms'}</a> · <a href="${lang === 'zh' ? '/disclaimer/' : '/en/disclaimer/'}" style="color:var(--pine)">${lang === 'zh' ? '免责声明' : 'Disclaimer'}</a> · © 栖居罗盘 Habitat Compass</p>
 </div></footer>
 </body>
 </html>`;
@@ -202,33 +202,33 @@ ${langSwitch}
 
 // ---------- 城市：数据卡 ----------
 function cityCards(city, lang) {
-  const S = lang === 'zh' ? '来源' : 'Source';
+  const S = lang === 'zh' ? '来源：' : 'Source: ';
   const money = (v) => `$${Math.round(v)}`;
   const no = (zh, en) => lang === 'zh' ? zh : en;
   const cards = [];
   const cost = city.monthlyCostUSD;
   cards.push(cost != null
-    ? { h: no('月生活成本', 'Monthly cost'), v: money(cost), small: no('含房租 · 估算区间', 'incl. rent · est. range'), detail: `${city.cost?.[0] != null ? money(city.cost[0]) : '?'} – ${city.cost?.[1] != null ? money(city.cost[1]) : '?'}`, src: `${S}: 公开统计测算（NYC=100 口径）线性拟合 + 页面快照，更新于 ${BUILD_DATE}` }
-    : { h: no('月生活成本', 'Monthly cost'), none: no('数据待核实', 'Data pending'), src: `${S}: 暂无该城公开测算明细（不编造数据）` });
+    ? { h: no('月生活成本', 'Monthly cost'), v: money(cost), small: no('含房租 · 估算区间', 'incl. rent · est. range'), detail: `${city.cost?.[0] != null ? money(city.cost[0]) : '?'} – ${city.cost?.[1] != null ? money(city.cost[1]) : '?'}`, src: `${S}公开统计测算（NYC=100 口径）线性拟合 + 页面快照，更新于 ${BUILD_DATE}` }
+    : { h: no('月生活成本', 'Monthly cost'), none: no('数据待核实', 'Data pending'), src: `${S}暂无该城公开测算明细（不编造数据）` });
   const safety = city.safety;
   cards.push(safety != null
-    ? { h: no('安全指数', 'Safety index'), v: `${safety}<small>/100</small>`, src: `${S}: 公开统计测算 · 安全指数` }
-    : { h: no('安全指数', 'Safety index'), none: no('数据待核实（国家级参考见下）', 'Data pending (see country-level)'), src: `${S}: 暂无该城安全测算数据` });
+    ? { h: no('安全指数', 'Safety index'), v: `${safety}<small>/100</small>`, src: `${S}公开统计测算 · 安全指数` }
+    : { h: no('安全指数', 'Safety index'), none: no('数据待核实（国家级参考见下）', 'Data pending (see country-level)'), src: `${S}暂无该城安全测算数据` });
   const cl = city.climateDetail;
   cards.push(cl
-    ? { h: no('气候（十年均值）', 'Climate (10-yr avg)'), v: `${cl.avgTempC}<small>°C 年均</small>`, detail: `${cl.annualPrecipMm}mm · ${cl.sunshineHours}h 日照/年`, src: `${S}: Open-Meteo Historical（CC BY 4.0）2015–2024` }
-    : { h: no('气候', 'Climate'), none: no('数据待核实', 'Data pending'), src: `${S}: Open-Meteo` });
+    ? { h: no('气候（十年均值）', 'Climate (10-yr avg)'), v: `${cl.avgTempC}<small>°C 年均</small>`, detail: `${cl.annualPrecipMm}mm · ${cl.sunshineHours}h 日照/年`, src: `${S}Open-Meteo Historical（CC BY 4.0）2015–2024` }
+    : { h: no('气候', 'Climate'), none: no('数据待核实', 'Data pending'), src: `${S}Open-Meteo` });
   const mbps = city.internetMbps ?? COUNTRY_BY_CODE.get(city.countryCode)?.internetMbpsFixed ?? null;
   cards.push(mbps != null
-    ? { h: no('固定宽带', 'Fixed broadband'), v: `${mbps}<small>Mbps 下行中位</small>`, src: `${S}: 公开统计测算（固定宽带）${city.internetMbps == null ? '（国家级口径）' : ''}` }
-    : { h: no('固定宽带', 'Fixed broadband'), none: no('数据待核实', 'Data pending'), src: `${S}: 暂无公开网速测算` });
+    ? { h: no('固定宽带', 'Fixed broadband'), v: `${mbps}<small>Mbps 下行中位</small>`, src: `${S}公开统计测算（固定宽带）${city.internetMbps == null ? '（国家级口径）' : ''}` }
+    : { h: no('固定宽带', 'Fixed broadband'), none: no('数据待核实', 'Data pending'), src: `${S}暂无公开网速测算` });
   const aq = city.airQuality;
   cards.push(aq
-    ? { h: no('空气质量', 'Air quality'), v: `${aq.pm25}<small>µg/m³ PM2.5 · ${AIR_BAND[lang][aq.band]}</small>`, src: `${S}: Open-Meteo CAMS · WHO 2021 分档（${aq.period}）` }
-    : { h: no('空气质量', 'Air quality'), none: no('数据待核实', 'Data pending'), src: `${S}: Open-Meteo Air Quality` });
+    ? { h: no('空气质量', 'Air quality'), v: `${aq.pm25}<small>µg/m³ PM2.5 · ${AIR_BAND[lang][aq.band]}</small>`, src: `${S}Open-Meteo CAMS · WHO 2021 分档（${aq.period}）` }
+    : { h: no('空气质量', 'Air quality'), none: no('数据待核实', 'Data pending'), src: `${S}Open-Meteo Air Quality` });
   const co = COUNTRY_BY_CODE.get(city.countryCode);
   const visaCity = city.visaStatus ? (VISA_STATUS[lang][city.visaStatus] ?? city.visaStatus) : null;
-  cards.push({ h: no('签证概览', 'Visa overview'), none: visaCity ?? (co?.visaOverview ?? no('以国家级信息为准 · 政策多变请核实官方渠道', 'See country-level info · verify with officials')), src: `${S}: ${co ? `${co.nameZh} 快照（${co.updatedAt}）` : '手工快照'} · 免责：签证政策多变，务必核实官方渠道` });
+  cards.push({ h: no('签证概览', 'Visa overview'), none: visaCity ?? (co?.visaOverview ?? no('以国家级信息为准 · 政策多变请核实官方渠道', 'See country-level info · verify with officials')), src: `${S}${co ? `${co.nameZh} 快照（${co.updatedAt}）` : '手工快照'} · 免责：签证政策多变，务必核实官方渠道` });
   return cards.map((c) => `<div class="card${c.none ? ' none' : ''}">
 <h3>${c.h}</h3>
 <div class="v">${c.none ?? c.v}${c.none ? '' : c.small ? `<small>${c.small}</small>` : ''}</div>
@@ -271,7 +271,7 @@ function cityFaq(city, lang) {
     faqs.push({
       q: `${city.nameZh}生活成本多少？`,
       a: city.monthlyCostUSD != null
-        ? `${city.nameZh}估算月生活成本约 $${Math.round(city.monthlyCostUSD)}（含一居室房租；区间 $${city.cost?.[0] != null ? Math.round(city.cost[0]) : '?'}–$${city.cost?.[1] != null ? Math.round(city.cost[1]) : '?'}），单餐约 $${city.mealUSD ?? '?'}，一居室月租约 $${city.housingLevel != null ? Math.round(city.housingLevel) : '?'}。口径为公开统计测算（open-data estimates）线性拟合与页面快照，随汇率与城市更新浮动。`
+        ? `${city.nameZh}估算月生活成本约 $${Math.round(city.monthlyCostUSD)}（含一居室房租；区间 $${city.cost?.[0] != null ? Math.round(city.cost[0]) : '?'}–$${city.cost?.[1] != null ? Math.round(city.cost[1]) : '?'}），一居室月租约 $${city.housingLevel != null ? Math.round(city.housingLevel) : '?'}。口径为公开统计测算（open-data estimates）线性拟合与页面快照，随汇率与城市更新浮动。`
         : `${city.nameZh}暂无可靠的公开生活成本明细（暂无该城公开测算），本站不编造数据；可参考其所在${city.countryZh}的国家级成本水位与后续数据更新。`,
     });
     faqs.push({
@@ -290,7 +290,7 @@ function cityFaq(city, lang) {
     faqs.push({
       q: `${city.nameZh}网速如何？`,
       a: mbps != null
-        ? `${city.nameZh}${city.internetMbps != null ? '' : '（国家级口径）'}固定宽带下行中位约 ${mbps} Mbps（公开统计测算），${mbps >= 100 ? '足以支撑高清视频会议与大文件传输等重网络工作' : mbps >= 50 ? '可满足日常视频会议与远程协作' : '建议将重网络任务安排在网络低峰，或备移动热点'}。`
+        ? `${city.nameZh}${city.internetMbps != null ? '' : '（国家级口径）'}固定宽带下行中位约 ${mbps} Mbps（公开统计测算），${mbps >= 100 ? '足以支撑高清视频会议与大文件传输等网络密集型工作' : mbps >= 50 ? '可满足日常视频会议与远程协作' : '建议将网络密集型任务安排在网络低峰，或备移动热点'}。`
         : `${city.nameZh}暂无宽带中位数据，建议行前通过当地运营商页面或测速社区核实。`,
     });
     if (city.airQuality) {
@@ -304,7 +304,7 @@ function cityFaq(city, lang) {
       q: `What is the cost of living in ${city.nameEn}?`,
       a: city.monthlyCostUSD != null
         ? `${city.nameEn} has an estimated monthly cost of ~$${Math.round(city.monthlyCostUSD)} including rent (range $${city.cost?.[0] != null ? Math.round(city.cost[0]) : '?'}–$${city.cost?.[1] != null ? Math.round(city.cost[1]) : '?'}), based on open-data statistical estimates and page snapshots.`
-        : `Reliable public cost details for ${city.nameEn} are not yet available (no city-level public estimate yet); we do not fabricate data — see country-level figures instead.`,
+        : `Reliable public cost details for ${city.nameEn} are not yet available (no city-level public estimate); we do not fabricate data — see country-level figures instead.`,
     });
     faqs.push({
       q: `Is ${city.nameEn} safe?`,
@@ -356,7 +356,7 @@ function renderCityPage(city, lang) {
   const cN = lang === 'zh' ? city.countryZh : (co?.nameEn ?? city.countryEn ?? city.countryZh);
   const title = lang === 'zh'
     ? `${city.nameZh}数字游民定居指南 · 月成本 $${city.monthlyCostUSD != null ? Math.round(city.monthlyCostUSD) : '?'} · 安全/气候/网速/签证 | 栖居罗盘`
-    : `${city.nameEn} for Digital Nomads · Cost, Safety, Climate, Internet & Visa | NomadMatch`;
+    : `${city.nameEn} for Digital Nomads · Cost, Safety, Climate, Internet & Visa | Habitat Compass`;
   const desc = lang === 'zh'
     ? `${city.nameZh}（${city.countryZh}）生活成本约 $${city.monthlyCostUSD != null ? Math.round(city.monthlyCostUSD) : '?'}${city.safety != null ? `，安全指数 ${city.safety}/100` : ''}${city.climateDetail ? `，年均 ${city.climateDetail.avgTempC}°C` : ''}。含数据来源标注、常见问答与免费定居匹配测评。`
     : `${city.nameEn} (${cN}): ~$${city.monthlyCostUSD != null ? Math.round(city.monthlyCostUSD) : 'n/a'}/mo incl. rent${city.safety != null ? `, safety ${city.safety}/100` : ''}. Sources, FAQ and a free nomad matching quiz.`;
@@ -379,8 +379,8 @@ ${cityCards(city, lang)}
 ${faqs.map((f) => `<details><summary>${esc(f.q)}</summary><p>${esc(f.a)}</p></details>`).join('\n')}
 <h2>${lang === 'zh' ? `关于${esc(city.countryZh)}` : `About ${esc(cN)}`}</h2>
 <p class="note">${co ? (lang === 'zh'
-    ? `${esc(city.countryZh)}：人均 GDP 约 $${Math.round(co.gdpPerCapitaUSD ?? 0).toLocaleString('en-US')}（World Bank），人类发展指数 ${co.hdi ?? '—'}，和平指数排名 #${co.gpi?.rank ?? '—'}（IEP ${co.gpi ? '2024' : ''}）。`
-    : `${cN}: GDP per capita ~$${Math.round(co.gdpPerCapitaUSD ?? 0).toLocaleString('en-US')} (World Bank), HDI ${co.hdi ?? '—'}, Global Peace Index rank #${co.gpi?.rank ?? '—'} (IEP).`) : ''} <a href="${esc(countryLink)}">${lang === 'zh' ? `查看${esc(city.countryZh)}国家页 →` : `Open ${esc(cN)} country page →`}</a></p>
+    ? `${esc(city.countryZh)}：人均 GDP 约 $${Math.round(co.gdpPerCapitaUSD ?? 0).toLocaleString('en-US')}（World Bank），人类发展指数 ${co.hdi ?? '—'}${co.gpi ? `，和平指数排名 #${co.gpi.rank}（IEP 2024）` : ''}。`
+    : `${cN}: GDP per capita ~$${Math.round(co.gdpPerCapitaUSD ?? 0).toLocaleString('en-US')} (World Bank), HDI ${co.hdi ?? '—'}${co.gpi ? `, Global Peace Index rank #${co.gpi.rank} (IEP 2024)` : ''}.`) : ''} <a href="${esc(countryLink)}">${lang === 'zh' ? `查看${esc(city.countryZh)}国家页 →` : `Open ${esc(cN)} country page →`}</a></p>
 <a class="cta" href="${lang === 'zh' ? '/' : '/en/'}">${lang === 'zh' ? '免费开始我的定居匹配测评 →' : 'Start my free matching quiz →'}</a>
 <p class="cta-sub">${lang === 'zh' ? '32 题简易版永久免费 · 无需注册 · 测评后按 11 维权重输出 Top 5 城市' : 'Lite quiz free forever · no signup · Top 5 cities scored on 11 dimensions'}</p>`;
   return shell({ lang, title, desc, canonical, hreflang, jsonLd: [faqJsonLd(faqs), breadcrumbJsonLd(crumbs)], body });
@@ -395,7 +395,7 @@ function renderCountryPage(co, lang) {
   const n = lang === 'zh' ? co.nameZh : co.nameEn;
   const title = lang === 'zh'
     ? `${co.nameZh}数字游民与长期定居指南 · 签证/安全/网速/税负 | 栖居罗盘`
-    : `${co.nameEn} for Digital Nomads · Visa, Safety, Internet & Tax | NomadMatch`;
+    : `${co.nameEn} for Digital Nomads · Visa, Safety, Internet & Tax | Habitat Compass`;
   const desc = lang === 'zh'
     ? `${co.nameZh}定居要点：${co.visaOverview ?? '签证概览见正文'}；固定宽带中位 ${co.internetMbpsFixed ?? '—'} Mbps，公开统计测算安全参考 ${co.safetyScore ?? '—'}/100，库内 ${co.cityCount} 座城市数据。来源与日期逐项标注。`
     : `${co.nameEn} essentials: ${co.internetMbpsFixed ?? '—'} Mbps median broadband, public-estimate safety ${co.safetyScore ?? '—'}/100, ${co.cityCount} covered cities. Per-item sources & dates.`;
@@ -406,7 +406,7 @@ function renderCountryPage(co, lang) {
   if (lang === 'zh') {
     faqs.push({ q: `持中国护照进入${co.nameZh}需要签证吗？`, a: vp ? `据 ${co.updatedAt} 快照，中国大陆护照为「${vp.entry}」${vp.entryNote ? `（${vp.entryNote}）` : ''}。` : '暂无结构化快照，请查询官方渠道。' + ' 签证政策多变，务必核实官方移民渠道。' });
     faqs.push({ q: `${co.nameZh}远程办公/数字游民签证情况？`, a: `${co.visaOverview ?? '暂无结构化信息'}${vp ? `；数字游民友好度：${vp.digitalNomad}` : ''}。政策更新频繁，以官方渠道为准。` });
-    faqs.push({ q: `${co.nameZh}网速怎么样？`, a: co.internetMbpsFixed != null ? `固定宽带下行中位约 ${co.internetMbpsFixed} Mbps（公开统计测算），${co.internetMbpsFixed >= 100 ? '适合重网络远程工作' : '满足日常远程协作，重网络任务建议核实当地 ISP'}。` : '暂无数据，请查询当地 ISP。' });
+    faqs.push({ q: `${co.nameZh}网速怎么样？`, a: co.internetMbpsFixed != null ? `固定宽带下行中位约 ${co.internetMbpsFixed} Mbps（公开统计测算），${co.internetMbpsFixed >= 100 ? '适合网络密集型远程工作' : '满足日常远程协作，网络密集型任务建议核实当地 ISP'}。` : '暂无数据，请查询当地 ISP。' });
     faqs.push({ q: `${co.nameZh}安全吗？`, a: `${co.safetyScore != null ? `公开统计测算国家安全参考 ${co.safetyScore}/100。` : ''}${co.gpi ? `全球和平指数（IEP 2024）排名 #${co.gpi.rank}（得分 ${co.gpi.score}）。` : ''}出行前请查看最新领事安全通报。` });
     faqs.push({ q: `${co.nameZh}长期居留与税务要注意什么？`, a: ls ? `税居门槛：${ls.taxResidencyDays ?? '—'} 天/年${ls.socialSecurityCn ? `；社保协定：${ls.socialSecurityCn === 'treaty' ? '与中国有社保协定' : ls.socialSecurityCn === 'negotiating' ? '协定协商中' : '暂无协定'}` : ''}${ls.rentalCustom ? `；租房惯例：${ls.rentalCustom}` : ''}。以上为快照参考，请以官方与专业税务意见为准。` : '暂无结构化快照。' });
   } else {
@@ -427,11 +427,11 @@ function renderCountryPage(co, lang) {
     ? `${esc(co.nameZh)}是${co.cityCount ?? CITIES.length ? `本站收录 ${co.cityCount ?? cities.length} 座城市的` : ''}定居目的地。${co.internetMbpsFixed != null ? `固定宽带下行中位 ${co.internetMbpsFixed} Mbps，` : ''}${co.safetyScore != null ? `公开统计测算国家安全参考 ${co.safetyScore}/100，` : ''}${co.qolScore != null ? `公开统计测算生活质量指数 ${co.qolScore}。` : ''}${co.visaOverview ? `远程工作签证方面：${esc(co.visaOverview)}。` : ''}国家级数据逐项标注来源（World Bank/UNDP/官方开放数据与公开统计测算），更新于 ${esc(co.updatedAt)}。`
     : `${esc(co.nameEn)} hosts ${co.cityCount ?? cities.length} covered cities. ${co.internetMbpsFixed != null ? `Median broadband ${co.internetMbpsFixed} Mbps; ` : ''}${co.qolScore != null ? `public-estimate QoL ${co.qolScore}; ` : ''}${co.visaOverview ? `remote-work visa: ${esc(co.visaOverview)}.` : ''} Sources per item (World Bank/UNDP/open data & public estimates), updated ${esc(co.updatedAt)}.`}</p></div>
 <div class="grid">
-  <div class="card"><h3>${lang === 'zh' ? '和平指数' : 'Peace index'}</h3><div class="v">${co.gpi ? `#${co.gpi.rank}<small>IEP 2024 · ${co.gpi.score}</small>` : '—'}</div><div class="src">来源: IEP Global Peace Index（手工快照）</div></div>
-  <div class="card"><h3>${lang === 'zh' ? '人类发展指数' : 'HDI'}</h3><div class="v">${co.hdi ?? '—'}</div><div class="src">来源: UNDP HDR（手工快照）</div></div>
-  <div class="card"><h3>${lang === 'zh' ? '腐败感知指数' : 'CPI'}</h3><div class="v">${co.cpi ?? '—'}<small>/100</small></div><div class="src">来源: Transparency International（手工快照）</div></div>
-  <div class="card"><h3>${lang === 'zh' ? '生活质量' : 'Quality of life'}</h3><div class="v">${co.qolScore ?? '—'}</div><div class="src">${lang === 'zh' ? '来源: 公开统计测算 · 生活质量指数' : 'Source: public statistical estimate · QoL index'}</div></div>
-  <div class="card"><h3>${lang === 'zh' ? '税负参考' : 'Top tax rate'}</h3><div class="v">${co.taxTopRatePct != null ? `${co.taxTopRatePct}<small>% 最高档</small>` : '—'}</div><div class="src">来源: 手工快照 · 请以专业税务意见为准</div></div>
+  <div class="card"><h3>${lang === 'zh' ? '和平指数' : 'Peace index'}</h3><div class="v">${co.gpi ? `#${co.gpi.rank}<small>IEP 2024 · ${co.gpi.score}</small>` : '—'}</div><div class="src">${lang === 'zh' ? '来源：IEP Global Peace Index（手工快照）' : 'Source: IEP Global Peace Index (hand snapshot)'}</div></div>
+  <div class="card"><h3>${lang === 'zh' ? '人类发展指数' : 'HDI'}</h3><div class="v">${co.hdi ?? '—'}</div><div class="src">${lang === 'zh' ? '来源：UNDP HDR（手工快照）' : 'Source: UNDP HDR (hand snapshot)'}</div></div>
+  <div class="card"><h3>${lang === 'zh' ? '腐败感知指数' : 'CPI'}</h3><div class="v">${co.cpi ?? '—'}<small>/100</small></div><div class="src">${lang === 'zh' ? '来源：Transparency International（手工快照）' : 'Source: Transparency International (hand snapshot)'}</div></div>
+  <div class="card"><h3>${lang === 'zh' ? '生活质量' : 'Quality of life'}</h3><div class="v">${co.qolScore ?? '—'}</div><div class="src">${lang === 'zh' ? '来源：公开统计测算 · 生活质量指数' : 'Source: public statistical estimate · QoL index'}</div></div>
+  <div class="card"><h3>${lang === 'zh' ? '税负参考' : 'Top tax rate'}</h3><div class="v">${co.taxTopRatePct != null ? `${co.taxTopRatePct}<small>% 最高档</small>` : '—'}</div><div class="src">${lang === 'zh' ? '来源：手工快照 · 请以专业税务意见为准' : 'Source: hand snapshot · consult a tax professional'}</div></div>
   <div class="card"><h3>${lang === 'zh' ? '数据快照日期' : 'Snapshot date'}</h3><div class="v" style="font-size:16px">${esc(co.updatedAt)}</div><div class="src">逐字段来源标注见方法论页</div></div>
 </div>
 <h2>${lang === 'zh' ? '常见问答' : 'FAQ'}</h2>
@@ -446,10 +446,10 @@ ${faqs.map((f) => `<details><summary>${esc(f.q)}</summary><p>${esc(f.a)}</p></de
 // ---------- 索引页 ----------
 // 英文本地化首页（sitemap 一直声明 /en/，此前缺文件 → 404；现补齐精简英文版）
 function renderEnHome() {
-  const title = 'NomadMatch — Where should you live next? 200 city guides for remote workers';
+  const title = 'Habitat Compass — Where should you live next? 200 city guides for remote workers';
   const desc = 'Free personality & lifestyle quiz that scores 200 cities across cost, safety, climate, internet and visa friendliness — with per-item sources and dates.';
   const body = `
-<h1>NomadMatch</h1>
+<h1>Habitat Compass</h1>
 <p class="sub">A decision-support tool for remote workers, freelancers and digital nomads. Take a free personality &amp; lifestyle quiz, get a weighted score for every city in the library, and compare your shortlist.</p>
 <div class="grid">
   <div class="card"><div class="k">City library</div><div class="v">200 cities</div><div class="meta"><a href="/en/cities/">Browse city guides</a> · cost, safety, climate, internet, air quality &amp; visa overview with sources</div></div>
@@ -477,7 +477,7 @@ function renderCitiesIndex(lang) {  const pathZh = '/cities/', pathEn = '/en/cit
   const hreflang = { zh: page(pathZh), en: page(pathEn) };
   const canonical = lang === 'zh' ? hreflang.zh : hreflang.en;
   const byRegion = CONTINENTS.map((r) => ({ r, cities: CITIES.filter((c) => c.continent === r) }));
-  const title = lang === 'zh' ? `200 座城市定居资料库（六洲覆盖）| 栖居罗盘` : `200 City Guides for Digital Nomads (6 continents) | NomadMatch`;
+  const title = lang === 'zh' ? `200 座城市定居资料库（六洲覆盖）| 栖居罗盘` : `200 City Guides for Digital Nomads (6 continents) | Habitat Compass`;
   const desc = lang === 'zh' ? '按大洲浏览 200 座城市的数字游民定居数据：生活成本、安全、气候、网速、空气质量与签证概览，逐项标注来源。' : 'Browse 200 city guides across 6 continents: cost, safety, climate, internet, air quality and visa overview with per-item sources.';
   const body = `
 <h1>${lang === 'zh' ? '城市资料库' : 'City guides'}<span class="badge">${CITIES.length} ${lang === 'zh' ? '座城市' : 'cities'} · 6 ${lang === 'zh' ? '大洲' : 'continents'}</span></h1>
@@ -492,7 +492,7 @@ function renderCountriesIndex(lang) {
   const pathZh = '/countries/', pathEn = '/en/countries/';
   const hreflang = { zh: page(pathZh), en: page(pathEn) };
   const canonical = lang === 'zh' ? hreflang.zh : hreflang.en;
-  const title = lang === 'zh' ? `65 国定居参考（签证/安全/网速/税负）| 栖居罗盘` : `65 Country Guides: Visa, Safety, Internet & Tax | NomadMatch`;
+  const title = lang === 'zh' ? `65 国定居参考（签证/安全/网速/税负）| 栖居罗盘` : `65 Country Guides: Visa, Safety, Internet & Tax | Habitat Compass`;
   const desc = lang === 'zh' ? '按大洲浏览 65 个国家的定居参考数据：护照入境口径、远程工作签证、和平指数、网速与长期居留注意。' : 'Browse 65 country guides: entry rules for Chinese passports, remote-work visas, peace index, internet and long-stay notes.';
   const body = `
 <h1>${lang === 'zh' ? '国家资料库' : 'Country guides'}<span class="badge">${COUNTRIES.length} ${lang === 'zh' ? '国' : 'countries'}</span></h1>
@@ -508,7 +508,7 @@ function renderMethodology(lang) {
   const pathZh = '/methodology/', pathEn = '/en/methodology/';
   const hreflang = { zh: page(pathZh), en: page(pathEn) };
   const canonical = lang === 'zh' ? hreflang.zh : hreflang.en;
-  const title = lang === 'zh' ? '匹配方法论：三层权重、数据来源与许可 | 栖居罗盘' : 'Methodology: Tiered weights, data sources & licences | NomadMatch';
+  const title = lang === 'zh' ? '匹配方法论：三层权重、数据来源与许可 | 栖居罗盘' : 'Methodology: Tiered weights, data sources & licences | Habitat Compass';
   const desc = lang === 'zh' ? '完整公开匹配引擎的三层权重结构（硬约束过滤 → 核心匹配 → 加分项）、11 维偏好权重、数据来源与许可署名、更新频率与免责声明。' : 'Fully public scoring: tiered weights (hard constraints → core matching → boosters), 11 preference dimensions, data sources & licences, update cadence.';
   const body = `
 <h1>${lang === 'zh' ? '匹配方法论与数据口径' : 'Scoring methodology & data'}</h1>
@@ -578,8 +578,8 @@ const LEGAL_PRIVACY = {
     updated: `最后更新：${BUILD_DATE}`,
     sections: [
       { h: '一、概要与数据控制者', ps: [
-        '栖居罗盘（NomadMatch，下称"本站"）是一个运行于浏览器的海外城市定居决策辅助工具。<strong>本站没有账号体系，没有服务器端用户数据库</strong>——所有与"你"有关的信息只存在于你自己的设备中。',
-        '数据控制者：NomadMatch 运营者（主体信息待正式部署后补充）。联系邮箱：<code>privacy@nomadmatch.app</code>（占位邮箱，正式部署前将替换为实际邮箱）。',
+        '栖居罗盘（Habitat Compass，下称"本站"）是一个运行于浏览器的海外城市定居决策辅助工具。<strong>本站没有账号体系，没有服务器端用户数据库</strong>——所有与"你"有关的信息只存在于你自己的设备中。',
+        '数据控制者：Habitat Compass 运营者（主体信息待正式部署后补充）。联系邮箱：<code>privacy@habitatcompass.app</code>（占位邮箱，正式部署前将替换为实际邮箱）。',
       ] },
       { h: '二、我们处理哪些数据', ps: [
         '本站<strong>不收集、不上传任何个人数据</strong>。你在使用中产生的全部数据仅保存在<strong>你自己设备浏览器的 localStorage</strong>（键名前缀 <code>nomadmatch.v1</code>），具体包括：',
@@ -589,7 +589,6 @@ const LEGAL_PRIVACY = {
         '收藏城市（favorites）与对比现场、对比存档（compare / archives）',
         '硬性条件与护照选择（hardConstraints / passport）——预算上限、签证底线、安全阈值',
         '界面语言设置（lang）、匿名漏斗计数（funnel）——仅阶段计数，无任何身份信息',
-        '标准版解锁状态与本地订单留痕（proUnlocked / orders）——演示性付费记录，详见用户协议',
       ], after: [
         '以上数据均由你主动输入或由你的输入直接计算产生；不含姓名、邮箱、电话、精确位置等直接身份信息。',
       ] },
@@ -614,7 +613,7 @@ const LEGAL_PRIVACY = {
       ], list: [
         '访问 / 可携带：浏览器开发者工具（Application → Local Storage）可直接查看并导出全部数据',
         '更正 / 删除 / 限制 / 反对：清除对应存储键即告完成——最简单的方式是下方按钮或浏览器"清除站点数据"',
-        '如需协助，可发邮件至 privacy@nomadmatch.app，我们在 <strong>30 天内</strong>回复',
+        '如需协助，可发邮件至 privacy@habitatcompass.app，我们在 <strong>30 天内</strong>回复',
       ] },
       { h: '八、未成年人（第 8 条）', ps: [
         '本服务不面向 <strong>16 周岁以下</strong>用户；如你未满 16 周岁，请勿使用本站。',
@@ -630,18 +629,18 @@ const LEGAL_PRIVACY = {
         '本政策如有实质变更，将在本页更新并标注日期；重大变更时在首页显著位置提示。',
       ] },
       { h: '十二、联系我们', ps: [
-        'privacy@nomadmatch.app（占位邮箱，正式部署前替换为实际联系渠道）。',
+        'privacy@habitatcompass.app（占位邮箱，正式部署前替换为实际联系渠道）。',
       ] },
     ],
   },
   en: {
-    title: 'Privacy Policy | NomadMatch',
+    title: 'Privacy Policy | Habitat Compass',
     desc: 'No tracking cookies, no third-party analytics, no ads. All your data stays in your browser local storage (nomadmatch.v1) and can be erased anytime with one click.',
     updated: `Last updated: ${BUILD_DATE}`,
     sections: [
       { h: '1. Overview & controller', ps: [
-        'NomadMatch ("the site") is a browser-based decision-support tool for settling abroad. <strong>There are no user accounts and no server-side user database</strong> — everything that relates to you lives only on your own device.',
-        'Data controller: the NomadMatch operator (entity details to be added before official launch). Contact: <code>privacy@nomadmatch.app</code> (placeholder, to be replaced with the real mailbox).',
+        'Habitat Compass ("the site") is a browser-based decision-support tool for settling abroad. <strong>There are no user accounts and no server-side user database</strong> — everything that relates to you lives only on your own device.',
+        'Data controller: the Habitat Compass operator (entity details to be added before official launch). Contact: <code>privacy@habitatcompass.app</code> (placeholder, to be replaced with the real mailbox).',
       ] },
       { h: '2. What data we process', ps: [
         'The site <strong>collects and uploads no personal data</strong>. Everything you produce while using it is stored only in <strong>your browser\'s localStorage</strong> (key prefix <code>nomadmatch.v1</code>):',
@@ -651,7 +650,6 @@ const LEGAL_PRIVACY = {
         'Favorite cities (favorites), compare session and archives (compare / archives)',
         'Hard constraints & passport choice (hardConstraints / passport) — budget cap, visa floor, safety threshold',
         'Interface language (lang), anonymous funnel counters (funnel) — stage counts only, no identity data',
-        'Pro unlock state and local order log (proUnlocked / orders) — demo-purchase records, see Terms',
       ], after: [
         'All of it is entered by you or derived from your input. It contains no name, e-mail, phone number or precise location.',
       ] },
@@ -676,7 +674,7 @@ const LEGAL_PRIVACY = {
       ], list: [
         'Access / portability: browser dev tools (Application → Local Storage) let you view and export everything',
         'Rectification / erasure / restriction / objection: removing the storage keys is the whole act — the button below or "clear site data" does it',
-        'Need help? E-mail privacy@nomadmatch.app — we reply within <strong>30 days</strong>',
+        'Need help? E-mail privacy@habitatcompass.app — we reply within <strong>30 days</strong>',
       ] },
       { h: '8. Children (Art. 8)', ps: [
         'The service is not offered to anyone <strong>under 16</strong>. If you are under 16, please do not use the site.',
@@ -692,7 +690,7 @@ const LEGAL_PRIVACY = {
         'Material changes will be published on this page with an updated date; major changes are announced on the home page.',
       ] },
       { h: '12. Contact', ps: [
-        'privacy@nomadmatch.app (placeholder, to be replaced with the actual contact channel).',
+        'privacy@habitatcompass.app (placeholder, to be replaced with the actual contact channel).',
       ] },
     ],
   },
@@ -701,22 +699,22 @@ const LEGAL_PRIVACY = {
 const LEGAL_TERMS = {
   zh: {
     title: '用户协议 | 栖居罗盘',
-    desc: '服务描述、可接受使用、知识产权与开源数据署名、免责声明、演示性计费说明、责任限制与争议解决。用户协议全文。',
+    desc: '服务描述、可接受使用、知识产权与开源数据署名、免责声明、责任限制与争议解决。用户协议全文。',
     updated: `最后更新：${BUILD_DATE}`,
     sections: [
       { h: '一、服务描述', ps: [
-        '栖居罗盘（NomadMatch）为数字游民、自由职业者与远程工作者提供海外城市定居的<strong>决策辅助</strong>：基于你的偏好作答与公开数据快照，对库内 200 座城市加权打分并生成报告。',
-        '本站免费提供 32 题简易测评与城市对比；另有一次性 ¥29.9 的标准版（计费说明见第六节）。使用本站无需注册账号。',
+        '栖居罗盘（Habitat Compass）为数字游民、自由职业者与远程工作者提供海外城市定居的<strong>决策辅助</strong>：基于你的偏好作答与公开数据快照，对库内 200 座城市加权打分并生成报告。',
+        '本站免费提供简易测评（32 题）、标准版深度测评与城市对比，全部功能<strong>无需付费</strong>。使用本站无需注册账号。',
       ] },
       { h: '二、可接受使用', ps: [
         '你可以自由浏览与使用本站。你同意不：',
       ], list: [
         '以自动化脚本对本站发起高频请求或以其他方式干扰服务可用性',
         '将本站内容整体转售，或作为你自己产品的核心数据源再分发',
-        '对标准版内容进行破解、绕过解锁或再分发',
+        '以自动化手段批量提取题库或报告数据',
       ] },
       { h: '三、知识产权与开源数据署名', ps: [
-        '本站的界面设计、文案与代码版权归 NomadMatch 运营者所有。',
+        '本站的界面设计、文案与代码版权归栖居罗盘（Habitat Compass）运营者所有。',
         '本站引用的公开数据与题库按其许可要求署名（完整清单见方法论页）：',
       ], list: [
         '官方开放数据（Open Data）与公开统计测算：成本 / 安全 / 医疗 / 生活质量 / 英语排名 / 宽带网速等（NYC=100 口径，完整口径与更新频率见方法论页）',
@@ -732,41 +730,35 @@ const LEGAL_TERMS = {
       { h: '五、责任限制', ps: [
         '在适用法律允许的最大范围内，运营者不对你因使用或无法使用本站而产生的任何间接、附带、特殊或后果性损失承担责任，也不对你的定居、出行或职业决策结果负责。',
       ] },
-      { h: '六、计费说明（重要）', ps: [
-        '标准版定价 ¥29.9，标注为<strong>一次性虚拟买断（演示性付费）</strong>：支付弹窗是<strong>模拟流程，不会产生任何真实扣款</strong>，本站亦无真实收款与退款流程；购买结果仅记录在你的浏览器本地（proUnlocked / orders），用于解锁标准版测评功能。',
-        '数字内容一经购买即开始<strong>即时交付</strong>，交付完成即视为履约完毕。用户在购买确认时明确同意即时交付，并据此依法放弃法定撤回权（包括欧盟消费者权利指令下的 14 天撤回权）。<strong>所有数字商品一经售出概不退款（All sales are final; no refunds）</strong>。',
-        '上述同意在购买流程中以显式勾选实现：确认区含「我明确同意即时交付数字内容，并知悉据此依法放弃法定撤回权（包括欧盟 14 天撤回权）」勾选项，未勾选无法完成购买。',
-        '清除本地数据（含隐私政策中的"清除我的所有数据"按钮）会一并清除解锁状态，之后可重新走演示性购买流程。',
-      ] },
-      { h: '七、服务变更与终止', ps: [
+      { h: '六、服务变更与终止', ps: [
         '我们可能随时修改、暂停或终止本站的全部或部分功能。你可以随时停止使用，并通过隐私政策中的按钮清除你的全部本地数据。',
       ] },
-      { h: '八、适用法律与争议解决', ps: [
+      { h: '七、适用法律与争议解决', ps: [
         '本协议适用运营者注册地法律（<strong>占位：待正式部署后补充法域与管辖条款</strong>）。因本协议产生的争议，双方应先友好协商解决。',
       ] },
-      { h: '九、联系渠道', ps: [
-        'privacy@nomadmatch.app（占位邮箱，正式部署前替换为实际联系渠道）。',
+      { h: '八、联系渠道', ps: [
+        'privacy@habitatcompass.app（占位邮箱，正式部署前替换为实际联系渠道）。',
       ] },
     ],
   },
   en: {
-    title: 'Terms of Service | NomadMatch',
-    desc: 'Service description, acceptable use, IP & open-data attribution, disclaimers, demo billing, limitation of liability and dispute resolution.',
+    title: 'Terms of Service | Habitat Compass',
+    desc: 'Service description, acceptable use, IP & open-data attribution, disclaimers, limitation of liability and dispute resolution.',
     updated: `Last updated: ${BUILD_DATE}`,
     sections: [
       { h: '1. Service description', ps: [
-        'NomadMatch provides <strong>decision support</strong> for digital nomads, freelancers and remote workers settling abroad: it scores the 200 cities in its library against your stated preferences and public data snapshots, and generates a report.',
-        'The 32-question lite assessment and city comparison are free; a one-time ¥29.9 Pro version exists (billing, section 6). No account is required.',
+        'Habitat Compass provides <strong>decision support</strong> for digital nomads, freelancers and remote workers settling abroad: it scores the 200 cities in its library against your stated preferences and public data snapshots, and generates a report.',
+        'The lite assessment (32 questions), the in-depth Standard edition and city comparison are all <strong>free of charge</strong>. No account is required.',
       ] },
       { h: '2. Acceptable use', ps: [
         'You may browse and use the site freely. You agree not to:',
       ], list: [
         'send high-frequency automated requests or otherwise disrupt availability',
         'resell the site\'s content as a whole or redistribute it as the core data source of your own product',
-        'crack, bypass the unlock of, or redistribute Pro content',
+        'systematically scrape or redistribute the question bank or report data',
       ] },
       { h: '3. IP & open-data attribution', ps: [
-        'The interface design, copy and code are © the NomadMatch operator. Public data and questionnaires are credited per their licences (full list on the Methodology page):',
+        'The interface design, copy and code are © the Habitat Compass operator. Public data and questionnaires are credited per their licences (full list on the Methodology page):',
       ], list: [
         'Official open data & public statistical estimates: cost / safety / healthcare / quality of life / English-proficiency rank / broadband speeds (NYC=100 basis; full methodology on the Methodology page)',
         'GeoNames (CC BY 4.0), Open-Meteo Historical & Air Quality (CC BY 4.0)',
@@ -781,20 +773,14 @@ const LEGAL_TERMS = {
       { h: '5. Limitation of liability', ps: [
         'To the maximum extent permitted by applicable law, the operator is not liable for any indirect, incidental, special or consequential loss arising from your use of (or inability to use) the site, nor for the outcomes of your relocation, travel or career decisions.',
       ] },
-      { h: '6. Billing (important)', ps: [
-        'The Pro version is priced ¥29.9 as a <strong>one-time virtual purchase (demo billing)</strong>: the payment dialog is a <strong>simulation — no real charge is ever made</strong>, and there is no real collection or refund process. The purchase result is recorded only in your browser (proUnlocked / orders) and merely unlocks the Pro assessment features.',
-        'Digital content is delivered immediately upon purchase, and delivery is deemed complete upon commencement of streaming/download or access. By completing the purchase confirmation, you expressly consent to immediate delivery and acknowledge that you thereby lose your statutory right of withdrawal (including the 14-day right under the EU Consumer Rights Directive). <strong>All sales are final; no refunds.</strong>',
-        'That consent is captured as an explicit checkbox in the purchase dialog (PayModal) — the purchase cannot be completed without it.',
-        'Erasing local data (including the "Erase all my data" button in the Privacy Policy) also clears the unlock state, after which the demo purchase flow can be repeated.',
-      ] },
-      { h: '7. Changes & termination', ps: [
+      { h: '6. Changes & termination', ps: [
         'We may modify, suspend or discontinue all or part of the site at any time. You may stop using it at any moment and erase all your local data via the button in the Privacy Policy.',
       ] },
-      { h: '8. Governing law & dispute resolution', ps: [
+      { h: '7. Governing law & dispute resolution', ps: [
         'These terms are governed by the law of the operator\'s place of registration (<strong>placeholder: jurisdiction and venue to be added before official launch</strong>). Disputes shall first be resolved amicably.',
       ] },
-      { h: '9. Contact', ps: [
-        'privacy@nomadmatch.app (placeholder, to be replaced with the actual contact channel).',
+      { h: '8. Contact', ps: [
+        'privacy@habitatcompass.app (placeholder, to be replaced with the actual contact channel).',
       ] },
     ],
   },
@@ -824,7 +810,7 @@ const LEGAL_DISCLAIMER = {
     ],
   },
   en: {
-    title: 'Disclaimer | NomadMatch',
+    title: 'Disclaimer | Habitat Compass',
     desc: 'City scores and recommendations are for information only — not immigration, visa, legal, tax, medical, insurance, financial or investment advice. Data are third-party snapshots and may be outdated.',
     updated: `Last updated: ${BUILD_DATE}`,
     sections: [
@@ -885,7 +871,7 @@ function renderLegalPage(kind, lang) {
 </section>
 <script>
 function eraseAll() {
-  if (!window.confirm('${zh ? '确认删除本站保存在本浏览器的全部数据（测评草稿/历史/收藏/对比存档/购买状态等）？此操作不可恢复。' : 'Delete all data this site has stored in this browser (drafts, history, favorites, compare archives, purchase state)? This cannot be undone.'}')) return;
+  if (!window.confirm('${zh ? '确认删除本站保存在本浏览器的全部数据（测评草稿/历史/收藏/对比存档等）？此操作不可恢复。' : 'Delete all data this site has stored in this browser (drafts, history, favorites, compare archives)? This cannot be undone.'}')) return;
   var ks = [];
   for (var i = 0; i < localStorage.length; i++) {
     var k = localStorage.key(i);
@@ -968,7 +954,7 @@ function main() {
   write('robots.txt', robots);
 
   // llms.txt
-  const llms = `# 栖居罗盘 · NomadMatch
+  const llms = `# 栖居罗盘 · Habitat Compass
 
 > 面向数字游民、自由职业者与远程工作者的海外城市定居决策工具。200 座城市（六洲）+ 65 国参考数据；双版本测评（32 题简易免费 / IPIP-NEO 120 题标准版）；三层匹配引擎：硬约束过滤（预算/签证/安全）→ 核心匹配（偏好 42% + 人格 30% + 兴趣 18%，11 维）→ 加分项（RIASEC/风险联动/空气质量 ≤10%）。评分 0–99，缺失维度降权不惩罚，数据逐项标注来源。
 

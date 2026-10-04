@@ -13,7 +13,6 @@ import { cityName, formatMoney } from '../lib/format';
 interface LandingProps {
   onStart: (version?: 'lite' | 'pro') => void;
   onDemo: (profileId: string) => void;
-  onProIntro: () => void;
 }
 
 const fadeUp = {
@@ -44,7 +43,7 @@ function steps(): { no: string; title: string; desc: string }[] {
   ];
 }
 
-export default function Landing({ onStart, onDemo, onProIntro }: LandingProps) {
+export default function Landing({ onStart, onDemo }: LandingProps) {
   const { t } = useI18n();
   const marqueeList = [...cities, ...cities];
   const [atlasRegion, setAtlasRegion] = useState<string>('all');
@@ -113,7 +112,7 @@ export default function Landing({ onStart, onDemo, onProIntro }: LandingProps) {
               custom={2}
               className="mt-4 font-serif-accent text-[14px] lowercase tracking-[0.32em] text-ink-soft"
             >
-              nomadmatch
+              habitat compass
             </motion.p>
             <motion.p
               variants={fadeUp}
@@ -443,18 +442,18 @@ export default function Landing({ onStart, onDemo, onProIntro }: LandingProps) {
             <span className="absolute -top-2.5 right-5 rounded-full bg-ochre px-2.5 py-0.5 font-data text-[10px] font-medium tracking-[0.2em] text-paper">
               PRO
             </span>
-            <p className="eyebrow mb-2">standard edition · one-time</p>
+            <p className="eyebrow mb-2">standard edition · free</p>
             <h3 className="font-heading text-xl font-bold text-ink">{t('landing.version.pro')}</h3>
             <p className="mt-2 text-sm leading-relaxed text-ink-soft">
               {t('landing.version.proDesc')}
             </p>
             <div className="mt-5 flex-1" />
             <p className="mb-4 font-data text-2xl font-semibold text-clay">
-              ¥29.9 <span className="text-xs font-normal text-ink-soft">{t('landing.version.proPrice')}</span>
+              {t('landing.version.proPrice')}
             </p>
             <button
               type="button"
-              onClick={onProIntro}
+              onClick={() => onStart('pro')}
               className="w-full rounded-lg border border-clay px-4 py-2.5 text-sm font-medium text-clay transition-colors hover:bg-clay/10"
             >
               {t('landing.version.proCta')}
