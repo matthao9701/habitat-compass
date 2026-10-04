@@ -137,7 +137,7 @@ for (const rel of ['terms/index.html', 'en/terms/index.html']) {
 console.log('\n══ 四、用户协议关键要素 ══');
 const TERMS_ZH: Array<[string, string]> = [
   ['as-is 免责', '现状'],
-  ['非专业建议', '不构成移民、法律、税务、财务或医疗建议'],
+  ['非专业建议（九类）', '不构成移民、签证、居留、法律、税务、医疗、保险、财务或投资建议'],
   ['第三方快照可能过时', '可能过时或存在误差'],
   ['签证以官方渠道为准', '通过官方渠道核实'],
   ['责任限制', '责任限制'],
@@ -145,22 +145,21 @@ const TERMS_ZH: Array<[string, string]> = [
   ['无真实扣款', '不会产生任何真实扣款'],
   ['无退款流程', '无真实收款与退款流程'],
   ['本地解锁记录', 'proUnlocked / orders'],
-  ['Numbeo 署名', 'Numbeo'],
-  ['IPIP 署名', 'ipip.ori.org'],
-  ['O*NET 署名', 'O*NET Interest Profiler'],
+  ['去品牌化：来源统一表述', '官方开放数据（Open Data）与公开统计测算'],
   ['GeoNames CC BY', 'GeoNames（CC BY 4.0）'],
   ['Open-Meteo CC BY', 'Open-Meteo'],
   ['OEJTS 许可', 'CC BY-NC-SA 4.0'],
   ['适用法域占位', '占位：待正式部署后补充法域与管辖条款'],
-  ['不退款条款', '概不退款（All sales are final; no refunds）'],
-  ['EU 撤回权机制', '14 天撤回权（right of withdrawal）'],
-  ['EU 指令引用', '2011/83/EU'],
-  ['即时交付确认', '同意立即交付数字内容'],
+  ['不退款条款', '所有数字商品一经售出概不退款'],
+  ['即时交付与撤回权放弃（指令措辞）', '用户在购买确认时明确同意即时交付，并据此依法放弃法定撤回权（包括欧盟消费者权利指令下的 14 天撤回权）'],
+  ['EU 撤回权机制（指令措辞）', '依法放弃法定撤回权（包括欧盟消费者权利指令下的 14 天撤回权）'],
+  ['即时交付确认', '明确同意即时交付'],
+  ['不退款英文对照', 'All sales are final; no refunds'],
 ];
 for (const [name, kw] of TERMS_ZH) check(`zh 协议页：${name}`, htmls['terms/index.html']?.includes(kw) ?? false, kw);
 const TERMS_EN: Array<[string, string]> = [
   ['as-is', 'as is'],
-  ['not professional advice', 'not immigration, legal, tax, financial or medical advice'],
+  ['not professional advice (unified wording)', 'not immigration, visa, legal, tax, medical, or financial advice'],
   ['snapshots may be outdated', 'may be outdated or imprecise'],
   ['verify official channels', 'verify with official channels'],
   ['limitation of liability', 'Limitation of liability'],
@@ -168,16 +167,16 @@ const TERMS_EN: Array<[string, string]> = [
   ['no real charge', 'no real charge is ever made'],
   ['no refund process', 'no real collection or refund process'],
   ['local unlock log', 'proUnlocked / orders'],
-  ['Numbeo', 'Numbeo'],
-  ['IPIP', 'ipip.ori.org'],
-  ['O*NET', 'O*NET Interest Profiler'],
+  ['open data wording', 'official open data & public statistical estimates'],
   ['GeoNames CC BY', 'GeoNames (CC BY 4.0)'],
   ['OEJTS licence', 'CC BY-NC-SA 4.0'],
   ['governing law placeholder', 'placeholder: jurisdiction and venue to be added'],
-  ['no-refund clause', 'all sales are final; no refunds'],
-  ['EU withdrawal mechanism', '14-day right of withdrawal'],
-  ['EU directive citation', 'Art. 16(m) of Directive 2011/83/EU'],
-  ['immediate delivery consent', 'consent to the immediate delivery'],
+  ['no-refund clause', 'All sales are final; no refunds'],
+  ['EU withdrawal (statutory wording)', 'you thereby lose your statutory right of withdrawal (including the 14-day right under the EU Consumer Rights Directive)'],
+  ['immediate delivery wording', 'delivery is deemed complete upon commencement of streaming/download or access'],
+  ['EU directive citation', 'EU Consumer Rights Directive'],
+  ['immediate delivery consent', 'you expressly consent to immediate delivery'],
+  ['immediate delivery & deemed complete', 'delivery is deemed complete upon commencement of streaming/download or access'],
 ];
 for (const [name, kw] of TERMS_EN) check(`en 协议页：${name}`, htmls['en/terms/index.html']?.includes(kw) ?? false, kw);
 
@@ -217,7 +216,9 @@ check('第十二轮产物未破坏：城市页仍 200×2', (() => {
 console.log('\n══ 七、免责声明页核心要素 ══');
 const DISC_ZH: Array<[string, string]> = [
   ['信息参考非专业建议', '仅为信息参考'],
-  ['八类建议枚举', '移民、签证、法律、税务、医疗、保险、财务或投资建议'],
+  ['九类建议枚举（含居留/保险）', '居留'],
+  ['九类建议枚举（含保险）', '保险'],
+  ['九类建议枚举（含移民/签证）', '移民、签证'],
   ['重大决策咨询专业机构', '请咨询当地专业机构'],
   ['以官方信息为准', '以政府与官方渠道发布的信息为准'],
   ['用户自担风险', '由你自行承担风险'],
@@ -252,8 +253,8 @@ const uiSrc = fs.readFileSync(path.join(ROOT, 'src/i18n/dict/ui.ts'), 'utf8') + 
 check('PayModal 含 euAck 状态与 checkbox', paySrc.includes('euAck') && paySrc.includes('type="checkbox"'));
 check('确认按钮未勾选时禁用（disabled={!euAck}）', paySrc.includes('disabled={!euAck}'));
 check('打开弹窗时重置勾选', paySrc.includes('setEuAck(false)'));
-check('词典键 bill.pay.euNotice（zh+en）', uiSrc.includes("'bill.pay.euNotice': '我确认同意即时交付数字内容") && uiSrc.includes("'bill.pay.euNotice': 'I consent to the immediate delivery"));
-check('确认表述含 14 天撤回权', uiSrc.includes('14 天无理由撤回权') && uiSrc.includes('14-day right of withdrawal'));
+check('词典键 bill.pay.euNotice（zh+en，指令措辞）', uiSrc.includes("'bill.pay.euNotice': '我明确同意即时交付数字内容") && uiSrc.includes("'bill.pay.euNotice': 'I expressly consent to immediate delivery"));
+check('确认表述含法定撤回权放弃', uiSrc.includes('依法放弃法定撤回权') && uiSrc.includes('EU Consumer Rights Directive'));
 
 console.log('\n══ 九、合规扫描（商标词/命名/外链/署名） ══');
 // 9.1 全 dist 无第三方脚本外链
@@ -275,13 +276,17 @@ check('dist 全部 HTML 无 MBTI/Myers-Briggs/16Personalities 商标词', tradem
 // 9.3 全 dist 无弃用品牌名 Siju
 const siju = allHtml.filter((p) => fs.readFileSync(p, 'utf8').includes('Siju'));
 check('dist 全部 HTML 无弃用命名 "Siju"（已统一 NomadMatch）', siju.length === 0, siju.slice(0, 3).join(', '));
+// 9.4 全 dist 无受限商业数据源品牌（去品牌化口径）
+const braded = allHtml.filter((p) => /Numbeo|Ookla|EF EPI/i.test(fs.readFileSync(p, 'utf8')));
+check(`dist 全部 ${allHtml.length} 个 HTML 无受限商业源品牌（Numbeo/Ookla/EF EPI）`, braded.length === 0, braded.slice(0, 3).map((p) => path.relative(ROOT, p)).join(', '));
 // 9.4 方法论页署名要素（CC BY 4.0 需作者/源/许可链接）
 const methZh = htmls['methodology/index.html'] ?? read('methodology/index.html') ?? '';
 const methEn = read('en/methodology/index.html') ?? '';
 for (const [tag, html] of [['zh', methZh], ['en', methEn]] as const) {
-  check(`方法论页(${tag})：O*NET 署名为 CC BY 4.0`, html.includes('O*NET Interest Profiler Short Form') && /O\*NET Interest Profiler Short Form[\s\S]{0,220}creativecommons\.org\/licenses\/by\/4\.0/.test(html));
+  check(`方法论页(${tag})：O*NET 低调署名行（页底）`, html.includes('Career interest framework: O*NET Interest Profiler Short Form') && /Career interest framework[\s\S]{0,200}creativecommons\.org\/licenses\/by\/4\.0/.test(html));
+    check(`方法论页(${tag})：无受限商业源品牌`, !/Numbeo|Ookla|EF EPI/.test(html));
   check(`方法论页(${tag})：GeoNames/Open-Meteo/World Bank 带 CC BY 4.0 许可链接`, (html.match(/creativecommons\.org\/licenses\/by\/4\.0/g) ?? []).length >= 3);
-  check(`方法论页(${tag})：源站链接（geonames/open-meteo/numbeo）`, html.includes('geonames.org') && html.includes('open-meteo.com') && html.includes('numbeo.com'));
+  check(`方法论页(${tag})：源站链接（geonames/open-meteo，去品牌化）`, html.includes('geonames.org') && html.includes('open-meteo.com') && !html.includes('numbeo.com'));
   check(`方法论页(${tag})：字体 OFL 声明`, html.includes('SIL Open Font License 1.1') && html.includes('Noto Sans SC'));
 }
 // 9.5 法律页 dev 可达（public 同步）

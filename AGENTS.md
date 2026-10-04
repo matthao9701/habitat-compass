@@ -226,7 +226,7 @@
 - **用户协议要素**：服务描述/可接受使用/知识产权与开源数据署名（Numbeo/GeoNames/Open-Meteo/EF EPI/World Bank/Ookla/IPIP-NEO/O*NET/IPIP Risk-Taking/OEJTS，按 DATA.md）/as-is 免责与"非移民·法律·税务·财务·医疗建议"/责任限制/计费如实描述（¥29.9 演示性虚拟买断、模拟支付无真实扣款无退款，与 PayModal 行为一致）/服务变更终止/适用法域占位/联系渠道。
 - **SPA Footer**：`src/components/Footer.tsx`（Terms/Privacy 链接按 lang 取 `/terms/` 或 `/en/terms/`），挂 App.tsx 三 Tab 屏幕（TAB_SCREENS 判断，quiz/report/pro-intro 专注模式不显示）；词典键 `footer.terms/footer.privacy`（ui 域 zh/en）。
 - **占位项清单**：①联系邮箱 privacy@nomadmatch.app ②适用法域与管辖条款 ③运营者主体信息——正式部署前替换（页内已标注"占位"）。
-- **校验**：`pnpm tsx scripts/verify-legal.ts`（130 项：页面结构/GDPR 关键词逐项/eraseAll 实现/协议要素/footer 源码/sitemap 收录/第十二轮产物未破坏）。
+- **校验**：`pnpm tsx scripts/verify-legal.ts`（209 项：页面结构/GDPR 关键词逐项/eraseAll 实现/协议要素/footer 三链/sitemap 全量 URL→文件/去品牌化与商标词全 dist 扫描/第十二轮产物未破坏）。
 
 ### 第十三轮追加：合规自查修复 + /disclaimer + 不退款与 EU 撤回权
 
@@ -239,3 +239,10 @@
 - **不退款条款（/terms 计费节 zh/en）**：所有数字商品一经购买成功即完成交付，概不退款（all sales are final; no refunds）；欧盟消费者兜底 = 购买流程含「同意即时交付 + 知悉丧失 14 天撤回权」的显式确认（PayModal checkbox `bill.pay.euNotice`，未勾选禁用确认按钮，打开弹窗重置），条款在 /terms 中说明该机制。
 - **Footer 三链接**：SPA Footer 与静态页 shell footer 均含 Terms/Privacy/Disclaimer（zh/en 前缀随语言）；词典键 footer.terms/footer.privacy/footer.disclaimer。
 - **localStorage 降级（已核验无需修复）**：storage.ts 全部读写已 try/catch 包装，隐私模式/禁用 localStorage 时静默降级不白屏。
+
+### 第十三轮修正（指令覆盖）：数据源去品牌化 + 退款措辞 + 免责强化
+
+- **去品牌化（商用合规口径，覆盖此前 Numbeo 署名要求）**：全站面向用户的页面（法律页/方法论页/落地页/数据卡来源标注/FAQ/llms.txt/页脚/SPA 脚注）**零 Numbeo/Ookla/EF EPI 品牌露出**（verify-legal 9.4 全 dist 543 页扫描断言 0 命中）；来源统一表述「官方开放数据（Open Data）与公开统计测算 / official open data & public statistical estimates」，快照日期保留。IPIP 不突出署名（方法论许可清单与协议正文已移除）；O*NET 仅在方法论页页底保留一行低调署名「Career interest framework: O*NET Interest Profiler Short Form (CC BY 4.0…)」；OEJTS 1.2 因 CC BY-NC-SA 4.0 署名要求保留许可行。DATA.md 为仓库内部文档不上站，完整来源链与许可记录保留（其中 Numbeo 仅限内部记录）。词典键名（cty.safetyNumbeo 等）为内部技术标识符非站点内容，值层已全部中性化。
+- **退款条款（/terms 计费节 zh/en，指令原文措辞）**：「数字内容一经购买即开始即时交付，交付完成即视为履约完毕。用户在购买确认时明确同意即时交付，并据此依法放弃法定撤回权（包括欧盟消费者权利指令下的 14 天撤回权）。所有数字商品一经售出概不退款。」/ en: "…delivery is deemed complete upon commencement of streaming/download or access… lose your statutory right of withdrawal (including the 14-day right under the EU Consumer Rights Directive). All sales are final; no refunds."；PayModal checkbox 键 bill.pay.euNotice 同步指令口径。
+- **免责强化（/disclaimer 与 /terms）**：九类专业建议列举（移民、签证、**居留**、法律、税务、医疗、**保险**、财务、投资）；en 统一措辞 "not immigration, visa, legal, tax, medical, or financial advice"；/disclaimer 顶部新增醒目提示框（.notice，clay 左边框 + paper-deep 底）呈现核心免责一句；数据准确性免责改「官方开放数据与公开统计来源」表述。
+- **verify-seo-v9 同步**：方法论署名断言改为 CC BY 4.0 + CC BY-NC-SA 4.0 + WHO 且无 Numbeo（42 项全绿）。

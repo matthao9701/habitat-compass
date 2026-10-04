@@ -10,6 +10,27 @@ import viteConfig from '../vite.config';
 
 const isDev = process.env.COZE_PROJECT_ENV !== 'PROD';
 
+// 预渲染法律页在 dev 模式的可达性：
+// generate-landing.mjs 会把 privacy/terms/disclaimer（zh/en）同步写入 public/，
+// 但 Vite dev 的 public 中间件不会命中子目录 index.html（/terms/ 会落入 SPA fallback 返回主应用壳）。
+// 这里在 vite.middlewares 之前显式命中这些静态文件，保证 /privacy /terms /disclaimer 及 /en/ 前缀在 dev 直达。
+const LEGAL_ROUTE_RE = /^\/(en\/)?(privacy|terms|disclaimer)\/?$/;
+
+export function legalStaticMiddleware(app: Application) {
+  const publicDir = path.resolve(process.cwd(), 'public');
+  app.use((req: Request, res: Response, next: () => void) => {
+    if (req.method === 'GET' && LEGAL_ROUTE_RE.test(req.path)) {
+      const rel = `${req.path.replace(/\/$/, '')}/index.html`;
+      const file = path.join(publicDir, rel);
+      if (fs.existsSync(file)) {
+        res.sendFile(file);
+        return;
+      }
+    }
+    next();
+  });
+}
+
 /**
  * 集成 Vite 开发服务器（中间件模式）
  */
@@ -26,6 +47,9 @@ export async function setupViteMiddleware(app: Application) {
     },
     appType: 'spa',
   });
+
+  // 法律页静态命中（dev 模式 public 子目录 index.html 不被 vite 命中，见 legalStaticMiddleware 注释）
+  legalStaticMiddleware(app);
 
   // 使用 Vite middleware
   app.use(vite.middlewares);

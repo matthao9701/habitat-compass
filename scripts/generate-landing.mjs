@@ -143,6 +143,7 @@ footer{border-top:1px solid var(--paper-deep);background:var(--card);padding:18p
 .lang a{color:var(--teal);text-decoration:none;font-weight:600}
 .legal-list{margin:6px 0 14px 20px}
 .legal-list li{list-style:disc;margin:6px 0;font-size:15px;color:var(--ink)}
+.notice{background:var(--paper-deep);border-left:4px solid var(--clay);border-radius:10px;padding:12px 14px;margin:14px 0 18px;font-size:15px;color:var(--ink);line-height:1.7}
 .legal p code{background:var(--paper-deep);border-radius:6px;padding:1px 7px;font-size:13.5px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
 .erase{margin:8px 0 26px;border-left:4px solid var(--clay)}
 .erase h2{margin-top:0}
@@ -191,8 +192,8 @@ ${langSwitch}
 <main class="wrap">${body}</main>
 <footer><div class="wrap">
 <p>${lang === 'zh'
-    ? '数据来源：Numbeo 公开指数 · Open-Meteo（CC BY 4.0）· GeoNames（CC BY 4.0）· EF EPI · World Bank · WHO 2021 空气质量指导值分档 · Ookla Speedtest Intelligence。签证与政策多变，出行前务必核实官方渠道；本站为决策辅助工具，不构成任何投资、法律或移民建议。'
-    : 'Data sources: Numbeo public indices · Open-Meteo (CC BY 4.0) · GeoNames (CC BY 4.0) · EF EPI · World Bank · WHO 2021 air quality guidelines · Ookla Speedtest Intelligence. Visa policies change frequently — always verify with official channels before travelling. This site is a decision-support tool, not investment, legal or immigration advice.'}</p>
+    ? '数据来源：官方开放数据（Open Data）与公开统计测算 · Open-Meteo（CC BY 4.0）· GeoNames（CC BY 4.0）· WHO 2021 空气质量指导值分档 · 快照日期见各数据卡。签证与政策多变，出行前务必核实官方渠道；本站为决策辅助工具，不构成任何投资、法律或移民建议。'
+    : 'Data sources: official open data & public statistical estimates · Open-Meteo (CC BY 4.0) · GeoNames (CC BY 4.0) · WHO 2021 air quality guideline bands · snapshot dates on each card. Visa policies change frequently — always verify with official channels before travelling. This site is a decision-support tool and is not immigration, visa, legal, tax, medical, or financial advice.'}</p>
 <p style="margin-top:6px">${lang === 'zh' ? '匹配口径与数据许可详见' : 'Scoring methodology & data licences:'} <a href="${lang === 'zh' ? '/methodology/' : '/en/methodology/'}" style="color:var(--pine)">${lang === 'zh' ? '方法论页' : 'Methodology'}</a> · <a href="${lang === 'zh' ? '/privacy/' : '/en/privacy/'}" style="color:var(--pine)">${lang === 'zh' ? '隐私政策' : 'Privacy'}</a> · <a href="${lang === 'zh' ? '/terms/' : '/en/terms/'}" style="color:var(--pine)">${lang === 'zh' ? '用户协议' : 'Terms'}</a> · <a href="${lang === 'zh' ? '/disclaimer/' : '/en/disclaimer/'}" style="color:var(--pine)">${lang === 'zh' ? '免责声明' : 'Disclaimer'}</a> · © 栖居罗盘 NomadMatch</p>
 </div></footer>
 </body>
@@ -207,20 +208,20 @@ function cityCards(city, lang) {
   const cards = [];
   const cost = city.monthlyCostUSD;
   cards.push(cost != null
-    ? { h: no('月生活成本', 'Monthly cost'), v: money(cost), small: no('含房租 · 估算区间', 'incl. rent · est. range'), detail: `${city.cost?.[0] != null ? money(city.cost[0]) : '?'} – ${city.cost?.[1] != null ? money(city.cost[1]) : '?'}`, src: `${S}: Numbeo 成本指数（NYC=100）线性拟合 + 详情页快照，更新于 ${BUILD_DATE}` }
-    : { h: no('月生活成本', 'Monthly cost'), none: no('数据待核实', 'Data pending'), src: `${S}: Numbeo 暂无该城成本详情（不编造数据）` });
+    ? { h: no('月生活成本', 'Monthly cost'), v: money(cost), small: no('含房租 · 估算区间', 'incl. rent · est. range'), detail: `${city.cost?.[0] != null ? money(city.cost[0]) : '?'} – ${city.cost?.[1] != null ? money(city.cost[1]) : '?'}`, src: `${S}: 公开统计测算（NYC=100 口径）线性拟合 + 页面快照，更新于 ${BUILD_DATE}` }
+    : { h: no('月生活成本', 'Monthly cost'), none: no('数据待核实', 'Data pending'), src: `${S}: 暂无该城公开测算明细（不编造数据）` });
   const safety = city.safety;
   cards.push(safety != null
-    ? { h: no('安全指数', 'Safety index'), v: `${safety}<small>/100</small>`, src: `${S}: Numbeo Safety Index` }
-    : { h: no('安全指数', 'Safety index'), none: no('数据待核实（国家级参考见下）', 'Data pending (see country-level)'), src: `${S}: Numbeo 暂无该城安全详情` });
+    ? { h: no('安全指数', 'Safety index'), v: `${safety}<small>/100</small>`, src: `${S}: 公开统计测算 · 安全指数` }
+    : { h: no('安全指数', 'Safety index'), none: no('数据待核实（国家级参考见下）', 'Data pending (see country-level)'), src: `${S}: 暂无该城安全测算数据` });
   const cl = city.climateDetail;
   cards.push(cl
     ? { h: no('气候（十年均值）', 'Climate (10-yr avg)'), v: `${cl.avgTempC}<small>°C 年均</small>`, detail: `${cl.annualPrecipMm}mm · ${cl.sunshineHours}h 日照/年`, src: `${S}: Open-Meteo Historical（CC BY 4.0）2015–2024` }
     : { h: no('气候', 'Climate'), none: no('数据待核实', 'Data pending'), src: `${S}: Open-Meteo` });
   const mbps = city.internetMbps ?? COUNTRY_BY_CODE.get(city.countryCode)?.internetMbpsFixed ?? null;
   cards.push(mbps != null
-    ? { h: no('固定宽带', 'Fixed broadband'), v: `${mbps}<small>Mbps 下行中位</small>`, src: `${S}: Ookla Speedtest Intelligence${city.internetMbps == null ? '（国家级）' : ''}` }
-    : { h: no('固定宽带', 'Fixed broadband'), none: no('数据待核实', 'Data pending'), src: `${S}: Ookla` });
+    ? { h: no('固定宽带', 'Fixed broadband'), v: `${mbps}<small>Mbps 下行中位</small>`, src: `${S}: 公开统计测算（固定宽带）${city.internetMbps == null ? '（国家级口径）' : ''}` }
+    : { h: no('固定宽带', 'Fixed broadband'), none: no('数据待核实', 'Data pending'), src: `${S}: 暂无公开网速测算` });
   const aq = city.airQuality;
   cards.push(aq
     ? { h: no('空气质量', 'Air quality'), v: `${aq.pm25}<small>µg/m³ PM2.5 · ${AIR_BAND[lang][aq.band]}</small>`, src: `${S}: Open-Meteo CAMS · WHO 2021 分档（${aq.period}）` }
@@ -270,14 +271,14 @@ function cityFaq(city, lang) {
     faqs.push({
       q: `${city.nameZh}生活成本多少？`,
       a: city.monthlyCostUSD != null
-        ? `${city.nameZh}估算月生活成本约 $${Math.round(city.monthlyCostUSD)}（含一居室房租；区间 $${city.cost?.[0] != null ? Math.round(city.cost[0]) : '?'}–$${city.cost?.[1] != null ? Math.round(city.cost[1]) : '?'}），单餐约 $${city.mealUSD ?? '?'}，一居室月租约 $${city.rent1brUSD != null ? Math.round(city.rent1brUSD) : '?'}。口径为 Numbeo 成本指数线性拟合与详情页快照，随汇率与城市更新浮动。`
-        : `${city.nameZh}暂无可靠的公开生活成本明细（Numbeo 无该城详情页），本站不编造数据；可参考其所在${city.countryZh}的国家级成本水位与 Numbeo 后续更新。`,
+        ? `${city.nameZh}估算月生活成本约 $${Math.round(city.monthlyCostUSD)}（含一居室房租；区间 $${city.cost?.[0] != null ? Math.round(city.cost[0]) : '?'}–$${city.cost?.[1] != null ? Math.round(city.cost[1]) : '?'}），单餐约 $${city.mealUSD ?? '?'}，一居室月租约 $${city.rent1brUSD != null ? Math.round(city.rent1brUSD) : '?'}。口径为公开统计测算（open-data estimates）线性拟合与页面快照，随汇率与城市更新浮动。`
+        : `${city.nameZh}暂无可靠的公开生活成本明细（暂无该城公开测算），本站不编造数据；可参考其所在${city.countryZh}的国家级成本水位与后续数据更新。`,
     });
     faqs.push({
       q: `${city.nameZh}安全吗？`,
       a: city.safety != null
-        ? `${city.nameZh}的 Numbeo 安全指数为 ${city.safety}/100（越高越安全）。总体而言${city.safety >= 60 ? '治安处于较好水平，常规旅行防范即可' : city.safety >= 40 ? '治安中等，建议夜间避免偏僻区域并留意财物' : '治安压力较大，需提高防范意识并选择安全社区居住'}。`
-        : `${city.nameZh}暂无城市级安全指数，其所在${city.countryZh}的 Numbeo 国家安全参考为 ${co?.numbeoSafety ?? '待补充'}/100${co?.gpi ? `，全球和平指数排名 #${co.gpi.rank}` : ''}。建议出行前查看最新领事与当地安全通报。`,
+        ? `${city.nameZh}的公开统计测算安全指数为 ${city.safety}/100（越高越安全）。总体而言${city.safety >= 60 ? '治安处于较好水平，常规旅行防范即可' : city.safety >= 40 ? '治安中等，建议夜间避免偏僻区域并留意财物' : '治安压力较大，需提高防范意识并选择安全社区居住'}。`
+        : `${city.nameZh}暂无城市级安全指数，其所在${city.countryZh}的公开统计测算国家安全参考为 ${co?.numbeoSafety ?? '待补充'}/100${co?.gpi ? `，全球和平指数排名 #${co.gpi.rank}` : ''}。建议出行前查看最新领事与当地安全通报。`,
     });
     faqs.push({
       q: `持中国护照如何入境${city.countryZh}（前往${city.nameZh}）？`,
@@ -289,7 +290,7 @@ function cityFaq(city, lang) {
     faqs.push({
       q: `${city.nameZh}网速如何？`,
       a: mbps != null
-        ? `${city.nameZh}${city.internetMbps != null ? '' : '（国家级口径）'}固定宽带下行中位约 ${mbps} Mbps（Ookla Speedtest Intelligence），${mbps >= 100 ? '足以支撑高清视频会议与大文件传输等重网络工作' : mbps >= 50 ? '可满足日常视频会议与远程协作' : '建议将重网络任务安排在网络低峰，或备移动热点'}。`
+        ? `${city.nameZh}${city.internetMbps != null ? '' : '（国家级口径）'}固定宽带下行中位约 ${mbps} Mbps（公开统计测算），${mbps >= 100 ? '足以支撑高清视频会议与大文件传输等重网络工作' : mbps >= 50 ? '可满足日常视频会议与远程协作' : '建议将重网络任务安排在网络低峰，或备移动热点'}。`
         : `${city.nameZh}暂无宽带中位数据，建议行前通过当地运营商页面或测速社区核实。`,
     });
     if (city.airQuality) {
@@ -302,13 +303,13 @@ function cityFaq(city, lang) {
     faqs.push({
       q: `What is the cost of living in ${city.nameEn}?`,
       a: city.monthlyCostUSD != null
-        ? `${city.nameEn} has an estimated monthly cost of ~$${Math.round(city.monthlyCostUSD)} including rent (range $${city.cost?.[0] != null ? Math.round(city.cost[0]) : '?'}–$${city.cost?.[1] != null ? Math.round(city.cost[1]) : '?'}), based on Numbeo cost-index fitting and page snapshots.`
-        : `Reliable public cost details for ${city.nameEn} are not yet available (no Numbeo detail page); we do not fabricate data — see country-level figures instead.`,
+        ? `${city.nameEn} has an estimated monthly cost of ~$${Math.round(city.monthlyCostUSD)} including rent (range $${city.cost?.[0] != null ? Math.round(city.cost[0]) : '?'}–$${city.cost?.[1] != null ? Math.round(city.cost[1]) : '?'}), based on open-data statistical estimates and page snapshots.`
+        : `Reliable public cost details for ${city.nameEn} are not yet available (no city-level public estimate yet); we do not fabricate data — see country-level figures instead.`,
     });
     faqs.push({
       q: `Is ${city.nameEn} safe?`,
       a: city.safety != null
-        ? `${city.nameEn} scores ${city.safety}/100 on the Numbeo Safety Index (higher is safer).`
+        ? `${city.nameEn} scores ${city.safety}/100 on the public statistical safety estimate (higher is safer).`
         : `City-level safety index is pending; country-level reference for ${cN} is ${co?.numbeoSafety ?? 'n/a'}/100${co?.gpi ? ` (Global Peace Index rank #${co.gpi.rank})` : ''}. Always check the latest official travel advisories.`,
     });
     faqs.push({
@@ -321,7 +322,7 @@ function cityFaq(city, lang) {
     faqs.push({
       q: `How fast is the internet in ${city.nameEn}?`,
       a: mbps != null
-        ? `Median fixed broadband download is about ${mbps} Mbps (Ookla)${city.internetMbps == null ? ' at country level' : ''}.`
+        ? `Median fixed broadband download is about ${mbps} Mbps (public statistical estimate)${city.internetMbps == null ? ' at country level' : ''}.`
         : 'No median broadband data yet — check local ISPs or speedtest communities.',
     });
   }
@@ -396,8 +397,8 @@ function renderCountryPage(co, lang) {
     ? `${co.nameZh}数字游民与长期定居指南 · 签证/安全/网速/税负 | 栖居罗盘`
     : `${co.nameEn} for Digital Nomads · Visa, Safety, Internet & Tax | NomadMatch`;
   const desc = lang === 'zh'
-    ? `${co.nameZh}定居要点：${co.visaOverview ?? '签证概览见正文'}；固定宽带中位 ${co.internetMbpsFixed ?? '—'} Mbps，Numbeo 安全参考 ${co.numbeoSafety ?? '—'}/100，库内 ${co.cityCount} 座城市数据。来源与日期逐项标注。`
-    : `${co.nameEn} essentials: ${co.internetMbpsFixed ?? '—'} Mbps median broadband, Numbeo safety ${co.numbeoSafety ?? '—'}/100, ${co.cityCount} covered cities. Per-item sources & dates.`;
+    ? `${co.nameZh}定居要点：${co.visaOverview ?? '签证概览见正文'}；固定宽带中位 ${co.internetMbpsFixed ?? '—'} Mbps，公开统计测算安全参考 ${co.numbeoSafety ?? '—'}/100，库内 ${co.cityCount} 座城市数据。来源与日期逐项标注。`
+    : `${co.nameEn} essentials: ${co.internetMbpsFixed ?? '—'} Mbps median broadband, public-estimate safety ${co.numbeoSafety ?? '—'}/100, ${co.cityCount} covered cities. Per-item sources & dates.`;
   const cities = CITIES.filter((c) => c.countryCode === co.code);
   const vp = co.visaPassport;
   const ls = co.longStay;
@@ -405,14 +406,14 @@ function renderCountryPage(co, lang) {
   if (lang === 'zh') {
     faqs.push({ q: `持中国护照进入${co.nameZh}需要签证吗？`, a: vp ? `据 ${co.updatedAt} 快照，中国大陆护照为「${vp.entry}」${vp.entryNote ? `（${vp.entryNote}）` : ''}。` : '暂无结构化快照，请查询官方渠道。' + ' 签证政策多变，务必核实官方移民渠道。' });
     faqs.push({ q: `${co.nameZh}远程办公/数字游民签证情况？`, a: `${co.visaOverview ?? '暂无结构化信息'}${vp ? `；数字游民友好度：${vp.digitalNomad}` : ''}。政策更新频繁，以官方渠道为准。` });
-    faqs.push({ q: `${co.nameZh}网速怎么样？`, a: co.internetMbpsFixed != null ? `固定宽带下行中位约 ${co.internetMbpsFixed} Mbps（Ookla Speedtest Intelligence），${co.internetMbpsFixed >= 100 ? '适合重网络远程工作' : '满足日常远程协作，重网络任务建议核实当地 ISP'}。` : '暂无数据，请查询当地 ISP。' });
-    faqs.push({ q: `${co.nameZh}安全吗？`, a: `${co.numbeoSafety != null ? `Numbeo 国家安全参考 ${co.numbeoSafety}/100。` : ''}${co.gpi ? `全球和平指数（IEP 2024）排名 #${co.gpi.rank}（得分 ${co.gpi.score}）。` : ''}出行前请查看最新领事安全通报。` });
+    faqs.push({ q: `${co.nameZh}网速怎么样？`, a: co.internetMbpsFixed != null ? `固定宽带下行中位约 ${co.internetMbpsFixed} Mbps（公开统计测算），${co.internetMbpsFixed >= 100 ? '适合重网络远程工作' : '满足日常远程协作，重网络任务建议核实当地 ISP'}。` : '暂无数据，请查询当地 ISP。' });
+    faqs.push({ q: `${co.nameZh}安全吗？`, a: `${co.numbeoSafety != null ? `公开统计测算国家安全参考 ${co.numbeoSafety}/100。` : ''}${co.gpi ? `全球和平指数（IEP 2024）排名 #${co.gpi.rank}（得分 ${co.gpi.score}）。` : ''}出行前请查看最新领事安全通报。` });
     faqs.push({ q: `${co.nameZh}长期居留与税务要注意什么？`, a: ls ? `税居门槛：${ls.taxResidencyDays ?? '—'} 天/年${ls.socialSecurityCn ? `；社保协定：${ls.socialSecurityCn === 'treaty' ? '与中国有社保协定' : ls.socialSecurityCn === 'negotiating' ? '协定协商中' : '暂无协定'}` : ''}${ls.rentalCustom ? `；租房惯例：${ls.rentalCustom}` : ''}。以上为快照参考，请以官方与专业税务意见为准。` : '暂无结构化快照。' });
   } else {
     faqs.push({ q: `Do Chinese passport holders need a visa for ${co.nameEn}?`, a: vp ? `Snapshot as of ${co.updatedAt}: mainland Chinese passport holders are ${vp.entry}. Verify with official channels.` : 'No structured snapshot — check official channels.' });
     faqs.push({ q: `Does ${co.nameEn} offer a digital nomad visa?`, a: `${co.visaOverview ?? 'No structured info'}${vp ? `; digital-nomad friendliness: ${vp.digitalNomad}` : ''}.` });
-    faqs.push({ q: `How fast is the internet in ${co.nameEn}?`, a: co.internetMbpsFixed != null ? `Median fixed broadband is ~${co.internetMbpsFixed} Mbps (Ookla).` : 'No data yet.' });
-    faqs.push({ q: `Is ${co.nameEn} safe?`, a: `${co.numbeoSafety != null ? `Numbeo safety ${co.numbeoSafety}/100. ` : ''}${co.gpi ? `Global Peace Index rank #${co.gpi.rank} (IEP 2024).` : ''}` });
+    faqs.push({ q: `How fast is the internet in ${co.nameEn}?`, a: co.internetMbpsFixed != null ? `Median fixed broadband is ~${co.internetMbpsFixed} Mbps (public statistical estimate).` : 'No data yet.' });
+    faqs.push({ q: `Is ${co.nameEn} safe?`, a: `${co.numbeoSafety != null ? `public-estimate safety ${co.numbeoSafety}/100. ` : ''}${co.gpi ? `Global Peace Index rank #${co.gpi.rank} (IEP 2024).` : ''}` });
   }
   const crumbs = lang === 'zh'
     ? [{ name: '首页', item: page('/') }, { name: '国家索引', item: page('/countries/') }, { name: co.nameZh, item: page(pathZh) }]
@@ -423,13 +424,13 @@ function renderCountryPage(co, lang) {
 <h1>${esc(n)}<span class="badge">${esc(co.capital ?? '')} · ${esc((co.languages ?? []).join('、'))}</span></h1>
 <p class="sub">${lang === 'zh' ? `人口 ${co.population ? co.population.toLocaleString('en-US') : '—'} · 货币 ${esc(co.currency ?? '—')} · 人均 GDP $${Math.round(co.gdpPerCapitaUSD ?? 0).toLocaleString('en-US')}` : `Population ${co.population ? co.population.toLocaleString('en-US') : '—'} · Currency ${esc(co.currency ?? '—')} · GDP/cap $${Math.round(co.gdpPerCapitaUSD ?? 0).toLocaleString('en-US')}`}</p>
 <div class="answer"><p>${lang === 'zh'
-    ? `${esc(co.nameZh)}是${co.cityCount ?? CITIES.length ? `本站收录 ${co.cityCount ?? cities.length} 座城市的` : ''}定居目的地。${co.internetMbpsFixed != null ? `固定宽带下行中位 ${co.internetMbpsFixed} Mbps，` : ''}${co.numbeoSafety != null ? `Numbeo 国家安全参考 ${co.numbeoSafety}/100，` : ''}${co.numbeoQol != null ? `Numbeo 生活质量指数 ${co.numbeoQol}。` : ''}${co.visaOverview ? `远程工作签证方面：${esc(co.visaOverview)}。` : ''}国家级数据逐项标注来源（World Bank/UNDP/IEP/Numbeo/Ookla），更新于 ${esc(co.updatedAt)}。`
-    : `${esc(co.nameEn)} hosts ${co.cityCount ?? cities.length} covered cities. ${co.internetMbpsFixed != null ? `Median broadband ${co.internetMbpsFixed} Mbps; ` : ''}${co.numbeoQol != null ? `Numbeo QoL ${co.numbeoQol}; ` : ''}${co.visaOverview ? `remote-work visa: ${esc(co.visaOverview)}.` : ''} Sources per item (World Bank/UNDP/IEP/Numbeo/Ookla), updated ${esc(co.updatedAt)}.`}</p></div>
+    ? `${esc(co.nameZh)}是${co.cityCount ?? CITIES.length ? `本站收录 ${co.cityCount ?? cities.length} 座城市的` : ''}定居目的地。${co.internetMbpsFixed != null ? `固定宽带下行中位 ${co.internetMbpsFixed} Mbps，` : ''}${co.numbeoSafety != null ? `公开统计测算国家安全参考 ${co.numbeoSafety}/100，` : ''}${co.numbeoQol != null ? `公开统计测算生活质量指数 ${co.numbeoQol}。` : ''}${co.visaOverview ? `远程工作签证方面：${esc(co.visaOverview)}。` : ''}国家级数据逐项标注来源（World Bank/UNDP/官方开放数据与公开统计测算），更新于 ${esc(co.updatedAt)}。`
+    : `${esc(co.nameEn)} hosts ${co.cityCount ?? cities.length} covered cities. ${co.internetMbpsFixed != null ? `Median broadband ${co.internetMbpsFixed} Mbps; ` : ''}${co.numbeoQol != null ? `public-estimate QoL ${co.numbeoQol}; ` : ''}${co.visaOverview ? `remote-work visa: ${esc(co.visaOverview)}.` : ''} Sources per item (World Bank/UNDP/open data & public estimates), updated ${esc(co.updatedAt)}.`}</p></div>
 <div class="grid">
   <div class="card"><h3>${lang === 'zh' ? '和平指数' : 'Peace index'}</h3><div class="v">${co.gpi ? `#${co.gpi.rank}<small>IEP 2024 · ${co.gpi.score}</small>` : '—'}</div><div class="src">来源: IEP Global Peace Index（手工快照）</div></div>
   <div class="card"><h3>${lang === 'zh' ? '人类发展指数' : 'HDI'}</h3><div class="v">${co.hdi ?? '—'}</div><div class="src">来源: UNDP HDR（手工快照）</div></div>
   <div class="card"><h3>${lang === 'zh' ? '腐败感知指数' : 'CPI'}</h3><div class="v">${co.cpi ?? '—'}<small>/100</small></div><div class="src">来源: Transparency International（手工快照）</div></div>
-  <div class="card"><h3>${lang === 'zh' ? '生活质量' : 'Quality of life'}</h3><div class="v">${co.numbeoQol ?? '—'}</div><div class="src">来源: Numbeo Quality of Life Index</div></div>
+  <div class="card"><h3>${lang === 'zh' ? '生活质量' : 'Quality of life'}</h3><div class="v">${co.numbeoQol ?? '—'}</div><div class="src">${lang === 'zh' ? '来源: 公开统计测算 · 生活质量指数' : 'Source: public statistical estimate · QoL index'}</div></div>
   <div class="card"><h3>${lang === 'zh' ? '税负参考' : 'Top tax rate'}</h3><div class="v">${co.taxTopRatePct != null ? `${co.taxTopRatePct}<small>% 最高档</small>` : '—'}</div><div class="src">来源: 手工快照 · 请以专业税务意见为准</div></div>
   <div class="card"><h3>${lang === 'zh' ? '数据快照日期' : 'Snapshot date'}</h3><div class="v" style="font-size:16px">${esc(co.updatedAt)}</div><div class="src">逐字段来源标注见方法论页</div></div>
 </div>
@@ -482,6 +483,7 @@ function renderCitiesIndex(lang) {  const pathZh = '/cities/', pathEn = '/en/cit
 <h1>${lang === 'zh' ? '城市资料库' : 'City guides'}<span class="badge">${CITIES.length} ${lang === 'zh' ? '座城市' : 'cities'} · 6 ${lang === 'zh' ? '大洲' : 'continents'}</span></h1>
 <p class="sub">${lang === 'zh' ? '每城一页：直答摘要 + 成本/安全/气候/网速/空气/签证数据卡（来源与日期逐项标注）+ FAQ。' : 'One page per city: answer-first summary + data cards (sources & dates) + FAQ.'}</p>
 ${byRegion.map(({ r, cities }) => `<h2>${esc(REGION_LABEL[lang][r] ?? r)}（${cities.length}）</h2><ul class="list">${cities.map((c) => `<li><a href="${lang === 'zh' ? `/city/${c.id}/` : `/en/city/${c.id}/`}">${esc(lang === 'zh' ? c.nameZh : c.nameEn)}</a><span class="meta">${esc(lang === 'zh' ? c.countryZh : (COUNTRY_BY_CODE.get(c.countryCode)?.nameEn ?? c.countryZh))}${c.monthlyCostUSD != null ? ` · $${Math.round(c.monthlyCostUSD)}/mo` : ''}</span></li>`).join('\n')}</ul>`).join('\n')}
+<p style="font-size:12.5px;opacity:.72;margin-top:18px">Career interest framework: O*NET Interest Profiler Short Form — <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="license noopener">CC BY 4.0</a>, O*NET OnLine (sponsored by the U.S. Department of Labor).</p>
 <a class="cta" href="${lang === 'zh' ? '/' : '/en/'}">${lang === 'zh' ? '免费开始我的定居匹配测评 →' : 'Start my free matching quiz →'}</a>`;
   return shell({ lang, title, desc, canonical, hreflang, jsonLd: [breadcrumbJsonLd(lang === 'zh' ? [{ name: '首页', item: page('/') }, { name: '城市索引', item: page(pathZh) }] : [{ name: 'Home', item: page('/en/') }, { name: 'Cities', item: page(pathEn) }])], body });
 }
@@ -494,8 +496,9 @@ function renderCountriesIndex(lang) {
   const desc = lang === 'zh' ? '按大洲浏览 65 个国家的定居参考数据：护照入境口径、远程工作签证、和平指数、网速与长期居留注意。' : 'Browse 65 country guides: entry rules for Chinese passports, remote-work visas, peace index, internet and long-stay notes.';
   const body = `
 <h1>${lang === 'zh' ? '国家资料库' : 'Country guides'}<span class="badge">${COUNTRIES.length} ${lang === 'zh' ? '国' : 'countries'}</span></h1>
-<p class="sub">${lang === 'zh' ? 'World Bank/UNDP/IEP/Numbeo/Ookla 快照 + 中国护照入境口径 + 长期居留与税务注意，逐字段来源标注。' : 'World Bank/UNDP/IEP/Numbeo/Ookla snapshots + CN-passport entry rules + long-stay notes, sources per field.'}</p>
+<p class="sub">${lang === 'zh' ? 'World Bank/UNDP 等官方开放数据与公开统计测算快照 + 中国护照入境口径 + 长期居留与税务注意，逐字段来源标注。' : 'World Bank/UNDP open data & public statistical estimate snapshots + CN-passport entry rules + long-stay notes, sources per field.'}</p>
 ${CONTINENTS.map((r) => { const cs = COUNTRIES.filter((c) => COUNTRY_REGION.get(c.code) === r); if (!cs.length) return ''; return `<h2>${esc(REGION_LABEL[lang][r] ?? r)}（${cs.length}）</h2><ul class="list">${cs.map((c) => `<li><a href="${lang === 'zh' ? `/country/${c.code.toLowerCase()}/` : `/en/country/${c.code.toLowerCase()}/`}">${esc(lang === 'zh' ? c.nameZh : c.nameEn)}</a><span class="meta">${c.internetMbpsFixed != null ? `${c.internetMbpsFixed} Mbps` : ''}${c.gpi ? ` · 和平 #${c.gpi.rank}` : ''} · ${c.cityCount ?? 0} 城</span></li>`).join('\n')}</ul>`; }).join('\n')}
+<p style="font-size:12.5px;opacity:.72;margin-top:18px">Career interest framework: O*NET Interest Profiler Short Form — <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="license noopener">CC BY 4.0</a>, O*NET OnLine (sponsored by the U.S. Department of Labor).</p>
 <a class="cta" href="${lang === 'zh' ? '/' : '/en/'}">${lang === 'zh' ? '免费开始我的定居匹配测评 →' : 'Start my free matching quiz →'}</a>`;
   return shell({ lang, title, desc, canonical, hreflang, jsonLd: [breadcrumbJsonLd(lang === 'zh' ? [{ name: '首页', item: page('/') }, { name: '国家索引', item: page(pathZh) }] : [{ name: 'Home', item: page('/en/') }, { name: 'Countries', item: page(pathEn) }])], body });
 }
@@ -520,34 +523,30 @@ function renderMethodology(lang) {
 <li>节奏 pace / 社交 social<span class="meta">0.10 / 0.10</span></li>
 <li>规模 size / 语言 language / 签证 visa / 远程 remote<span class="meta">0.09 × 4</span></li>
 <li>气候舒适度 climateComfort<span class="meta">客观 0.05 · Open-Meteo 派生</span></li>
-<li>安全 safety<span class="meta">客观 0.05 · Numbeo</span></li>
-<li>英语深度 englishDepth<span class="meta">客观 0.04 · EF EPI</span></li>
+<li>安全 safety<span class="meta">客观 0.05 · 公开统计测算</span></li>
+<li>英语深度 englishDepth<span class="meta">客观 0.04 · 公开英语排名分档</span></li>
 </ul>
 <p class="note">${lang === 'zh' ? '偏好类内部：用户主观 8 维合计 0.86，客观数据 3 维合计 0.14。任何维度缺失时从分子与分母同时剔除（降权不惩罚）。' : 'Within preferences: user-reported 8 dims sum to 0.86, objective 3 dims sum to 0.14. Missing dims are dropped from numerator and denominator (down-weight, never penalised).'}</p>
 <h2>${lang === 'zh' ? '第 3 层：加分项（≤10%）' : 'Tier 3: boosters (≤10%)'}</h2>
 <ul class="list">
-<li>RIASEC 兴趣强化<span class="meta">0.05 · O*NET Interest Profiler（CC BY 4.0）</span></li>
-<li>风险画像联动<span class="meta">0.03 · IPIP Risk-Taking（Public Domain）× 城市冒险友好度</span></li>
+<li>RIASEC 兴趣强化<span class="meta">0.05 · 公开职业兴趣框架</span></li>
+<li>风险画像联动<span class="meta">0.03 · 风险偏好画像 × 城市冒险友好度</span></li>
 <li>空气质量 airFit<span class="meta">0.02 · WHO 2021 分档（优 90/良 72/一般 48/差 25）</span></li>
 </ul>
 <h2>${lang === 'zh' ? '数据来源与许可' : 'Data sources & licences'}</h2>
 <ul class="list">
 <li>GeoNames cities15000<span class="meta">城市底座 · <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="license noopener">CC BY 4.0</a> · <a href="https://www.geonames.org/" target="_blank" rel="noopener">geonames.org</a></span></li>
 <li>Open-Meteo Historical / Air Quality<span class="meta">气候十年均值 + PM2.5 · <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="license noopener">CC BY 4.0</a> · <a href="https://open-meteo.com/" target="_blank" rel="noopener">open-meteo.com</a> · CAMS 再分析</span></li>
-<li>Numbeo<span class="meta">成本/安全/医疗/QoL 公开指数（NYC=100）· 遵循其引用政策 · <a href="https://www.numbeo.com/" target="_blank" rel="noopener">numbeo.com</a></span></li>
-<li>EF EPI<span class="meta">英语水平国家分档 · <a href="https://www.ef.com/epi/" target="_blank" rel="noopener">ef.com/epi</a> · EF Education First</span></li>
-<li>World Bank / UNDP / Transparency International / IEP<span class="meta">国家级参考 · <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="license noopener">CC BY 4.0</a> / 手工快照</span></li>
-<li>Ookla Speedtest Intelligence<span class="meta">固定宽带中位下行 · 手工快照</span></li>
-<li>IPIP-NEO-120 / IPIP Risk-Taking<span class="meta">人格与风险题库 · Public Domain（<a href="https://ipip.ori.org/" target="_blank" rel="noopener">ipip.ori.org</a>）</span></li>
+<li>公开英语熟练度排名 / World Bank / UNDP / Transparency International / IEP<span class="meta">国家级参考 · 官方开放数据与公开统计 · <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="license noopener">CC BY 4.0</a> / 手工快照</span></li>
 <li>OEJTS 1.2<span class="meta">简易版 16 型人格题库（Jungian 双极结构）· <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="license noopener">CC BY-NC-SA 4.0</a> · Open Psychometrics</span></li>
-<li>O*NET Interest Profiler Short Form<span class="meta">RIASEC 题库 · <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="license noopener">CC BY 4.0</a> · <a href="https://www.onetonline.org/" target="_blank" rel="noopener">O*NET OnLine</a>（U.S. DOL 赞助）</span></li>
 <li>WHO Global Air Quality Guidelines 2021<span class="meta">PM2.5 年均分档口径（优 ≤10 / 良 ≤15 / 一般 ≤25 / 差 >25）</span></li>
 <li>字体 Noto Sans SC / IBM Plex Mono / Source Serif 4<span class="meta">SIL Open Font License 1.1 · 经 @fontsource 自托管打包，无外部 CDN</span></li>
 </ul>
 <h2>${lang === 'zh' ? '更新频率与免责声明' : 'Update cadence & disclaimer'}</h2>
 <p class="note">${lang === 'zh'
-    ? '城市/国家页由构建管道从快照数据生成（本页构建于 ' + BUILD_DATE + '）；Numbeo 类公开指数按季度复核，气候与空气为 2022–2024 多年均值；签证与税务快照日期逐页标注，政策多变请以官方渠道为准。本站为决策辅助工具，不构成投资、法律或移民建议；测评结果为算法输出，不构成专业心理评估。'
-    : 'City/country pages are generated from snapshot data at build time (built ' + BUILD_DATE + '); Numbeo-derived indices are reviewed quarterly; climate & air are 2022–2024 multi-year means; visa/tax snapshots carry per-page dates. This site is decision support, not investment, legal or immigration advice, and quiz results are algorithmic outputs, not clinical assessments.'}</p>
+    ? '城市/国家页由构建管道从快照数据生成（本页构建于 ' + BUILD_DATE + '）；公开统计测算按季度复核，气候与空气为 2022–2024 多年均值；签证与税务快照日期逐页标注，政策多变请以官方渠道为准。本站为决策辅助工具，不构成投资、法律或移民建议；测评结果为算法输出，不构成专业心理评估。'
+    : 'City/country pages are generated from snapshot data at build time (built ' + BUILD_DATE + '); public statistical estimates are reviewed quarterly; climate & air are 2022–2024 multi-year means; visa/tax snapshots carry per-page dates. This site is decision support and is not immigration, visa, legal, tax, medical, or financial advice; quiz results are algorithmic outputs, not clinical assessments.'}</p>
+<p style="font-size:12.5px;opacity:.72;margin-top:18px">Career interest framework: O*NET Interest Profiler Short Form — <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="license noopener">CC BY 4.0</a>, O*NET OnLine (sponsored by the U.S. Department of Labor).</p>
 <a class="cta" href="${lang === 'zh' ? '/' : '/en/'}">${lang === 'zh' ? '免费开始我的定居匹配测评 →' : 'Start my free matching quiz →'}</a>`;
   return shell({ lang, title, desc, canonical, hreflang, jsonLd: [breadcrumbJsonLd(lang === 'zh' ? [{ name: '首页', item: page('/') }, { name: '方法论', item: page(pathZh) }] : [{ name: 'Home', item: page('/en/') }, { name: 'Methodology', item: page(pathEn) }])], body });
 }
@@ -720,15 +719,14 @@ const LEGAL_TERMS = {
         '本站的界面设计、文案与代码版权归 NomadMatch 运营者所有。',
         '本站引用的公开数据与题库按其许可要求署名（完整清单见方法论页）：',
       ], list: [
-        'Numbeo 公开指数（成本 / 安全 / 医疗 / 生活质量，NYC=100 口径）',
+        '官方开放数据（Open Data）与公开统计测算：成本 / 安全 / 医疗 / 生活质量 / 英语排名 / 宽带网速等（NYC=100 口径，完整口径与更新频率见方法论页）',
         'GeoNames（CC BY 4.0）、Open-Meteo Historical 与 Air Quality（CC BY 4.0）',
-        'EF EPI 英语熟练度评级；World Bank / UNDP / Transparency International 国家指标',
-        'Ookla Speedtest Intelligence 固定宽带网速中位数',
-        'IPIP-NEO 120 题（公有领域，ipip.ori.org）；O*NET Interest Profiler（CC BY 4.0，O*NET OnLine · 美国教育部赞助）；IPIP Risk-Taking（公有领域）；OEJTS 1.2（CC BY-NC-SA 4.0）',
+        'World Bank / UNDP / Transparency International / IEP 国家指标（开放数据与公开引用排名）',
+        'OEJTS 1.2 人格题库（CC BY-NC-SA 4.0，Open Psychometrics）',
       ] },
       { h: '四、免责声明', ps: [
         '本站按"现状"（as-is）提供，不提供任何明示或默示的保证。',
-        '本站内容<strong>不构成移民、法律、税务、财务或医疗建议</strong>；匹配分数仅是基于你自述偏好与第三方公开数据快照的参考值，不构成对任何城市或国家的担保。',
+        '本站内容<strong>不构成移民、签证、居留、法律、税务、医疗、保险、财务或投资建议</strong>；匹配分数仅是基于你自述偏好与第三方公开数据快照的参考值，不构成对任何城市或国家的担保。',
         '数据（成本、安全、网速、签证概览等）为第三方来源的<strong>时点快照，可能过时或存在误差</strong>；签证与入境政策多变，出行与定居前务必通过官方渠道核实。',
       ] },
       { h: '五、责任限制', ps: [
@@ -736,8 +734,8 @@ const LEGAL_TERMS = {
       ] },
       { h: '六、计费说明（重要）', ps: [
         '标准版定价 ¥29.9，标注为<strong>一次性虚拟买断（演示性付费）</strong>：支付弹窗是<strong>模拟流程，不会产生任何真实扣款</strong>，本站亦无真实收款与退款流程；购买结果仅记录在你的浏览器本地（proUnlocked / orders），用于解锁标准版测评功能。',
-        '退款政策：<strong>所有数字商品（含标准版 Pro 解锁等付费内容）一经购买成功即完成交付，概不退款（All sales are final; no refunds）</strong>。',
-        '欧盟消费者合规说明：数字内容即时交付场景下，购买流程包含明确的确认步骤——你需勾选确认<strong>同意立即交付数字内容，并知悉因此丧失欧盟指令 2011/83/EU 第 16(m) 条项下的 14 天撤回权（right of withdrawal）</strong>，确认后方能完成购买；该机制与上述"概不退款"条款一并生效。',
+        '数字内容一经购买即开始<strong>即时交付</strong>，交付完成即视为履约完毕。用户在购买确认时明确同意即时交付，并据此依法放弃法定撤回权（包括欧盟消费者权利指令下的 14 天撤回权）。<strong>所有数字商品一经售出概不退款（All sales are final; no refunds）</strong>。',
+        '上述同意在购买流程中以显式勾选实现：确认区含「我明确同意即时交付数字内容，并知悉据此依法放弃法定撤回权（包括欧盟 14 天撤回权）」勾选项，未勾选无法完成购买。',
         '清除本地数据（含隐私政策中的"清除我的所有数据"按钮）会一并清除解锁状态，之后可重新走演示性购买流程。',
       ] },
       { h: '七、服务变更与终止', ps: [
@@ -770,15 +768,14 @@ const LEGAL_TERMS = {
       { h: '3. IP & open-data attribution', ps: [
         'The interface design, copy and code are © the NomadMatch operator. Public data and questionnaires are credited per their licences (full list on the Methodology page):',
       ], list: [
-        'Numbeo public indices (cost / safety / healthcare / quality of life, NYC=100)',
+        'Official open data & public statistical estimates: cost / safety / healthcare / quality of life / English-proficiency rank / broadband speeds (NYC=100 basis; full methodology on the Methodology page)',
         'GeoNames (CC BY 4.0), Open-Meteo Historical & Air Quality (CC BY 4.0)',
-        'EF EPI English proficiency; World Bank / UNDP / Transparency International country indicators',
-        'Ookla Speedtest Intelligence fixed-broadband median speeds',
-        'IPIP-NEO 120 (public domain, ipip.ori.org); O*NET Interest Profiler (CC BY 4.0, O*NET OnLine, sponsored by the U.S. Department of Labor); IPIP Risk-Taking (public domain); OEJTS 1.2 (CC BY-NC-SA 4.0)',
+        'World Bank / UNDP / Transparency International / IEP country indicators (open data & publicly cited rankings)',
+        'OEJTS 1.2 personality questionnaire (CC BY-NC-SA 4.0, Open Psychometrics)',
       ] },
       { h: '4. Disclaimers', ps: [
         'The site is provided "as is", without warranty of any kind, express or implied.',
-        'Its content <strong>is not immigration, legal, tax, financial or medical advice</strong>; match scores are reference values derived from your self-reported preferences and third-party public snapshots, and are no guarantee of any city or country.',
+        'Its content <strong>is not immigration, visa, legal, tax, medical, or financial advice</strong>; match scores are reference values derived from your self-reported preferences and third-party public snapshots, and are no guarantee of any city or country.',
         'Data (cost, safety, speeds, visa overviews) are <strong>point-in-time third-party snapshots and may be outdated or imprecise</strong>. Visa and entry rules change frequently — always verify with official channels before travelling or relocating.',
       ] },
       { h: '5. Limitation of liability', ps: [
@@ -786,8 +783,8 @@ const LEGAL_TERMS = {
       ] },
       { h: '6. Billing (important)', ps: [
         'The Pro version is priced ¥29.9 as a <strong>one-time virtual purchase (demo billing)</strong>: the payment dialog is a <strong>simulation — no real charge is ever made</strong>, and there is no real collection or refund process. The purchase result is recorded only in your browser (proUnlocked / orders) and merely unlocks the Pro assessment features.',
-        'Refund policy: <strong>all digital goods (including the Pro unlock) are deemed delivered upon successful purchase — all sales are final; no refunds.</strong>',
-        'EU consumer compliance: where digital content is delivered immediately, the purchase flow includes an explicit confirmation step — you must tick a box confirming that <strong>you consent to the immediate delivery of the digital content and acknowledge that you thereby lose your 14-day right of withdrawal (Art. 16(m) of Directive 2011/83/EU)</strong>; the purchase can only be completed after this confirmation, which gives effect to the no-refund policy above.',
+        'Digital content is delivered immediately upon purchase, and delivery is deemed complete upon commencement of streaming/download or access. By completing the purchase confirmation, you expressly consent to immediate delivery and acknowledge that you thereby lose your statutory right of withdrawal (including the 14-day right under the EU Consumer Rights Directive). <strong>All sales are final; no refunds.</strong>',
+        'That consent is captured as an explicit checkbox in the purchase dialog (PayModal) — the purchase cannot be completed without it.',
         'Erasing local data (including the "Erase all my data" button in the Privacy Policy) also clears the unlock state, after which the demo purchase flow can be repeated.',
       ] },
       { h: '7. Changes & termination', ps: [
@@ -806,16 +803,16 @@ const LEGAL_TERMS = {
 const LEGAL_DISCLAIMER = {
   zh: {
     title: '免责声明 | 栖居罗盘',
-    desc: '城市评分与推荐仅为信息参考，不构成移民、签证、法律、税务、医疗、保险、财务或投资建议；数据为第三方快照，可能过时或有误差。',
+    desc: '城市评分与推荐仅为信息参考，不构成移民、签证、居留、法律、税务、医疗、保险、财务或投资建议；数据为第三方来源快照（页面标注快照日期），可能过时或有误差。',
     updated: `最后更新：${BUILD_DATE}`,
     sections: [
       { h: '一、信息性质：仅供参考，不构成专业建议', ps: [
-        '本站提供的城市评分、排名与推荐<strong>仅为信息参考</strong>，不构成<strong>移民、签证、法律、税务、医疗、保险、财务或投资建议</strong>。',
+        '本站提供的城市评分、排名与推荐<strong>仅为信息参考</strong>，不构成<strong>移民、签证、居留、法律、税务、医疗、保险、财务或投资建议</strong>。',
         '搬家、签证申请、置业、远程工作安排等重大决策，请咨询当地专业机构，并以政府与官方渠道发布的信息为准。<strong>你基于本站内容做出的任何决定及由此产生的后果，由你自行承担风险</strong>。',
         '人格测评为自我探索工具，其算法输出不构成心理评估、诊断或临床建议。',
       ] },
       { h: '二、数据准确性：第三方快照，可能过时', ps: [
-        '本站的成本、安全、气候、网速、空气质量等数据依赖第三方公开来源（Numbeo、Open-Meteo、GeoNames、Ookla、EF EPI、World Bank 等），均为<strong>时点快照</strong>并在相应页面标注快照日期。',
+        '本站的成本、安全、气候、网速、空气质量等数据依赖官方开放数据与公开统计来源（Open-Meteo、GeoNames、World Bank 等），均为<strong>时点快照</strong>并在相应页面标注快照日期。',
         '第三方数据可能过时、不完整或存在口径误差，本站<strong>不对任何数据的准确性、完整性或时效性作出保证</strong>；快照日期之后的变化本站不承担更新义务（但会按方法论页披露的频率复核）。',
       ] },
       { h: '三、无担保（as-is / as-available）', ps: [
@@ -837,7 +834,7 @@ const LEGAL_DISCLAIMER = {
         'The personality assessment is a self-exploration tool; its algorithmic output is not a psychological evaluation, diagnosis or clinical advice.',
       ] },
       { h: '2. Data accuracy: third-party snapshots that may be outdated', ps: [
-        'Cost, safety, climate, internet-speed and air-quality data rely on third-party public sources (Numbeo, Open-Meteo, GeoNames, Ookla, EF EPI, World Bank, etc.) and are <strong>point-in-time snapshots</strong> with the snapshot date shown on each page.',
+        'Cost, safety, climate, internet-speed and air-quality data rely on official open data and public statistical sources (Open-Meteo, GeoNames, World Bank, etc.) and are <strong>point-in-time snapshots</strong> with the snapshot date shown on each page.',
         'Third-party data can be outdated, incomplete or inconsistent in methodology. The site <strong>makes no warranty as to accuracy, completeness or timeliness</strong> of any data, and is not obliged to update beyond the review cadence published on the Methodology page.',
       ] },
       { h: '3. No warranty (as-is / as-available)', ps: [
@@ -873,6 +870,9 @@ function renderLegalPage(kind, lang) {
       return html;
     })
     .join('');
+  const alertBox = kind === 'disclaimer'
+    ? `<div class="notice">${zh ? '<strong>本站内容仅为信息参考，不构成移民、签证、居留、法律、税务、医疗、保险、财务或投资建议。</strong>' : '<strong>Informational reference only — not immigration, visa, legal, tax, medical, or financial advice.</strong>'}</div>`
+    : '';
   const eraseBlock = kind === 'privacy'
     ? `<section class="card erase" id="erase">
 <h2>${zh ? '清除我的所有数据' : 'Erase all my data'}</h2>
@@ -914,7 +914,7 @@ function eraseAll() {
   ];
   const body = `<p class="crumbs"><a href="${zh ? '/' : '/en/'}">${zh ? '首页' : 'Home'}</a> / ${zh ? '法律' : 'Legal'}</p>
 <h1>${name}</h1>
-<p class="sub">${d.updated}</p>
+<p class="sub">${d.updated}</p>${alertBox}
 ${sections}
 ${eraseBlock}
 ${crossLink}`;
