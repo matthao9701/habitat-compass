@@ -17,7 +17,7 @@ function domainLabel(domain: string): string {
 
 const DOMAIN_ORDER: (keyof BigFiveProfile['domains'])[] = ['O', 'C', 'E', 'A', 'N'];
 
-/** 映射说明：Big Five 域 → MBTI 字母（McCrae & Costa 1989 对应，中位 50 分界） */
+/** 映射说明：Big Five 域 → 四字母人格（McCrae & Costa 1989 对应，中位 50 分界） */
 function buildMappingNotes(): { axis: string; from: string; rule: string }[] {
   const L = (k: string): string => translate(getCurrentLang(), k);
   return [

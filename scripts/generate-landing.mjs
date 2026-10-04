@@ -99,7 +99,7 @@ const TAG_LABEL = {
 const CSS = `
 :root{--pine:${T.pine};--pine-deep:${T.pineDeep};--teal:${T.teal};--paper:${T.paper};--paper-deep:${T.paperDeep};--ink:${T.ink};--ink-soft:${T.inkSoft};--clay:${T.clay};--clay-deep:${T.clayDeep};--ochre:${T.ochre};--moss:${T.moss};--sea:${T.sea};--card:${T.card}}
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Noto Sans SC',-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;background:var(--paper);color:var(--ink);line-height:1.7;font-size:16px}
+body{font-family:'Noto Sans SC',-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;background:var(--paper);color:var(--ink);line-height:1.7;font-size:16px;overflow-wrap:break-word}
 .wrap{max-width:880px;margin:0 auto;padding:0 20px}
 header{background:var(--card);border-bottom:1px solid var(--paper-deep)}
 .hd{display:flex;align-items:center;justify-content:space-between;padding:14px 0;gap:12px;flex-wrap:wrap}
@@ -171,7 +171,7 @@ ${Object.entries(hreflang).map(([k, v]) => `<link rel="alternate" hreflang="${k 
 <meta property="og:description" content="${esc(desc)}">
 <meta property="og:url" content="${esc(canonical)}">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="栖居罗盘 · Siju Compass">
+<meta property="og:site_name" content="栖居罗盘 · NomadMatch">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="${esc(title)}">
 <meta name="twitter:description" content="${esc(desc)}">
@@ -180,7 +180,7 @@ ${jsonLd.map((j) => `<script type="application/ld+json">\n${JSON.stringify(j, nu
 </head>
 <body>
 <header><div class="wrap hd">
-<a class="brand" href="${lang === 'zh' ? '/' : '/en/'}"><span class="dot">栖</span>栖居罗盘 · Siju Compass</a>
+<a class="brand" href="${lang === 'zh' ? '/' : '/en/'}"><span class="dot">栖</span>栖居罗盘 · NomadMatch</a>
 <nav>
 <a href="${lang === 'zh' ? '/cities/' : '/en/cities/'}">${lang === 'zh' ? '城市索引' : 'Cities'}</a>
 <a href="${lang === 'zh' ? '/countries/' : '/en/countries/'}">${lang === 'zh' ? '国家索引' : 'Countries'}</a>
@@ -193,7 +193,7 @@ ${langSwitch}
 <p>${lang === 'zh'
     ? '数据来源：Numbeo 公开指数 · Open-Meteo（CC BY 4.0）· GeoNames（CC BY 4.0）· EF EPI · World Bank · WHO 2021 空气质量指导值分档 · Ookla Speedtest Intelligence。签证与政策多变，出行前务必核实官方渠道；本站为决策辅助工具，不构成任何投资、法律或移民建议。'
     : 'Data sources: Numbeo public indices · Open-Meteo (CC BY 4.0) · GeoNames (CC BY 4.0) · EF EPI · World Bank · WHO 2021 air quality guidelines · Ookla Speedtest Intelligence. Visa policies change frequently — always verify with official channels before travelling. This site is a decision-support tool, not investment, legal or immigration advice.'}</p>
-<p style="margin-top:6px">${lang === 'zh' ? '匹配口径与数据许可详见' : 'Scoring methodology & data licences:'} <a href="${lang === 'zh' ? '/methodology/' : '/en/methodology/'}" style="color:var(--pine)">${lang === 'zh' ? '方法论页' : 'Methodology'}</a> · © 栖居罗盘 Siju Compass</p>
+<p style="margin-top:6px">${lang === 'zh' ? '匹配口径与数据许可详见' : 'Scoring methodology & data licences:'} <a href="${lang === 'zh' ? '/methodology/' : '/en/methodology/'}" style="color:var(--pine)">${lang === 'zh' ? '方法论页' : 'Methodology'}</a> · <a href="${lang === 'zh' ? '/privacy/' : '/en/privacy/'}" style="color:var(--pine)">${lang === 'zh' ? '隐私政策' : 'Privacy'}</a> · <a href="${lang === 'zh' ? '/terms/' : '/en/terms/'}" style="color:var(--pine)">${lang === 'zh' ? '用户协议' : 'Terms'}</a> · <a href="${lang === 'zh' ? '/disclaimer/' : '/en/disclaimer/'}" style="color:var(--pine)">${lang === 'zh' ? '免责声明' : 'Disclaimer'}</a> · © 栖居罗盘 NomadMatch</p>
 </div></footer>
 </body>
 </html>`;
@@ -355,7 +355,7 @@ function renderCityPage(city, lang) {
   const cN = lang === 'zh' ? city.countryZh : (co?.nameEn ?? city.countryEn ?? city.countryZh);
   const title = lang === 'zh'
     ? `${city.nameZh}数字游民定居指南 · 月成本 $${city.monthlyCostUSD != null ? Math.round(city.monthlyCostUSD) : '?'} · 安全/气候/网速/签证 | 栖居罗盘`
-    : `${city.nameEn} for Digital Nomads · Cost, Safety, Climate, Internet & Visa | Siju Compass`;
+    : `${city.nameEn} for Digital Nomads · Cost, Safety, Climate, Internet & Visa | NomadMatch`;
   const desc = lang === 'zh'
     ? `${city.nameZh}（${city.countryZh}）生活成本约 $${city.monthlyCostUSD != null ? Math.round(city.monthlyCostUSD) : '?'}${city.safety != null ? `，安全指数 ${city.safety}/100` : ''}${city.climateDetail ? `，年均 ${city.climateDetail.avgTempC}°C` : ''}。含数据来源标注、常见问答与免费定居匹配测评。`
     : `${city.nameEn} (${cN}): ~$${city.monthlyCostUSD != null ? Math.round(city.monthlyCostUSD) : 'n/a'}/mo incl. rent${city.safety != null ? `, safety ${city.safety}/100` : ''}. Sources, FAQ and a free nomad matching quiz.`;
@@ -394,7 +394,7 @@ function renderCountryPage(co, lang) {
   const n = lang === 'zh' ? co.nameZh : co.nameEn;
   const title = lang === 'zh'
     ? `${co.nameZh}数字游民与长期定居指南 · 签证/安全/网速/税负 | 栖居罗盘`
-    : `${co.nameEn} for Digital Nomads · Visa, Safety, Internet & Tax | Siju Compass`;
+    : `${co.nameEn} for Digital Nomads · Visa, Safety, Internet & Tax | NomadMatch`;
   const desc = lang === 'zh'
     ? `${co.nameZh}定居要点：${co.visaOverview ?? '签证概览见正文'}；固定宽带中位 ${co.internetMbpsFixed ?? '—'} Mbps，Numbeo 安全参考 ${co.numbeoSafety ?? '—'}/100，库内 ${co.cityCount} 座城市数据。来源与日期逐项标注。`
     : `${co.nameEn} essentials: ${co.internetMbpsFixed ?? '—'} Mbps median broadband, Numbeo safety ${co.numbeoSafety ?? '—'}/100, ${co.cityCount} covered cities. Per-item sources & dates.`;
@@ -443,12 +443,40 @@ ${faqs.map((f) => `<details><summary>${esc(f.q)}</summary><p>${esc(f.a)}</p></de
 }
 
 // ---------- 索引页 ----------
-function renderCitiesIndex(lang) {
-  const pathZh = '/cities/', pathEn = '/en/cities/';
+// 英文本地化首页（sitemap 一直声明 /en/，此前缺文件 → 404；现补齐精简英文版）
+function renderEnHome() {
+  const title = 'NomadMatch — Where should you live next? 200 city guides for remote workers';
+  const desc = 'Free personality & lifestyle quiz that scores 200 cities across cost, safety, climate, internet and visa friendliness — with per-item sources and dates.';
+  const body = `
+<h1>NomadMatch</h1>
+<p class="sub">A decision-support tool for remote workers, freelancers and digital nomads. Take a free personality &amp; lifestyle quiz, get a weighted score for every city in the library, and compare your shortlist.</p>
+<div class="grid">
+  <div class="card"><div class="k">City library</div><div class="v">200 cities</div><div class="meta"><a href="/en/cities/">Browse city guides</a> · cost, safety, climate, internet, air quality &amp; visa overview with sources</div></div>
+  <div class="card"><div class="k">Country library</div><div class="v">65 countries</div><div class="meta"><a href="/en/countries/">Browse country pages</a> · GPI, HDI, connectivity &amp; long-stay notes</div></div>
+  <div class="card"><div class="k">How scoring works</div><div class="v">3 tiers, 11 dimensions</div><div class="meta"><a href="/en/methodology/">Methodology</a> · weights, data licences &amp; update cadence</div></div>
+  <div class="card"><div class="k">Get started</div><div class="v">Free quiz</div><div class="meta"><a href="/">Start the matching quiz (Chinese UI)</a> · no account needed</div></div>
+</div>
+<h2>Legal</h2>
+<ul class="list">
+  <li><a href="/en/terms/">Terms of Service</a></li>
+  <li><a href="/en/privacy/">Privacy Policy</a> <span class="meta">no tracking cookies · data stays in your browser (localStorage)</span></li>
+  <li><a href="/en/disclaimer/">Disclaimer</a> <span class="meta">information only — not professional advice</span></li>
+</ul>
+<p class="meta">The full interactive app is available in Chinese at <a href="/">the homepage</a>.</p>`;
+  return shell({
+    lang: 'en', title, desc,
+    canonical: page('/en/'),
+    hreflang: { zh: page('/'), en: page('/en/') },
+    jsonLd: [breadcrumbJsonLd([{ name: 'Home', item: page('/en/') }])],
+    body,
+  });
+}
+
+function renderCitiesIndex(lang) {  const pathZh = '/cities/', pathEn = '/en/cities/';
   const hreflang = { zh: page(pathZh), en: page(pathEn) };
   const canonical = lang === 'zh' ? hreflang.zh : hreflang.en;
   const byRegion = CONTINENTS.map((r) => ({ r, cities: CITIES.filter((c) => c.continent === r) }));
-  const title = lang === 'zh' ? `200 座城市定居资料库（六洲覆盖）| 栖居罗盘` : `200 City Guides for Digital Nomads (6 continents) | Siju Compass`;
+  const title = lang === 'zh' ? `200 座城市定居资料库（六洲覆盖）| 栖居罗盘` : `200 City Guides for Digital Nomads (6 continents) | NomadMatch`;
   const desc = lang === 'zh' ? '按大洲浏览 200 座城市的数字游民定居数据：生活成本、安全、气候、网速、空气质量与签证概览，逐项标注来源。' : 'Browse 200 city guides across 6 continents: cost, safety, climate, internet, air quality and visa overview with per-item sources.';
   const body = `
 <h1>${lang === 'zh' ? '城市资料库' : 'City guides'}<span class="badge">${CITIES.length} ${lang === 'zh' ? '座城市' : 'cities'} · 6 ${lang === 'zh' ? '大洲' : 'continents'}</span></h1>
@@ -462,7 +490,7 @@ function renderCountriesIndex(lang) {
   const pathZh = '/countries/', pathEn = '/en/countries/';
   const hreflang = { zh: page(pathZh), en: page(pathEn) };
   const canonical = lang === 'zh' ? hreflang.zh : hreflang.en;
-  const title = lang === 'zh' ? `65 国定居参考（签证/安全/网速/税负）| 栖居罗盘` : `65 Country Guides: Visa, Safety, Internet & Tax | Siju Compass`;
+  const title = lang === 'zh' ? `65 国定居参考（签证/安全/网速/税负）| 栖居罗盘` : `65 Country Guides: Visa, Safety, Internet & Tax | NomadMatch`;
   const desc = lang === 'zh' ? '按大洲浏览 65 个国家的定居参考数据：护照入境口径、远程工作签证、和平指数、网速与长期居留注意。' : 'Browse 65 country guides: entry rules for Chinese passports, remote-work visas, peace index, internet and long-stay notes.';
   const body = `
 <h1>${lang === 'zh' ? '国家资料库' : 'Country guides'}<span class="badge">${COUNTRIES.length} ${lang === 'zh' ? '国' : 'countries'}</span></h1>
@@ -477,7 +505,7 @@ function renderMethodology(lang) {
   const pathZh = '/methodology/', pathEn = '/en/methodology/';
   const hreflang = { zh: page(pathZh), en: page(pathEn) };
   const canonical = lang === 'zh' ? hreflang.zh : hreflang.en;
-  const title = lang === 'zh' ? '匹配方法论：三层权重、数据来源与许可 | 栖居罗盘' : 'Methodology: Tiered weights, data sources & licences | Siju Compass';
+  const title = lang === 'zh' ? '匹配方法论：三层权重、数据来源与许可 | 栖居罗盘' : 'Methodology: Tiered weights, data sources & licences | NomadMatch';
   const desc = lang === 'zh' ? '完整公开匹配引擎的三层权重结构（硬约束过滤 → 核心匹配 → 加分项）、11 维偏好权重、数据来源与许可署名、更新频率与免责声明。' : 'Fully public scoring: tiered weights (hard constraints → core matching → boosters), 11 preference dimensions, data sources & licences, update cadence.';
   const body = `
 <h1>${lang === 'zh' ? '匹配方法论与数据口径' : 'Scoring methodology & data'}</h1>
@@ -498,22 +526,23 @@ function renderMethodology(lang) {
 <p class="note">${lang === 'zh' ? '偏好类内部：用户主观 8 维合计 0.86，客观数据 3 维合计 0.14。任何维度缺失时从分子与分母同时剔除（降权不惩罚）。' : 'Within preferences: user-reported 8 dims sum to 0.86, objective 3 dims sum to 0.14. Missing dims are dropped from numerator and denominator (down-weight, never penalised).'}</p>
 <h2>${lang === 'zh' ? '第 3 层：加分项（≤10%）' : 'Tier 3: boosters (≤10%)'}</h2>
 <ul class="list">
-<li>RIASEC 兴趣强化<span class="meta">0.05 · O*NET Interest Profiler（Public Domain）</span></li>
+<li>RIASEC 兴趣强化<span class="meta">0.05 · O*NET Interest Profiler（CC BY 4.0）</span></li>
 <li>风险画像联动<span class="meta">0.03 · IPIP Risk-Taking（Public Domain）× 城市冒险友好度</span></li>
 <li>空气质量 airFit<span class="meta">0.02 · WHO 2021 分档（优 90/良 72/一般 48/差 25）</span></li>
 </ul>
 <h2>${lang === 'zh' ? '数据来源与许可' : 'Data sources & licences'}</h2>
 <ul class="list">
-<li>GeoNames cities15000<span class="meta">城市底座 · CC BY 4.0</span></li>
-<li>Open-Meteo Historical / Air Quality<span class="meta">气候十年均值 + PM2.5 · CC BY 4.0 · CAMS 再分析</span></li>
-<li>Numbeo<span class="meta">成本/安全/医疗/QoL 公开指数（NYC=100）· 遵循其引用政策</span></li>
-<li>EF EPI<span class="meta">英语水平国家分档 · EF Education First</span></li>
-<li>World Bank / UNDP / Transparency International / IEP<span class="meta">国家级参考 · CC BY 4.0 / 手工快照</span></li>
+<li>GeoNames cities15000<span class="meta">城市底座 · <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="license noopener">CC BY 4.0</a> · <a href="https://www.geonames.org/" target="_blank" rel="noopener">geonames.org</a></span></li>
+<li>Open-Meteo Historical / Air Quality<span class="meta">气候十年均值 + PM2.5 · <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="license noopener">CC BY 4.0</a> · <a href="https://open-meteo.com/" target="_blank" rel="noopener">open-meteo.com</a> · CAMS 再分析</span></li>
+<li>Numbeo<span class="meta">成本/安全/医疗/QoL 公开指数（NYC=100）· 遵循其引用政策 · <a href="https://www.numbeo.com/" target="_blank" rel="noopener">numbeo.com</a></span></li>
+<li>EF EPI<span class="meta">英语水平国家分档 · <a href="https://www.ef.com/epi/" target="_blank" rel="noopener">ef.com/epi</a> · EF Education First</span></li>
+<li>World Bank / UNDP / Transparency International / IEP<span class="meta">国家级参考 · <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="license noopener">CC BY 4.0</a> / 手工快照</span></li>
 <li>Ookla Speedtest Intelligence<span class="meta">固定宽带中位下行 · 手工快照</span></li>
-<li>IPIP-NEO-120 / IPIP Risk-Taking<span class="meta">人格与风险题库 · Public Domain（ipip.ori.org）</span></li>
-<li>OEJTS 1.2<span class="meta">简易版 MBTI 型题库 · CC BY-NC-SA 4.0</span></li>
-<li>O*NET Interest Profiler Short Form<span class="meta">RIASEC 题库 · Public Domain（U.S. DOL）</span></li>
+<li>IPIP-NEO-120 / IPIP Risk-Taking<span class="meta">人格与风险题库 · Public Domain（<a href="https://ipip.ori.org/" target="_blank" rel="noopener">ipip.ori.org</a>）</span></li>
+<li>OEJTS 1.2<span class="meta">简易版 16 型人格题库（Jungian 双极结构）· <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="license noopener">CC BY-NC-SA 4.0</a> · Open Psychometrics</span></li>
+<li>O*NET Interest Profiler Short Form<span class="meta">RIASEC 题库 · <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="license noopener">CC BY 4.0</a> · <a href="https://www.onetonline.org/" target="_blank" rel="noopener">O*NET OnLine</a>（U.S. DOL 赞助）</span></li>
 <li>WHO Global Air Quality Guidelines 2021<span class="meta">PM2.5 年均分档口径（优 ≤10 / 良 ≤15 / 一般 ≤25 / 差 >25）</span></li>
+<li>字体 Noto Sans SC / IBM Plex Mono / Source Serif 4<span class="meta">SIL Open Font License 1.1 · 经 @fontsource 自托管打包，无外部 CDN</span></li>
 </ul>
 <h2>${lang === 'zh' ? '更新频率与免责声明' : 'Update cadence & disclaimer'}</h2>
 <p class="note">${lang === 'zh'
@@ -530,6 +559,14 @@ function write(rel, content) {
   fs.writeFileSync(abs, content);
 }
 
+/** 法律页双写：dist/（生产 express.static 命中）+ public/（dev 模式 vite 伺服，直达无 404；build 时 public→dist 复制被上方同内容覆盖，无冲突） */
+function writeLegal(rel, content) {
+  write(rel, content);
+  const abs = path.join(ROOT, 'public', rel);
+  fs.mkdirSync(path.dirname(abs), { recursive: true });
+  fs.writeFileSync(abs, content);
+}
+
 const sitemapUrls = [];
 const addUrl = (p, lastmod) => sitemapUrls.push({ p, lastmod });
 
@@ -542,7 +579,7 @@ const LEGAL_PRIVACY = {
     updated: `最后更新：${BUILD_DATE}`,
     sections: [
       { h: '一、概要与数据控制者', ps: [
-        '栖居罗盘（Siju Compass，下称"本站"）是一个运行于浏览器的海外城市定居决策辅助工具。<strong>本站没有账号体系，没有服务器端用户数据库</strong>——所有与"你"有关的信息只存在于你自己的设备中。',
+        '栖居罗盘（NomadMatch，下称"本站"）是一个运行于浏览器的海外城市定居决策辅助工具。<strong>本站没有账号体系，没有服务器端用户数据库</strong>——所有与"你"有关的信息只存在于你自己的设备中。',
         '数据控制者：NomadMatch 运营者（主体信息待正式部署后补充）。联系邮箱：<code>privacy@nomadmatch.app</code>（占位邮箱，正式部署前将替换为实际邮箱）。',
       ] },
       { h: '二、我们处理哪些数据', ps: [
@@ -599,12 +636,12 @@ const LEGAL_PRIVACY = {
     ],
   },
   en: {
-    title: 'Privacy Policy | Siju Compass',
+    title: 'Privacy Policy | NomadMatch',
     desc: 'No tracking cookies, no third-party analytics, no ads. All your data stays in your browser local storage (nomadmatch.v1) and can be erased anytime with one click.',
     updated: `Last updated: ${BUILD_DATE}`,
     sections: [
       { h: '1. Overview & controller', ps: [
-        'Siju Compass ("the site") is a browser-based decision-support tool for settling abroad. <strong>There are no user accounts and no server-side user database</strong> — everything that relates to you lives only on your own device.',
+        'NomadMatch ("the site") is a browser-based decision-support tool for settling abroad. <strong>There are no user accounts and no server-side user database</strong> — everything that relates to you lives only on your own device.',
         'Data controller: the NomadMatch operator (entity details to be added before official launch). Contact: <code>privacy@nomadmatch.app</code> (placeholder, to be replaced with the real mailbox).',
       ] },
       { h: '2. What data we process', ps: [
@@ -669,7 +706,7 @@ const LEGAL_TERMS = {
     updated: `最后更新：${BUILD_DATE}`,
     sections: [
       { h: '一、服务描述', ps: [
-        '栖居罗盘（Siju Compass）为数字游民、自由职业者与远程工作者提供海外城市定居的<strong>决策辅助</strong>：基于你的偏好作答与公开数据快照，对库内 200 座城市加权打分并生成报告。',
+        '栖居罗盘（NomadMatch）为数字游民、自由职业者与远程工作者提供海外城市定居的<strong>决策辅助</strong>：基于你的偏好作答与公开数据快照，对库内 200 座城市加权打分并生成报告。',
         '本站免费提供 32 题简易测评与城市对比；另有一次性 ¥29.9 的标准版（计费说明见第六节）。使用本站无需注册账号。',
       ] },
       { h: '二、可接受使用', ps: [
@@ -687,7 +724,7 @@ const LEGAL_TERMS = {
         'GeoNames（CC BY 4.0）、Open-Meteo Historical 与 Air Quality（CC BY 4.0）',
         'EF EPI 英语熟练度评级；World Bank / UNDP / Transparency International 国家指标',
         'Ookla Speedtest Intelligence 固定宽带网速中位数',
-        'IPIP-NEO 120 题（公有领域，ipip.ori.org）；O*NET Interest Profiler（公有领域，美国教育部赞助）；IPIP Risk-Taking（公有领域）；OEJTS 1.2（CC BY-NC-SA 4.0）',
+        'IPIP-NEO 120 题（公有领域，ipip.ori.org）；O*NET Interest Profiler（CC BY 4.0，O*NET OnLine · 美国教育部赞助）；IPIP Risk-Taking（公有领域）；OEJTS 1.2（CC BY-NC-SA 4.0）',
       ] },
       { h: '四、免责声明', ps: [
         '本站按"现状"（as-is）提供，不提供任何明示或默示的保证。',
@@ -699,6 +736,8 @@ const LEGAL_TERMS = {
       ] },
       { h: '六、计费说明（重要）', ps: [
         '标准版定价 ¥29.9，标注为<strong>一次性虚拟买断（演示性付费）</strong>：支付弹窗是<strong>模拟流程，不会产生任何真实扣款</strong>，本站亦无真实收款与退款流程；购买结果仅记录在你的浏览器本地（proUnlocked / orders），用于解锁标准版测评功能。',
+        '退款政策：<strong>所有数字商品（含标准版 Pro 解锁等付费内容）一经购买成功即完成交付，概不退款（All sales are final; no refunds）</strong>。',
+        '欧盟消费者合规说明：数字内容即时交付场景下，购买流程包含明确的确认步骤——你需勾选确认<strong>同意立即交付数字内容，并知悉因此丧失欧盟指令 2011/83/EU 第 16(m) 条项下的 14 天撤回权（right of withdrawal）</strong>，确认后方能完成购买；该机制与上述"概不退款"条款一并生效。',
         '清除本地数据（含隐私政策中的"清除我的所有数据"按钮）会一并清除解锁状态，之后可重新走演示性购买流程。',
       ] },
       { h: '七、服务变更与终止', ps: [
@@ -713,12 +752,12 @@ const LEGAL_TERMS = {
     ],
   },
   en: {
-    title: 'Terms of Service | Siju Compass',
+    title: 'Terms of Service | NomadMatch',
     desc: 'Service description, acceptable use, IP & open-data attribution, disclaimers, demo billing, limitation of liability and dispute resolution.',
     updated: `Last updated: ${BUILD_DATE}`,
     sections: [
       { h: '1. Service description', ps: [
-        'Siju Compass provides <strong>decision support</strong> for digital nomads, freelancers and remote workers settling abroad: it scores the 200 cities in its library against your stated preferences and public data snapshots, and generates a report.',
+        'NomadMatch provides <strong>decision support</strong> for digital nomads, freelancers and remote workers settling abroad: it scores the 200 cities in its library against your stated preferences and public data snapshots, and generates a report.',
         'The 32-question lite assessment and city comparison are free; a one-time ¥29.9 Pro version exists (billing, section 6). No account is required.',
       ] },
       { h: '2. Acceptable use', ps: [
@@ -735,7 +774,7 @@ const LEGAL_TERMS = {
         'GeoNames (CC BY 4.0), Open-Meteo Historical & Air Quality (CC BY 4.0)',
         'EF EPI English proficiency; World Bank / UNDP / Transparency International country indicators',
         'Ookla Speedtest Intelligence fixed-broadband median speeds',
-        'IPIP-NEO 120 (public domain, ipip.ori.org); O*NET Interest Profiler (public domain, sponsored by the U.S. Department of Labor); IPIP Risk-Taking (public domain); OEJTS 1.2 (CC BY-NC-SA 4.0)',
+        'IPIP-NEO 120 (public domain, ipip.ori.org); O*NET Interest Profiler (CC BY 4.0, O*NET OnLine, sponsored by the U.S. Department of Labor); IPIP Risk-Taking (public domain); OEJTS 1.2 (CC BY-NC-SA 4.0)',
       ] },
       { h: '4. Disclaimers', ps: [
         'The site is provided "as is", without warranty of any kind, express or implied.',
@@ -747,6 +786,8 @@ const LEGAL_TERMS = {
       ] },
       { h: '6. Billing (important)', ps: [
         'The Pro version is priced ¥29.9 as a <strong>one-time virtual purchase (demo billing)</strong>: the payment dialog is a <strong>simulation — no real charge is ever made</strong>, and there is no real collection or refund process. The purchase result is recorded only in your browser (proUnlocked / orders) and merely unlocks the Pro assessment features.',
+        'Refund policy: <strong>all digital goods (including the Pro unlock) are deemed delivered upon successful purchase — all sales are final; no refunds.</strong>',
+        'EU consumer compliance: where digital content is delivered immediately, the purchase flow includes an explicit confirmation step — you must tick a box confirming that <strong>you consent to the immediate delivery of the digital content and acknowledge that you thereby lose your 14-day right of withdrawal (Art. 16(m) of Directive 2011/83/EU)</strong>; the purchase can only be completed after this confirmation, which gives effect to the no-refund policy above.',
         'Erasing local data (including the "Erase all my data" button in the Privacy Policy) also clears the unlock state, after which the demo purchase flow can be repeated.',
       ] },
       { h: '7. Changes & termination', ps: [
@@ -762,13 +803,68 @@ const LEGAL_TERMS = {
   },
 };
 
+const LEGAL_DISCLAIMER = {
+  zh: {
+    title: '免责声明 | 栖居罗盘',
+    desc: '城市评分与推荐仅为信息参考，不构成移民、签证、法律、税务、医疗、保险、财务或投资建议；数据为第三方快照，可能过时或有误差。',
+    updated: `最后更新：${BUILD_DATE}`,
+    sections: [
+      { h: '一、信息性质：仅供参考，不构成专业建议', ps: [
+        '本站提供的城市评分、排名与推荐<strong>仅为信息参考</strong>，不构成<strong>移民、签证、法律、税务、医疗、保险、财务或投资建议</strong>。',
+        '搬家、签证申请、置业、远程工作安排等重大决策，请咨询当地专业机构，并以政府与官方渠道发布的信息为准。<strong>你基于本站内容做出的任何决定及由此产生的后果，由你自行承担风险</strong>。',
+        '人格测评为自我探索工具，其算法输出不构成心理评估、诊断或临床建议。',
+      ] },
+      { h: '二、数据准确性：第三方快照，可能过时', ps: [
+        '本站的成本、安全、气候、网速、空气质量等数据依赖第三方公开来源（Numbeo、Open-Meteo、GeoNames、Ookla、EF EPI、World Bank 等），均为<strong>时点快照</strong>并在相应页面标注快照日期。',
+        '第三方数据可能过时、不完整或存在口径误差，本站<strong>不对任何数据的准确性、完整性或时效性作出保证</strong>；快照日期之后的变化本站不承担更新义务（但会按方法论页披露的频率复核）。',
+      ] },
+      { h: '三、无担保（as-is / as-available）', ps: [
+        '本服务按"现状"（as-is）与"可用"（as-available）提供，不作任何明示或默示的担保，包括但不限于对适销性、特定用途适用性与不侵权的担保；本站不保证服务不间断、无错误或安全。',
+      ] },
+      { h: '四、与其他法律文件的关系', ps: [
+        '本声明与<a href="/terms/">《用户协议》</a>（尤其其免责声明与责任限制章节）一并适用；数据处理见<a href="/privacy/">《隐私政策》</a>。三者冲突时，以更具体约定优先。',
+      ] },
+    ],
+  },
+  en: {
+    title: 'Disclaimer | NomadMatch',
+    desc: 'City scores and recommendations are for information only — not immigration, visa, legal, tax, medical, insurance, financial or investment advice. Data are third-party snapshots and may be outdated.',
+    updated: `Last updated: ${BUILD_DATE}`,
+    sections: [
+      { h: '1. Nature of information: reference only, not professional advice', ps: [
+        'City scores, rankings and recommendations on this site are <strong>for information only</strong> and do not constitute <strong>immigration, visa, legal, tax, medical, insurance, financial or investment advice</strong>.',
+        'For major decisions — relocating, visa applications, property, remote-work arrangements — consult local professionals and rely on official government sources. <strong>Any decision you make based on this site, and its consequences, are at your own risk.</strong>',
+        'The personality assessment is a self-exploration tool; its algorithmic output is not a psychological evaluation, diagnosis or clinical advice.',
+      ] },
+      { h: '2. Data accuracy: third-party snapshots that may be outdated', ps: [
+        'Cost, safety, climate, internet-speed and air-quality data rely on third-party public sources (Numbeo, Open-Meteo, GeoNames, Ookla, EF EPI, World Bank, etc.) and are <strong>point-in-time snapshots</strong> with the snapshot date shown on each page.',
+        'Third-party data can be outdated, incomplete or inconsistent in methodology. The site <strong>makes no warranty as to accuracy, completeness or timeliness</strong> of any data, and is not obliged to update beyond the review cadence published on the Methodology page.',
+      ] },
+      { h: '3. No warranty (as-is / as-available)', ps: [
+        'The service is provided "as is" and "as available", without warranties of any kind, express or implied, including merchantability, fitness for a particular purpose and non-infringement; the site does not warrant uninterrupted, error-free or secure operation.',
+      ] },
+      { h: '4. Relation to other legal documents', ps: [
+        'This disclaimer applies together with the <a href="/en/terms/">Terms of Service</a> (in particular its disclaimer and limitation-of-liability sections); data handling is described in the <a href="/en/privacy/">Privacy Policy</a>. Where these documents conflict, the more specific provision prevails.',
+      ] },
+    ],
+  },
+};
+
 /** 法律页：自包含 HTML，隐私页含"清除我的所有数据"最小 JS（删除 nomadmatch.v1:* 全部键） */
 function renderLegalPage(kind, lang) {
   const zh = lang === 'zh';
-  const d = (kind === 'privacy' ? LEGAL_PRIVACY : LEGAL_TERMS)[lang];
+  const LEGAL_BY_KIND = { privacy: LEGAL_PRIVACY, terms: LEGAL_TERMS, disclaimer: LEGAL_DISCLAIMER };
+  const LEGAL_NAME = {
+    zh: { privacy: '隐私政策', terms: '用户协议', disclaimer: '免责声明' },
+    en: { privacy: 'Privacy Policy', terms: 'Terms of Service', disclaimer: 'Disclaimer' },
+  };
+  const d = LEGAL_BY_KIND[kind][lang];
+  const name = LEGAL_NAME[lang][kind];
   const canonical = page(zh ? `/${kind}/` : `/en/${kind}/`);
-  const otherKey = kind === 'privacy' ? 'terms' : 'privacy';
-  const otherPath = `/${otherKey}/`;
+  const crossLinks = ['privacy', 'terms', 'disclaimer']
+    .filter((k) => k !== kind)
+    .map((k) => `<li><a href="${zh ? `/${k}/` : `/en/${k}/`}">${LEGAL_NAME[lang][k]}</a><span class="meta">${zh ? '相关法律文件' : 'Related legal document'}</span></li>`)
+    .join('');
   const sections = d.sections
     .map((s, i) => {
       let html = `<h2 id="s${i}">${esc(s.h)}</h2>` + s.ps.map((p) => `<p>${p}</p>`).join('');
@@ -802,7 +898,7 @@ function eraseAll() {
 }
 </script>`
     : '';
-  const crossLink = `<div class="list"><li><a href="${zh ? otherPath : `/en${otherPath}`}">${zh ? (otherKey === 'privacy' ? '隐私政策' : '用户协议') : otherKey === 'privacy' ? 'Privacy Policy' : 'Terms of Service'}</a><span class="meta">${zh ? '另一份法律文件' : 'The other legal document'}</span></li></div>`;
+  const crossLink = `<div class="list">${crossLinks}</div>`;
   const jsonLd = [
     {
       '@context': 'https://schema.org', '@type': 'WebPage', name: d.title, description: d.desc,
@@ -812,12 +908,12 @@ function eraseAll() {
       '@context': 'https://schema.org', '@type': 'BreadcrumbList',
       itemListElement: [
         { '@type': 'ListItem', position: 1, name: zh ? '首页' : 'Home', item: page(zh ? '/' : '/en/') },
-        { '@type': 'ListItem', position: 2, name: zh ? (kind === 'privacy' ? '隐私政策' : '用户协议') : kind === 'privacy' ? 'Privacy Policy' : 'Terms of Service', item: canonical },
+        { '@type': 'ListItem', position: 2, name, item: canonical },
       ],
     },
   ];
   const body = `<p class="crumbs"><a href="${zh ? '/' : '/en/'}">${zh ? '首页' : 'Home'}</a> / ${zh ? '法律' : 'Legal'}</p>
-<h1>${zh ? (kind === 'privacy' ? '隐私政策' : '用户协议') : kind === 'privacy' ? 'Privacy Policy' : 'Terms of Service'}</h1>
+<h1>${name}</h1>
 <p class="sub">${d.updated}</p>
 ${sections}
 ${eraseBlock}
@@ -846,12 +942,15 @@ function main() {
   addUrl('/countries/', BUILD_DATE); addUrl('/en/countries/', BUILD_DATE);
   write('methodology/index.html', renderMethodology('zh')); write('en/methodology/index.html', renderMethodology('en')); count += 2;
   addUrl('/methodology/', BUILD_DATE); addUrl('/en/methodology/', BUILD_DATE);
-  // 第十三轮：法律页（隐私政策 / 用户协议，zh/en）
-  write('privacy/index.html', renderLegalPage('privacy', 'zh')); write('en/privacy/index.html', renderLegalPage('privacy', 'en')); count += 2;
+  // 第十三轮：法律页（隐私政策 / 用户协议 / 免责声明，zh/en；双写 public/ 供 dev 直达）
+  writeLegal('privacy/index.html', renderLegalPage('privacy', 'zh')); writeLegal('en/privacy/index.html', renderLegalPage('privacy', 'en')); count += 2;
   addUrl('/privacy/', BUILD_DATE); addUrl('/en/privacy/', BUILD_DATE);
-  write('terms/index.html', renderLegalPage('terms', 'zh')); write('en/terms/index.html', renderLegalPage('terms', 'en')); count += 2;
+  writeLegal('terms/index.html', renderLegalPage('terms', 'zh')); writeLegal('en/terms/index.html', renderLegalPage('terms', 'en')); count += 2;
   addUrl('/terms/', BUILD_DATE); addUrl('/en/terms/', BUILD_DATE);
+  writeLegal('disclaimer/index.html', renderLegalPage('disclaimer', 'zh')); writeLegal('en/disclaimer/index.html', renderLegalPage('disclaimer', 'en')); count += 2;
+  addUrl('/disclaimer/', BUILD_DATE); addUrl('/en/disclaimer/', BUILD_DATE);
   addUrl('/', BUILD_DATE); addUrl('/en/', BUILD_DATE);
+  write('en/index.html', renderEnHome()); count++;
 
   // robots.txt
   const robots = ['User-agent: *', 'Allow: /',
@@ -869,7 +968,7 @@ function main() {
   write('robots.txt', robots);
 
   // llms.txt
-  const llms = `# 栖居罗盘 · Siju Compass
+  const llms = `# 栖居罗盘 · NomadMatch
 
 > 面向数字游民、自由职业者与远程工作者的海外城市定居决策工具。200 座城市（六洲）+ 65 国参考数据；双版本测评（32 题简易免费 / IPIP-NEO 120 题标准版）；三层匹配引擎：硬约束过滤（预算/签证/安全）→ 核心匹配（偏好 42% + 人格 30% + 兴趣 18%，11 维）→ 加分项（RIASEC/风险联动/空气质量 ≤10%）。评分 0–99，缺失维度降权不惩罚，数据逐项标注来源。
 

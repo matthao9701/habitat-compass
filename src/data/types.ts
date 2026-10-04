@@ -18,7 +18,7 @@ export type VisaStatus = 'official' | 'alternative' | 'none' | null;
 export type EpiBand = 'very high' | 'high' | 'moderate' | 'low' | 'very low';
 
 /**
- * MBTI 亲和向量：数值 -100 ~ 100，正方向分别为 E / N / F / P，
+ * 人格亲和向量（Jungian 传统四轴）：数值 -100 ~ 100，正方向分别为 E / N / F / P，
  * 表示该城市更契合的人格倾向。null = 未标注（引擎人格维度降权，不编造）。
  */
 export interface CityTraitVector {

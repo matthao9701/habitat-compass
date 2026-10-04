@@ -10,6 +10,7 @@ export default function Footer() {
         <span className="font-semibold">© 栖居罗盘 Siju Compass</span>
         <a className="text-pine hover:underline" href={`${base}/terms/`}>{t('footer.terms')}</a>
         <a className="text-pine hover:underline" href={`${base}/privacy/`}>{t('footer.privacy')}</a>
+        <a className="text-pine hover:underline" href={`${base}/disclaimer/`}>{t('footer.disclaimer')}</a>
         <span className="ml-auto hidden sm:inline">{lang === 'en' ? 'Decision-support tool · not legal advice' : '决策辅助工具 · 不构成法律建议'}</span>
       </div>
     </footer>

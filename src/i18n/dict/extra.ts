@@ -25,12 +25,12 @@ const zh: Record<string, string> = {
   'rep.dataNote':
     '数据口径 · 月均综合生活成本为「市区一居室租金 + 水电网 + 餐饮 + 交通」的估算值（USD），成本指数采用 Numbeo 口径（NYC=100），宽带速度为固定宽带中位数；气候指标为 Open-Meteo 历史再分析 2015–2024 十年均值；安全/医疗/污染/通勤/气候等指数沿用 Numbeo Quality of Life 口径（0–100，NYC=100）。城市缺数据的维度以「—」标示，不参与打分。签证信息为 2026 年初政策快照，出行前请以官方最新信息为准。',
   'rep.demo.cta1': '这是示例报告 —— 你的答案，可能指向完全不同的城市。',
-  'rep.demo.cta2': '三段测评约 12 分钟：MBTI 七级量表、生活情景选择、兴趣标签，无需注册。',
+  'rep.demo.cta2': '三段测评约 12 分钟：性格问卷七级量表、生活情景选择、兴趣标签，无需注册。',
   'rep.cta.start': '开始我的正式测试',
   'rep.cta.copyHint': '复制完整文字摘要发给朋友，或重新测一次看看不同选择的结果。',
   'rep.cta.restart': '重新测评',
   'rep.disclaimer.1': '本报告中的月生活成本、签证与居留政策均为参考快照，受汇率、季节、政策周期影响会发生变动；月均综合生活成本与成本指数（Numbeo 口径，NYC=100）为估算值，因个人生活方式而异；数字游民签证的收入门槛、停留时长与税务处理请以目的地官方移民机构及使领馆发布的最新信息为准。',
-  'rep.disclaimer.mbti1': 'MBTI 测评题目基于 {base}（{publisher}）改编，以 {license} 许可使用，人格类型仅供自我探索参考，不构成临床或职业建议。',
+  'rep.disclaimer.mbti1': '人格测评题目基于 {base}（{publisher}）改编，以 {license} 许可使用，人格类型仅供自我探索参考，不构成临床或职业建议。',
   'rep.disclaimer.2': '栖居罗盘提供决策参考，不构成移民、税务或法律建议。',
   'rep.footer.fonts': '字体：思源黑体 / IBM Plex Mono / Source Serif 4（OFL 开源许可）',
   'rep.footer.sources': '数据来源：GeoNames（CC BY 4.0）· Open-Meteo Historical Weather API（CC BY 4.0）· Numbeo 公开指数（口径脚注见上）· EF English Proficiency Index',
@@ -47,7 +47,7 @@ const zh: Record<string, string> = {
   'land.hero.vol': 'Vol.01 · 2025 海外定居指南',
   'land.hero.l1': '在世界的版图上，',
   'land.hero.l3': '停靠的那座城。',
-  'land.hero.desc': '一份结合 MBTI 人格、生活偏好与兴趣图谱的综合测评，为数字游民、自由职业者与独立开发者，从全球 200 座城市中计算出你的 Top 5 定居之选。',
+  'land.hero.desc': '一份结合人格画像、生活偏好与兴趣图谱的综合测评，为数字游民、自由职业者与独立开发者，从全球 200 座城市中计算出你的 Top 5 定居之选。',
   'land.cta.mine': '开始我的测评',
   'land.cta.meta': '约 12 分钟 · 56 题 · 无需注册',
   'land.demo.hint': '还没准备好答题？先看一份演示报告',
@@ -174,7 +174,7 @@ const zh: Record<string, string> = {
   'bf.desc': '基于 IPIP-NEO 120 题官方计分（+keyed / −keyed），30 个侧面聚合为五大域百分位（0-100）。引用：IPIP (Goldberg, 1999) / IPIP-NEO 120 (Johnson, 2014)，公有领域。',
   'bf.map.eyebrow': '16 型映射（McCrae & Costa 1989 对应）',
   'bf.n.title': '关于神经质 N（{pct}）：',
-  'bf.n.desc': '它在 Big Five 中没有对应的 MBTI 字母——分数越高，面对陌生环境的压力波动越大。海外定居意味着重建日常秩序，N 偏高的话，建议优先考虑社区成熟、英语普及深的城市，并把「先试住 30 天」当作硬性流程。',
+  'bf.n.desc': '它在 Big Five 五维中没有单字母简称——分数越高，面对陌生环境的压力波动越大。海外定居意味着重建日常秩序，N 偏高的话，建议优先考虑社区成熟、英语普及深的城市，并把「先试住 30 天」当作硬性流程。',
   'bf.facets.eyebrow': '30 facets · 高分（≥80 绿）/ 低分（≤20 红）标注',
 
   // ---- 城市详情弹层 CityDetailModal ----
@@ -291,6 +291,7 @@ const zh: Record<string, string> = {
 
   // ---- 支付弹层 / 航线图 ----
   'bill.pay.confirm': '确认支付 ¥{price}',
+  'bill.pay.euNotice': '我确认同意即时交付数字内容，并知悉因此丧失 14 天无理由撤回权（欧盟指令 2011/83/EU 第 16(m) 条）。',
   'bill.pay.orderLine': '订单号 {id} · ¥{amount} · 永久有效',
   'bill.pay.startPro': '开始标准版测评',
   'route.aria': '覆盖全球 39 个海外城市的航线示意图',
@@ -352,12 +353,12 @@ const en: Record<string, string> = {
   'rep.dataNote':
     'Data notes · Monthly all-in living cost = estimated rent (1BR city center) + utilities + internet + dining + transport (USD). Cost Index follows Numbeo (NYC=100); broadband = fixed broadband median; climate metrics are Open-Meteo reanalysis 2015-2024 ten-year means; safety/healthcare/pollution/traffic/comfort follow Numbeo Quality of Life (0-100, NYC=100). Dimensions without data are shown as "—" and excluded from scoring. Visa info is an early-2026 snapshot — always verify with official sources before travelling.',
   'rep.demo.cta1': 'This is a sample report — your own answers may point to entirely different cities.',
-  'rep.demo.cta2': 'The 3-stage assessment takes ~12 min: MBTI 7-point scale, lifestyle scenarios and interest tags. No sign-up needed.',
+  'rep.demo.cta2': 'The 3-stage assessment takes ~12 min: a personality questionnaire (7-point scale), lifestyle scenarios and interest tags. No sign-up needed.',
   'rep.cta.start': 'Start my real assessment',
   'rep.cta.copyHint': 'Copy the full text summary to share with friends, or retake the quiz for different results.',
   'rep.cta.restart': 'Retake assessment',
   'rep.disclaimer.1': 'Monthly living costs, visa and residency policies in this report are reference snapshots and change with exchange rates, seasons and policy cycles. Monthly all-in cost and Cost Index (Numbeo, NYC=100) are estimates and vary with lifestyle. Income thresholds, duration and tax treatment of digital nomad visas follow the latest information published by the destination\'s official immigration authorities and embassies.',
-  'rep.disclaimer.mbti1': 'MBTI items are adapted from {base} ({publisher}) under a {license} license. Personality types are for self-exploration only and do not constitute clinical or career advice.',
+  'rep.disclaimer.mbti1': 'Personality items are adapted from {base} ({publisher}) under a {license} license. Personality types are for self-exploration only and do not constitute clinical or career advice.',
   'rep.disclaimer.2': 'This almanac provides decision references only and does not constitute immigration, tax or legal advice.',
   'rep.footer.fonts': 'Typefaces: Noto Sans SC / IBM Plex Mono / Source Serif 4 (SIL OFL)',
   'rep.footer.sources': 'Data sources: GeoNames (CC BY 4.0) · Open-Meteo Historical Weather API (CC BY 4.0) · Numbeo public indices (see notes above) · EF English Proficiency Index',
@@ -373,7 +374,7 @@ const en: Record<string, string> = {
   'land.hero.vol': 'Vol.01 · Overseas Settling Almanac 2025',
   'land.hero.l1': 'On the map of the world,',
   'land.hero.l3': 'where you drop anchor.',
-  'land.hero.desc': 'One assessment that combines MBTI personality, lifestyle preferences and interest mapping — computing your Top 5 settling picks from 200 cities worldwide for digital nomads, freelancers and indie developers.',
+  'land.hero.desc': 'One assessment that combines personality profile, lifestyle preferences and interest mapping — computing your Top 5 settling picks from 200 cities worldwide for digital nomads, freelancers and indie developers.',
   'land.cta.mine': 'Start my assessment',
   'land.cta.meta': '~12 min · 56 questions · no sign-up',
   'land.demo.hint': 'Not ready to answer? Preview a demo report first',
@@ -496,7 +497,7 @@ const en: Record<string, string> = {
   'bf.desc': 'Official IPIP-NEO 120 scoring (+keyed / −keyed); 30 facets aggregate into five domain percentiles (0-100). Credit: IPIP (Goldberg, 1999) / IPIP-NEO 120 (Johnson, 2014), public domain.',
   'bf.map.eyebrow': '16-type mapping (McCrae & Costa 1989 correspondence)',
   'bf.n.title': 'About Neuroticism N ({pct}):',
-  'bf.n.desc': 'N has no corresponding MBTI letter in Big Five — higher scores mean larger stress swings in unfamiliar environments. Settling overseas means rebuilding daily order; if your N is high, prioritize cities with mature expat communities and deep English penetration, and make "try living for 30 days first" a hard rule.',
+  'bf.n.desc': 'N has no single-letter shorthand within the Big Five — higher scores mean larger stress swings in unfamiliar environments. Settling overseas means rebuilding daily order; if your N is high, prioritize cities with mature expat communities and deep English penetration, and make "try living for 30 days first" a hard rule.',
   'bf.facets.eyebrow': '30 facets · high (≥80 green) / low (≤20 red)',
 
   'cdm.detailAria': '{name} details',
@@ -606,6 +607,7 @@ const en: Record<string, string> = {
   'wd.note': 'Segment width = engine weights (personality 30 / preferences 42 / interests 18, plus a Tier 3 bonus layer <=10%); inner progress = actual score against the top city.',
 
   'bill.pay.confirm': 'Confirm payment ¥{price}',
+  'bill.pay.euNotice': 'I consent to the immediate delivery of the digital content and acknowledge that I thereby lose my 14-day right of withdrawal (Directive 2011/83/EU, Art. 16(m)).',
   'bill.pay.orderLine': 'Order {id} · ¥{amount} · lifetime access',
   'bill.pay.startPro': 'Start Pro assessment',
   'route.aria': 'Route map covering 39 overseas cities worldwide',

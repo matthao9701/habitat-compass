@@ -34,11 +34,13 @@ function read(rel: string): string | null {
 }
 
 console.log('\n══ 一、4 个法律页存在与基础结构 ══');
-const pages: Array<{ rel: string; lang: 'zh' | 'en'; kind: 'privacy' | 'terms' }> = [
+const pages: Array<{ rel: string; lang: 'zh' | 'en'; kind: 'privacy' | 'terms' | 'disclaimer' }> = [
   { rel: 'privacy/index.html', lang: 'zh', kind: 'privacy' },
   { rel: 'en/privacy/index.html', lang: 'en', kind: 'privacy' },
   { rel: 'terms/index.html', lang: 'zh', kind: 'terms' },
   { rel: 'en/terms/index.html', lang: 'en', kind: 'terms' },
+  { rel: 'disclaimer/index.html', lang: 'zh', kind: 'disclaimer' },
+  { rel: 'en/disclaimer/index.html', lang: 'en', kind: 'disclaimer' },
 ];
 const htmls: Record<string, string> = {};
 for (const { rel } of pages) {
@@ -150,6 +152,10 @@ const TERMS_ZH: Array<[string, string]> = [
   ['Open-Meteo CC BY', 'Open-Meteo'],
   ['OEJTS 许可', 'CC BY-NC-SA 4.0'],
   ['适用法域占位', '占位：待正式部署后补充法域与管辖条款'],
+  ['不退款条款', '概不退款（All sales are final; no refunds）'],
+  ['EU 撤回权机制', '14 天撤回权（right of withdrawal）'],
+  ['EU 指令引用', '2011/83/EU'],
+  ['即时交付确认', '同意立即交付数字内容'],
 ];
 for (const [name, kw] of TERMS_ZH) check(`zh 协议页：${name}`, htmls['terms/index.html']?.includes(kw) ?? false, kw);
 const TERMS_EN: Array<[string, string]> = [
@@ -168,31 +174,38 @@ const TERMS_EN: Array<[string, string]> = [
   ['GeoNames CC BY', 'GeoNames (CC BY 4.0)'],
   ['OEJTS licence', 'CC BY-NC-SA 4.0'],
   ['governing law placeholder', 'placeholder: jurisdiction and venue to be added'],
+  ['no-refund clause', 'all sales are final; no refunds'],
+  ['EU withdrawal mechanism', '14-day right of withdrawal'],
+  ['EU directive citation', 'Art. 16(m) of Directive 2011/83/EU'],
+  ['immediate delivery consent', 'consent to the immediate delivery'],
 ];
 for (const [name, kw] of TERMS_EN) check(`en 协议页：${name}`, htmls['en/terms/index.html']?.includes(kw) ?? false, kw);
 
 console.log('\n══ 五、法律页互链与页脚链接 ══');
-check('zh 隐私页链接用户协议', (htmls['privacy/index.html'] ?? '').includes('href="/terms/"'));
-check('zh 协议页链接隐私政策', (htmls['terms/index.html'] ?? '').includes('href="/privacy/"'));
-check('en 隐私页链接用户协议', (htmls['en/privacy/index.html'] ?? '').includes('href="/en/terms/"'));
-check('en 协议页链接隐私政策', (htmls['en/terms/index.html'] ?? '').includes('href="/en/privacy/"'));
-check('法律页返回首页链接', (htmls['privacy/index.html'] ?? '').includes('href="/"'));
+for (const { rel, lang, kind } of pages) {
+  const html = htmls[rel] ?? '';
+  const pre = lang === 'en' ? '/en' : '';
+  const others = (['privacy', 'terms', 'disclaimer'] as const).filter((k) => k !== kind);
+  check(`${rel} 互链其他法律页（${others.join('+')}）`, others.every((k) => html.includes(`href="${pre}/${k}/"`)));
+}
+check('zh 法律页返回首页链接', (htmls['privacy/index.html'] ?? '').includes('href="/"'));
+check('en 法律页返回首页链接', (htmls['en/privacy/index.html'] ?? '').includes('href="/en/"'));
 
 const footerSrc = [
   'src/components/Footer.tsx', 'src/App.tsx', 'src/i18n/dict/ui.ts',
 ].map((rel) => fs.readFileSync(path.join(ROOT, rel), 'utf8')).join('\n');
-check('Footer 组件存在 /terms/ 与 /privacy/ 链接', footerSrc.includes('/terms/') && footerSrc.includes('/privacy/'));
+check('Footer 组件存在 /terms/ /privacy/ /disclaimer/ 链接', footerSrc.includes('/terms/') && footerSrc.includes('/privacy/') && footerSrc.includes('/disclaimer/'));
 check('Footer 按语言切换前缀（base = en ? /en）', footerSrc.includes("lang === 'en' ? '/en' : ''"));
 check('Footer 挂载于三 Tab 屏幕（TAB_SCREENS 判断）', fs.readFileSync(path.join(ROOT, 'src/App.tsx'), 'utf8').includes('TAB_SCREENS.includes(screen) && <Footer />'));
-check('ui 词典 zh：footer.terms/footer.privacy', footerSrc.includes("'footer.terms': '用户协议'") && footerSrc.includes("'footer.privacy': '隐私政策'"));
-check('ui 词典 en：footer.terms/footer.privacy', footerSrc.includes("'footer.terms': 'Terms of Service'") && footerSrc.includes("'footer.privacy': 'Privacy Policy'"));
+check('ui 词典 zh：footer 三键', footerSrc.includes("'footer.terms': '用户协议'") && footerSrc.includes("'footer.privacy': '隐私政策'") && footerSrc.includes("'footer.disclaimer': '免责声明'"));
+check('ui 词典 en：footer 三键', footerSrc.includes("'footer.terms': 'Terms of Service'") && footerSrc.includes("'footer.privacy': 'Privacy Policy'") && footerSrc.includes("'footer.disclaimer': 'Disclaimer'"));
 
 console.log('\n══ 六、sitemap 收录 ══');
 const sitemap = read('sitemap.xml') ?? '';
-for (const u of ['/privacy/', '/terms/', '/en/privacy/', '/en/terms/']) {
-  check(`sitemap 收录 ${u}`, sitemap.includes(`<loc>${u.replace(/^\//, '')}</loc>`) || new RegExp(`<loc>[^<]*${u}</loc>`).test(sitemap));
+for (const u of ['/privacy/', '/terms/', '/disclaimer/', '/en/privacy/', '/en/terms/', '/en/disclaimer/']) {
+  check(`sitemap 收录 ${u}`, new RegExp(`<loc>[^<]*${u}</loc>`).test(sitemap));
 }
-check('sitemap URL 总数 ≥542（536 + 4 法律页 + 首页×2）', (sitemap.match(/<url>/g) ?? []).length >= 542);
+check('sitemap URL 总数 ≥544（536 + 6 法律页 + 首页×2）', (sitemap.match(/<url>/g) ?? []).length >= 544);
 check('第十二轮产物未破坏：城市页仍 200×2', (() => {
   let n = 0;
   for (const rel of ['city/chengdu/index.html', 'en/city/chengdu/index.html', 'city/lisbon/index.html', 'en/city/lisbon/index.html']) {
@@ -200,6 +213,96 @@ check('第十二轮产物未破坏：城市页仍 200×2', (() => {
   }
   return n === 4;
 })());
+
+console.log('\n══ 七、免责声明页核心要素 ══');
+const DISC_ZH: Array<[string, string]> = [
+  ['信息参考非专业建议', '仅为信息参考'],
+  ['八类建议枚举', '移民、签证、法律、税务、医疗、保险、财务或投资建议'],
+  ['重大决策咨询专业机构', '请咨询当地专业机构'],
+  ['以官方信息为准', '以政府与官方渠道发布的信息为准'],
+  ['用户自担风险', '由你自行承担风险'],
+  ['第三方快照', '时点快照'],
+  ['快照日期标注', '标注快照日期'],
+  ['不保证准确性完整性时效性', '准确性、完整性或时效性'],
+  ['as-is', 'as-is'],
+  ['as-available', 'as-available'],
+  ['引用用户协议', '《用户协议》'],
+  ['引用隐私政策', '《隐私政策》'],
+];
+for (const [name, kw] of DISC_ZH) check(`zh 免责页：${name}`, htmls['disclaimer/index.html']?.includes(kw) ?? false, kw);
+const DISC_EN: Array<[string, string]> = [
+  ['reference only', 'for information only'],
+  ['advice enumeration', 'immigration, visa, legal, tax, medical, insurance, financial or investment advice'],
+  ['consult professionals', 'consult local professionals'],
+  ['official sources', 'official government sources'],
+  ['own risk', 'at your own risk'],
+  ['point-in-time snapshots', 'point-in-time snapshots'],
+  ['snapshot date shown', 'snapshot date shown on each page'],
+  ['no accuracy warranty', 'no warranty as to accuracy, completeness or timeliness'],
+  ['as-is', 'as is'],
+  ['as-available', 'as available'],
+  ['refs Terms', 'Terms of Service'],
+  ['refs Privacy', 'Privacy Policy'],
+];
+for (const [name, kw] of DISC_EN) check(`en 免责页：${name}`, htmls['en/disclaimer/index.html']?.includes(kw) ?? false, kw);
+
+console.log('\n══ 八、PayModal 欧盟撤回权确认（不退款条款的合规兜底） ══');
+const paySrc = fs.readFileSync(path.join(ROOT, 'src/components/billing/PayModal.tsx'), 'utf8');
+const uiSrc = fs.readFileSync(path.join(ROOT, 'src/i18n/dict/ui.ts'), 'utf8') + fs.readFileSync(path.join(ROOT, 'src/i18n/dict/extra.ts'), 'utf8');
+check('PayModal 含 euAck 状态与 checkbox', paySrc.includes('euAck') && paySrc.includes('type="checkbox"'));
+check('确认按钮未勾选时禁用（disabled={!euAck}）', paySrc.includes('disabled={!euAck}'));
+check('打开弹窗时重置勾选', paySrc.includes('setEuAck(false)'));
+check('词典键 bill.pay.euNotice（zh+en）', uiSrc.includes("'bill.pay.euNotice': '我确认同意即时交付数字内容") && uiSrc.includes("'bill.pay.euNotice': 'I consent to the immediate delivery"));
+check('确认表述含 14 天撤回权', uiSrc.includes('14 天无理由撤回权') && uiSrc.includes('14-day right of withdrawal'));
+
+console.log('\n══ 九、合规扫描（商标词/命名/外链/署名） ══');
+// 9.1 全 dist 无第三方脚本外链
+function walkHtml(dir: string): string[] {
+  const out: string[] = [];
+  for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
+    const p = path.join(dir, e.name);
+    if (e.isDirectory()) out.push(...walkHtml(p));
+    else if (e.name.endsWith('.html')) out.push(p);
+  }
+  return out;
+}
+const allHtml = walkHtml(DIST);
+const externalScript = allHtml.filter((p) => /<script[^>]+src="https?:\/\//.test(fs.readFileSync(p, 'utf8')));
+check(`dist 全部 ${allHtml.length} 个 HTML 无第三方 <script src="http...">`, externalScript.length === 0, externalScript.slice(0, 3).join(', '));
+// 9.2 全 dist 无商标词（用户可见层）
+const trademark = allHtml.filter((p) => /MBTI|Myers|Briggs|16personalities/i.test(fs.readFileSync(p, 'utf8')));
+check('dist 全部 HTML 无 MBTI/Myers-Briggs/16Personalities 商标词', trademark.length === 0, trademark.slice(0, 3).map((p) => path.relative(ROOT, p)).join(', '));
+// 9.3 全 dist 无弃用品牌名 Siju
+const siju = allHtml.filter((p) => fs.readFileSync(p, 'utf8').includes('Siju'));
+check('dist 全部 HTML 无弃用命名 "Siju"（已统一 NomadMatch）', siju.length === 0, siju.slice(0, 3).join(', '));
+// 9.4 方法论页署名要素（CC BY 4.0 需作者/源/许可链接）
+const methZh = htmls['methodology/index.html'] ?? read('methodology/index.html') ?? '';
+const methEn = read('en/methodology/index.html') ?? '';
+for (const [tag, html] of [['zh', methZh], ['en', methEn]] as const) {
+  check(`方法论页(${tag})：O*NET 署名为 CC BY 4.0`, html.includes('O*NET Interest Profiler Short Form') && /O\*NET Interest Profiler Short Form[\s\S]{0,220}creativecommons\.org\/licenses\/by\/4\.0/.test(html));
+  check(`方法论页(${tag})：GeoNames/Open-Meteo/World Bank 带 CC BY 4.0 许可链接`, (html.match(/creativecommons\.org\/licenses\/by\/4\.0/g) ?? []).length >= 3);
+  check(`方法论页(${tag})：源站链接（geonames/open-meteo/numbeo）`, html.includes('geonames.org') && html.includes('open-meteo.com') && html.includes('numbeo.com'));
+  check(`方法论页(${tag})：字体 OFL 声明`, html.includes('SIL Open Font License 1.1') && html.includes('Noto Sans SC'));
+}
+// 9.5 法律页 dev 可达（public 同步）
+for (const rel of ['privacy/index.html', 'terms/index.html', 'disclaimer/index.html', 'en/privacy/index.html', 'en/terms/index.html', 'en/disclaimer/index.html']) {
+  check(`public/${rel} 存在（dev 模式直达无 404）`, fs.existsSync(path.join(ROOT, 'public', rel)));
+}
+
+console.log('\n══ 十、sitemap 全量 URL → dist 文件存在（200 等价断言） ══');
+const locs = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
+check('sitemap loc 总数 ≥544', locs.length >= 544);
+let missing = 0;
+const missingSample: string[] = [];
+for (const loc of locs) {
+  const p = loc.replace(/^https?:\/\/[^/]+/, '');
+  const rel = p === '/' || p === '' ? 'index.html' : p.endsWith('/') ? `${p}index.html` : p;
+  if (!fs.existsSync(path.join(DIST, rel))) {
+    missing++;
+    if (missingSample.length < 5) missingSample.push(rel);
+  }
+}
+check(`sitemap 全量 ${locs.length} URL 对应 dist 文件存在（全部可 200）`, missing === 0, missingSample.join(', '));
 
 console.log(`\n════════ verify-legal: ${passed} passed, ${failed.length} failed ════════`);
 if (failed.length) {

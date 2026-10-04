@@ -56,12 +56,15 @@ export default function PayModal({ open, onClose, onSuccess }: PayModalProps) {
   const [channel, setChannel] = useState<PayChannel>('alipay');
   const [phase, setPhase] = useState<'select' | 'processing' | 'done'>('select');
   const [order, setOrder] = useState<ProOrder | null>(null);
+  // 欧盟消费者合规：数字内容即时交付，需明确确认同意并知悉丧失 14 天撤回权（Directive 2011/83/EU Art. 16(m)）
+  const [euAck, setEuAck] = useState(false);
 
   // 打开时重置状态
   useEffect(() => {
     if (open) {
       setPhase('select');
       setOrder(null);
+      setEuAck(false);
     }
   }, [open]);
 
@@ -135,10 +138,20 @@ export default function PayModal({ open, onClose, onSuccess }: PayModalProps) {
                     </button>
                   ))}
                 </div>
+                <label className="mb-3 flex cursor-pointer items-start gap-2 text-xs leading-relaxed text-ink-soft">
+                  <input
+                    type="checkbox"
+                    checked={euAck}
+                    onChange={(e) => setEuAck(e.target.checked)}
+                    className="mt-0.5 h-3.5 w-3.5 shrink-0 accent-clay"
+                  />
+                  <span>{t('bill.pay.euNotice')}</span>
+                </label>
                 <button
                   type="button"
                   onClick={confirmPay}
-                  className="w-full rounded-lg bg-clay px-4 py-3 text-sm font-medium text-paper transition-colors hover:bg-clay-deep"
+                  disabled={!euAck}
+                  className="w-full rounded-lg bg-clay px-4 py-3 text-sm font-medium text-paper transition-colors hover:bg-clay-deep disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   {t('bill.pay.confirm', { price: PRO_PRICE_CNY.toFixed(1) })}
                 </button>

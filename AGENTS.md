@@ -111,7 +111,7 @@
 - 第十轮校验：`pnpm tsx scripts/verify-engine-v7.ts`（分层权重表完整性/值域/三类相对优先级/Tier 3 上限/airFit 分档/冒险友好度与风险联动算例/RIASEC 迁移解耦/双版本回归/200 城覆盖）
 - 第十一轮校验：`pnpm tsx scripts/verify-iter-v8.ts`（入口收纳结构/报告样例 demo 完整性与 expectedType/样例模式不污染/Tab 栏防重叠语义/天空蓝白 token 一致性与旧 hex 清零/新键双语与 REVERSE_ZH 反查）
 - 第十二轮校验：`pnpm tsx scripts/verify-seo-v9.ts`（536 落地页生成完整性与内容要素/null 不编造/JSON-LD 全量可解析/robots 8 爬虫/llms.txt/sitemap ≥536 URL/hreflang 互链/主站 @graph/方法论页权重与许可）
-- 第十三轮校验：`pnpm tsx scripts/verify-legal.ts`（4 法律页存在与结构/GDPR 信息义务逐项关键词/清除数据按钮实现/协议免责与开源署名/footer 源码与词典/sitemap 收录 ≥542）
+- 第十三轮校验：`pnpm tsx scripts/verify-legal.ts`（205 项：3 类法律页存在与结构/GDPR 信息义务逐项关键词/清除数据按钮实现/协议免责与开源署名+O*NET CC BY 4.0/footer 三链接/不退款与 EU 撤回权确认/商标词与弃用命名清零/无第三方脚本外链/方法论字体 OFL 声明/sitemap 全量 URL→dist 文件存在/public 同步 dev 可达）
 
 ## 匹配引擎说明
 
@@ -227,3 +227,15 @@
 - **SPA Footer**：`src/components/Footer.tsx`（Terms/Privacy 链接按 lang 取 `/terms/` 或 `/en/terms/`），挂 App.tsx 三 Tab 屏幕（TAB_SCREENS 判断，quiz/report/pro-intro 专注模式不显示）；词典键 `footer.terms/footer.privacy`（ui 域 zh/en）。
 - **占位项清单**：①联系邮箱 privacy@nomadmatch.app ②适用法域与管辖条款 ③运营者主体信息——正式部署前替换（页内已标注"占位"）。
 - **校验**：`pnpm tsx scripts/verify-legal.ts`（130 项：页面结构/GDPR 关键词逐项/eraseAll 实现/协议要素/footer 源码/sitemap 收录/第十二轮产物未破坏）。
+
+### 第十三轮追加：合规自查修复 + /disclaimer + 不退款与 EU 撤回权
+
+- **命名统一**：全站英文名统一为 **NomadMatch**（弃用 Siju Compass）——generate-landing/llms.txt/og:site_name/JSON-LD/Footer/index.html 已全部替换；命名与商标自查备注见 DESIGN.md。
+- **商标词清零（用户可见层）**：dist 全部 HTML 无 MBTI/Myers-Briggs/16Personalities——词典（ui/extra 域 8 键 zh+en）、Report 复制摘要（新增 report.copy.persona 键）、方法论页、questions.ts 注释已清理；人格部分只用「16 型人格/性格画像/Big Five」表述。代码内部标识符（mbtiQuestions/MBTI_SOURCE 等）为技术命名非站点内容，不属商标使用，保持不动。
+- **署名修正**：O*NET Interest Profiler Short Form 从「公有领域」修正为 **CC BY 4.0**（方法论页 zh/en + 用户协议知识产权节）；方法论页许可清单补齐 CC BY 4.0 三要素（作者/源站链接/creativecommons 许可链接 ×3+）；新增「字体与许可」小节（Noto Sans SC/IBM Plex Mono/Source Serif 4，SIL OFL 1.1，经 @fontsource 自托管，node_modules LICENSE 随包分发已核验）。
+- **dev 可达性修复**：法律页（privacy/terms/disclaimer × zh/en 共 6 文件）由 generate-landing.mjs **同步写入 public/**——dev 模式（vite middleware）直接命中 public，/privacy/ 等不再落入 SPA fallback；生产仍以 dist 命中，build 时 public 副本被 generate 同内容覆盖，无冲突。
+- **/en/ 首页补齐**：第十二轮 sitemap 一直声明 /en/ 但无对应文件（404 bug）——新增 renderEnHome() 精简英文首页（Hero+四个入口卡+法律链接）→ dist/en/index.html，sitemap 全量 URL 现已一一对应 dist 文件（verify-legal 第十节全量断言）。
+- **/disclaimer（zh/en）**：LEGAL_DISCLAIMER + renderLegalPage 泛化（kind 三值）；内容 = 信息参考非专业建议（移民/签证/法律/税务/医疗/保险/财务/投资八类）+ 第三方快照与快照日期标注 + 不保证准确性完整性时效性 + as-is/as-available + 用户自担风险 + 与 terms/privacy 互链；sitemap 544 URL。
+- **不退款条款（/terms 计费节 zh/en）**：所有数字商品一经购买成功即完成交付，概不退款（all sales are final; no refunds）；欧盟消费者兜底 = 购买流程含「同意即时交付 + 知悉丧失 14 天撤回权」的显式确认（PayModal checkbox `bill.pay.euNotice`，未勾选禁用确认按钮，打开弹窗重置），条款在 /terms 中说明该机制。
+- **Footer 三链接**：SPA Footer 与静态页 shell footer 均含 Terms/Privacy/Disclaimer（zh/en 前缀随语言）；词典键 footer.terms/footer.privacy/footer.disclaimer。
+- **localStorage 降级（已核验无需修复）**：storage.ts 全部读写已 try/catch 包装，隐私模式/禁用 localStorage 时静默降级不白屏。

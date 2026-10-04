@@ -195,3 +195,10 @@
 - 4 页（/privacy /terms × zh/en）复用落地页视觉体系（同一 CSS 变量与组件类）；正文单列 780px 内宽、h2 章节节奏、`<code>` 标注存储键与邮箱。
 - 清除数据按钮：clay 色实心（.btn-danger）+ 成功反馈 moss 色——删除动作用暖警示色、成功用绿，语义色与主站一致。
 - Footer（SPA）：bg-card + 顶部 paper-deep 细分割线，链接 pine 色 hover 下划线，版权行 + 「决策辅助工具 · 不构成法律建议」右对齐（窄屏隐藏）。
+
+### 命名与商标自查备注（第十三轮留档）
+
+- 产品命名：中文名「栖居罗盘」为品牌主名；英文名 **NomadMatch**（与 localStorage 技术键前缀 nomadmatch.v1 一脉相承）。早期产物中的「Siju Compass」为弃用命名，已全站清零（verify-legal 断言把关）。
+- 商标边界：人格测评部分为自研映射与开源题库（OEJTS 1.2 结构 CC BY-NC-SA 4.0 / IPIP-NEO 公有领域 / O*NET CC BY 4.0），全站文案不使用 MBTI、Myers-Briggs、16Personalities 等第三方商标词，人格表述统一为「16 型人格画像 / Big Five 五维」。代码内部标识符（mbtiQuestions 等）为技术命名，不出现在任何页面文案。
+- 字体：Noto Sans SC / IBM Plex Mono / Source Serif 4 均为 SIL Open Font License 1.1，经 @fontsource 包自托管（OFL 允许网页嵌入，无需页面署名；许可副本随 node_modules 分发，方法论页另有声明）。
+- 图标/素材：全站图标为自绘几何 SVG（TabBar/CompassMark 等），无第三方图标库文件复制、无外部图片、无 Google Fonts 外链、生产构建无任何第三方脚本外链（verify-legal 第 9 节全 dist 扫描）。

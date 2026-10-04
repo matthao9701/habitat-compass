@@ -648,7 +648,7 @@ function buildSummaryText(result: AssessmentResult): string {
   ).join(' · ');
   const lines: string[] = [
     t('report.copy.header'),
-    `MBTI：${result.typeCode} ${profile?.name ?? ''} — ${profile?.motto ?? ''}`,
+    t('report.copy.persona', { code: result.typeCode, name: profile?.name ?? '', motto: profile?.motto ?? '' }),
     t('report.copy.axis', { axis: axisText }),
     t('report.copy.style', { style: profile?.nomadStyle ?? '' }),
     t('report.copy.tags', { tags: result.profileTags.join(' / ') }),

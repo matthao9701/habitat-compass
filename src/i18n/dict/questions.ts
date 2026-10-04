@@ -1,8 +1,8 @@
-/** 题库双语词典：MBTI（OEJTS 英文原文改写）/ 生活偏好 / 标准版偏好题 */
+/** 题库双语词典：人格（OEJTS 结构改写）/ 生活偏好 / 标准版偏好题 */
 
 export const questionsDict: Record<'zh' | 'en', Record<string, string>> = {
   zh: {
-    // ---- MBTI 阶段一：32 题双极陈述 ----
+    // ---- 人格阶段一：32 题双极陈述 ----
     'mbti.ei1.left': '热闹的聚会让我越待越有劲', 'mbti.ei1.right': '安静的小圈子让我最自在',
     'mbti.sn1.left': '我更容易注意到具体的细节与事实', 'mbti.sn1.right': '我更容易联想到背后的模式与可能',
     'mbti.tf1.left': '做决定时，我先看逻辑和效率', 'mbti.tf1.right': '做决定时，我先看人的感受和价值',
@@ -155,7 +155,7 @@ export const questionsDict: Record<'zh' | 'en', Record<string, string>> = {
   },
 
   en: {
-    // ---- MBTI stage 1: 32 bipolar statements ----
+    // ---- Personality stage 1: 32 bipolar statements ----
     'mbti.ei1.left': 'Lively parties energize me more and more', 'mbti.ei1.right': 'Small quiet circles feel most comfortable to me',
     'mbti.sn1.left': 'I notice concrete details and facts more easily', 'mbti.sn1.right': 'I more easily see the patterns and possibilities behind things',
     'mbti.tf1.left': 'When deciding, I look at logic and efficiency first', 'mbti.tf1.right': 'When deciding, I look at people\'s feelings and values first',
