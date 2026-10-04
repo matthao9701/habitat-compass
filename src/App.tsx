@@ -5,6 +5,7 @@ import Quiz from './components/Quiz';
 import Report from './components/Report';
 import ProIntro from './components/billing/ProIntro';
 import TabBar, { type TabId } from './components/TabBar';
+import Footer from './components/Footer';
 import CompareScreen from './components/compare/CompareScreen';
 import ProfileScreen from './components/ProfileScreen';
 import { assess, type UserAnswers, type AssessmentResult, type QuizVersion } from './lib/engine';
@@ -179,6 +180,7 @@ export default function App() {
             )}
           </motion.div>
         </AnimatePresence>
+        {TAB_SCREENS.includes(screen) && <Footer />}
       </div>
     </I18nProvider>
   );

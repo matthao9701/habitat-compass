@@ -84,7 +84,8 @@
 │       ├── countries.ts     # COUNTRIES/BY_CODE/getCountry(code)/countriesUpdatedAt()；getCountry 对 null/未知码返回 null
 │       ├── mbtiProfiles.ts  # 16 型人格游民视角解读
 │       └── cities/          # europe/asia/africa/north-america/south-america/oceania.json（共 100 城，assemble.mjs 产出勿手改）
-│   └── verify-seo-v9.ts     # 第十二轮 SEO/GEO 校验（dist 产物断言）
+│   ├── verify-seo-v9.ts     # 第十二轮 SEO/GEO 校验（dist 产物断言）
+│   └── verify-legal.ts      # 第十三轮法律页校验（GDPR 要素/清除按钮/footer/sitemap）
 ├── DATA.md                  # 数据源/许可/派生规则/缺失约定/再生成流程
 ├── index.html
 ├── tailwind.config.js       # 纸/墨/陶土配色与字体 token
@@ -110,6 +111,7 @@
 - 第十轮校验：`pnpm tsx scripts/verify-engine-v7.ts`（分层权重表完整性/值域/三类相对优先级/Tier 3 上限/airFit 分档/冒险友好度与风险联动算例/RIASEC 迁移解耦/双版本回归/200 城覆盖）
 - 第十一轮校验：`pnpm tsx scripts/verify-iter-v8.ts`（入口收纳结构/报告样例 demo 完整性与 expectedType/样例模式不污染/Tab 栏防重叠语义/天空蓝白 token 一致性与旧 hex 清零/新键双语与 REVERSE_ZH 反查）
 - 第十二轮校验：`pnpm tsx scripts/verify-seo-v9.ts`（536 落地页生成完整性与内容要素/null 不编造/JSON-LD 全量可解析/robots 8 爬虫/llms.txt/sitemap ≥536 URL/hreflang 互链/主站 @graph/方法论页权重与许可）
+- 第十三轮校验：`pnpm tsx scripts/verify-legal.ts`（4 法律页存在与结构/GDPR 信息义务逐项关键词/清除数据按钮实现/协议免责与开源署名/footer 源码与词典/sitemap 收录 ≥542）
 
 ## 匹配引擎说明
 
@@ -214,3 +216,14 @@
 - **主站**：index.html 注入 Organization + WebApplication @graph JSON-LD（sameAs 预留）；Landing 图集区新增「资料库」链接（landing.library.link 双语键）→ /cities/。
 - **方法论页**：三层权重全公开（T1 硬约束过滤 / T2 0.42+0.30+0.18（偏好内 0.86/0.14）/ T3 0.05+0.03+0.02）、校准公式 52+raw×0.46、数据许可署名（GeoNames/Open-Meteo/Numbeo/EF EPI/World Bank/UNDP/TI/IEP/Ookla/IPIP/OEJTS/O*NET/WHO 2021）、更新频率与免责声明——GEO 权威信号层。
 - **校验**：`pnpm tsx scripts/verify-seo-v9.ts`（dist 缺失时自动先跑 generate-landing，幂等）。
+
+## 第十三轮：法律合规页（用户协议 + 隐私政策 + GDPR 适配）
+
+- **架构**：复用第十二轮落地页基建——`generate-landing.mjs` 内 `LEGAL_PRIVACY/LEGAL_TERMS`（zh/en 各一套结构化章节）+ `renderLegalPage(kind, lang)` 生成 4 个自包含静态页：`/privacy/`、`/terms/`、`/en/privacy/`、`/en/terms/`（共 540 页，sitemap 542 URL）。不引入路由库（项目无 React Router，生产 express.static 命中目录 index.html，与 /cities/ 同模式）。
+- **无同意横幅决策**：本站无追踪 Cookie、无第三方分析脚本、无广告；localStorage（nomadmatch.v1 前缀）属提供用户明确请求服务的 strictly necessary 范围（ePrivacy Art. 5(3) 豁免逻辑）——以"如实披露 + 权利可操作"替代 CMP 同意库。
+- **隐私政策要素**：控制者（privacy@nomadmatch.app 占位）/ 实际存储键逐项披露（draft/proDraft/history/proHistory/favorites/compare/archives/hardConstraints/passport/lang/funnel/proUnlocked/orders）/ Art. 6(1)(b)/仅设备本地无国际传输/保存期至用户清除/Art. 15–22 + 77 权利与站内行使方式 + 30 天响应/未成年人 16 岁（Art. 8）/泄露 72 小时公告/EEA-UK 补充 + CCPA/CPRA（不出售不共享，数据从未离开设备）。
+- **清除数据按钮（删除权站内实现）**：隐私页 `.erase` 区块 + 最小内联 JS——confirm 确认后遍历 localStorage 按 `nomadmatch.v1:` 前缀逐键 removeItem，显示删除计数反馈；`<noscript>` 降级提示。协议页不含此按钮。
+- **用户协议要素**：服务描述/可接受使用/知识产权与开源数据署名（Numbeo/GeoNames/Open-Meteo/EF EPI/World Bank/Ookla/IPIP-NEO/O*NET/IPIP Risk-Taking/OEJTS，按 DATA.md）/as-is 免责与"非移民·法律·税务·财务·医疗建议"/责任限制/计费如实描述（¥29.9 演示性虚拟买断、模拟支付无真实扣款无退款，与 PayModal 行为一致）/服务变更终止/适用法域占位/联系渠道。
+- **SPA Footer**：`src/components/Footer.tsx`（Terms/Privacy 链接按 lang 取 `/terms/` 或 `/en/terms/`），挂 App.tsx 三 Tab 屏幕（TAB_SCREENS 判断，quiz/report/pro-intro 专注模式不显示）；词典键 `footer.terms/footer.privacy`（ui 域 zh/en）。
+- **占位项清单**：①联系邮箱 privacy@nomadmatch.app ②适用法域与管辖条款 ③运营者主体信息——正式部署前替换（页内已标注"占位"）。
+- **校验**：`pnpm tsx scripts/verify-legal.ts`（130 项：页面结构/GDPR 关键词逐项/eraseAll 实现/协议要素/footer 源码/sitemap 收录/第十二轮产物未破坏）。

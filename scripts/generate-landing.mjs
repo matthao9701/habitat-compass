@@ -141,6 +141,14 @@ footer{border-top:1px solid var(--paper-deep);background:var(--card);padding:18p
 .note{font-size:13px;color:var(--ink-soft);margin:8px 0 18px}
 .lang{font-size:13px}
 .lang a{color:var(--teal);text-decoration:none;font-weight:600}
+.legal-list{margin:6px 0 14px 20px}
+.legal-list li{list-style:disc;margin:6px 0;font-size:15px;color:var(--ink)}
+.legal p code{background:var(--paper-deep);border-radius:6px;padding:1px 7px;font-size:13.5px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.erase{margin:8px 0 26px;border-left:4px solid var(--clay)}
+.erase h2{margin-top:0}
+.btn-danger{display:inline-block;background:var(--clay);color:#fff;border:none;font-weight:800;font-size:15px;padding:12px 22px;border-radius:12px;cursor:pointer;font-family:inherit}
+.btn-danger:hover{background:var(--clay-deep)}
+.erase-done{margin-top:12px;color:var(--moss);font-weight:700}
 @media(max-width:560px){h1{font-size:24px}.card .v{font-size:19px}}
 `;
 
@@ -525,7 +533,299 @@ function write(rel, content) {
 const sitemapUrls = [];
 const addUrl = (p, lastmod) => sitemapUrls.push({ p, lastmod });
 
-export { write, addUrl, sitemapUrls, renderCityPage, renderCountryPage, renderCitiesIndex, renderCountriesIndex, renderMethodology, page };
+// ---------- 第十三轮：法律页（隐私政策 / 用户协议，zh/en） ----------
+// ABOUTME: 内容如实披露 storage.ts 实际键清单（nomadmatch.v1 前缀）；占位项：联系邮箱 / 适用法域
+const LEGAL_PRIVACY = {
+  zh: {
+    title: '隐私政策 | 栖居罗盘',
+    desc: '本站不使用追踪 Cookie、无第三方分析、无广告；你的全部数据仅存于浏览器本地存储（nomadmatch.v1），可随时一键清除。隐私政策全文。',
+    updated: `最后更新：${BUILD_DATE}`,
+    sections: [
+      { h: '一、概要与数据控制者', ps: [
+        '栖居罗盘（Siju Compass，下称"本站"）是一个运行于浏览器的海外城市定居决策辅助工具。<strong>本站没有账号体系，没有服务器端用户数据库</strong>——所有与"你"有关的信息只存在于你自己的设备中。',
+        '数据控制者：NomadMatch 运营者（主体信息待正式部署后补充）。联系邮箱：<code>privacy@nomadmatch.app</code>（占位邮箱，正式部署前将替换为实际邮箱）。',
+      ] },
+      { h: '二、我们处理哪些数据', ps: [
+        '本站<strong>不收集、不上传任何个人数据</strong>。你在使用中产生的全部数据仅保存在<strong>你自己设备浏览器的 localStorage</strong>（键名前缀 <code>nomadmatch.v1</code>），具体包括：',
+      ], list: [
+        '测评草稿与作答记录（draft / proDraft）——目的地偏好、预算、问卷答案',
+        '测评结果与最近一次历史（history / proHistory）——匹配得分与报告数据',
+        '收藏城市（favorites）与对比现场、对比存档（compare / archives）',
+        '硬性条件与护照选择（hardConstraints / passport）——预算上限、签证底线、安全阈值',
+        '界面语言设置（lang）、匿名漏斗计数（funnel）——仅阶段计数，无任何身份信息',
+        '标准版解锁状态与本地订单留痕（proUnlocked / orders）——演示性付费记录，详见用户协议',
+      ], after: [
+        '以上数据均由你主动输入或由你的输入直接计算产生；不含姓名、邮箱、电话、精确位置等直接身份信息。',
+      ] },
+      { h: '三、我们不做什么（重点声明）', ps: [
+        '<strong>无追踪 Cookie</strong>——本站不设置任何 Cookie，也不读取第三方 Cookie。',
+        '<strong>无第三方分析与广告</strong>——不加载 Google Analytics 或任何分析/广告脚本，不向任何第三方发送你的数据。',
+        '<strong>无 AI 模型处理</strong>——匹配计算完全在你的浏览器内完成，你的作答不会发送给任何 AI 模型或服务器。',
+      ] },
+      { h: '四、处理目的与法律基础', ps: [
+        '处理目的：仅为你正在请求的服务本身——保存测评进度、生成报告、记忆界面设置（GDPR 第 6(1)(b) 条：为履行合同所必需的处理）。',
+        '本站不设置 Cookie、不访问终端设备信息用于追踪，上述本地存储属于提供你明确请求的服务所<strong>严格必需（strictly necessary）</strong>的范围（参见 ePrivacy 指令第 5(3) 条的豁免逻辑）。因此本站<strong>不设 Cookie 同意横幅</strong>。',
+      ] },
+      { h: '五、存储位置与国际传输', ps: [
+        '全部数据仅存在于你的设备本地。<strong>没有任何数据上传到服务器，因此不存在国际数据传输</strong>，也不存在服务器端泄露面。',
+      ] },
+      { h: '六、保存期限', ps: [
+        '本地数据会一直保留，<strong>直到你自行清除</strong>——通过浏览器"清除站点数据"，或使用下方"清除我的所有数据"按钮。',
+      ] },
+      { h: '七、你的权利（GDPR 第 15–22 条）', ps: [
+        '依 GDPR，你享有：访问权（第 15 条）、更正权（第 16 条）、删除权 / 被遗忘权（第 17 条）、处理限制权（第 18 条）、数据可携带权（第 20 条）、反对权（第 21 条），以及向监管机构申诉的权利（第 77 条）。',
+        '<strong>本站的数据全部在你的设备本地，你可以即时、完全地行使上述全部权利</strong>：',
+      ], list: [
+        '访问 / 可携带：浏览器开发者工具（Application → Local Storage）可直接查看并导出全部数据',
+        '更正 / 删除 / 限制 / 反对：清除对应存储键即告完成——最简单的方式是下方按钮或浏览器"清除站点数据"',
+        '如需协助，可发邮件至 privacy@nomadmatch.app，我们在 <strong>30 天内</strong>回复',
+      ] },
+      { h: '八、未成年人（第 8 条）', ps: [
+        '本服务不面向 <strong>16 周岁以下</strong>用户；如你未满 16 周岁，请勿使用本站。',
+      ] },
+      { h: '九、数据泄露（第 33 / 34 条）', ps: [
+        '本站无服务器端存储，常规情况下不存在服务器泄露风险。尽管如此，若发生影响你数据的安全事件，我们将<strong>在知悉后 72 小时内</strong>通过本页显著公告，并在可能时逐一通知受影响用户。',
+      ] },
+      { h: '十、EEA / 英国补充与加州（CCPA / CPRA）说明', ps: [
+        'EEA / 英国：本政策即 GDPR 第 13 条信息义务的完整披露；处理行为均在你设备本地完成，无代表处理者、无自动化决策。',
+        '加州：本站不出售也不共享（sell / share）任何个人信息——数据从未离开你的设备，"Do Not Sell My Personal Information" 的要求在本站天然得到满足；加州居民同样享有知情权、删除权与不受歧视的权利。',
+      ] },
+      { h: '十一、政策变更', ps: [
+        '本政策如有实质变更，将在本页更新并标注日期；重大变更时在首页显著位置提示。',
+      ] },
+      { h: '十二、联系我们', ps: [
+        'privacy@nomadmatch.app（占位邮箱，正式部署前替换为实际联系渠道）。',
+      ] },
+    ],
+  },
+  en: {
+    title: 'Privacy Policy | Siju Compass',
+    desc: 'No tracking cookies, no third-party analytics, no ads. All your data stays in your browser local storage (nomadmatch.v1) and can be erased anytime with one click.',
+    updated: `Last updated: ${BUILD_DATE}`,
+    sections: [
+      { h: '1. Overview & controller', ps: [
+        'Siju Compass ("the site") is a browser-based decision-support tool for settling abroad. <strong>There are no user accounts and no server-side user database</strong> — everything that relates to you lives only on your own device.',
+        'Data controller: the NomadMatch operator (entity details to be added before official launch). Contact: <code>privacy@nomadmatch.app</code> (placeholder, to be replaced with the real mailbox).',
+      ] },
+      { h: '2. What data we process', ps: [
+        'The site <strong>collects and uploads no personal data</strong>. Everything you produce while using it is stored only in <strong>your browser\'s localStorage</strong> (key prefix <code>nomadmatch.v1</code>):',
+      ], list: [
+        'Quiz drafts & answers (draft / proDraft) — destination preferences, budget, questionnaire answers',
+        'Results & latest history (history / proHistory) — match scores and report data',
+        'Favorite cities (favorites), compare session and archives (compare / archives)',
+        'Hard constraints & passport choice (hardConstraints / passport) — budget cap, visa floor, safety threshold',
+        'Interface language (lang), anonymous funnel counters (funnel) — stage counts only, no identity data',
+        'Pro unlock state and local order log (proUnlocked / orders) — demo-purchase records, see Terms',
+      ], after: [
+        'All of it is entered by you or derived from your input. It contains no name, e-mail, phone number or precise location.',
+      ] },
+      { h: '3. What we do NOT do', ps: [
+        '<strong>No tracking cookies</strong> — the site sets no cookies and reads no third-party cookies.',
+        '<strong>No third-party analytics or ads</strong> — no Google Analytics, no ad networks, no social plugins; nothing is sent to anyone.',
+        '<strong>No AI processing</strong> — matching runs entirely in your browser; your answers never reach any AI model or server.',
+      ] },
+      { h: '4. Purpose & legal basis', ps: [
+        'Purpose: only the service you request — keeping quiz progress, generating reports, remembering your language setting (Art. 6(1)(b) GDPR: processing necessary for the performance of the service).',
+        'The site sets no cookies and does not access terminal equipment for tracking. The local storage described above is <strong>strictly necessary</strong> to provide the service you explicitly requested (cf. the exemption logic of Art. 5(3) ePrivacy Directive). The site therefore <strong>shows no consent banner</strong>.',
+      ] },
+      { h: '5. Storage location & international transfers', ps: [
+        'All data stays on your device. <strong>Nothing is uploaded to any server, so there is no international data transfer</strong> and no server-side breach surface.',
+      ] },
+      { h: '6. Retention', ps: [
+        'Local data is kept <strong>until you erase it</strong> — via your browser\'s "clear site data", or the "Erase all my data" button below.',
+      ] },
+      { h: '7. Your rights (GDPR Art. 15–22)', ps: [
+        'Under the GDPR you have: the right of access (Art. 15), rectification (Art. 16), erasure (Art. 17), restriction of processing (Art. 18), data portability (Art. 20), the right to object (Art. 21), and the right to lodge a complaint with a supervisory authority (Art. 77).',
+        '<strong>All data lives on your device, so you can exercise every right instantly and completely</strong>:',
+      ], list: [
+        'Access / portability: browser dev tools (Application → Local Storage) let you view and export everything',
+        'Rectification / erasure / restriction / objection: removing the storage keys is the whole act — the button below or "clear site data" does it',
+        'Need help? E-mail privacy@nomadmatch.app — we reply within <strong>30 days</strong>',
+      ] },
+      { h: '8. Children (Art. 8)', ps: [
+        'The service is not offered to anyone <strong>under 16</strong>. If you are under 16, please do not use the site.',
+      ] },
+      { h: '9. Data breach (Art. 33/34)', ps: [
+        'With no server-side storage there is ordinarily no server breach risk. Should a security incident ever affect your data, we will publish a prominent notice on this page <strong>within 72 hours</strong> of becoming aware, and notify affected users individually where possible.',
+      ] },
+      { h: '10. EEA/UK supplement & California (CCPA/CPRA)', ps: [
+        'EEA/UK: this policy constitutes the full Art. 13 GDPR information disclosure; processing happens locally on your device, with no processors and no automated decision-making.',
+        'California: the site does not sell or share any personal information — data never leaves your device, so "Do Not Sell My Personal Information" is satisfied by design; California residents also enjoy the rights to know, to delete and to non-discrimination.',
+      ] },
+      { h: '11. Changes to this policy', ps: [
+        'Material changes will be published on this page with an updated date; major changes are announced on the home page.',
+      ] },
+      { h: '12. Contact', ps: [
+        'privacy@nomadmatch.app (placeholder, to be replaced with the actual contact channel).',
+      ] },
+    ],
+  },
+};
+
+const LEGAL_TERMS = {
+  zh: {
+    title: '用户协议 | 栖居罗盘',
+    desc: '服务描述、可接受使用、知识产权与开源数据署名、免责声明、演示性计费说明、责任限制与争议解决。用户协议全文。',
+    updated: `最后更新：${BUILD_DATE}`,
+    sections: [
+      { h: '一、服务描述', ps: [
+        '栖居罗盘（Siju Compass）为数字游民、自由职业者与远程工作者提供海外城市定居的<strong>决策辅助</strong>：基于你的偏好作答与公开数据快照，对库内 200 座城市加权打分并生成报告。',
+        '本站免费提供 32 题简易测评与城市对比；另有一次性 ¥29.9 的标准版（计费说明见第六节）。使用本站无需注册账号。',
+      ] },
+      { h: '二、可接受使用', ps: [
+        '你可以自由浏览与使用本站。你同意不：',
+      ], list: [
+        '以自动化脚本对本站发起高频请求或以其他方式干扰服务可用性',
+        '将本站内容整体转售，或作为你自己产品的核心数据源再分发',
+        '对标准版内容进行破解、绕过解锁或再分发',
+      ] },
+      { h: '三、知识产权与开源数据署名', ps: [
+        '本站的界面设计、文案与代码版权归 NomadMatch 运营者所有。',
+        '本站引用的公开数据与题库按其许可要求署名（完整清单见方法论页）：',
+      ], list: [
+        'Numbeo 公开指数（成本 / 安全 / 医疗 / 生活质量，NYC=100 口径）',
+        'GeoNames（CC BY 4.0）、Open-Meteo Historical 与 Air Quality（CC BY 4.0）',
+        'EF EPI 英语熟练度评级；World Bank / UNDP / Transparency International 国家指标',
+        'Ookla Speedtest Intelligence 固定宽带网速中位数',
+        'IPIP-NEO 120 题（公有领域，ipip.ori.org）；O*NET Interest Profiler（公有领域，美国教育部赞助）；IPIP Risk-Taking（公有领域）；OEJTS 1.2（CC BY-NC-SA 4.0）',
+      ] },
+      { h: '四、免责声明', ps: [
+        '本站按"现状"（as-is）提供，不提供任何明示或默示的保证。',
+        '本站内容<strong>不构成移民、法律、税务、财务或医疗建议</strong>；匹配分数仅是基于你自述偏好与第三方公开数据快照的参考值，不构成对任何城市或国家的担保。',
+        '数据（成本、安全、网速、签证概览等）为第三方来源的<strong>时点快照，可能过时或存在误差</strong>；签证与入境政策多变，出行与定居前务必通过官方渠道核实。',
+      ] },
+      { h: '五、责任限制', ps: [
+        '在适用法律允许的最大范围内，运营者不对你因使用或无法使用本站而产生的任何间接、附带、特殊或后果性损失承担责任，也不对你的定居、出行或职业决策结果负责。',
+      ] },
+      { h: '六、计费说明（重要）', ps: [
+        '标准版定价 ¥29.9，标注为<strong>一次性虚拟买断（演示性付费）</strong>：支付弹窗是<strong>模拟流程，不会产生任何真实扣款</strong>，本站亦无真实收款与退款流程；购买结果仅记录在你的浏览器本地（proUnlocked / orders），用于解锁标准版测评功能。',
+        '清除本地数据（含隐私政策中的"清除我的所有数据"按钮）会一并清除解锁状态，之后可重新走演示性购买流程。',
+      ] },
+      { h: '七、服务变更与终止', ps: [
+        '我们可能随时修改、暂停或终止本站的全部或部分功能。你可以随时停止使用，并通过隐私政策中的按钮清除你的全部本地数据。',
+      ] },
+      { h: '八、适用法律与争议解决', ps: [
+        '本协议适用运营者注册地法律（<strong>占位：待正式部署后补充法域与管辖条款</strong>）。因本协议产生的争议，双方应先友好协商解决。',
+      ] },
+      { h: '九、联系渠道', ps: [
+        'privacy@nomadmatch.app（占位邮箱，正式部署前替换为实际联系渠道）。',
+      ] },
+    ],
+  },
+  en: {
+    title: 'Terms of Service | Siju Compass',
+    desc: 'Service description, acceptable use, IP & open-data attribution, disclaimers, demo billing, limitation of liability and dispute resolution.',
+    updated: `Last updated: ${BUILD_DATE}`,
+    sections: [
+      { h: '1. Service description', ps: [
+        'Siju Compass provides <strong>decision support</strong> for digital nomads, freelancers and remote workers settling abroad: it scores the 200 cities in its library against your stated preferences and public data snapshots, and generates a report.',
+        'The 32-question lite assessment and city comparison are free; a one-time ¥29.9 Pro version exists (billing, section 6). No account is required.',
+      ] },
+      { h: '2. Acceptable use', ps: [
+        'You may browse and use the site freely. You agree not to:',
+      ], list: [
+        'send high-frequency automated requests or otherwise disrupt availability',
+        'resell the site\'s content as a whole or redistribute it as the core data source of your own product',
+        'crack, bypass the unlock of, or redistribute Pro content',
+      ] },
+      { h: '3. IP & open-data attribution', ps: [
+        'The interface design, copy and code are © the NomadMatch operator. Public data and questionnaires are credited per their licences (full list on the Methodology page):',
+      ], list: [
+        'Numbeo public indices (cost / safety / healthcare / quality of life, NYC=100)',
+        'GeoNames (CC BY 4.0), Open-Meteo Historical & Air Quality (CC BY 4.0)',
+        'EF EPI English proficiency; World Bank / UNDP / Transparency International country indicators',
+        'Ookla Speedtest Intelligence fixed-broadband median speeds',
+        'IPIP-NEO 120 (public domain, ipip.ori.org); O*NET Interest Profiler (public domain, sponsored by the U.S. Department of Labor); IPIP Risk-Taking (public domain); OEJTS 1.2 (CC BY-NC-SA 4.0)',
+      ] },
+      { h: '4. Disclaimers', ps: [
+        'The site is provided "as is", without warranty of any kind, express or implied.',
+        'Its content <strong>is not immigration, legal, tax, financial or medical advice</strong>; match scores are reference values derived from your self-reported preferences and third-party public snapshots, and are no guarantee of any city or country.',
+        'Data (cost, safety, speeds, visa overviews) are <strong>point-in-time third-party snapshots and may be outdated or imprecise</strong>. Visa and entry rules change frequently — always verify with official channels before travelling or relocating.',
+      ] },
+      { h: '5. Limitation of liability', ps: [
+        'To the maximum extent permitted by applicable law, the operator is not liable for any indirect, incidental, special or consequential loss arising from your use of (or inability to use) the site, nor for the outcomes of your relocation, travel or career decisions.',
+      ] },
+      { h: '6. Billing (important)', ps: [
+        'The Pro version is priced ¥29.9 as a <strong>one-time virtual purchase (demo billing)</strong>: the payment dialog is a <strong>simulation — no real charge is ever made</strong>, and there is no real collection or refund process. The purchase result is recorded only in your browser (proUnlocked / orders) and merely unlocks the Pro assessment features.',
+        'Erasing local data (including the "Erase all my data" button in the Privacy Policy) also clears the unlock state, after which the demo purchase flow can be repeated.',
+      ] },
+      { h: '7. Changes & termination', ps: [
+        'We may modify, suspend or discontinue all or part of the site at any time. You may stop using it at any moment and erase all your local data via the button in the Privacy Policy.',
+      ] },
+      { h: '8. Governing law & dispute resolution', ps: [
+        'These terms are governed by the law of the operator\'s place of registration (<strong>placeholder: jurisdiction and venue to be added before official launch</strong>). Disputes shall first be resolved amicably.',
+      ] },
+      { h: '9. Contact', ps: [
+        'privacy@nomadmatch.app (placeholder, to be replaced with the actual contact channel).',
+      ] },
+    ],
+  },
+};
+
+/** 法律页：自包含 HTML，隐私页含"清除我的所有数据"最小 JS（删除 nomadmatch.v1:* 全部键） */
+function renderLegalPage(kind, lang) {
+  const zh = lang === 'zh';
+  const d = (kind === 'privacy' ? LEGAL_PRIVACY : LEGAL_TERMS)[lang];
+  const canonical = page(zh ? `/${kind}/` : `/en/${kind}/`);
+  const otherKey = kind === 'privacy' ? 'terms' : 'privacy';
+  const otherPath = `/${otherKey}/`;
+  const sections = d.sections
+    .map((s, i) => {
+      let html = `<h2 id="s${i}">${esc(s.h)}</h2>` + s.ps.map((p) => `<p>${p}</p>`).join('');
+      if (s.list) html += `<ul class="legal-list">${s.list.map((li) => `<li>${li}</li>`).join('')}</ul>`;
+      if (s.after) html += s.after.map((p) => `<p>${p}</p>`).join('');
+      return html;
+    })
+    .join('');
+  const eraseBlock = kind === 'privacy'
+    ? `<section class="card erase" id="erase">
+<h2>${zh ? '清除我的所有数据' : 'Erase all my data'}</h2>
+<p>${zh
+        ? '以下按钮立即删除本浏览器中本站存储的全部数据（<code>nomadmatch.v1</code> 前缀所有键：测评草稿、历史、收藏、对比存档、硬性条件、语言设置、漏斗计数与演示性购买记录）。删除不可恢复。'
+        : 'The button below immediately deletes everything this site has stored in this browser (every key prefixed <code>nomadmatch.v1</code>: quiz drafts, history, favorites, compare archives, constraints, language, funnel counters and demo purchase records). Deletion is irreversible.'}</p>
+<button class="btn-danger" onclick="eraseAll()">${zh ? '清除我的所有数据' : 'Erase all my data'}</button>
+<p id="erase-done" class="erase-done" hidden></p>
+<noscript><p>${zh ? '（需要启用 JavaScript 才能使用此按钮；你也可以直接在浏览器设置中清除本站数据。）' : '(JavaScript is required for this button; you can also clear this site\'s data in your browser settings.)'}</p></noscript>
+</section>
+<script>
+function eraseAll() {
+  if (!window.confirm('${zh ? '确认删除本站保存在本浏览器的全部数据（测评草稿/历史/收藏/对比存档/购买状态等）？此操作不可恢复。' : 'Delete all data this site has stored in this browser (drafts, history, favorites, compare archives, purchase state)? This cannot be undone.'}')) return;
+  var ks = [];
+  for (var i = 0; i < localStorage.length; i++) {
+    var k = localStorage.key(i);
+    if (k && k.indexOf('nomadmatch.v1:') === 0) ks.push(k);
+  }
+  ks.forEach(function (k) { localStorage.removeItem(k); });
+  var d = document.getElementById('erase-done');
+  d.hidden = false;
+  d.textContent = '${zh ? '✓ 已删除 ' : '✓ Erased '}' + ks.length + '${zh ? ' 项本地数据（nomadmatch.v1 全部键）。' : ' local item(s) — every nomadmatch.v1 key.'}';
+}
+</script>`
+    : '';
+  const crossLink = `<div class="list"><li><a href="${zh ? otherPath : `/en${otherPath}`}">${zh ? (otherKey === 'privacy' ? '隐私政策' : '用户协议') : otherKey === 'privacy' ? 'Privacy Policy' : 'Terms of Service'}</a><span class="meta">${zh ? '另一份法律文件' : 'The other legal document'}</span></li></div>`;
+  const jsonLd = [
+    {
+      '@context': 'https://schema.org', '@type': 'WebPage', name: d.title, description: d.desc,
+      url: canonical, inLanguage: zh ? 'zh-Hans' : 'en', isPartOf: { '@id': `${DOMAIN}/#organization` },
+    },
+    {
+      '@context': 'https://schema.org', '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: zh ? '首页' : 'Home', item: page(zh ? '/' : '/en/') },
+        { '@type': 'ListItem', position: 2, name: zh ? (kind === 'privacy' ? '隐私政策' : '用户协议') : kind === 'privacy' ? 'Privacy Policy' : 'Terms of Service', item: canonical },
+      ],
+    },
+  ];
+  const body = `<p class="crumbs"><a href="${zh ? '/' : '/en/'}">${zh ? '首页' : 'Home'}</a> / ${zh ? '法律' : 'Legal'}</p>
+<h1>${zh ? (kind === 'privacy' ? '隐私政策' : '用户协议') : kind === 'privacy' ? 'Privacy Policy' : 'Terms of Service'}</h1>
+<p class="sub">${d.updated}</p>
+${sections}
+${eraseBlock}
+${crossLink}`;
+  return shell({ lang, title: d.title, desc: d.desc, canonical, hreflang: { zh: page(`/${kind}/`), en: page(`/en/${kind}/`) }, jsonLd, body });
+}
+
+export { write, addUrl, sitemapUrls, renderCityPage, renderCountryPage, renderCitiesIndex, renderCountriesIndex, renderMethodology, renderLegalPage, page };
 
 function main() {
   fs.mkdirSync(DIST, { recursive: true });
@@ -546,6 +846,11 @@ function main() {
   addUrl('/countries/', BUILD_DATE); addUrl('/en/countries/', BUILD_DATE);
   write('methodology/index.html', renderMethodology('zh')); write('en/methodology/index.html', renderMethodology('en')); count += 2;
   addUrl('/methodology/', BUILD_DATE); addUrl('/en/methodology/', BUILD_DATE);
+  // 第十三轮：法律页（隐私政策 / 用户协议，zh/en）
+  write('privacy/index.html', renderLegalPage('privacy', 'zh')); write('en/privacy/index.html', renderLegalPage('privacy', 'en')); count += 2;
+  addUrl('/privacy/', BUILD_DATE); addUrl('/en/privacy/', BUILD_DATE);
+  write('terms/index.html', renderLegalPage('terms', 'zh')); write('en/terms/index.html', renderLegalPage('terms', 'en')); count += 2;
+  addUrl('/terms/', BUILD_DATE); addUrl('/en/terms/', BUILD_DATE);
   addUrl('/', BUILD_DATE); addUrl('/en/', BUILD_DATE);
 
   // robots.txt
