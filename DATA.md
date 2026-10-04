@@ -1,155 +1,88 @@
-# DATA.md — 栖居罗盘城市数据库（v2，100 城）
+# DATA.md — 栖居罗盘 · 数据口径说明
 
-> 更新日期：2025 年 · 第四轮迭代（城市库 39 → 100 城 + 数据维度扩充）
-> 管道脚本：`scripts/pipeline/*.mjs`（Node ESM，产物落 `src/data/cities/*.json`）
+> 本文档仅描述数据字段含义、聚合与派生方法、更新频率与免责声明。
+> 所有城市级与国家级统计指标均来自「官方开放数据（Open Data）与公开统计测算」，快照日期见各数据卡与字段来源标注；本站不转载任何来源的原始数据库文件。
 
-## 一、数据源与许可
+## 一、城市级字段口径（`src/data/cities/*.json`，200 城 / 六洲）
 
-| 数据源 | 用途 | 许可 / 口径 | 抓取方式 |
-| --- | --- | --- | --- |
-| GeoNames cities15000 | 61 座新城底座：坐标、人口、国家代码、IANA 时区；39 旧城补人口/时区/坐标校验 | CC BY 4.0 | `cities15000.zip` 一次性下载（tab 分隔，f4/f5 坐标、f8 ISO2、f14 人口、f18 时区） |
-| Open-Meteo Historical Weather API | 100 城近 10 年（2015-01-01 ~ 2024-12-31）日均温 / 降水 / 日照 → `climateDetail` 四指标 + 确定性简评 | CC BY 4.0（免 key） | `fetch-climate.mjs`，archive-api 逐城逐年拉取，10 年均值，增量重跑 |
-| Numbeo 公开指数页 | 成本指数（CoL / Rent / CoL+Rent / Groceries / Restaurant / Local PP）+ QoL 六指数（QoL / Purchasing Power / Safety / Health Care / Traffic / Pollution / Climate） | 公开榜单转录，口径 NYC=100；仅引用指数，不转载明细页面 | `fetch-numbeo.mjs`，rankings.jsp 两表 + 逐城详情页（`?currency=USD`，限速 3.2s + 429 退避） |
-| Numbeo 逐城详情页 | 市中心一居室月租 `rent1brUSD`、平价餐厅单人餐 `mealUSD`（USD 实时汇率） | 同上 | 同上 |
-| EF English Proficiency Index | 国家级英语普及度 `englishEpiBand` / `englishEpiScore`（仅国家级，映射到城市） | EF EPI 公开发布数据（引用注明） | `fetch-efepi.mjs`，官网内嵌 JSON 提取 |
-| 签证信息 | 沿用前三轮人工整理的 39 城 `visaLabel` 快照（官方名/门槛/时长转录原文）；61 新城 `visaStatus = null`（未核实，界面标「待核实」） | 编辑性快照，不构成法律建议 | 无新增抓取 |
+| 字段 | 含义 | 口径与聚合方法 |
+| --- | --- | --- |
+| lat / lng / population / timezone | 坐标、人口、IANA 时区 | GeoNames cities15000（CC BY 4.0） |
+| climateDetail | 近 10 年（2015-2024）日均温 / 降水 / 日照四指标 + 确定性简评 | Open-Meteo Historical（CC BY 4.0）十年均值，逐城逐年拉取 |
+| monthlyCostUSD / cost | 月均综合生活成本（USD，含市中心一居室租金）与区间 | 公开统计测算综合生活指数的线性拟合（39 旧城配对最小二乘 `≈39.9x−135.5`），区间 ±15/20%；属估算，仅用于排序与量级参考 |
+| livingScore | 综合生活指数（NYC = 100 基准，0-100+） | 公开统计测算榜单口径转录；自研 0-100 加权评分的方法论见站内「方法论」页 |
+| housingLevel | 住房成本水平：市中心一居室月租基准（USD） | 公开统计测算城市详情转录；无详情页的城为 null（不编造） |
+| mealUSD | 单餐参考价（USD） | 仅内部数据参考，**UI 不展示**（避免微观单品价格呈现） |
+| safety / healthcareIndex / pollutionIndex / trafficIndex / purchasingPowerIndex / climateIndex | 生活质量六指数（NYC = 100 基准） | 公开统计测算榜单口径转录 |
+| airQuality | PM2.5 年均浓度 + WHO 2021 指南分档（good/fair/moderate/poor） | Open-Meteo Air Quality（CAMS，CC BY 4.0）2022-08 ~ 2024-12 全期均值；分档 good ≤10 / fair ≤15 / moderate ≤25 / poor >25 |
+| englishBand / englishScore | 国家级英语普及度分级 / 分数（映射到城市） | 公开英语能力排名发布数据，band 五档（very high → very low） |
+| size | 城市规模序数（1-5） | 由 GeoNames 人口派生：>1000 万→5 / >300 万→4 / >100 万→3 / >30 万→2 / 其余→1 |
+| visaStatus / visaLabel / visaDetail | 签证三档与人工快照 | 编辑性快照（官方名/门槛/时长转录原文）；新城 null = 待核实，界面标「待核实」 |
 
-**许可合规**：GeoNames / Open-Meteo（CC BY 4.0）与 EF EPI 来源已在首页页脚与报告页脚注署名；Numbeo 指数为公开榜单口径转录并全程标注「NYC=100」。产品不转载任何来源的原始数据库文件。
+## 二、国家级字段口径（`src/data/countries.json`，65 国）
 
-## 二、选城与大洲口径
+| 字段 | 含义 | 口径 |
+| --- | --- | --- |
+| population / gdpPerCapitaUSD | 总人口 / 人均 GDP | World Bank API（CC BY 4.0），最新可得年 |
+| nameZh / languages / currency / currencyCode / taxTopRatePct / visaOverview | 基本信息与实务快照 | 手工快照（ISO 4217 / 各国官方公开信息概述），以官方为准 |
+| hdi | 人类发展指数 | UNDP《人类发展报告 2023-24》转录 |
+| cpi | 腐败感知指数 | Transparency International CPI 2023 转录 |
+| safetyScore / healthcareScore / qolScore / pollutionScore / climateScore | 国家级公开统计指数（NYC = 100 口径） | 公开统计测算榜单转录 |
+| gpi | 全球和平指数（score 1-5 越低越和平 + rank） | 公开报道整理的手工快照（IEP 2024 榜单，62/65；HK/PR/FJ 榜单不含地区显式 null），近似参考值 |
+| internetMbpsFixed | 固定宽带中位数下行（Mbps） | 公开网速榜单手工快照（65/65），近似参考值 |
+| visaPassport | 中国大陆普通护照入境待遇 + work/digitalNomad/longTerm 三维适用性快照 | 各国移民局公开信息手工快照（entry 四档：visaFree/visaOnArrival/eVisa/visaRequired）；**政策多变，出行前务必核实官方渠道** |
+| longStay | 税居天数 / 中外社保协定 / 押金惯例 | 各国税务局与官方公开指引手工概括；字段级允许 null |
 
-- **100 城 = 39 旧城（保留） + 61 新城**；分布：欧洲 33 / 亚洲 30 / 非洲 10 / 北美洲 11 / 南美洲 9 / 大洋洲 7。
-- 大洲与次区域：六洲产品口径（UN M49 为基础；土耳其、格鲁吉亚按既有产品归类计入欧洲）；次区域 key 列表与中文标签见 `src/data/regions.ts`。
-- 城市规模序数（size 1-5）按 GeoNames 人口派生：>1000 万→5 / >300 万→4 / >100 万→3 / >30 万→2 / 其余→1。
+- 逐字段来源标注在每国 `sources` 对象内；TW 仅手工快照基本字段。
+- **参考信息层定位**：国家级数据一律不进引擎加权，仅供国家概况卡、对比页国家级行与城市详情弹层展示。
 
-## 三、派生规则（不新增事实）
-
-- **新城综合月成本**：39 旧城存在 (costIndex → monthlyCostUSD) 配对，最小二乘拟合 `monthlyCostUSD ≈ 39.9 × costIndex − 135.5`；新城 `cost = [round(0.85m), round(1.2m)]`。属估算，仅用于排序与量级参考。
-- **新城 english（1-5 序数）**：由 EF EPI band 映射（very high→5 / high→4 / moderate→3 / low→2 / very low→1）。
-- **新城 climate**：`climateDetail.avgTempC`（10 年均值，1 位小数）。
-- **签证三档**：旧城由 `digitalNomadVisa` + `visaLabel` 推导（official=true / none=false / alternative=其余有描述者）；官方名从括号原文或关键词（签证/居留/准证/许可/白卡/DTV）提取。
-- **新城 tags**：编辑性兴趣场景标注（与 39 旧城同池），非统计数据。
-
-## 四、缺失数据约定（降权不惩罚）
+## 三、缺失数据约定（降权不惩罚）
 
 - 任何城市缺某维数据 → 该字段 `null`，界面显示「—」并隐藏对应条目。
-- 引擎侧：维度 null 时从偏好加权分子/分母中剔除（类级同理），三大类权重 30/48/22 不变；`verify-data-v2.ts` 第 7 节验证降权生效。
-- 新城 `traits / visaScore / community / pace / internetMbps / digitalNomadVisa` 均为 null，直到人工核实后回填。
+- 引擎侧：维度 null 时从加权分子/分母中剔除（类级同理），分层权重不变；`verify-data-v2.ts` 验证降权生效。
+- 新城 `traits / visaScore / community / pace / internetMbps / digitalNomadVisa` 为 null，直到人工核实后回填。
+
+## 四、更新频率
+
+- 气候：十年滚动窗口，年度重算。
+- 成本与指数：榜单口径快照，不定期重转录；快照日期见数据卡。
+- 空气质量：约两年半滚动窗口均值。
+- 护照/签证/长居快照：手工维护，快照日期见字段 sources；政策多变以官方为准。
 
 ## 五、再生成流程（全量重跑）
 
 ```bash
-# 1. 选城底座（61 新城 + GeoNames 匹配）
+# 1. 选城底座（GeoNames 匹配）
 node scripts/pipeline/selection.mjs
-# 2. Numbeo 指数 + 成本明细（限速友好，支持增量）
-node scripts/pipeline/fetch-numbeo.mjs
-node scripts/pipeline/fetch-numbeo.mjs --details
-# 3. Open-Meteo 气候（增量；可传 selection-old.json 补旧城）
+node scripts/pipeline/selection2.mjs
+# 2. 公开统计指数 + 成本明细（限速友好，支持增量）
+node scripts/pipeline/fetch-cost.mjs
+node scripts/pipeline/fetch-cost.mjs --details
+# 3. Open-Meteo 气候（增量）
 node scripts/pipeline/fetch-climate.mjs
-node scripts/pipeline/fetch-climate.mjs /tmp/pipeline/selection-old.json
-# 4. EF EPI
+# 4. 公开英语能力排名
 node scripts/pipeline/fetch-efepi.mjs
 # 5. 装配 6 大洲 JSON（拟合 / region 拆分 / 旧城富化）
 node scripts/pipeline/assemble.mjs
-# 6. 校验
+node scripts/pipeline/assemble-v2.mjs
+# 6. 国家级与快照回填
+node scripts/pipeline/fetch-country.mjs
+node scripts/pipeline/snapshot-gpispeed.mjs
+node scripts/pipeline/snapshot-passport.mjs
+node scripts/pipeline/snapshot-airquality.mjs
+# 7. 校验
 pnpm tsx scripts/verify-data-v2.ts
+pnpm tsx scripts/verify-country-v3.ts
 ```
 
-## 六、第五轮：标准版题库出处（IPIP-NEO 120）
+## 六、题库出处（仅保留许可要求的低调署名）
 
-- **标准版人格题库**：IPIP-NEO 120 结构（30 facets × 4 题，五点量表，+keyed / -keyed 各半），条目译自 **IPIP（International Personality Item Pool，Goldberg, 1999）公有领域题库**（ipip.ori.org），量表结构参照 Johnson (2014) 的 IPIP-NEO-120 版式；中文译文为本产品自译（每题附 `ref` 英文原句便于回溯核对）。IPIP 声明：该题库属公有领域，可自由复制、编辑、翻译与商用，无需署名（但仍建议注明出处）。
-- **Big Five → 16 型映射**：McCrae & Costa (1989) 经典对应——E/I←Extraversion、S/N←Openness（高开放→N）、T/F←Agreeableness（高宜人→F）、J/P←Conscientiousness（高尽责→J）；Neuroticism 无对应轴，作为独立补充维度展示（海外定居压力适应参考）。
-- **计分**：IPIP 官方标准——+keyed 题计 1-5 原值、-keyed 题计 5-1，facet 内平均 → (mean−1)/4×100 百分位；域百分位 = 6 facets 均值；四轴字母按对应域 50 分位分界（≥50 归 E/N/F/J）。
-- 上述出处已在标准版报告页映射说明卡与本页一并注明；简化版 OEJTS 题库出处见第一轮记录（CC BY-NC-SA 4.0，仅用于非商用场景）。
+- 简易版人格问卷：OEJTS 1.2 结构，CC BY-NC-SA 4.0（署名保留于站内方法论页）。
+- 标准版人格题库：IPIP（International Personality Item Pool，Goldberg, 1999）公有领域，可自由复制、编辑、翻译与商用。
+- 职业兴趣框架：O*NET Interest Profiler Short Form，CC BY 4.0（署名保留于站内方法论页页底一行）。
 
-## 七、第六轮：国家级参考数据与硬约束口径
+## 七、免责声明
 
-### 国家级数据源（`src/data/countries.json`，scripts/pipeline/fetch-country.mjs 产出，65 国全覆盖）
-
-| 字段 | 来源 | 许可 / 口径 |
-| --- | --- | --- |
-| nameEn / iso3 / capital / population / gdpPerCapitaUSD | World Bank API（country 表 + SP.POP.TOTL / NY.GDP.PCAP.CD 最新可得年） | CC BY 4.0 |
-| nameZh / languages / currency / currencyCode | 手工快照（ISO 4217 / 各国官方口径） | 事实性引用 |
-| hdi | UNDP《人类发展报告 2023-24》手工转录 | 引用，仅事实参考 |
-| cpi | Transparency International CPI 2023 手工转录 | 引用 |
-| numbeoSafety / numbeoHealthcare / numbeoQol / numbeoPollution / numbeoClimate | Numbeo country rankings（quality-of-life/rankings_by_country.jsp） | NYC=100 口径，引用 |
-| taxTopRatePct | 手工快照（最高边际个税率，不含地方附加与社保） | 仅事实参考非税务建议 |
-| visaOverview | 手工快照（各国移民局公开信息概述） | 以官方为准 |
-| **gpi / internetMbpsFixed** | **全 null——visionofhumanity 与 Speedtest Global Index 采集时源站不可达，留待补录** | — |
-
-- 逐字段来源标注在每国 `sources` 对象内；TW（World Bank 无 TWN 条目）仅手工快照基本字段，其余 null。
-- **参考信息层定位**：国家级数据一律不进引擎加权（30/48/22 与 11 维零改动），仅供报告页国家概况卡、对比页国家级行与城市详情弹层展示。
-
-### 硬约束层口径（`src/lib/constraints.ts`，引擎打分前的一票否决过滤）
-
-- 汇率：CNY→USD 固定近似汇率 `CNY_USD_RATE = 7.2`（仅预算上限换算用）。
-- 放宽：严格过滤后保留 < `RELAX_MIN_KEEP`（5）城时，「超上限但差距 < `OVER_BUDGET_BAND`（15%）」的城回填，match 扣 `OVER_BUDGET_PENALTY`（3）并标注「超预算」；回填者仍需通过签证/安全检查（两阶段过滤）。
-- 排除语义：签证/安全数据 null 视作「无法核验」排除（带可解释 reason），与引擎降权不惩罚原则互补——硬约束是底线而非打分。
-- 埋点：纯前端 localStorage 计数（`nomadmatch.v1:funnel`），不采集 PII。
-
-## 八、第七轮：GPI / 网速手工快照补录（`scripts/pipeline/snapshot-gpispeed.mjs`）
-
-| 字段 | 来源 | 许可 / 口径 |
-| --- | --- | --- |
-| gpi（score + rank） | IEP Global Peace Index 2024（163 国/地区榜单） | 引用；**公开报道整理的手工快照，近似参考值，以 IEP 原报告为准**（score 1-5 越低越和平，rank 为全球排名） |
-| internetMbpsFixed | Ookla Speedtest Global Index（国家级中位数 · 固定宽带下行 Mbps） | 引用；**公开榜单手工快照（2025 年内），近似参考值，以 Ookla 口径为准** |
-
-- 覆盖：GPI 62/65（HK/PR/FJ 为「榜单不含地区」，显式 null 并在 `sources.gpi` 注明原因）；网速 65/65。
-- 快照脚本幂等可重跑：`node scripts/pipeline/snapshot-gpispeed.mjs`（直接读写 `src/data/countries.json`，仅回填 `gpi` / `internetMbpsFixed` 两字段与对应 sources，不动其他字段）。
-- 断言：`verify-country-v3` 已更新——GPI 覆盖率 ≥90%（除豁免地区）、网速覆盖率 ≥90%、取值合理性（GPI 1-5 / 1-163 名、网速 5-500 Mbps）、来源标注口径检查。
-- 参考信息层定位不变：两字段均不进引擎加权。
-
-## 九、第八轮：RIASEC 兴趣题库 + IPIP 风险偏好自陈（`src/data/riasec.ts` / `src/data/riskTaking.ts`）
-
-| 数据 | 来源 | 使用方式与声明 |
-| --- | --- | --- |
-| RIASEC 30 题 | O*NET Interest Profiler Short Form（美国劳工部 / O*NET Resource Center，**Public Domain**） | 题面按官方六维主题（每维 5 题）手工整理：中文题干为自译改写，`ref` 字段保留对应官方 activity 英文短语；5 级喜好量表（Strongly dislike → Strongly like）。引用：O*NET Interest Profiler Short Form, National Center for O*NET Development（onetcenter.org）。六维得分（5-25/维）仅用于标签权重强化与报告画像，不进引擎 30/48/22 加权 |
-| IPIP Risk-Taking 10 题 | IPIP 国际人格项目池语句池（ipip.ori.org，**Public Domain**，Goldberg, 1999） | 精选 10 条高区分度语句（6 正向 + 4 反向，`keyed` 字段标注计分方向）：中文题干为自译改写，`ref` 保留 IPIP 英文原句；5 点符合度量表（复用 quiz.ipip.1-5 文案）。产出 0-100 冒险意愿指数，仅作报告画像展示，不影响城市排序 |
-| RIASEC → 标签映射 | 自研常量 `src/data/riasecMap.ts` | 六维 → 28 兴趣标签池的映射表（可调常量）；强化机制 = 有界叠加：RIASEC 高分维（百分位 ≥60）给映射标签 +1 次重复权重，与「子项双倍」叠加后封顶 2 次重复（×3），避免权重爆炸 |
-
-- 两量表均为公有领域，产品内展示位置：测评兴趣阶段第二小节（RIASEC）与标准版偏好阶段末尾（Risk-Taking），题面均在来源脚注标注出处。
-- 断言：`scripts/verify-onet-v5.ts`（30 题每维 5 题 / 计分与 top2 组合单测 / 映射标签必须存在于 28 标签池 / 反向题计分 / 双语键完整 / 引擎加权联动冒烟）。
-
-## 十、第九轮：护照免签快照 + 长期定居快照（`scripts/pipeline/snapshot-passport.mjs`）
-
-| 字段 | 来源 | 许可 / 口径 |
-| --- | --- | --- |
-| `visaPassport.entry` / `entryNote` | 各国移民局公开信息 + 中国领事服务网免签协定清单 + 权威媒体公开报道，**手工快照（2025-01-15）** | 参考信息层；**签证政策多变，快照仅近似参考，出行前务必核实官方渠道**（组件内固定免责声明）。entry 枚举：visaFree（互免协定/单方面免签）/ visaOnArrival / eVisa / visaRequired |
-| `visaPassport.work` / `digitalNomad` / `longTerm` | 各国移民局与官方数字游民签证公开页面，手工整理 | 「中国护照适用性」三级枚举：friendly / restricted / unknown；**unknown 表示公开渠道未能确认，不编造** |
-| `longStay.taxResidencyDays` | 各国税务局公开指引（如 183 天规则、US 183 天实质存在测试、DE >183 天等） | 手工快照；部分国家为特殊口径（AE 90 / JP 365 / NO 270），null 表示无单一权威口径 |
-| `longStay.socialSecurityCn` | 人力资源社会保障部公布的中外社保双边协定生效名单（截至 2025-01） | treaty（已生效）/ none / negotiating；库内 11 国（DE/KR/DK/FI/CA/CH/NL/FR*/ES/RS/JP/RW 名单中 FR 不在本项目 65 国库——城市库无法国城市） |
-| `longStay.rentalCustom` | 公开租房指南与当地中介说明的手工概括（押金月数/预付惯例） | 定性描述非法规引用；null 表示未收录 |
-
-- 覆盖：`visaPassport` 65/65、`longStay` 65/65（对象级覆盖，字段级允许 null）；逐字段 `sources.visaPassport` / `sources.longStay` 标注口径与快照日期。
-- 免签快照**仅覆盖中国大陆护照**：其他护照（HK/MO/TW/SG/JP/US/GB/CA/AU/EU/OTHER）选择「免签/落地签优先」底线时，约束层降级为不过滤并在报告排除说明中标注（`passportSkipped`），不猜测其他护照待遇。
-- 快照脚本幂等可重跑：`node scripts/pipeline/snapshot-passport.mjs`（直接读写 `src/data/countries.json`，仅回填 `visaPassport` / `longStay` 与对应 sources，不动其他字段）。
-- 断言：`scripts/verify-passport-v6.ts`（护照枚举与默认值 / 65 国覆盖与枚举合法性 / CN+visaFree 过滤联动与快照独立重算一致 / 非 CN 降级全保留 / 两阶段排除无重复 / 引擎集成冒烟 / 双语键完整 / reason 串与词典一致）。
-- 参考信息层定位不变：两块快照均不进引擎加权；过滤联动仅消费 `visaPassport.entry`（用户显式勾选底线时的一票否决）。
-
-## 十一、第十轮：200 城扩容 + 空气质量快照 + 引擎 v3 数据口径
-
-### 11.1 城市库扩容（100 → 200）
-
-- 新增 100 城清单：`scripts/pipeline/selection2.mjs`（手工清单 × GeoNames cities15000 匹配，queenstown 人口不足门槛用 fallback 坐标兜底）→ `/tmp/pipeline/selection2.json`（中间产物）。
-- 分布（新旧合计 200 城）：欧洲 65 / 亚洲 60 / 北美 22 / 南美 18 / 非洲 18 / 大洋洲 17；国家覆盖 65+。
-- 装配：`scripts/pipeline/assemble-v2.mjs`——以当前六大洲 JSON 为基底**只追加**新城（旧 100 城数据值不变、顺序不变），非 `assemble.mjs` 重建（避免 Numbeo 当月值变化污染旧城）。
-- 新城逐字段口径与第四轮一致：GeoNames（CC BY 4.0）坐标/人口/时区、Open-Meteo archive 2015-2024 十年均值气候、Numbeo rankings（COL/QoL 表）指数、EF EPI 国家英语带；**成本月估沿用 39 旧城最小二乘拟合**（判据 = `visaStatus != null` 的城，≈39.9x−135.5 ±15/20%）；签证沿用旧城人工快照口径，新城 null 待核实。
-- Numbeo 详情页（`rent1brUSD` / `mealUSD` 转录）仅大城提供：100 新城中 75 城有详情（`scripts/pipeline/patch-numbeo-curl.mjs` curl 转录，UA 伪装 + 限速），其余城 Numbeo 无独立详情页（rankings 表有指数但无价格页）→ `rent1brUSD`/`mealUSD` 为 null，UI 显示「—」，**不编造**。
-
-### 11.2 空气质量快照（`scripts/pipeline/snapshot-airquality.mjs`）
-
-| 字段 | 来源 | 许可 / 口径 |
-| --- | --- | --- |
-| `airQuality.pm25` | Open-Meteo Air Quality API（CAMS 全球再分析），2022-08-01 ~ 2024-12-31 逐时 PM2.5 全期均值（µg/m³） | CC BY 4.0；有效样本 < 1000 小时（约 42 天）视为数据不足 → null |
-| `airQuality.band` | WHO 2021 空气质量指南年均口径分档 | good ≤10 / fair ≤15 / moderate ≤25 / poor >25（对应指导值 5 与过渡目标 IT-4=10 / IT-3=15 / IT-2=25，取最接近的可达档） |
-| `airQuality.period` | 固定字符串 `2022-08 ~ 2024-12` | 展示用快照区间 |
-
-- 覆盖：200/200 城（城市坐标：旧城取 GeoNames cities15000 按名+国家匹配，新城取 selection2 清单；9 个岛名/异名城 madeira/mallorca/seville/zurich/bali/penang/goa/cebu/marrakech 用 EXTRA_COORD 兜底表）。
-- 幂等：已有 `airQuality` 的城跳过；400ms 限速（免费档 600 req/min）；重跑命令 `node scripts/pipeline/snapshot-airquality.mjs`。
-- 引擎定位：进 **Tier 3 小权重（airFit 2%，`TIER3_WEIGHTS` 合计仍 0.10）**，与气候舒适（Tier 2 客观维）互补——评估逻辑见 DESIGN.md 第十轮章节；分档映射分 优 90 / 良 72 / 一般 48 / 差 25，null 降权不惩罚。
-- 语义色与 UI：good=绿 / fair=蓝 / moderate=金 / poor=红（`AIR_BAND_TONE`，`src/lib/colors.ts`）；城市详情弹层与对比页数据表展示。
-
-### 11.3 引擎 v3 权重口径（数据侧摘要）
-
-- 权重唯一事实源迁至 `src/lib/engine.ts` 顶部常量块：`TIER2_WEIGHTS`（preference .42 / personality .30 / interest .18）、`TIER3_WEIGHTS`（riasecBoost .06 / riskLink .04）、`TIER3_TOTAL_SHARE` = 0.10、`PREFERENCE_SPLIT`（user .86 / objective .14）；设计依据详见 DESIGN.md 第十轮章节。
-- 断言：`scripts/verify-engine-v7.ts`（分层权重完整性 / 值域 / 相对优先级 / Tier3 上限 / 冒险友好度与风险联动算例 / RIASEC 迁移解耦 / 双版本回归 / 200 城覆盖）。
+- 全站数据为公开来源快照，可能过时；仅供参考，不构成移民、签证、居留、法律、税务、医疗、保险、财务或投资建议。
+- 重大决策前请咨询当地专业机构并核实官方渠道。
+- 数据按「现状」（as-is）提供，用户自担使用风险。

@@ -186,7 +186,7 @@ export interface CostComparison {
 
 export function compareCost(a: City, b: City): CostComparison {
   const hasCost = a.monthlyCostUSD != null && b.monthlyCostUSD != null;
-  const hasIndex = a.costIndex != null && b.costIndex != null;
+  const hasIndex = a.livingScore != null && b.livingScore != null;
 
   if (!hasCost && !hasIndex) {
     return {
@@ -195,7 +195,7 @@ export function compareCost(a: City, b: City): CostComparison {
       diffUSD: null,
       diffPct: null,
       diffIndex: null,
-      conclusion: `${a.nameZh} 与 ${b.nameZh} 的成本数据暂缺，无法生成结论——建议在 Numbeo 官网查询最新数据后对比。`,
+      conclusion: `${a.nameZh} 与 ${b.nameZh} 的成本数据暂缺，无法生成结论——建议查询官方公开统计渠道后对比。`,
     };
   }
 
@@ -205,7 +205,7 @@ export function compareCost(a: City, b: City): CostComparison {
     const diffUSD = ac - bc;
     const lower = Math.min(ac, bc) || 1;
     const diffPct = Math.round((Math.abs(diffUSD) / lower) * 100);
-    const diffIndex = hasIndex ? a.costIndex! - b.costIndex! : null;
+    const diffIndex = hasIndex ? a.livingScore! - b.livingScore! : null;
     const hi = diffUSD >= 0 ? a : b;
     const lo = diffUSD >= 0 ? b : a;
     const usd = Math.abs(diffUSD).toLocaleString('en-US');
@@ -215,7 +215,7 @@ export function compareCost(a: City, b: City): CostComparison {
       conclusion = `${a.nameZh} 与 ${b.nameZh} 的月均综合成本估算相同（~$${ac.toLocaleString('en-US')}），差异主要体现在租金结构与消费习惯上。`;
     } else {
       const indexPart = hasIndex
-        ? `；生活成本指数相差 ${Math.abs(diffIndex!)} 点（Numbeo 口径，NYC=100）`
+        ? `；综合生活指数相差 ${Math.abs(diffIndex!)} 点（NYC=100 基准）`
         : '';
       conclusion = `${hi.nameZh} 月均综合成本约 $${hi.monthlyCostUSD!.toLocaleString('en-US')}，比 ${lo.nameZh}（~$${lo.monthlyCostUSD!.toLocaleString('en-US')}）高约 $${usd}（约 ${diffPct}%，以较低者为基准）${indexPart}。`;
     }
@@ -230,7 +230,7 @@ export function compareCost(a: City, b: City): CostComparison {
   }
 
   // 仅指数可比
-  const diffIndex = a.costIndex! - b.costIndex!;
+  const diffIndex = a.livingScore! - b.livingScore!;
   const hi = diffIndex >= 0 ? a : b;
   const lo = diffIndex >= 0 ? b : a;
   return {
@@ -239,6 +239,6 @@ export function compareCost(a: City, b: City): CostComparison {
     diffUSD: null,
     diffPct: null,
     diffIndex,
-    conclusion: `${hi.nameZh} 的生活成本指数比 ${lo.nameZh} 高 ${Math.abs(diffIndex)} 点（Numbeo 口径，NYC=100）；月均综合成本绝对值数据暂缺。`,
+    conclusion: `${hi.nameZh} 的综合生活指数比 ${lo.nameZh} 高 ${Math.abs(diffIndex)} 点（NYC=100 基准）；月均综合成本绝对值数据暂缺。`,
   };
 }

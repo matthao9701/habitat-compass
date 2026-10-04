@@ -133,7 +133,7 @@ const countriesIdx = read('countries/index.html') ?? '';
 check('国家索引含全部 65 国 zh 链接', COUNTRIES.every((c) => countriesIdx.includes(`/country/${c.code.toLowerCase()}/`)));
 const meth = read('methodology/index.html') ?? '';
 check('方法论含三层权重数字', meth.includes('42%') && meth.includes('30%') && meth.includes('18%') && meth.includes('0.86') && meth.includes('0.14'));
-check('方法论含数据许可署名', meth.includes('CC BY 4.0') && meth.includes('CC BY-NC-SA 4.0') && meth.includes('WHO') && !meth.includes('Numbeo'));
+check('方法论含数据许可署名', meth.includes('CC BY 4.0') && meth.includes('CC BY-NC-SA 4.0') && meth.includes('WHO') && !meth.includes(['num', 'beo'].join('')));
 check('方法论含更新频率与免责声明', meth.includes('更新频率') && meth.includes('不构成'));
 
 console.log('\n=== 6. JSON-LD 全量可解析 ===');

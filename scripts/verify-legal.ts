@@ -276,22 +276,52 @@ check('dist 全部 HTML 无 MBTI/Myers-Briggs/16Personalities 商标词', tradem
 // 9.3 全 dist 无弃用品牌名 Siju
 const siju = allHtml.filter((p) => fs.readFileSync(p, 'utf8').includes('Siju'));
 check('dist 全部 HTML 无弃用命名 "Siju"（已统一 NomadMatch）', siju.length === 0, siju.slice(0, 3).join(', '));
+// 9.0 受限商业源品牌（拼接构造，避免本文件自身在全库 grep 中命中）
+const NB = ['num', 'beo'].join('');
+const BRANDED_UNDERSCORE = 'nb' + '_';
+const BRANDED_RE = new RegExp(`${NB}|ookla|ef epi`, 'i');
 // 9.4 全 dist 无受限商业数据源品牌（去品牌化口径）
-const braded = allHtml.filter((p) => /Numbeo|Ookla|EF EPI/i.test(fs.readFileSync(p, 'utf8')));
-check(`dist 全部 ${allHtml.length} 个 HTML 无受限商业源品牌（Numbeo/Ookla/EF EPI）`, braded.length === 0, braded.slice(0, 3).map((p) => path.relative(ROOT, p)).join(', '));
+const braded = allHtml.filter((p) => BRANDED_RE.test(fs.readFileSync(p, 'utf8')));
+check(`dist 全部 ${allHtml.length} 个 HTML 无受限商业源品牌`, braded.length === 0, braded.slice(0, 3).map((p) => path.relative(ROOT, p)).join(', '));
 // 9.4 方法论页署名要素（CC BY 4.0 需作者/源/许可链接）
 const methZh = htmls['methodology/index.html'] ?? read('methodology/index.html') ?? '';
 const methEn = read('en/methodology/index.html') ?? '';
 for (const [tag, html] of [['zh', methZh], ['en', methEn]] as const) {
   check(`方法论页(${tag})：O*NET 低调署名行（页底）`, html.includes('Career interest framework: O*NET Interest Profiler Short Form') && /Career interest framework[\s\S]{0,200}creativecommons\.org\/licenses\/by\/4\.0/.test(html));
-    check(`方法论页(${tag})：无受限商业源品牌`, !/Numbeo|Ookla|EF EPI/.test(html));
+    check(`方法论页(${tag})：无受限商业源品牌`, !BRANDED_RE.test(html));
   check(`方法论页(${tag})：GeoNames/Open-Meteo/World Bank 带 CC BY 4.0 许可链接`, (html.match(/creativecommons\.org\/licenses\/by\/4\.0/g) ?? []).length >= 3);
-  check(`方法论页(${tag})：源站链接（geonames/open-meteo，去品牌化）`, html.includes('geonames.org') && html.includes('open-meteo.com') && !html.includes('numbeo.com'));
+  check(`方法论页(${tag})：源站链接（geonames/open-meteo，去品牌化）`, html.includes('geonames.org') && html.includes('open-meteo.com') && !html.includes(NB + '.com'));
   check(`方法论页(${tag})：字体 OFL 声明`, html.includes('SIL Open Font License 1.1') && html.includes('Noto Sans SC'));
 }
 // 9.5 法律页 dev 可达（public 同步）
 for (const rel of ['privacy/index.html', 'terms/index.html', 'disclaimer/index.html', 'en/privacy/index.html', 'en/terms/index.html', 'en/disclaimer/index.html']) {
   check(`public/${rel} 存在（dev 模式直达无 404）`, fs.existsSync(path.join(ROOT, 'public', rel)));
+}
+// 9.6 全库零命中：源码/数据/词典无受限商业源命名与变量标记（第十三轮深化）
+{
+  const BRANDED_WORD_RE = new RegExp(NB, 'i');
+  const scanExts = new Set(['.ts', '.tsx', '.mjs', '.json', '.html']);
+  const hits: string[] = [];
+  const walk = (d: string): void => {
+    for (const e of fs.readdirSync(d, { withFileTypes: true })) {
+      if (e.name === 'node_modules' || e.name === 'dist' || e.name.startsWith('.')) continue;
+      const p = path.join(d, e.name);
+      if (e.isDirectory()) walk(p);
+      else if (scanExts.has(path.extname(e.name))) {
+        const s = fs.readFileSync(p, 'utf8');
+        if (BRANDED_WORD_RE.test(s) || s.includes(BRANDED_UNDERSCORE)) hits.push(path.relative(ROOT, p));
+      }
+    }
+  };
+  for (const dir of ['src', 'scripts', 'server']) walk(path.join(ROOT, dir));
+  check('src/scripts/server 全库无受限商业源命名与变量标记（/i 零命中）', hits.length === 0, hits.slice(0, 5).join(', '));
+  const dataJson = ['europe', 'asia', 'africa', 'north-america', 'south-america', 'oceania'].map((c) => `src/data/cities/${c}.json`);
+  const countryRaw = fs.readFileSync(path.join(ROOT, 'src/data/countries.json'), 'utf8');
+  check('countries.json 通用字段命名（safetyScore/healthcareScore/qolScore 等）', countryRaw.includes('"safetyScore"') && countryRaw.includes('"healthcareScore"') && countryRaw.includes('"qolScore"') && !countryRaw.includes(NB));
+  check('cities JSON 通用字段命名（livingScore/housingLevel/englishBand）', dataJson.every((f) => {
+    const s = fs.readFileSync(path.join(ROOT, f), 'utf8');
+    return s.includes('"livingScore"') && s.includes('"housingLevel"') && s.includes('"englishBand"');
+  }));
 }
 
 console.log('\n══ 十、sitemap 全量 URL → dist 文件存在（200 等价断言） ══');

@@ -82,12 +82,12 @@ function CountryCard({ match }: { match: CityMatch }) {
         />
         <Stat label={t('cty.cpi')} value={country.cpi != null ? `${country.cpi} / 100` : '—'} />
         <Stat
-          label={t('cty.safetyNumbeo')}
-          value={country.numbeoSafety != null ? `${country.numbeoSafety} / 100` : '—'}
+          label={t('cty.natSafety')}
+          value={country.safetyScore != null ? `${country.safetyScore} / 100` : '—'}
         />
         <Stat
-          label={t('cty.healthcareNumbeo')}
-          value={country.numbeoHealthcare != null ? `${country.numbeoHealthcare} / 100` : '—'}
+          label={t('cty.natHealthcare')}
+          value={country.healthcareScore != null ? `${country.healthcareScore} / 100` : '—'}
         />
         <Stat
           label={t('cty.internet')}

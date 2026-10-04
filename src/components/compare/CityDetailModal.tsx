@@ -75,12 +75,11 @@ export default function CityDetailModal({
               label={t('rep.stat.avgAll')}
               value={city.monthlyCostUSD != null ? `~$${city.monthlyCostUSD.toLocaleString('en-US')}` : '—'}
             />
-            <Stat label={t('rep.stat.costIndex')} value={city.costIndex != null ? `${city.costIndex} · NYC=100` : '—'} />
+            <Stat label={t('rep.stat.living')} value={city.livingScore != null ? `${city.livingScore} · NYC=100` : '—'} />
             <Stat
               label={t('cdm.rent')}
-              value={city.rent1brUSD != null ? `$${city.rent1brUSD.toLocaleString('en-US')}` : '—'}
+              value={city.housingLevel != null ? `$${city.housingLevel.toLocaleString('en-US')}` : '—'}
             />
-            <Stat label={t('cmp.data.meal')} value={city.mealUSD != null ? `$${city.mealUSD}` : '—'} />
             <Stat
               label={t('cmp.data.internet')}
               value={
@@ -150,8 +149,8 @@ export default function CityDetailModal({
               />
               <Stat label={t('cty.cpi')} value={country.cpi != null ? `${country.cpi} / 100` : '—'} />
               <Stat
-                label={t('cty.safetyNumbeo')}
-                value={country.numbeoSafety != null ? `${country.numbeoSafety} / 100` : '—'}
+                label={t('cty.natSafety')}
+                value={country.safetyScore != null ? `${country.safetyScore} / 100` : '—'}
               />
               <Stat
                 label={t('cty.internet')}

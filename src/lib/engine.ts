@@ -316,7 +316,7 @@ function climateComfortFit(detail: City['climateDetail']): number | null {
 }
 
 /** 英语普及（客观）：EF EPI 官方评级 → 分值；缺 EPI 回退 english 序数 × 20 */
-const EPI_BAND_SCORE: Record<string, number> = {
+const BAND_SCORE: Record<string, number> = {
   'very high': 95,
   high: 85,
   moderate: 72,
@@ -325,12 +325,12 @@ const EPI_BAND_SCORE: Record<string, number> = {
 };
 
 function englishDepthFit(city: City): number | null {
-  if (city.englishEpiBand) return EPI_BAND_SCORE[city.englishEpiBand] ?? null;
+  if (city.englishBand) return BAND_SCORE[city.englishBand] ?? null;
   if (city.english != null) return city.english * 20;
   return null;
 }
 
-/** 治安（客观）：Numbeo Safety Index（0-100）直接映射 */
+/** 治安（客观）：公开统计安全分（0-100）直接映射 */
 function safetyObjFit(safety: number | null): number | null {
   if (safety == null) return null;
   return clamp(safety, 5, 100);

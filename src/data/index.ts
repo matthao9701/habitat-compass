@@ -15,4 +15,4 @@ export const cities: City[] = [
   ...(oceania as unknown as City[]),
 ];
 
-export type { City, Region, ClimateType, VisaStatus, EpiBand, CityClimateDetail, CityVisaDetail } from './types';
+export type { City, Region, ClimateType, VisaStatus, EnglishBand, CityClimateDetail, CityVisaDetail } from './types';

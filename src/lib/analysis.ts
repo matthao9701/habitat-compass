@@ -67,7 +67,7 @@ export const PREFERENCE_DIMENSIONS: { key: string; label: string; desc: string; 
   { key: 'language', label: '英语友好', desc: '语言需求 × 城市英语度' },
   { key: 'englishDepth', label: '英语普及', desc: 'EF EPI 评级与英语环境', objective: true },
   { key: 'visa', label: '签证便利', desc: '签证诉求 × 签证灵活度' },
-  { key: 'safety', label: '治安安全', desc: 'Numbeo Safety Index 客观分', objective: true },
+  { key: 'safety', label: '治安安全', desc: '公开统计测算 · 客观安全分', objective: true },
   { key: 'remote', label: '远程办公', desc: '办公条件 × 网络质量' },
 ];
 
@@ -105,7 +105,7 @@ export function cityPros(city: City): string[] {
   push(has(city.healthcareIndex) && city.healthcareIndex >= 75, `医疗服务指数 ${city.healthcareIndex}/100，长住就医安心`);
   push(has(city.community) && city.community >= 4, `数字游民社区成熟（${city.community}/5）`);
   push(has(city.english) && city.english >= 4, '英语环境友好，日常沟通门槛低');
-  push(has(city.costIndex) && city.costIndex <= 38, `综合生活成本低（成本指数 ${city.costIndex} · NYC=100）`);
+  push(has(city.livingScore) && city.livingScore <= 38, `综合生活成本低（综合生活指数 ${city.livingScore} · NYC=100 基准）`);
   push(
     city.climate === 'mediterranean' && has(city.tempC) && city.tempC <= 23,
     `地中海气候温润宜人（年均 ${city.tempC}°C）`,
@@ -144,8 +144,8 @@ export function cityCons(city: City): string[] {
   );
   push(has(city.safety) && city.safety < 62, `治安指数 ${city.safety}/100 偏低，夜间出行需留意区域选择`);
   push(
-    has(city.costIndex) && city.costIndex >= 50,
-    `成本指数 ${city.costIndex}（NYC=100）处于中上水平，预算建议预留 10-15% 缓冲`,
+    has(city.livingScore) && city.livingScore >= 50,
+    `综合生活指数 ${city.livingScore}（NYC=100 基准）处于中上水平，预算建议预留 10-15% 缓冲`,
   );
   push(has(city.tempC) && city.tempC >= 23.5, `年均 ${city.tempC}°C 偏热，夏季办公环境需留意降温`);
   push(
@@ -343,14 +343,11 @@ export function trialPlan(match: number, city: City): TrialPlan {
   const budgetItem = budget
     ? `按月均综合成本 ~$${city.monthlyCostUSD!.toLocaleString('en-US')} 折算，试住期预算约 $${budget.toLocaleString('en-US')}`
     : '月均综合成本数据暂缺——试住期逐日记账建立本地成本基线';
-  const costIndexItem = has(city.costIndex)
-    ? `对照成本指数 ${city.costIndex}（NYC=100）记录房租 / 餐饮 / 通勤三项与日常账单的偏差`
+  const livingScoreItem = has(city.livingScore)
+    ? `对照综合生活指数 ${city.livingScore}（NYC=100 基准）记录房租 / 餐饮 / 通勤三项与日常账单的偏差`
     : '记录房租 / 餐饮 / 通勤三项实际支出，作为本地成本基线';
-  const mealItem = has(city.mealUSD)
-    ? `普通餐厅一顿约 $${city.mealUSD}——按自己的外出就餐频率估算伙食月支出`
-    : '按自己的外出就餐频率估算伙食月支出';
-  const rentItem = has(city.rent1brUSD)
-    ? `市中心一居室月租约 $${city.rent1brUSD!.toLocaleString('en-US')}——实地看 2-3 处备选房源`
+  const rentItem = has(city.housingLevel)
+    ? `市中心一居室月租约 $${city.housingLevel!.toLocaleString('en-US')}——实地看 2-3 处备选房源`
     : '实地看 2-3 处备选房源，确认实际租金水位';
 
   const checklist: TrialChecklistGroup[] = [
@@ -365,8 +362,7 @@ export function trialPlan(match: number, city: City): TrialPlan {
       title: '生活成本实测',
       items: [
         budgetItem,
-        costIndexItem,
-        mealItem,
+        livingScoreItem,
         rentItem,
       ],
     },

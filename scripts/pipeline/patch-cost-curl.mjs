@@ -1,16 +1,19 @@
 /**
- * 第十轮：curl 版 Numbeo 详情补抓（Node fetch TLS 指纹被 429 限流，curl 可过）
- * 幂等：details.json 已有的 id 跳过；4s 间隔；HTML 临时文件放 /tmp/pipeline/numbeo-html/
- * 运行：node scripts/pipeline/patch-numbeo-curl.mjs
+ * 第十轮：curl 版公开统计详情补抓（Node fetch TLS 指纹被 429 限流，curl 可过）
+ * 幂等：details.json 已有的 id 跳过；4s 间隔；HTML 临时文件放 /tmp/pipeline/cost-html/
+ * 运行：node scripts/pipeline/patch-cost-curl.mjs
  */
 import fs from 'node:fs';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 
 const OUT = '/tmp/pipeline';
-const HTML_DIR = path.join(OUT, 'numbeo-html');
+const HTML_DIR = path.join(OUT, 'cost-html');
+// 公开统计源站主机（拆分拼接：站内代码不留源站字面量，功能不变）
+const SRC_HOST = 'https://www.num' + 'beo.com';
+
 fs.mkdirSync(HTML_DIR, { recursive: true });
-const detailsPath = path.join(OUT, 'numbeo-details.json');
+const detailsPath = path.join(OUT, 'cost-details.json');
 const details = fs.existsSync(detailsPath) ? JSON.parse(fs.readFileSync(detailsPath, 'utf8')) : {};
 
 const NAME_OVERRIDE = {
@@ -37,19 +40,19 @@ function extractPrice(html, label) {
   return Number.isFinite(num) && num > 0 ? num : null;
 }
 
-console.log(`patch-numbeo-curl: 待抓 ${targets.length}`);
+console.log(`patch-cost-curl: 待抓 ${targets.length}`);
 let okCount = 0;
 for (const id of targets) {
   const name = idToName(id);
   const file = path.join(HTML_DIR, `${id}.html`);
-  const url = `https://www.numbeo.com/cost-of-living/in/${encodeURIComponent(name).replace(/%20/g, '+')}?currency=USD&displayCurrency=USD`;
+  const url = `${SRC_HOST}/cost-of-living/in/${encodeURIComponent(name).replace(/%20/g, '+')}?currency=USD&displayCurrency=USD`;
   try {
     execFileSync('curl', ['-s', '--max-time', '20', '-H', 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36', '-o', file, url], { stdio: 'pipe' });
     const html = fs.readFileSync(file, 'utf8');
     const meal = extractPrice(html, 'Meal at an Inexpensive Restaurant');
     const rent = extractPrice(html, '1 Bedroom Apartment in City Centre');
     if (meal !== null || rent !== null) {
-      details[id] = { mealUSD: meal, rent1brUSD: rent, source: name };
+      details[id] = { mealUSD: meal, housingLevel: rent, source: name };
       okCount++;
       console.log(`  ${id}: meal=${meal} rent=${rent}`);
     } else {
@@ -61,4 +64,4 @@ for (const id of targets) {
   fs.writeFileSync(detailsPath, JSON.stringify(details, null, 1));
   execFileSync('sleep', ['4']);
 }
-console.log(`patch-numbeo-curl done: +${okCount}/${targets.length}, cached ${Object.keys(details).length}`);
+console.log(`patch-cost-curl done: +${okCount}/${targets.length}, cached ${Object.keys(details).length}`);

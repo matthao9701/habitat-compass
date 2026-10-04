@@ -55,7 +55,7 @@ check('国家库无重复 code', new Set(COUNTRIES.map((c) => c.code)).size === 
 check('nameZh 全量非空', COUNTRIES.every((c) => typeof c.nameZh === 'string' && c.nameZh.length > 0));
 check('capital / languages / currency 全量非空', COUNTRIES.every((c) => c.capital != null && (c.languages?.length ?? 0) > 0 && c.currency != null));
 check('hdi 取值 0-1（非空者）', COUNTRIES.every((c) => c.hdi == null || (c.hdi >= 0 && c.hdi <= 1)));
-check('numbeo 指数取值合理 0-220（非空者）', COUNTRIES.every((c) => [c.numbeoSafety, c.numbeoHealthcare, c.numbeoQol, c.numbeoPollution, c.numbeoClimate].every((v) => v == null || (v >= 0 && v <= 220))));
+check('公开统计指数取值合理 0-220（非空者）', COUNTRIES.every((c) => [c.safetyScore, c.healthcareScore, c.qolScore, c.pollutionScore, c.climateScore].every((v) => v == null || (v >= 0 && v <= 220))));
 check('cpi 取值 0-100（非空者）', COUNTRIES.every((c) => c.cpi == null || (c.cpi >= 0 && c.cpi <= 100)));
 check('taxTopRatePct 取值 0-60（非空者）', COUNTRIES.every((c) => c.taxTopRatePct == null || (c.taxTopRatePct >= 0 && c.taxTopRatePct <= 60)));
 check('GDP/人口为正数（非空者）', COUNTRIES.every((c) => (c.gdpPerCapitaUSD == null || c.gdpPerCapitaUSD > 0) && (c.population == null || c.population > 0)));
@@ -105,8 +105,8 @@ function mkCity(opts: Partial<City> & { monthlyCostUSD: number | null }): City {
     timezone: 'Europe/Madrid',
     cost: null,
     monthlyCostUSD: opts.monthlyCostUSD,
-    costIndex: 40,
-    rent1brUSD: null,
+    livingScore: 40,
+    housingLevel: null,
     mealUSD: null,
     safety: 60,
     healthcareIndex: 70,
@@ -128,8 +128,8 @@ function mkCity(opts: Partial<City> & { monthlyCostUSD: number | null }): City {
     digitalNomadVisa: false,
     visaStatus: 'official' as VisaStatus,
     visaDetail: null,
-    englishEpiBand: 'high',
-    englishEpiScore: 550,
+    englishBand: 'high',
+    englishScore: 550,
     tags: [],
     traits: null,
     ...opts,

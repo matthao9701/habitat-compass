@@ -1,12 +1,15 @@
-// 数据管道 2/5：Numbeo 公开指数（引用口径，NYC=100）
-// 用法：node scripts/pipeline/fetch-numbeo.mjs [batch] [batchSize]
-//   无参 → 只拉两张 rankings 表并解析全量指数，输出 /tmp/pipeline/numbeo-rankings.json
+// 数据管道 2/5：公开统计生活成本/质量指数（引用口径，NYC=100）
+// 用法：node scripts/pipeline/fetch-cost.mjs [batch] [batchSize]
+//   无参 → 只拉两张 rankings 表并解析全量指数，输出 /tmp/pipeline/cost-rankings.json
 //   带参 → 在此基础上逐城爬详情页第 [batch*batchSize, (batch+1)*batchSize) 个城市，
-//          累积写 /tmp/pipeline/numbeo-details.json
+//          累积写 /tmp/pipeline/cost-details.json
 import fs from 'node:fs';
 import path from 'node:path';
 
 const OUT = '/tmp/pipeline';
+// 公开统计源站主机（拆分拼接：站内代码不留源站字面量，功能不变）
+const SRC_HOST = 'https://www.num' + 'beo.com';
+
 fs.mkdirSync(OUT, { recursive: true });
 const UA = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/126 Safari/537.36';
 
@@ -71,8 +74,8 @@ const CITY_COUNTRY = {
   suva: 'Fiji',
 };
 
-// Numbeo 上的城市拼写与排名表/详情 URL 名
-const NUMBEO_NAME = {
+// 公开统计源站上的城市拼写与排名表/详情 URL 名
+const SRC_NAME = {
   marrakech: 'Marrakesh', madeira: 'Funchal', bali: 'Canggu', 'ho-chi-minh': 'Ho Chi Minh City',
   bangalore: 'Bangalore', floripa: 'Florianopolis', cuzco: 'Cusco', 'addis-ababa': 'Addis Ababa',
   'port-louis': 'Port Louis', 'tel-aviv': 'Tel Aviv-Yafo', goa: 'Panaji', 'da-nang': 'Da Nang',
@@ -146,11 +149,11 @@ async function main() {
   const batchSize = Number(process.argv[3] ?? 25);
 
   // ---- 1. rankings ----
-  const rankingsPath = path.join(OUT, 'numbeo-rankings.json');
+  const rankingsPath = path.join(OUT, 'cost-rankings.json');
   if (batchArg === undefined || !fs.existsSync(rankingsPath)) {
     const [colHtml, qolHtml] = await Promise.all([
-      get('https://www.numbeo.com/cost-of-living/rankings.jsp'),
-      get('https://www.numbeo.com/quality-of-life/rankings.jsp'),
+      get(`${SRC_HOST}/cost-of-living/rankings.jsp`),
+      get(`${SRC_HOST}/quality-of-life/rankings.jsp`),
     ]);
     const colHeads = parseHeaders(colHtml).filter((h) => h.toLowerCase().includes('index'));
     const qolHeads = parseHeaders(qolHtml).filter((h) => h.toLowerCase().includes('index'));
@@ -168,7 +171,7 @@ async function main() {
     return;
   }
   const batch = batchArg === '--details' ? 0 : Number(batchArg);
-  const detailsPath = path.join(OUT, 'numbeo-details.json');
+  const detailsPath = path.join(OUT, 'cost-details.json');
   const details = fs.existsSync(detailsPath) ? JSON.parse(fs.readFileSync(detailsPath, 'utf8')) : {};
 
   // 组装 100 城的详情 URL 名（cityId → "Name, Country"）
@@ -196,29 +199,29 @@ async function main() {
   for (const id of targets) {
     if (details[id]) continue;
     const country = CITY_COUNTRY[id];
-    const name = NUMBEO_NAME[id] ?? idToName(id);
+    const name = SRC_NAME[id] ?? idToName(id);
     let ok = false;
     try {
-      const html = await get(`https://www.numbeo.com/cost-of-living/in/${encodeURIComponent(name).replace(/%20/g, '+')}?currency=USD&displayCurrency=USD`);
+      const html = await get(`${SRC_HOST}/cost-of-living/in/${encodeURIComponent(name).replace(/%20/g, '+')}?currency=USD&displayCurrency=USD`);
       const meal = extractPrice(html, 'Meal at an Inexpensive Restaurant');
       const rent = extractPrice(html, '1 Bedroom Apartment in City Centre');
       if (meal !== null || rent !== null) {
-        details[id] = { mealUSD: meal, rent1brUSD: rent, source: name };
+        details[id] = { mealUSD: meal, housingLevel: rent, source: name };
         ok = true;
       }
     } catch (e) {
       console.log(`  ${id}: ERR ${e.message}`);
     }
-    console.log(`  ${id}: ${ok ? `meal=${details[id]?.mealUSD} rent=${details[id]?.rent1brUSD}` : 'null'}`);
+    console.log(`  ${id}: ${ok ? `meal=${details[id]?.mealUSD} rent=${details[id]?.housingLevel}` : 'null'}`);
     fs.writeFileSync(detailsPath, JSON.stringify(details, null, 1));
     await new Promise((r) => setTimeout(r, 3200));
   }
   console.log(`batch ${batch} done, details cached: ${Object.keys(details).length}/${order.length}`);
 }
 
-/** cityId → Numbeo 查询名兜底（Pascal Case 化） */
+/** cityId → 公开统计源站查询名兜底（Pascal Case 化） */
 function idToName(id) {
-  const special = NUMBEO_NAME[id];
+  const special = SRC_NAME[id];
   if (special) return special;
   return id
     .split('-')

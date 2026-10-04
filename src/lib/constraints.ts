@@ -5,7 +5,7 @@
  *  a. 月预算上限（CNY/USD）：候选城市「月成本估算中值」超上限直接排除；
  *     若排除后剩余不足 5 城，放宽为「超上限但差距 < 15%」的降权保留（match -3）并标注「超预算」
  *  b. 签证底线：official（必须有官方数字游民签证）/ alternative（接受长期居留等替代路径）/ none（不限）
- *  c. 安全底线（默认关）：低于 Numbeo Safety 阈值的城市排除；指数缺失视作无法核验排除
+ *  c. 安全底线（默认关）：低于公开统计安全分阈值的城市排除；指数缺失视作无法核验排除
  *
  * 过滤发生在加权打分之前，不影响引擎三大类权重与 11 维体系；
  * 所有的排除都带可解释 reason（报告页顶部展示）。
@@ -37,7 +37,7 @@ export interface HardConstraints {
   passport: PassportCode;
   /** 安全底线开关（默认关） */
   safetyEnabled: boolean;
-  /** Numbeo Safety 指数下限（safetyEnabled 时生效） */
+  /** 公开统计安全分下限（safetyEnabled 时生效） */
   safetyThreshold: number;
 }
 

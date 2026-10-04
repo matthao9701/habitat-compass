@@ -1,5 +1,5 @@
 // 第十轮：装配 100 新城并追加到现有 100 城（只增不改）
-// 读取：/tmp/pipeline/selection2.json + numbeo-rankings.json + numbeo-details.json + climate.json + epi.json
+// 读取：/tmp/pipeline/selection2.json + cost-rankings.json + cost-details.json + climate.json + epi.json
 // 基底：src/data/cities/*.json（现有 100 城原样保留，字段值不动）
 // 写回：src/data/cities/*.json（合并后 200 城）
 import fs from 'node:fs';
@@ -88,9 +88,9 @@ function fitCost(pairs) {
 
 function main() {
   const selection = JSON.parse(fs.readFileSync(path.join(PIPE, 'selection2.json'), 'utf8'));
-  const rank = JSON.parse(fs.readFileSync(path.join(PIPE, 'numbeo-rankings.json'), 'utf8'));
-  const details = fs.existsSync(path.join(PIPE, 'numbeo-details.json'))
-    ? JSON.parse(fs.readFileSync(path.join(PIPE, 'numbeo-details.json'), 'utf8'))
+  const rank = JSON.parse(fs.readFileSync(path.join(PIPE, 'cost-rankings.json'), 'utf8'));
+  const details = fs.existsSync(path.join(PIPE, 'cost-details.json'))
+    ? JSON.parse(fs.readFileSync(path.join(PIPE, 'cost-details.json'), 'utf8'))
     : {};
   const climate = JSON.parse(fs.readFileSync(path.join(PIPE, 'climate.json'), 'utf8'));
   const epi = JSON.parse(fs.readFileSync(path.join(PIPE, 'epi.json'), 'utf8'));
@@ -129,12 +129,12 @@ function main() {
   // ---- 39 旧城拟合点：visaStatus 非空（人工快照）者为旧城 ----
   const oldPairs = [];
   for (const { city } of base.values()) {
-    if (city.visaStatus != null && typeof city.costIndex === 'number' && typeof city.monthlyCostUSD === 'number') {
-      oldPairs.push([city.costIndex, city.monthlyCostUSD]);
+    if (city.visaStatus != null && typeof city.livingScore === 'number' && typeof city.monthlyCostUSD === 'number') {
+      oldPairs.push([city.livingScore, city.monthlyCostUSD]);
     }
   }
   const { a, b } = fitCost(oldPairs);
-  console.log(`成本拟合: monthlyCostUSD = ${a.toFixed(2)} × costIndex + ${b.toFixed(2)}  (n=${oldPairs.length})`);
+  console.log(`成本拟合: monthlyCostUSD = ${a.toFixed(2)} × livingScore + ${b.toFixed(2)}  (n=${oldPairs.length})`);
   const estMonthly = (idx) => Math.max(300, Math.min(6000, Math.round(a * idx + b)));
 
   // ---- 装配 100 新城 ----
@@ -148,10 +148,10 @@ function main() {
       // 幂等：已装配的新城仅回填补抓成功的详情价格（rent/meal），其余字段不动
       const cur = base.get(s.id).city;
       const det = details[s.id];
-      if (det && cur.rent1brUSD == null && cur.mealUSD == null && (det.rent1brUSD != null || det.mealUSD != null)) {
-        cur.rent1brUSD = det.rent1brUSD ?? null;
+      if (det && cur.housingLevel == null && cur.mealUSD == null && (det.housingLevel != null || det.mealUSD != null)) {
+        cur.housingLevel = det.housingLevel ?? null;
         cur.mealUSD = det.mealUSD ?? null;
-        console.log(`  回填详情价格: ${s.id} (rent=${cur.rent1brUSD} meal=${cur.mealUSD})`);
+        console.log(`  回填详情价格: ${s.id} (rent=${cur.housingLevel} meal=${cur.mealUSD})`);
       }
       // 气候回填：首次装配时 climate.json 尚未跑完的城，补 climateDetail
       const cli2 = climate[s.id] ?? null;
@@ -175,7 +175,7 @@ function main() {
     if (!cli) misses.cli.push(s.id);
     const e = epi[s.iso2] ?? null;
     const det = details[s.id] ?? {};
-    const costIndex = col?.nums?.[0] ?? qol?.colIndex ?? null;
+    const livingScore = col?.nums?.[0] ?? qol?.colIndex ?? null;
     const city = {
       id: s.id,
       nameZh: s.nameZh,
@@ -188,10 +188,10 @@ function main() {
       region: continent,
       population: s.population ?? s.fallback?.population ?? null,
       timezone: s.timezone ?? s.fallback?.timezone ?? null,
-      cost: costIndex != null ? [Math.round(estMonthly(costIndex) * 0.85), Math.round(estMonthly(costIndex) * 1.2)] : null,
-      monthlyCostUSD: costIndex != null ? estMonthly(costIndex) : null,
-      costIndex,
-      rent1brUSD: det.rent1brUSD ?? null,
+      cost: livingScore != null ? [Math.round(estMonthly(livingScore) * 0.85), Math.round(estMonthly(livingScore) * 1.2)] : null,
+      monthlyCostUSD: livingScore != null ? estMonthly(livingScore) : null,
+      livingScore,
+      housingLevel: det.housingLevel ?? null,
       mealUSD: det.mealUSD ?? null,
       visaScore: null,
       visaLabel: null,
@@ -218,8 +218,8 @@ function main() {
         : null,
       community: null,
       english: e ? BAND_ORDINAL[e.band] ?? null : null,
-      englishEpiBand: e?.band ?? null,
-      englishEpiScore: e?.score ?? null,
+      englishBand: e?.band ?? null,
+      englishScore: e?.score ?? null,
       pace: null,
       size: sizeOrdinal(s.population),
       digitalNomadVisa: null,
@@ -248,7 +248,7 @@ function main() {
   console.log(`总计 ${total} 城`);
 }
 
-// ISO2 → Numbeo/EF 英文国名（rankings 匹配用）
+// ISO2 → 公开统计英文国名（rankings 匹配用）
 const COUNTRY_EN = {
   PT: 'Portugal', ES: 'Spain', IT: 'Italy', DE: 'Germany', NL: 'Netherlands', CH: 'Switzerland',
   AT: 'Austria', CZ: 'Czech Republic', PL: 'Poland', RO: 'Romania', GR: 'Greece', HR: 'Croatia',

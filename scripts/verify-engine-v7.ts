@@ -176,7 +176,7 @@ ok(proResult.matches.every((m) => m.match >= 0 && m.match <= 99), `pro 匹配分
 ok(proResult.matches.every((m) => (m.tier3Fit ?? 0) > 0 || m.tier3Fit == null), 'pro tier3Fit 合法（>0 或 null）');
 ok(proResult.riasecProfile != null && proResult.riskProfile != null, 'pro 附带 RIASEC / 风险画像');
 // 降权语义：新城 traits null → 人格类剔除，分数仍产出
-const newCity = all.find((c) => c.traits == null && c.costIndex != null);
+const newCity = all.find((c) => c.traits == null && c.livingScore != null);
 ok(newCity != null && computeCityFits(newCity, NEUTRAL_ANSWERS as unknown as UserAnswers).personalityFit === null, '新城 traits null → 人格类 null 降权');
 // 硬约束兼容：visaFree + CN 过滤后 assess 正常
 const kept = all.filter((c) => {

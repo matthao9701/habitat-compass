@@ -65,9 +65,9 @@ const numRange = (c: City, key: keyof City, lo: number, hi: number): void => {
 };
 for (const c of cities) {
   numRange(c, 'monthlyCostUSD', 200, 8000);
-  numRange(c, 'rent1brUSD', 100, 6000);
+  numRange(c, 'housingLevel', 100, 6000);
   numRange(c, 'mealUSD', 1, 120);
-  numRange(c, 'costIndex', 10, 200);
+  numRange(c, 'livingScore', 10, 200);
   numRange(c, 'safety', 0, 100);
   numRange(c, 'healthcareIndex', 0, 100);
   numRange(c, 'pollutionIndex', 0, 100);
@@ -75,18 +75,18 @@ for (const c of cities) {
   numRange(c, 'purchasingPowerIndex', 0, 200);
   numRange(c, 'climateIndex', 0, 100);
   if (c.english != null && ![1, 2, 3, 4, 5].includes(c.english)) fail(`${c.id}.english=${c.english} 非序数`);
-  if (c.englishEpiBand != null && !['very high', 'high', 'moderate', 'low', 'very low'].includes(c.englishEpiBand))
-    fail(`${c.id}.englishEpiBand=${String(c.englishEpiBand)} 非法`);
-  if (c.englishEpiBand == null && c.englishEpiScore != null) fail(`${c.id}: EPI 有分无级`);
-  // cost 与 costIndex 必须同进退（指数缺失 → 成本 null 合法）
-  if (c.costIndex == null && c.cost != null) fail(`${c.id}: costIndex 缺但 cost 有值`);
+  if (c.englishBand != null && !['very high', 'high', 'moderate', 'low', 'very low'].includes(c.englishBand))
+    fail(`${c.id}.englishBand=${String(c.englishBand)} 非法`);
+  if (c.englishBand == null && c.englishScore != null) fail(`${c.id}: 英语分级有分无级`);
+  // cost 与 livingScore 必须同进退（指数缺失 → 成本 null 合法）
+  if (c.livingScore == null && c.cost != null) fail(`${c.id}: livingScore 缺但 cost 有值`);
   if (c.cost != null && (c.cost.length !== 2 || c.cost[0] > c.cost[1])) fail(`${c.id}.cost 区间非法`);
 }
 const n = <T,>(arr: T[], pred: (x: T) => boolean): number => arr.filter(pred).length;
 console.log(
   `  null 统计：月成本 ${n(cities, (c) => c.monthlyCostUSD == null)} · 安全 ${n(cities, (c) => c.safety == null)} · ` +
-    `医疗 ${n(cities, (c) => c.healthcareIndex == null)} · 租金 ${n(cities, (c) => c.rent1brUSD == null)} · ` +
-    `EPI ${n(cities, (c) => c.englishEpiBand == null)}`,
+    `医疗 ${n(cities, (c) => c.healthcareIndex == null)} · 租金 ${n(cities, (c) => c.housingLevel == null)} · ` +
+    `英语分级 ${n(cities, (c) => c.englishBand == null)}`,
 );
 ok('可空字段类型与范围校验完成');
 
@@ -162,9 +162,9 @@ const midCities = cities.filter((c) => c.visaStatus == null && !NEW_IDS.has(c.id
 if (oldCities.length !== 39) fail(`旧城数 ${oldCities.length} ≠ 39`);
 if (newCities.length !== 100) fail(`本轮新城数 ${newCities.length} ≠ 100`);
 else ok(`39 旧城 + 61 中间代 + 100 本轮新城 = 200（中间代 ${midCities.length}）`);
-const oldMissing = oldCities.filter((c) => c.costIndex == null || c.safety == null);
+const oldMissing = oldCities.filter((c) => c.livingScore == null || c.safety == null);
 if (oldMissing.length) fail(`旧城缺失指数: ${oldMissing.map((c) => c.id).join(',')}`);
-else ok('39 旧城 costIndex/safety 全部有值');
+else ok('39 旧城 livingScore/safety 全部有值');
 const noTraits = newCities.filter((c) => c.traits != null).length;
 if (noTraits > 0) fail(`本轮新城 ${noTraits} 个带有 traits（应 null）`);
 const newNoClimate = newCities.filter((c) => c.climateDetail == null).length;

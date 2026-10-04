@@ -4,7 +4,7 @@
  * 数据源：
  *  1. World Bank API（CC BY 4.0）：国家全表（ISO2→ISO3/首都/英文国名）+ 逐国
  *     NY.GDP.PCAP.CD（人均 GDP，现价美元，最新可得年）与 SP.POP.TOTL（总人口）
- *  2. Numbeo quality-of-life/rankings_by_country.jsp：国家级 Safety / Health Care /
+ *  2. 公开统计 quality-of-life/rankings_by_country.jsp：国家级 Safety / Health Care /
  *     QoL / Purchasing Power / Pollution / Climate 指数（NYC = 100 口径）
  *  3. 手工快照表 MANUAL：官方语言 / 货币 / HDI (UNDP 2023-24) / CPI (Transparency
  *     International 2023) / 最高边际个税率 / 数字游民签证概览——只填有可靠依据的
@@ -61,8 +61,8 @@ async function wbIndicator(iso3, indicator) {
   return null;
 }
 
-// ---------- 3. Numbeo 国家 QoL 排名表 ----------
-function parseNumbeoCountry(html) {
+// ---------- 3. 公开统计国家 QoL 排名表 ----------
+function parseCountryStats(html) {
   const rows = new Map();
   const re = /<tr[^>]*>([\s\S]*?)<\/tr>/g;
   let m;
@@ -83,7 +83,7 @@ function parseNumbeoCountry(html) {
       purchasingPower: num(cells[3]),
       safety: num(cells[4]),
       healthCare: num(cells[5]),
-      costIndex: num(cells[6]),
+      livingScore: num(cells[6]),
       traffic: num(cells[7]),
       pollution: num(cells[8]),
       climate: num(cells[9]) ?? null,
@@ -92,9 +92,9 @@ function parseNumbeoCountry(html) {
   return rows;
 }
 
-const numbeoHtml = fs.readFileSync('/tmp/numbeo-country.html', 'utf8');
-const numbeoCountry = parseNumbeoCountry(numbeoHtml);
-console.log(`Numbeo 国家表：${numbeoCountry.size} 国`);
+const statsHtml = fs.readFileSync('/tmp/country-stats.html', 'utf8');
+const countryStats = parseCountryStats(statsHtml);
+console.log(`公开统计国家表：${countryStats.size} 国`);
 
 // ---------- 4. 手工快照表（只填可靠单元格；null = 无可靠依据） ----------
 // languages: 官方语言（常用顺序）；currency/currencyCode；hdi: UNDP HDR 2023-24；
@@ -186,12 +186,12 @@ const WB_SOURCES = {
   population: 'World Bank SP.POP.TOTL (CC BY 4.0)',
   gdpPerCapitaUSD: 'World Bank NY.GDP.PCAP.CD (CC BY 4.0)',
 };
-const NUMBEO_SOURCES = {
-  safety: 'Numbeo country rankings (NYC=100)',
-  healthcare: 'Numbeo country rankings (NYC=100)',
-  qol: 'Numbeo country rankings (NYC=100)',
-  pollution: 'Numbeo country rankings (NYC=100)',
-  climate: 'Numbeo country rankings (NYC=100)',
+const STAT_SOURCES = {
+  safety: '公开统计测算（NYC=100 口径）',
+  healthcare: '公开统计测算（NYC=100 口径）',
+  qol: '公开统计测算（NYC=100 口径）',
+  pollution: '公开统计测算（NYC=100 口径）',
+  climate: '公开统计测算（NYC=100 口径）',
 };
 
 const today = new Date().toISOString().slice(0, 10);
@@ -208,7 +208,7 @@ for (const [iso2, meta] of countriesNeeded) {
   const pop = await wbIndicator(wb.id, 'SP.POP.TOTL');
   await sleep(220);
   if (gdp?.error) console.log(`  WB GDP ${iso2} 失败: ${gdp.error}`);
-  const nb = numbeoCountry.get(wb.name) ?? null;
+  const row = countryStats.get(wb.name) ?? null;
   const man = MANUAL[iso2] ?? {};
 
   out.push({
@@ -225,11 +225,11 @@ for (const [iso2, meta] of countriesNeeded) {
     hdi: man.hdi ?? null,
     gpi: null, // visionofhumanity 源不可达，留 null 待补录
     cpi: man.cpi ?? null,
-    numbeoSafety: nb?.safety ?? null,
-    numbeoHealthcare: nb?.healthCare ?? null,
-    numbeoQol: nb?.qol ?? null,
-    numbeoPollution: nb?.pollution ?? null,
-    numbeoClimate: nb?.climate ?? null,
+    safetyScore: row?.safety ?? null,
+    healthcareScore: row?.healthCare ?? null,
+    qolScore: row?.qol ?? null,
+    pollutionScore: row?.pollution ?? null,
+    climateScore: row?.climate ?? null,
     internetMbpsFixed: null, // speedtest.net 源不可达（403），留 null 待补录
     visaOverview: man.visaOverview ?? null,
     taxTopRatePct: man.taxTopRatePct ?? null,
@@ -248,14 +248,14 @@ for (const [iso2, meta] of countriesNeeded) {
       cpi: man.cpi != null ? MANUAL_SOURCES.cpi : null,
       taxTopRatePct: man.taxTopRatePct != null ? MANUAL_SOURCES.taxTopRatePct : null,
       visaOverview: man.visaOverview ? MANUAL_SOURCES.visaOverview : null,
-      numbeoSafety: nb ? NUMBEO_SOURCES.safety : null,
-      numbeoHealthcare: nb ? NUMBEO_SOURCES.healthcare : null,
-      numbeoQol: nb ? NUMBEO_SOURCES.qol : null,
-      numbeoPollution: nb ? NUMBEO_SOURCES.pollution : null,
-      numbeoClimate: nb ? NUMBEO_SOURCES.climate : null,
+      safetyScore: row ? STAT_SOURCES.safety : null,
+      healthcareScore: row ? STAT_SOURCES.healthcare : null,
+      qolScore: row ? STAT_SOURCES.qol : null,
+      pollutionScore: row ? STAT_SOURCES.pollution : null,
+      climateScore: row ? STAT_SOURCES.climate : null,
     },
   });
-  console.log(`✓ ${iso2} ${meta.nameZh} | GDP ${gdp?.value ? Math.round(gdp.value) : '—'} | Safety ${nb?.safety ?? '—'} | CPI ${man.cpi ?? '—'}`);
+  console.log(`✓ ${iso2} ${meta.nameZh} | GDP ${gdp?.value ? Math.round(gdp.value) : '—'} | Safety ${row?.safety ?? '—'} | CPI ${man.cpi ?? '—'}`);
 }
 if (missing.length) console.log(`✗ World Bank 全表未覆盖：${missing.join(',')}`);
 

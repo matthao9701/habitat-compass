@@ -41,7 +41,7 @@ function ChecklistCard({ match, index }: { match: CityMatch; index: number }) {
   const { t } = useI18n();
   const { city } = match;
   const visaKnown = city.digitalNomadVisa === true || (city.visaLabel != null && city.visaLabel.length > 0);
-  const hasRentData = city.rent1brUSD != null;
+  const hasRentData = city.housingLevel != null;
 
   const items: { title: string; detail: string }[] = [
     {
@@ -53,7 +53,7 @@ function ChecklistCard({ match, index }: { match: CityMatch; index: number }) {
     {
       title: t('report.verify.rent'),
       detail: hasRentData
-        ? t('vc.rent.item', { rent: String(city.rent1brUSD ?? '') })
+        ? t('vc.rent.item', { rent: String(city.housingLevel ?? '') })
         : t('report.verify.rent.none'),
     },
     {

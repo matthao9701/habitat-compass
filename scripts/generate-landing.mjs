@@ -271,14 +271,14 @@ function cityFaq(city, lang) {
     faqs.push({
       q: `${city.nameZh}生活成本多少？`,
       a: city.monthlyCostUSD != null
-        ? `${city.nameZh}估算月生活成本约 $${Math.round(city.monthlyCostUSD)}（含一居室房租；区间 $${city.cost?.[0] != null ? Math.round(city.cost[0]) : '?'}–$${city.cost?.[1] != null ? Math.round(city.cost[1]) : '?'}），单餐约 $${city.mealUSD ?? '?'}，一居室月租约 $${city.rent1brUSD != null ? Math.round(city.rent1brUSD) : '?'}。口径为公开统计测算（open-data estimates）线性拟合与页面快照，随汇率与城市更新浮动。`
+        ? `${city.nameZh}估算月生活成本约 $${Math.round(city.monthlyCostUSD)}（含一居室房租；区间 $${city.cost?.[0] != null ? Math.round(city.cost[0]) : '?'}–$${city.cost?.[1] != null ? Math.round(city.cost[1]) : '?'}），单餐约 $${city.mealUSD ?? '?'}，一居室月租约 $${city.housingLevel != null ? Math.round(city.housingLevel) : '?'}。口径为公开统计测算（open-data estimates）线性拟合与页面快照，随汇率与城市更新浮动。`
         : `${city.nameZh}暂无可靠的公开生活成本明细（暂无该城公开测算），本站不编造数据；可参考其所在${city.countryZh}的国家级成本水位与后续数据更新。`,
     });
     faqs.push({
       q: `${city.nameZh}安全吗？`,
       a: city.safety != null
         ? `${city.nameZh}的公开统计测算安全指数为 ${city.safety}/100（越高越安全）。总体而言${city.safety >= 60 ? '治安处于较好水平，常规旅行防范即可' : city.safety >= 40 ? '治安中等，建议夜间避免偏僻区域并留意财物' : '治安压力较大，需提高防范意识并选择安全社区居住'}。`
-        : `${city.nameZh}暂无城市级安全指数，其所在${city.countryZh}的公开统计测算国家安全参考为 ${co?.numbeoSafety ?? '待补充'}/100${co?.gpi ? `，全球和平指数排名 #${co.gpi.rank}` : ''}。建议出行前查看最新领事与当地安全通报。`,
+        : `${city.nameZh}暂无城市级安全指数，其所在${city.countryZh}的公开统计测算国家安全参考为 ${co?.safetyScore ?? '待补充'}/100${co?.gpi ? `，全球和平指数排名 #${co.gpi.rank}` : ''}。建议出行前查看最新领事与当地安全通报。`,
     });
     faqs.push({
       q: `持中国护照如何入境${city.countryZh}（前往${city.nameZh}）？`,
@@ -310,7 +310,7 @@ function cityFaq(city, lang) {
       q: `Is ${city.nameEn} safe?`,
       a: city.safety != null
         ? `${city.nameEn} scores ${city.safety}/100 on the public statistical safety estimate (higher is safer).`
-        : `City-level safety index is pending; country-level reference for ${cN} is ${co?.numbeoSafety ?? 'n/a'}/100${co?.gpi ? ` (Global Peace Index rank #${co.gpi.rank})` : ''}. Always check the latest official travel advisories.`,
+        : `City-level safety index is pending; country-level reference for ${cN} is ${co?.safetyScore ?? 'n/a'}/100${co?.gpi ? ` (Global Peace Index rank #${co.gpi.rank})` : ''}. Always check the latest official travel advisories.`,
     });
     faqs.push({
       q: `How can Chinese passport holders enter ${cN}?`,
@@ -397,8 +397,8 @@ function renderCountryPage(co, lang) {
     ? `${co.nameZh}数字游民与长期定居指南 · 签证/安全/网速/税负 | 栖居罗盘`
     : `${co.nameEn} for Digital Nomads · Visa, Safety, Internet & Tax | NomadMatch`;
   const desc = lang === 'zh'
-    ? `${co.nameZh}定居要点：${co.visaOverview ?? '签证概览见正文'}；固定宽带中位 ${co.internetMbpsFixed ?? '—'} Mbps，公开统计测算安全参考 ${co.numbeoSafety ?? '—'}/100，库内 ${co.cityCount} 座城市数据。来源与日期逐项标注。`
-    : `${co.nameEn} essentials: ${co.internetMbpsFixed ?? '—'} Mbps median broadband, public-estimate safety ${co.numbeoSafety ?? '—'}/100, ${co.cityCount} covered cities. Per-item sources & dates.`;
+    ? `${co.nameZh}定居要点：${co.visaOverview ?? '签证概览见正文'}；固定宽带中位 ${co.internetMbpsFixed ?? '—'} Mbps，公开统计测算安全参考 ${co.safetyScore ?? '—'}/100，库内 ${co.cityCount} 座城市数据。来源与日期逐项标注。`
+    : `${co.nameEn} essentials: ${co.internetMbpsFixed ?? '—'} Mbps median broadband, public-estimate safety ${co.safetyScore ?? '—'}/100, ${co.cityCount} covered cities. Per-item sources & dates.`;
   const cities = CITIES.filter((c) => c.countryCode === co.code);
   const vp = co.visaPassport;
   const ls = co.longStay;
@@ -407,13 +407,13 @@ function renderCountryPage(co, lang) {
     faqs.push({ q: `持中国护照进入${co.nameZh}需要签证吗？`, a: vp ? `据 ${co.updatedAt} 快照，中国大陆护照为「${vp.entry}」${vp.entryNote ? `（${vp.entryNote}）` : ''}。` : '暂无结构化快照，请查询官方渠道。' + ' 签证政策多变，务必核实官方移民渠道。' });
     faqs.push({ q: `${co.nameZh}远程办公/数字游民签证情况？`, a: `${co.visaOverview ?? '暂无结构化信息'}${vp ? `；数字游民友好度：${vp.digitalNomad}` : ''}。政策更新频繁，以官方渠道为准。` });
     faqs.push({ q: `${co.nameZh}网速怎么样？`, a: co.internetMbpsFixed != null ? `固定宽带下行中位约 ${co.internetMbpsFixed} Mbps（公开统计测算），${co.internetMbpsFixed >= 100 ? '适合重网络远程工作' : '满足日常远程协作，重网络任务建议核实当地 ISP'}。` : '暂无数据，请查询当地 ISP。' });
-    faqs.push({ q: `${co.nameZh}安全吗？`, a: `${co.numbeoSafety != null ? `公开统计测算国家安全参考 ${co.numbeoSafety}/100。` : ''}${co.gpi ? `全球和平指数（IEP 2024）排名 #${co.gpi.rank}（得分 ${co.gpi.score}）。` : ''}出行前请查看最新领事安全通报。` });
+    faqs.push({ q: `${co.nameZh}安全吗？`, a: `${co.safetyScore != null ? `公开统计测算国家安全参考 ${co.safetyScore}/100。` : ''}${co.gpi ? `全球和平指数（IEP 2024）排名 #${co.gpi.rank}（得分 ${co.gpi.score}）。` : ''}出行前请查看最新领事安全通报。` });
     faqs.push({ q: `${co.nameZh}长期居留与税务要注意什么？`, a: ls ? `税居门槛：${ls.taxResidencyDays ?? '—'} 天/年${ls.socialSecurityCn ? `；社保协定：${ls.socialSecurityCn === 'treaty' ? '与中国有社保协定' : ls.socialSecurityCn === 'negotiating' ? '协定协商中' : '暂无协定'}` : ''}${ls.rentalCustom ? `；租房惯例：${ls.rentalCustom}` : ''}。以上为快照参考，请以官方与专业税务意见为准。` : '暂无结构化快照。' });
   } else {
     faqs.push({ q: `Do Chinese passport holders need a visa for ${co.nameEn}?`, a: vp ? `Snapshot as of ${co.updatedAt}: mainland Chinese passport holders are ${vp.entry}. Verify with official channels.` : 'No structured snapshot — check official channels.' });
     faqs.push({ q: `Does ${co.nameEn} offer a digital nomad visa?`, a: `${co.visaOverview ?? 'No structured info'}${vp ? `; digital-nomad friendliness: ${vp.digitalNomad}` : ''}.` });
     faqs.push({ q: `How fast is the internet in ${co.nameEn}?`, a: co.internetMbpsFixed != null ? `Median fixed broadband is ~${co.internetMbpsFixed} Mbps (public statistical estimate).` : 'No data yet.' });
-    faqs.push({ q: `Is ${co.nameEn} safe?`, a: `${co.numbeoSafety != null ? `public-estimate safety ${co.numbeoSafety}/100. ` : ''}${co.gpi ? `Global Peace Index rank #${co.gpi.rank} (IEP 2024).` : ''}` });
+    faqs.push({ q: `Is ${co.nameEn} safe?`, a: `${co.safetyScore != null ? `public-estimate safety ${co.safetyScore}/100. ` : ''}${co.gpi ? `Global Peace Index rank #${co.gpi.rank} (IEP 2024).` : ''}` });
   }
   const crumbs = lang === 'zh'
     ? [{ name: '首页', item: page('/') }, { name: '国家索引', item: page('/countries/') }, { name: co.nameZh, item: page(pathZh) }]
@@ -424,13 +424,13 @@ function renderCountryPage(co, lang) {
 <h1>${esc(n)}<span class="badge">${esc(co.capital ?? '')} · ${esc((co.languages ?? []).join('、'))}</span></h1>
 <p class="sub">${lang === 'zh' ? `人口 ${co.population ? co.population.toLocaleString('en-US') : '—'} · 货币 ${esc(co.currency ?? '—')} · 人均 GDP $${Math.round(co.gdpPerCapitaUSD ?? 0).toLocaleString('en-US')}` : `Population ${co.population ? co.population.toLocaleString('en-US') : '—'} · Currency ${esc(co.currency ?? '—')} · GDP/cap $${Math.round(co.gdpPerCapitaUSD ?? 0).toLocaleString('en-US')}`}</p>
 <div class="answer"><p>${lang === 'zh'
-    ? `${esc(co.nameZh)}是${co.cityCount ?? CITIES.length ? `本站收录 ${co.cityCount ?? cities.length} 座城市的` : ''}定居目的地。${co.internetMbpsFixed != null ? `固定宽带下行中位 ${co.internetMbpsFixed} Mbps，` : ''}${co.numbeoSafety != null ? `公开统计测算国家安全参考 ${co.numbeoSafety}/100，` : ''}${co.numbeoQol != null ? `公开统计测算生活质量指数 ${co.numbeoQol}。` : ''}${co.visaOverview ? `远程工作签证方面：${esc(co.visaOverview)}。` : ''}国家级数据逐项标注来源（World Bank/UNDP/官方开放数据与公开统计测算），更新于 ${esc(co.updatedAt)}。`
-    : `${esc(co.nameEn)} hosts ${co.cityCount ?? cities.length} covered cities. ${co.internetMbpsFixed != null ? `Median broadband ${co.internetMbpsFixed} Mbps; ` : ''}${co.numbeoQol != null ? `public-estimate QoL ${co.numbeoQol}; ` : ''}${co.visaOverview ? `remote-work visa: ${esc(co.visaOverview)}.` : ''} Sources per item (World Bank/UNDP/open data & public estimates), updated ${esc(co.updatedAt)}.`}</p></div>
+    ? `${esc(co.nameZh)}是${co.cityCount ?? CITIES.length ? `本站收录 ${co.cityCount ?? cities.length} 座城市的` : ''}定居目的地。${co.internetMbpsFixed != null ? `固定宽带下行中位 ${co.internetMbpsFixed} Mbps，` : ''}${co.safetyScore != null ? `公开统计测算国家安全参考 ${co.safetyScore}/100，` : ''}${co.qolScore != null ? `公开统计测算生活质量指数 ${co.qolScore}。` : ''}${co.visaOverview ? `远程工作签证方面：${esc(co.visaOverview)}。` : ''}国家级数据逐项标注来源（World Bank/UNDP/官方开放数据与公开统计测算），更新于 ${esc(co.updatedAt)}。`
+    : `${esc(co.nameEn)} hosts ${co.cityCount ?? cities.length} covered cities. ${co.internetMbpsFixed != null ? `Median broadband ${co.internetMbpsFixed} Mbps; ` : ''}${co.qolScore != null ? `public-estimate QoL ${co.qolScore}; ` : ''}${co.visaOverview ? `remote-work visa: ${esc(co.visaOverview)}.` : ''} Sources per item (World Bank/UNDP/open data & public estimates), updated ${esc(co.updatedAt)}.`}</p></div>
 <div class="grid">
   <div class="card"><h3>${lang === 'zh' ? '和平指数' : 'Peace index'}</h3><div class="v">${co.gpi ? `#${co.gpi.rank}<small>IEP 2024 · ${co.gpi.score}</small>` : '—'}</div><div class="src">来源: IEP Global Peace Index（手工快照）</div></div>
   <div class="card"><h3>${lang === 'zh' ? '人类发展指数' : 'HDI'}</h3><div class="v">${co.hdi ?? '—'}</div><div class="src">来源: UNDP HDR（手工快照）</div></div>
   <div class="card"><h3>${lang === 'zh' ? '腐败感知指数' : 'CPI'}</h3><div class="v">${co.cpi ?? '—'}<small>/100</small></div><div class="src">来源: Transparency International（手工快照）</div></div>
-  <div class="card"><h3>${lang === 'zh' ? '生活质量' : 'Quality of life'}</h3><div class="v">${co.numbeoQol ?? '—'}</div><div class="src">${lang === 'zh' ? '来源: 公开统计测算 · 生活质量指数' : 'Source: public statistical estimate · QoL index'}</div></div>
+  <div class="card"><h3>${lang === 'zh' ? '生活质量' : 'Quality of life'}</h3><div class="v">${co.qolScore ?? '—'}</div><div class="src">${lang === 'zh' ? '来源: 公开统计测算 · 生活质量指数' : 'Source: public statistical estimate · QoL index'}</div></div>
   <div class="card"><h3>${lang === 'zh' ? '税负参考' : 'Top tax rate'}</h3><div class="v">${co.taxTopRatePct != null ? `${co.taxTopRatePct}<small>% 最高档</small>` : '—'}</div><div class="src">来源: 手工快照 · 请以专业税务意见为准</div></div>
   <div class="card"><h3>${lang === 'zh' ? '数据快照日期' : 'Snapshot date'}</h3><div class="v" style="font-size:16px">${esc(co.updatedAt)}</div><div class="src">逐字段来源标注见方法论页</div></div>
 </div>

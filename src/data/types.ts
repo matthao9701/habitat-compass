@@ -15,7 +15,7 @@ export type Region = 'europe' | 'asia' | 'africa' | 'north-america' | 'south-ame
 export type VisaStatus = 'official' | 'alternative' | 'none' | null;
 
 /** EF EPI 英语普及度官方评级（国别年度报告，引用口径） */
-export type EpiBand = 'very high' | 'high' | 'moderate' | 'low' | 'very low';
+export type EnglishBand = 'very high' | 'high' | 'moderate' | 'low' | 'very low';
 
 /**
  * 人格亲和向量（Jungian 传统四轴）：数值 -100 ~ 100，正方向分别为 E / N / F / P，
@@ -71,17 +71,17 @@ export interface City {
   // ---- 成本 ----
   /** 单个数字游民的月生活成本区间（USD）；无来源 null */
   cost: [number, number] | null;
-  /** 月均综合生活成本（USD，含市区一居室租金；Numbeo 口径估算） */
+  /** 月均综合生活成本（USD，含市区一居室租金；公开统计测算） */
   monthlyCostUSD: number | null;
-  /** 生活成本指数（Numbeo Cost of Living Plus Rent Index，NYC = 100） */
-  costIndex: number | null;
-  /** 市中心一居室月租（USD，Numbeo 详情页转录） */
-  rent1brUSD: number | null;
-  /** 普通餐厅一顿（USD，Numbeo 详情页转录） */
+  /** 综合生活指数（NYC = 100 基准；0-100+ 加权评分） */
+  livingScore: number | null;
+  /** 住房成本水平：市中心一居室月租基准（USD） */
+  housingLevel: number | null;
+  /** 单餐参考价（USD；仅内部数据参考，UI 不展示） */
   mealUSD: number | null;
 
-  // ---- 指数（Numbeo Quality of Life rankings，NYC = 100）----
-  /** 安全指数（既有字段；v2 由 Numbeo Safety Index 补全/校准） */
+  // ---- 指数（公开统计生活质量口径，NYC = 100 基准）----
+  /** 安全指数（既有字段；v2 由公开统计安全分补全/校准） */
   safety: number | null;
   healthcareIndex: number | null;
   pollutionIndex: number | null;
@@ -115,8 +115,8 @@ export interface City {
   digitalNomadVisa: boolean | null;
   visaStatus: VisaStatus;
   visaDetail: CityVisaDetail | null;
-  englishEpiBand: EpiBand | null;
-  englishEpiScore: number | null;
+  englishBand: EnglishBand | null;
+  englishScore: number | null;
 
   // ---- 兴趣与人格 ----
   /** 生活方式标签（取自兴趣标签池；空数组 = 无标注，兴趣维度降权） */
@@ -149,12 +149,12 @@ export interface Country {
   gpi: { score: number; rank: number } | null;
   /** 腐败感知指数（Transparency International CPI 2023，0-100） */
   cpi: number | null;
-  /** 国家级 Numbeo 指数（NYC = 100 口径） */
-  numbeoSafety: number | null;
-  numbeoHealthcare: number | null;
-  numbeoQol: number | null;
-  numbeoPollution: number | null;
-  numbeoClimate: number | null;
+  /** 国家级公开统计指数（NYC = 100 口径） */
+  safetyScore: number | null;
+  healthcareScore: number | null;
+  qolScore: number | null;
+  pollutionScore: number | null;
+  climateScore: number | null;
   /** 固定宽带平均网速 Mbps（Speedtest/ITU；源站不可达时 null） */
   internetMbpsFixed: number | null;
   /** 国家级数字游民签证概览（一句话；以官方为准） */

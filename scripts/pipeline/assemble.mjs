@@ -4,14 +4,14 @@
  * 数据源（均真实抓取，缺失字段保持 null，严禁编造）：
  * - /tmp/cities15000.txt          GeoNames cities15000（CC BY 4.0）：坐标/人口/国家/时区
  * - /tmp/pipeline/selection.json  61 新城底座（含 continent/subregion/latlng/population/timezone）
- * - /tmp/pipeline/numbeo-rankings.json  Numbeo 生活成本 / 生活质量指数榜（NYC=100 口径）
- * - /tmp/pipeline/numbeo-details.json   Numbeo 城市详情页（平价一餐 / 市中心 1 居租金，USD）
+ * - /tmp/pipeline/cost-rankings.json  公开统计生活成本 / 生活质量指数榜（NYC=100 口径）
+ * - /tmp/pipeline/cost-details.json   公开统计城市详情页（平价一餐 / 市中心 1 居租金，USD）
  * - /tmp/pipeline/climate.json    Open-Meteo 近 10 年聚合（CC BY 4.0）
  * - /tmp/pipeline/epi.json        EF EPI 英语普及度（ISO2 → score/band）
- * - src/data/cities/*.json        既有 39 城手工库（保留其编辑性字段与原 costIndex）
+ * - src/data/cities/*.json        既有 39 城手工库（保留其编辑性字段与原 livingScore）
  *
- * 估算口径（DATA.md 同步记录）：新城 monthlyCostUSD = round(a·costIndex + b)，
- * a/b 由 39 城既有 (costIndex, monthlyCostUSD) 最小二乘拟合；cost 区间 = 拟合值 ×[0.85, 1.2]。
+ * 估算口径（DATA.md 同步记录）：新城 monthlyCostUSD = round(a·livingScore + b)，
+ * a/b 由 39 城既有 (livingScore, monthlyCostUSD) 最小二乘拟合；cost 区间 = 拟合值 ×[0.85, 1.2]。
  */
 import fs from 'node:fs';
 import path from 'node:path';
@@ -169,7 +169,7 @@ const NEW_TAGS = {
 // EF EPI band → 1-5 序数（english 维度展示值）
 const BAND_ORDINAL = { 'very high': 5, high: 4, moderate: 3, low: 2, 'very low': 1 };
 
-// Numbeo rankings 中城市名与库内 id 的覆盖映射（归一匹配失败的才需要）
+// 公开统计 rankings 中城市名与库内 id 的覆盖映射（归一匹配失败的才需要）
 const RANK_NAME_OVERRIDE = {
   madeira: 'Funchal', bali: 'Bali', penang: 'George Town', 'ho-chi-minh': 'Ho Chi Minh City',
   'da-nang': 'Da Nang', 'chiang-mai': 'Chiang Mai', 'kuala-lumpur': 'Kuala Lumpur',
@@ -220,7 +220,7 @@ function sizeOrdinal(pop) {
   return 1;
 }
 
-/** 39 城既有 (costIndex, monthlyCostUSD) 最小二乘 */
+/** 39 城既有 (livingScore, monthlyCostUSD) 最小二乘 */
 function fitCost(pairs) {
   const n = pairs.length;
   const sx = pairs.reduce((s, p) => s + p[0], 0);
@@ -237,8 +237,8 @@ function fitCost(pairs) {
 // ---------------------------------------------------------------------------
 function main() {
   const selection = JSON.parse(fs.readFileSync(path.join(PIPE, 'selection.json'), 'utf8'));
-  const rank = JSON.parse(fs.readFileSync(path.join(PIPE, 'numbeo-rankings.json'), 'utf8'));
-  const details = JSON.parse(fs.readFileSync(path.join(PIPE, 'numbeo-details.json'), 'utf8'));
+  const rank = JSON.parse(fs.readFileSync(path.join(PIPE, 'cost-rankings.json'), 'utf8'));
+  const details = JSON.parse(fs.readFileSync(path.join(PIPE, 'cost-details.json'), 'utf8'));
   const climate = JSON.parse(fs.readFileSync(path.join(PIPE, 'climate.json'), 'utf8'));
   const epi = JSON.parse(fs.readFileSync(path.join(PIPE, 'epi.json'), 'utf8'));
   const geo = parseGeo();
@@ -283,15 +283,15 @@ function main() {
 
   const geoFail = [];
   const rankFail = [];
-  const oldPairs = []; // [costIndex, monthlyCostUSD]
+  const oldPairs = []; // [livingScore, monthlyCostUSD]
   const oldBase = new Map(); // id → geo/city 基础信息
   for (const c of oldAll) {
     const conf = OLD_ISO[c.id];
     if (!conf) throw new Error(`旧城 ${c.id} 缺 OLD_ISO 配置`);
     const g = geoLookup(geo, conf.ascii, conf.iso);
     if (!g) geoFail.push(c.id);
-    if (typeof c.costIndex === 'number' && typeof c.monthlyCostUSD === 'number') {
-      oldPairs.push([c.costIndex, c.monthlyCostUSD]);
+    if (typeof c.livingScore === 'number' && typeof c.monthlyCostUSD === 'number') {
+      oldPairs.push([c.livingScore, c.monthlyCostUSD]);
     }
     const { col, qol } = rankMatch(c.id, c.nameEn);
     if (!col) rankFail.push(c.id);
@@ -310,7 +310,7 @@ function main() {
 
   // ---- 成本拟合 ----
   const { a, b } = fitCost(oldPairs);
-  console.log(`成本拟合: monthlyCostUSD = ${a.toFixed(2)} × costIndex + ${b.toFixed(2)}  (n=${oldPairs.length})`);
+  console.log(`成本拟合: monthlyCostUSD = ${a.toFixed(2)} × livingScore + ${b.toFixed(2)}  (n=${oldPairs.length})`);
   const estMonthly = (idx) => {
     const m = Math.round(a * idx + b);
     return Math.max(300, Math.min(6000, m));
@@ -341,8 +341,8 @@ function main() {
       timezone: s.timezone ?? null,
       cost: null,
       monthlyCostUSD: null,
-      costIndex: col ? col.colIndex : null,
-      rent1brUSD: det?.rent1brUSD ?? null,
+      livingScore: col ? col.colIndex : null,
+      housingLevel: det?.housingLevel ?? null,
       mealUSD: det?.mealUSD ?? null,
       visaScore: null,
       visaLabel: null,
@@ -369,16 +369,16 @@ function main() {
         : null,
       community: null,
       english: e ? BAND_ORDINAL[e.band] ?? null : null,
-      englishEpiBand: e?.band ?? null,
-      englishEpiScore: e?.score ?? null,
+      englishBand: e?.band ?? null,
+      englishScore: e?.score ?? null,
       pace: null,
       size: sizeOrdinal(s.population),
       digitalNomadVisa: null,
       tags: NEW_TAGS[s.id] ?? [],
       traits: null,
     };
-    if (city.costIndex != null) {
-      city.monthlyCostUSD = estMonthly(city.costIndex);
+    if (city.livingScore != null) {
+      city.monthlyCostUSD = estMonthly(city.livingScore);
       city.cost = [Math.round(city.monthlyCostUSD * 0.85), Math.round(city.monthlyCostUSD * 1.2)];
     }
     if (!cli) assembleFail.push(`climate:${s.id}`);
@@ -387,7 +387,7 @@ function main() {
   }
   console.log(`新城装配缺口: ${assembleFail.join(', ') || '无'}`);
 
-  // ---- 富化旧城（保留编辑性字段与原 costIndex） ----
+  // ---- 富化旧城（保留编辑性字段与原 livingScore） ----
   const enriched = { europe: [], asia: [], africa: [], 'north-america': [], 'south-america': [] };
   for (const c of oldAll) {
     const base = oldBase.get(c.id);
@@ -410,15 +410,15 @@ function main() {
       population: g ? g.pop : (c.population ?? null),
       timezone: g ? g.tz : (c.timezone ?? null),
       climateDetail: climate[c.id] ?? (c.climateDetail ?? null),
-      rent1brUSD: det?.rent1brUSD ?? (c.rent1brUSD ?? null),
+      housingLevel: det?.housingLevel ?? (c.housingLevel ?? null),
       mealUSD: det?.mealUSD ?? (c.mealUSD ?? null),
       healthcareIndex: qol ? qol.healthCare : (c.healthcareIndex ?? null),
       pollutionIndex: qol ? qol.pollution : (c.pollutionIndex ?? null),
       trafficIndex: qol ? qol.traffic : (c.trafficIndex ?? null),
       purchasingPowerIndex: qol ? qol.purchasingPower : (c.purchasingPowerIndex ?? null),
       climateIndex: qol ? qol.climate : (c.climateIndex ?? null),
-      englishEpiBand: e?.band ?? null,
-      englishEpiScore: e?.score ?? null,
+      englishBand: e?.band ?? null,
+      englishScore: e?.score ?? null,
       visaStatus: null,
       visaDetail: null,
     };

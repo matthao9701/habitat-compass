@@ -416,7 +416,7 @@ function CityCard({ match, rank }: CityCardProps) {
               label={t('rep.stat.avgAll')}
               value={city.monthlyCostUSD != null ? `~$${city.monthlyCostUSD.toLocaleString('en-US')}` : '—'}
             />
-            <Stat label={t('rep.stat.costIndex')} value={city.costIndex != null ? `${city.costIndex} · NYC=100` : '—'} />
+            <Stat label={t('rep.stat.living')} value={city.livingScore != null ? `${city.livingScore} · NYC=100` : '—'} />
             <Stat
               label={t('cmp.data.internet')}
               value={
