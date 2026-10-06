@@ -19,11 +19,11 @@ import {
 import { type AssessmentResult, type UserAnswers } from '../../lib/engine';
 import * as storage from '../../lib/storage';
 import { cities } from '../../data';
-import { REGION_LABEL, REGION_ORDER, subregionLabel } from '../../data/regions';
+import { REGION_ORDER } from '../../data/regions';
 import CompareCharts from './CompareCharts';
 import CompareDataCards from './CompareDataCards';
 import { useI18n } from '../../i18n';
-import { cityName } from '../../lib/format';
+import { cityName, cityCountryName, dimensionLabel, subregionName } from '../../lib/format';
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
@@ -243,7 +243,7 @@ export default function CompareScreen({ result, answers, seedCities, onOpenQuiz 
                 <option value="all">{t('cmp.filter.all', { count: cities.length })}</option>
                 {REGION_ORDER.map((r) => (
                   <option key={r} value={r}>
-                    {REGION_LABEL[r]}
+                    {t(`region.${r}`)}
                   </option>
                 ))}
               </select>
@@ -256,7 +256,7 @@ export default function CompareScreen({ result, answers, seedCities, onOpenQuiz 
                 <option value="all">{t('cmp.filter.allSub')}</option>
                 {subOptions.map((s) => (
                   <option key={s} value={s}>
-                    {subregionLabel(s)}
+                    {subregionName(s)}
                   </option>
                 ))}
               </select>
@@ -286,7 +286,7 @@ export default function CompareScreen({ result, answers, seedCities, onOpenQuiz 
                         <span className={`text-[12.5px] ${added ? 'text-ink-soft/60' : 'text-ink'}`}>
                           {cityName(c)}
                           <span className="ml-2 font-mono text-[10px] text-ink-soft">
-                            {c.countryZh} · {subregionLabel(c.subregion)}
+                            {cityCountryName(c)} · {subregionName(c.subregion)}
                           </span>
                         </span>
                         <span className="font-mono text-[10px] text-ink-soft">{added ? t('cmp.added') : t('cmp.add')}</span>
@@ -413,7 +413,7 @@ export default function CompareScreen({ result, answers, seedCities, onOpenQuiz 
                 <div key={d.key}>
                   <div className="mb-1 flex items-baseline justify-between">
                     <label htmlFor={`w-${d.key}`} className="text-[12px] text-ink">
-                      {d.label}
+                      {dimensionLabel(d.key)}
                       {d.objective && (
                         <span className="ml-1.5 rounded-[3px] border border-teal/45 px-1 py-px font-mono text-[8.5px] text-teal">
                           {t('cmp.weights.objective')}

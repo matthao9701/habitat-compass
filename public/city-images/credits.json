@@ -1,0 +1,1586 @@
+{
+ "amsterdam": {
+  "file": "/city-images/amsterdam.webp",
+  "artist": "Andrés Barrios",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Imagen_de_los_canales_conc%C3%A9ntricos_en_%C3%81msterdam.png"
+ },
+ "oslo": {
+  "file": "/city-images/oslo.webp",
+  "artist": "Orjanarvola",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Nationaltheatret_evening.jpg"
+ },
+ "barcelona": {
+  "file": "/city-images/barcelona.webp",
+  "artist": "M McBey",
+  "license": "CC BY 2.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Evening_light_over_Barcelona.jpg"
+ },
+ "berlin": {
+  "file": "/city-images/berlin.webp",
+  "artist": "File:Museumsinsel Berlin Juli 2021 1 (cropped).jpg: Kasa Fue\nderivative work: Georgfotoart",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Museumsinsel_Berlin_Juli_2021_1_%28cropped%29_b.jpg"
+ },
+ "belgrade": {
+  "file": "/city-images/belgrade.webp",
+  "artist": "ZlatanJovanovic",
+  "license": "CC BY 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/3.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Panorama_Belgrad.jpg"
+ },
+ "porto": {
+  "file": "/city-images/porto.webp",
+  "artist": "Diego Delso",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Puente_Don_Luis_I%2C_Oporto%2C_Portugal%2C_2012-05-09%2C_DD_13.JPG"
+ },
+ "budapest": {
+  "file": "/city-images/budapest.webp",
+  "artist": "Visions of Domino",
+  "license": "CC BY 2.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:View_from_Gell%C3%A9rt_Hill_to_the_Danube%2C_Hungary_-_Budapest_%2828493220635%29.jpg"
+ },
+ "bucharest": {
+  "file": "/city-images/bucharest.webp",
+  "artist": "Madalin Pentelie",
+  "license": "CC0",
+  "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Bucharest_University_Square_%28cropped%29.jpg"
+ },
+ "prague": {
+  "file": "/city-images/prague.webp",
+  "artist": "Moyan Brenn from Italy",
+  "license": "CC BY 2.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Prague_%286365119737%29.jpg"
+ },
+ "tbilisi": {
+  "file": "/city-images/tbilisi.webp",
+  "artist": "Alexey Komarov",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:View_of_Tbilisi_from_Tabori_Church_2023-10-08-2.jpg"
+ },
+ "dubrovnik": {
+  "file": "/city-images/dubrovnik.webp",
+  "artist": "Zysko serhii",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:The_walls_of_the_fortress_and_View_of_the_old_city._panorama.jpg"
+ },
+ "florence": {
+  "file": "/city-images/florence.webp",
+  "artist": "Giorgio Galeotti",
+  "license": "CC BY 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Firenze_-_Piazzale_Michelangelo%2C_Firenze%2C_Italy_-_April_6%2C_2015_02.jpg"
+ },
+ "copenhagen": {
+  "file": "/city-images/copenhagen.webp",
+  "artist": "Moahim",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:2018_-_Christiansborg_from_the_Marble_Bridge.jpg"
+ },
+ "helsinki": {
+  "file": "/city-images/helsinki.webp",
+  "artist": "Michal Pise, Michal.Pise",
+  "license": "CC BY 2.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Suomenlinna_%28cropped%29.jpg"
+ },
+ "krakow": {
+  "file": "/city-images/krakow.webp",
+  "artist": "Andrzej Otrębski",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Krakow_Rynek_Glowny_panorama_2.jpg"
+ },
+ "riga": {
+  "file": "/city-images/riga.webp",
+  "artist": "Jorge Franganillo from Barcelona, Spain",
+  "license": "CC BY 2.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Riga_%2833844464828%29.jpg"
+ },
+ "lisbon": {
+  "file": "/city-images/lisbon.webp",
+  "artist": "Vitor Oliveira from Torres Vedras, PORTUGAL",
+  "license": "CC BY-SA 2.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Lisboa_-_Portugal_%2852597836992%29.jpg"
+ },
+ "madeira": {
+  "file": "/city-images/madeira.webp",
+  "artist": "Dr. Thomas Liptak",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Funchal%2C_Jardins_da_Quinta_Vigia_%28lookout%29.jpg"
+ },
+ "madrid": {
+  "file": "/city-images/madrid.webp",
+  "artist": "Zarateman",
+  "license": "CC0",
+  "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Madrid_-_Sky_Bar_360%C2%BA_%28Hotel_Riu_Plaza_Espa%C3%B1a%29%2C_vistas_19.jpg"
+ },
+ "malaga": {
+  "file": "/city-images/malaga.webp",
+  "artist": "Kiban",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Da_Gibralfaro_%28cropped%292.jpg"
+ },
+ "mallorca": {
+  "file": "/city-images/mallorca.webp",
+  "artist": "Thomas Wolf, www.foto-tw.de",
+  "license": "CC BY-SA 3.0 de",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Kathedrale_von_Palma.jpg"
+ },
+ "zagreb": {
+  "file": "/city-images/zagreb.webp",
+  "artist": "Nick Savchenko from Kiev, Ukraine",
+  "license": "CC BY-SA 2.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Zagreb_%2829255640143%29.jpg"
+ },
+ "seville": {
+  "file": "/city-images/seville.webp",
+  "artist": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Sevilla_Cathedral_-_Southeast.jpg"
+ },
+ "stockholm": {
+  "file": "/city-images/stockholm.webp",
+  "artist": "Steven Lek",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Royal_Dramatic_Theatre_Stockholm.jpg"
+ },
+ "split": {
+  "file": "/city-images/split.webp",
+  "artist": "Tatyana Peshkova",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Split_080620-133710-IMG_0968x.jpg"
+ },
+ "zurich": {
+  "file": "/city-images/zurich.webp",
+  "artist": "Thomas Wolf, www.foto-tw.de",
+  "license": "CC BY-SA 3.0 de",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Altstadt_Z%C3%BCrich_2015.jpg"
+ },
+ "tallinn": {
+  "file": "/city-images/tallinn.webp",
+  "artist": "Jorge Franganillo",
+  "license": "CC BY 2.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Raekoja_plats_at_night.jpg"
+ },
+ "valletta": {
+  "file": "/city-images/valletta.webp",
+  "artist": "Mandyy88",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:St_Sebastian_Curtain_%28cropped%29.jpg"
+ },
+ "valencia": {
+  "file": "/city-images/valencia.webp",
+  "artist": "Boris  Dzhingarov",
+  "license": "CC BY 2.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Malvarrosa_Beach%2C_Valencia%2C_Spain_%2829812271043%29.jpg"
+ },
+ "vilnius": {
+  "file": "/city-images/vilnius.webp",
+  "artist": "BigHead",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Vilnius_old_town_by_Augustas_Didzgalvis.jpg"
+ },
+ "vienna": {
+  "file": "/city-images/vienna.webp",
+  "artist": "Superbass",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Schoenbrunn_philharmoniker_2012.jpg"
+ },
+ "athens": {
+  "file": "/city-images/athens.webp",
+  "artist": "Andrew Parlette",
+  "license": "CC BY 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Athens_Acropolis_at_Daybreak.jpg"
+ },
+ "istanbul": {
+  "file": "/city-images/istanbul.webp",
+  "artist": "Hunanuk",
+  "license": "CC0",
+  "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Historical_peninsula_and_modern_skyline_of_Istanbul.jpg"
+ },
+ "coimbra": {
+  "file": "/city-images/coimbra.webp",
+  "artist": "Leandro Neumann Ciuffo",
+  "license": "CC BY 2.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Coimbra_e_o_rio_Mondego_%286167200429%29_%28cropped%29.jpg"
+ },
+ "braga": {
+  "file": "/city-images/braga.webp",
+  "artist": "Otto Domes",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Braga_Panorama.jpg"
+ },
+ "faro": {
+  "file": "/city-images/faro.webp",
+  "artist": "Arne Müseler",
+  "license": "CC BY-SA 3.0 de",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:2021_12_12_arne_mueseler_08_17_0576.jpg"
+ },
+ "bilbao": {
+  "file": "/city-images/bilbao.webp",
+  "artist": "Tommie Hansen, Ardfern, Tomas Fano, 0Igor González Martín, Jesús Ignacio Bravo Soler, Pedro J Pacheco, Irekia/Gobierno Vasco, Euskaldunaa, Basotxerri, Eric Fischer, Tiia Monto, pictures Jettcom y Zarateman",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Collage_de_Bilbao%2C_Pa%C3%ADs_Vasco%2C_Espa%C3%B1a.png"
+ },
+ "granada": {
+  "file": "/city-images/granada.webp",
+  "artist": "Brett Hodnett",
+  "license": "CC BY-SA 2.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Granada_%2825987961022%29.jpg"
+ },
+ "tenerife": {
+  "file": "/city-images/tenerife.webp",
+  "artist": "Photograph by Mike Peel (www.mikepeel.net).",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:At_Palmetum_de_Santa_Cruz_de_Tenerife_2022_028.jpg"
+ },
+ "bologna": {
+  "file": "/city-images/bologna.webp",
+  "artist": "Fabio Ciminelli",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Torri_di_Bologna%2C_Bologna.jpg"
+ },
+ "naples": {
+  "file": "/city-images/naples.webp",
+  "artist": "Richard Nevell",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Napoli_-_Maschio_Angioino_-_202209302342_3.jpg"
+ },
+ "palermo": {
+  "file": "/city-images/palermo.webp",
+  "artist": "Tango7174",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Sicilia_Palermo5_tango7174.jpg"
+ },
+ "catania": {
+  "file": "/city-images/catania.webp",
+  "artist": "Dariolp83",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Catania_vista_dall%27alto_e_il_vulcano_Etna_a_sovrastarla.jpg"
+ },
+ "verona": {
+  "file": "/city-images/verona.webp",
+  "artist": "Hoppend",
+  "license": "CC0",
+  "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Verona_cityscape_sunny.jpg"
+ },
+ "hamburg": {
+  "file": "/city-images/hamburg.webp",
+  "artist": "Dietmar Rabich",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Hamburg%2C_Landungsbr%C3%BCcken_--_2016_--_3131-7.jpg"
+ },
+ "munich": {
+  "file": "/city-images/munich.webp",
+  "artist": "Thomas Wolf, www.foto-tw.de",
+  "license": "CC BY-SA 3.0 de",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Stadtbild_M%C3%BCnchen.jpg"
+ },
+ "leipzig": {
+  "file": "/city-images/leipzig.webp",
+  "artist": "Derbrauni",
+  "license": "CC BY 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Blick_vom_City-Hochhaus_Leipzig_05.jpg"
+ },
+ "rotterdam": {
+  "file": "/city-images/rotterdam.webp",
+  "artist": "Rob Oo",
+  "license": "CC BY 2.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:A_view_of_Rotterdam%2C_taken_from_the_roof_of_the_Maassilo%2C_Rotterdam%2C_The_Netherlands.jpg"
+ },
+ "geneva": {
+  "file": "/city-images/geneva.webp",
+  "artist": "fr:Utilisateur:Stéphane_Pecorini",
+  "license": "CC BY-SA 2.0 fr",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Geneve_2005_001_Ork.ch.jpg"
+ },
+ "salzburg": {
+  "file": "/city-images/salzburg.webp",
+  "artist": "Jorge Franganillo",
+  "license": "CC BY 2.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Salzburg_%2848489551981%29.jpg"
+ },
+ "brno": {
+  "file": "/city-images/brno.webp",
+  "artist": "Brno-Freiheitsplatz2.jpg: SchiDD\nBrno_Katedrála_sv._Petra_a_Pavla_(St.Peter_and_St.Paul_Cathedral).jpg:  JRodSilva\nBrno-Lužánky_XIV.jpg: Millenium187\nBrno,_Vila_Tugendhat.jpg: Petr1987\nIgnis_Brunensis_Grandfinale_2007.jpg: Jiří Nedorost\nBrno,_BVV,_výhled_z_výškové_budovy_(11.29.22).jpg: Martin Strachoň\nHrad_Špilberk,_Brno_04.jpg: Doronenko",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Brno_Montage_IV.png"
+ },
+ "wroclaw": {
+  "file": "/city-images/wroclaw.webp",
+  "artist": "Jar.ciurus",
+  "license": "CC BY-SA 3.0 pl",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Most_Grunwaldzki.jpg"
+ },
+ "cluj-napoca": {
+  "file": "/city-images/cluj-napoca.webp",
+  "artist": "Robert Puțeanu",
+  "license": "CC BY-SA 3.0 ro",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Biserica_romano-catolic%C4%83_%22Sf%C3%A2ntul_Mihail%22.jpg"
+ },
+ "thessaloniki": {
+  "file": "/city-images/thessaloniki.webp",
+  "artist": "Berthold Werner",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Tessaloniki_BW_2017-10-05_18-22-47.jpg"
+ },
+ "rijeka": {
+  "file": "/city-images/rijeka.webp",
+  "artist": "Antonio199cro",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Rijeka_Riva_promenade_aerial.jpg"
+ },
+ "novi-sad": {
+  "file": "/city-images/novi-sad.webp",
+  "artist": "Bybbisch94, Christian Gebhardt",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:20230429.Ansichten_in_Novi_Sad.-039.jpg"
+ },
+ "debrecen": {
+  "file": "/city-images/debrecen.webp",
+  "artist": "Björn Láczay",
+  "license": "CC BY 2.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Universit%C3%A4t_Debrecen_Nr._3.jpg"
+ },
+ "gothenburg": {
+  "file": "/city-images/gothenburg.webp",
+  "artist": "Bengt Nyman from Vaxholm, Sweden",
+  "license": "CC BY 2.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:G%C3%B6teborg_2503_stitch_%2828573994096%29.jpg"
+ },
+ "bergen": {
+  "file": "/city-images/bergen.webp",
+  "artist": "TomasEE",
+  "license": "CC BY 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/3.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Bergen_panorama_at_night_-_panoramio_%281%29.jpg"
+ },
+ "tromso": {
+  "file": "/city-images/tromso.webp",
+  "artist": "The Municipality of Tromsø from Tromsø, Norway",
+  "license": "CC BY 2.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Troms%C3%B8_sentrum_%285835702754%29.jpg"
+ },
+ "aarhus": {
+  "file": "/city-images/aarhus.webp",
+  "artist": "SmartDrones Aarhus",
+  "license": "CC0",
+  "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Drone_photo_of_Dokk1_in_Aarhus%2C_Denmark.jpg"
+ },
+ "tampere": {
+  "file": "/city-images/tampere.webp",
+  "artist": "Fenn-O-maniC",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Tampere.lippu.svg"
+ },
+ "kaunas": {
+  "file": "/city-images/kaunas.webp",
+  "artist": "BigHead",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Kauno_senamiestis_by_Augustas_Didzgalvis.jpg"
+ },
+ "tartu": {
+  "file": "/city-images/tartu.webp",
+  "artist": "Boreaallane",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Tartu_%282019%29.jpg"
+ },
+ "sliema": {
+  "file": "/city-images/sliema.webp",
+  "artist": "Xwejnusgozo (montage)FrankBothe, Ies and Maris1891 (original photos)",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Sliema_montage.png"
+ },
+ "batumi": {
+  "file": "/city-images/batumi.webp",
+  "artist": "Commander, U.S. Naval Forces Europe-Africa/U.S. 6th Fleet",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:USS_Oak_Hill%2C_26th_MEU_Marines_Visit_Batumi%2C_Georgia_%2840817303032%29.jpg"
+ },
+ "antalya": {
+  "file": "/city-images/antalya.webp",
+  "artist": "Esginmurat",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Falezlerden_Antalya_Konyaalt%C4%B1_Plaj%C4%B1na_do%C4%9Fru_bir_g%C3%B6r%C3%BCn%C3%BCm.jpg"
+ },
+ "izmir": {
+  "file": "/city-images/izmir.webp",
+  "artist": "Michael ksk",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Cumhuriyet_Square.jpg"
+ },
+ "almaty": {
+  "file": "/city-images/almaty.webp",
+  "artist": "Dauren Nabijan",
+  "license": "CC0",
+  "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Almaty_K%C3%B6k_T%C3%B6be.jpg"
+ },
+ "yerevan": {
+  "file": "/city-images/yerevan.webp",
+  "artist": "Սէրուժ Ուրիշեան (Serouj Ourishian)",
+  "license": "CC BY 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Mount_Ararat_and_the_Yerevan_skyline_%28June_2018%29.jpg"
+ },
+ "amman": {
+  "file": "/city-images/amman.webp",
+  "artist": "Ramzik1999",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:New_Abdali_2024.png"
+ },
+ "bali": {
+  "file": "/city-images/bali.webp",
+  "artist": "Schweigeblick",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Beach_Club_Canggu.jpg"
+ },
+ "bangalore": {
+  "file": "/city-images/bangalore.webp",
+  "artist": "Gpkp",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:View_from_Visvesvaraya_Industrial_and_Technological_Museum_%282025%29_02.jpg"
+ },
+ "penang": {
+  "file": "/city-images/penang.webp",
+  "artist": "Original designer of the flag is unknown.",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Flag_of_Penang_%28Malaysia%29.svg"
+ },
+ "chengdu": {
+  "file": "/city-images/chengdu.webp",
+  "artist": "FISU",
+  "license": "CC BY 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/3.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:%E9%9B%AA%E5%B1%B1%E4%B8%8B%E7%9A%84%E6%88%90%E9%83%BD%E5%B8%82%E5%A4%A9%E9%99%85%E7%BA%BF_Chengdu_skyline_with_snow_capped_mountains.jpg"
+ },
+ "dali": {
+  "file": "/city-images/dali.webp",
+  "artist": "Andrew and Annemarie",
+  "license": "CC BY-SA 2.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Chongsheng_Temple_%2811050634113%29.jpg"
+ },
+ "tokyo": {
+  "file": "/city-images/tokyo.webp",
+  "artist": "Morio",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Skyscrapers_of_Shinjuku_2009_January.jpg"
+ },
+ "fukuoka": {
+  "file": "/city-images/fukuoka.webp",
+  "artist": "Nryate",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Fukuoka_Skyline_of_Seaside_Momochi.jpg"
+ },
+ "goa": {
+  "file": "/city-images/goa.webp",
+  "artist": "Макс Вальтер",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Panaji_City.JPG"
+ },
+ "hanoi": {
+  "file": "/city-images/hanoi.webp",
+  "artist": "Quangnlnhe182394",
+  "license": "CC0",
+  "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Hanoi_skyline_with_Ba_Vi_Mountain.jpg"
+ },
+ "ho-chi-minh": {
+  "file": "/city-images/ho-chi-minh.webp",
+  "artist": "Steffen Schmitz (more photos)",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Ho_Chi_Minh_City%2C_City_Hall%2C_2020-01_CN-03.jpg"
+ },
+ "kuala-lumpur": {
+  "file": "/city-images/kuala-lumpur.webp",
+  "artist": "Renek78",
+  "license": "CC0",
+  "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Bukit_Bintang_junction_in_2024_2.jpg"
+ },
+ "phnom-penh": {
+  "file": "/city-images/phnom-penh.webp",
+  "artist": "Looppty",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Phnom_Penh_skyline_from_TK_district_Dec_2024.jpg"
+ },
+ "kyoto": {
+  "file": "/city-images/kyoto.webp",
+  "artist": "Nina R from Africa",
+  "license": "CC BY 2.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Kyoto%2C_Japan_%2849667780482%29.jpg"
+ },
+ "colombo": {
+  "file": "/city-images/colombo.webp",
+  "artist": "Gihanud2001",
+  "license": "CC0",
+  "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Colombo_city_skyline_at_night.png"
+ },
+ "bangkok": {
+  "file": "/city-images/bangkok.webp",
+  "artist": "Ninara from Helsinki, Finland",
+  "license": "CC BY 2.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:4Y1A1159_Bangkok_%2833536795515%29.jpg"
+ },
+ "phuket": {
+  "file": "/city-images/phuket.webp",
+  "artist": "Myinternationalwikipedia",
+  "license": "CC0",
+  "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Phuket_City.jpg"
+ },
+ "chiang-mai": {
+  "file": "/city-images/chiang-mai.webp",
+  "artist": "Nawit science",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:0020-%E0%B8%A7%E0%B8%B1%E0%B8%94%E0%B8%9E%E0%B8%A3%E0%B8%B0%E0%B8%AA%E0%B8%B4%E0%B8%87%E0%B8%AB%E0%B9%8C%E0%B8%A7%E0%B8%A3%E0%B8%A1%E0%B8%AB%E0%B8%B2%E0%B8%A7%E0%B8%B4%E0%B8%AB%E0%B8%B2%E0%B8%A3.jpg"
+ },
+ "shanghai": {
+  "file": "/city-images/shanghai.webp",
+  "artist": "xiquinhosilva",
+  "license": "CC BY 2.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Huangpu_Park_20124-Shanghai_%2832208802494%29.jpg"
+ },
+ "seoul": {
+  "file": "/city-images/seoul.webp",
+  "artist": "Eunmi Park",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:%EC%A4%91%ED%99%94%EC%A0%84%EC%9D%98_%EB%82%AE.jpg"
+ },
+ "cebu": {
+  "file": "/city-images/cebu.webp",
+  "artist": "Tyrll Adolf Itong",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Osme%C3%B1a_Peak%2C_Cebu%2C_Philippines.jpg"
+ },
+ "taipei": {
+  "file": "/city-images/taipei.webp",
+  "artist": "毛貓大少爺",
+  "license": "CC BY-SA 2.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Taipei_Skyline_2022.06.29.jpg"
+ },
+ "tel-aviv": {
+  "file": "/city-images/tel-aviv.webp",
+  "artist": "Ynhockey",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Sarona_CBD_01_%28cropped%29.jpg"
+ },
+ "da-nang": {
+  "file": "/city-images/da-nang.webp",
+  "artist": "Somerset999",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Dragon_Bridge%2C_Da_Nang_during_day_-_20230819_%28cropped%29.jpg"
+ },
+ "hong-kong": {
+  "file": "/city-images/hong-kong.webp",
+  "artist": "Designed by Tao Ho\nSVG code of 24 November 2005 version copied from Open Clip Art\nSVG code of 20 August 2011 version by Alkari\nSVG code of 6 September 2021 version by Mike Rohsopht",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Flag_of_Hong_Kong.svg"
+ },
+ "singapore": {
+  "file": "/city-images/singapore.webp",
+  "artist": "Original: Government of Singapore Vector:  Zscout370",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Flag_of_Singapore.svg"
+ },
+ "pattaya": {
+  "file": "/city-images/pattaya.webp",
+  "artist": "Sergey S. Dukachev",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Pattaya_beach_from_view_point.jpg"
+ },
+ "koh-samui": {
+  "file": "/city-images/koh-samui.webp",
+  "artist": "Manfred Werner",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Koh_Samui_Lipa_Noi2.jpg"
+ },
+ "krabi": {
+  "file": "/city-images/krabi.webp",
+  "artist": "kallerna",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Wat_Tham_Sua_18.jpg"
+ },
+ "chiang-rai": {
+  "file": "/city-images/chiang-rai.webp",
+  "artist": "Chainwit.",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:%E0%B8%AB%E0%B8%AD%E0%B8%99%E0%B8%B2%E0%B8%AC%E0%B8%B4%E0%B8%81%E0%B8%B2%E0%B9%80%E0%B8%8A%E0%B8%B5%E0%B8%A2%E0%B8%87%E0%B8%A3%E0%B8%B2%E0%B8%A2_Chiang_Rai_Clock_Tower.jpg"
+ },
+ "da-lat": {
+  "file": "/city-images/da-lat.webp",
+  "artist": "Diane Selwyn",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Xuan_Huong_Lake_11.jpg"
+ },
+ "nha-trang": {
+  "file": "/city-images/nha-trang.webp",
+  "artist": "Kaz Ish",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Nha_Trang_%2C_Vietnam_-_panoramio_%2835%29.jpg"
+ },
+ "jakarta": {
+  "file": "/city-images/jakarta.webp",
+  "artist": "Medelam",
+  "license": "CC BY 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Bundaran_Hotel_Indonesia_%282025%29_%28cropped%29.jpg"
+ },
+ "yogyakarta": {
+  "file": "/city-images/yogyakarta.webp",
+  "artist": "Chainwit.",
+  "license": "CC BY 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Jogja_-_Tugu_Monument_%282025%29_-_img_06.jpg"
+ },
+ "johor-bahru": {
+  "file": "/city-images/johor-bahru.webp",
+  "artist": "R&amp;F Malaysia",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:%E5%AF%8C%E5%8A%9B%E5%85%AC%E4%B8%BB%E6%B9%BE_R%26F_Princess_Cove_%28cropped%29.jpg"
+ },
+ "kota-kinabalu": {
+  "file": "/city-images/kota-kinabalu.webp",
+  "artist": "FILMR Production",
+  "license": "CC BY 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/3.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Panoramic_view_of_Kota_Kinabalu_City.jpg"
+ },
+ "manila": {
+  "file": "/city-images/manila.webp",
+  "artist": "Bahnfrend",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Cityscape_of_Manila%2C_2025_%2801%29.jpg"
+ },
+ "davao": {
+  "file": "/city-images/davao.webp",
+  "artist": "Patrickroque01",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Davao_Poblacion_District_skyline_Bajada_%28Davao_City%3B_08-22-2023%29.jpg"
+ },
+ "osaka": {
+  "file": "/city-images/osaka.webp",
+  "artist": "663highland",
+  "license": "CC BY 2.5",
+  "licenseUrl": "https://creativecommons.org/licenses/by/2.5/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Osaka_Castle_03bs3200.jpg"
+ },
+ "sapporo": {
+  "file": "/city-images/sapporo.webp",
+  "artist": "Nryate",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:SapporoCity_Skylines2020.jpg"
+ },
+ "jeju": {
+  "file": "/city-images/jeju.webp",
+  "artist": "J. Patrick Fischer",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Jeju_-_Hallasan.JPG"
+ },
+ "kaohsiung": {
+  "file": "/city-images/kaohsiung.webp",
+  "artist": "臺灣港務股份有限公司高雄港務分公司",
+  "license": "Attribution",
+  "licenseUrl": "",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Cityscape_of_Kaohsiung%2C_Taiwan_202303.jpg"
+ },
+ "kunming": {
+  "file": "/city-images/kunming.webp",
+  "artist": "瑞丽江的河水",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:%E4%BA%94%E5%8D%8E%E5%8C%BA%E5%A4%A9%E9%99%85%E7%BA%BF_-_%E8%88%AA%E6%8B%8D_-_2025-05-16_04.jpg"
+ },
+ "sanya": {
+  "file": "/city-images/sanya.webp",
+  "artist": "Anna Frodesiak",
+  "license": "CC0",
+  "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:SuperStar_Aquarius_at_Phoenix_Island%2C_Sanya_Bay_-_01.jpg"
+ },
+ "xian": {
+  "file": "/city-images/xian.webp",
+  "artist": "xiquinhosilva",
+  "license": "CC BY 2.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:City_wall_of_Xi%27an_51550-Xian_%2827959363326%29.jpg"
+ },
+ "hangzhou": {
+  "file": "/city-images/hangzhou.webp",
+  "artist": "EditQ",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:%E6%9D%AD%E5%B7%9E%E9%92%B1%E6%B1%9F%E6%96%B0%E5%9F%8E_4_%28cropped%29.jpg"
+ },
+ "delhi": {
+  "file": "/city-images/delhi.webp",
+  "artist": "Marcin Białek",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Jama_Masjid_2011.jpg"
+ },
+ "mumbai": {
+  "file": "/city-images/mumbai.webp",
+  "artist": "Rutiknatekar",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Mumbai_Bandra-Worli_Sea_Link.jpg"
+ },
+ "pune": {
+  "file": "/city-images/pune.webp",
+  "artist": "Ujjawal.Gayakwad",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Pune_West_skyline_-_March_2017.jpg"
+ },
+ "jaipur": {
+  "file": "/city-images/jaipur.webp",
+  "artist": "Chainwit.",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:East_facade_Hawa_Mahal_Jaipur_from_ground_level_%28July_2022%29_-_img_01.jpg"
+ },
+ "abu-dhabi": {
+  "file": "/city-images/abu-dhabi.webp",
+  "artist": "Wadiia",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Abu_dhabi_skylines_2014.jpg"
+ },
+ "jerusalem": {
+  "file": "/city-images/jerusalem.webp",
+  "artist": "Godot13",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Temple_Mount_%28Aerial_view%2C_2007%29_07.jpg"
+ },
+ "siem-reap": {
+  "file": "/city-images/siem-reap.webp",
+  "artist": "Willuconquer",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Front_porch_of_Wat_Damnak.jpg"
+ },
+ "accra": {
+  "file": "/city-images/accra.webp",
+  "artist": "Amoat7",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Acca.jpg"
+ },
+ "dakar": {
+  "file": "/city-images/dakar.webp",
+  "artist": "mostroneddo",
+  "license": "CC BY 2.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Dakar-Ind%C3%A9pendance.jpg"
+ },
+ "kigali": {
+  "file": "/city-images/kigali.webp",
+  "artist": "Emmanuelkwizera",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:High_Angle_View_Of_Kigali_City_Street_on_November_29%2C_2018._Emmanuel_Kwizera.jpg"
+ },
+ "cairo": {
+  "file": "/city-images/cairo.webp",
+  "artist": "Jorge Láscar from Melbourne, Australia",
+  "license": "CC BY 2.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Cairo_Opera_House%2C_Al_Hurriyah_Park_and_the_Nile_river_%2814797782354%29.jpg"
+ },
+ "cape-town": {
+  "file": "/city-images/cape-town.webp",
+  "artist": "Der Berzerker from Washington, DC, USA",
+  "license": "CC BY-SA 2.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Camps_bay_%2853460319478%29_%28cropped%29.jpg"
+ },
+ "port-louis": {
+  "file": "/city-images/port-louis.webp",
+  "artist": "Thierry",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Port_Louis_Skyline.JPG"
+ },
+ "marrakech": {
+  "file": "/city-images/marrakech.webp",
+  "artist": "Acp",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Pavillon_Menarag%C3%A4rten.jpg"
+ },
+ "nairobi": {
+  "file": "/city-images/nairobi.webp",
+  "artist": "Daniel Case",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Nairobi_skyline_from_Gem_Hotel.jpg"
+ },
+ "addis-ababa": {
+  "file": "/city-images/addis-ababa.webp",
+  "artist": "Abshewaga",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Addis_in_night.jpg"
+ },
+ "johannesburg": {
+  "file": "/city-images/johannesburg.webp",
+  "artist": "Mark Hillary",
+  "license": "CC BY 2.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Johannesburg_skyline_2017.jpg"
+ },
+ "alexandria": {
+  "file": "/city-images/alexandria.webp",
+  "artist": "Michael Botros",
+  "license": "CC BY 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Alexandria_skyline.jpg"
+ },
+ "hurghada": {
+  "file": "/city-images/hurghada.webp",
+  "artist": "Marc Ryckaert",
+  "license": "CC BY 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/3.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Hurghada_Hotels_R03.jpg"
+ },
+ "casablanca": {
+  "file": "/city-images/casablanca.webp",
+  "artist": "Chah.salah",
+  "license": "CC0",
+  "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Casa_finance_city_6_%28cropped%29.jpg"
+ },
+ "tangier": {
+  "file": "/city-images/tangier.webp",
+  "artist": "Ifni95",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Tanger_cor.jpg"
+ },
+ "pretoria": {
+  "file": "/city-images/pretoria.webp",
+  "artist": "Davinci77",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Uniegebou.jpg"
+ },
+ "durban": {
+  "file": "/city-images/durban.webp",
+  "artist": "Dennis Sylvester Hurd",
+  "license": "CC BY 2.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Durban_from_the_Balcony_%28Dennis_Sylvester_Hurd%29_1.jpg"
+ },
+ "mombasa": {
+  "file": "/city-images/mombasa.webp",
+  "artist": "Leo Hempstone",
+  "license": "CC0",
+  "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Mombasa_Island.jpg"
+ },
+ "kumasi": {
+  "file": "/city-images/kumasi.webp",
+  "artist": "Maven Egote",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Kronum_Kumasi_2018-11-08_%28130246%29.jpg"
+ },
+ "austin": {
+  "file": "/city-images/austin.webp",
+  "artist": "Quintin Soloviev",
+  "license": "CC BY 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Skyline_of_Austin%2C_Texas_%28cropped%29.jpg"
+ },
+ "toronto": {
+  "file": "/city-images/toronto.webp",
+  "artist": "Dillan Payne",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Toronto_Skyline_from_Snake_Island%2C_September_11_2026_%2801%29.jpg"
+ },
+ "cancun": {
+  "file": "/city-images/cancun.webp",
+  "artist": "dronepicr",
+  "license": "CC BY 2.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Cancun_Strand_Luftbild_%2822143397586%29.jpg"
+ },
+ "los-angeles": {
+  "file": "/city-images/los-angeles.webp",
+  "artist": "Gnaphron",
+  "license": "CC BY-SA 2.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Hollywood_sign_%288485145044%29.jpg"
+ },
+ "miami": {
+  "file": "/city-images/miami.webp",
+  "artist": "Averette",
+  "license": "CC BY 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/3.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Villa_Vizcaya_20110228.jpg"
+ },
+ "merida": {
+  "file": "/city-images/merida.webp",
+  "artist": "the above mentioned",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Collage_Merida_Yucatan.jpg"
+ },
+ "mexico-city": {
+  "file": "/city-images/mexico-city.webp",
+  "artist": "Gobierno CDMX",
+  "license": "CC0",
+  "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Sobrevuelos_CDMX_HJ2A4913_%2825514321687%29_%28cropped%29.jpg"
+ },
+ "playa-del-carmen": {
+  "file": "/city-images/playa-del-carmen.webp",
+  "artist": "",
+  "license": "CC BY 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:PlayadelCarmen3.png"
+ },
+ "san-juan": {
+  "file": "/city-images/san-juan.webp",
+  "artist": "Farragutful",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:2013_Old_San_Juan_01.JPG"
+ },
+ "oaxaca": {
+  "file": "/city-images/oaxaca.webp",
+  "artist": "Prsjl",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Oaxaqa_%2841%29.jpg"
+ },
+ "vancouver": {
+  "file": "/city-images/vancouver.webp",
+  "artist": "Quintin Soloviev",
+  "license": "CC BY 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Skyline_of_Vancouver%2C_Canada.jpg"
+ },
+ "guadalajara": {
+  "file": "/city-images/guadalajara.webp",
+  "artist": "Isacdaavid",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Panor%C3%A1mica_Guadalajara_desde_edificio_Bansi_hacia_norte_%28cropped%29.jpg"
+ },
+ "monterrey": {
+  "file": "/city-images/monterrey.webp",
+  "artist": "Rick González",
+  "license": "CC BY 2.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:View_of_Monterrey_%282015%29.jpg"
+ },
+ "san-miguel": {
+  "file": "/city-images/san-miguel.webp",
+  "artist": "Microstar",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:San_Miguel_de_Allende_Collage.jpg"
+ },
+ "san-diego": {
+  "file": "/city-images/san-diego.webp",
+  "artist": "Dirk Hansen",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:La_Jolla_Shores_view_%28cropped%29.jpg"
+ },
+ "las-vegas": {
+  "file": "/city-images/las-vegas.webp",
+  "artist": "Mike McBey",
+  "license": "CC BY 2.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Las_Vegas_from_above_%2840064746644%29.jpg"
+ },
+ "portland": {
+  "file": "/city-images/portland.webp",
+  "artist": "Spicypepper999",
+  "license": "CC0",
+  "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Portland_Oregon_Aerial%2C_June_2025.jpg"
+ },
+ "chicago": {
+  "file": "/city-images/chicago.webp",
+  "artist": "File:Chicago River ferry.jpg: John Picken\nderivative work: Georgfotoart",
+  "license": "CC BY 2.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Chicago_River_ferry_b.jpg"
+ },
+ "phoenix": {
+  "file": "/city-images/phoenix.webp",
+  "artist": "DPPed",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Downtown_Phoenix_Aerial_Looking_Northeast.jpg"
+ },
+ "montreal": {
+  "file": "/city-images/montreal.webp",
+  "artist": "Quintin Soloviev",
+  "license": "CC BY 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Montreal%2C_Quebec_skyline.jpg"
+ },
+ "calgary": {
+  "file": "/city-images/calgary.webp",
+  "artist": "AceYYC",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Downtown_Calgary_2020-4.jpg"
+ },
+ "ottawa": {
+  "file": "/city-images/ottawa.webp",
+  "artist": "No machine-readable author provided. Arctic.gnome assumed (based on copyright claims).",
+  "license": "CC BY 2.5",
+  "licenseUrl": "https://creativecommons.org/licenses/by/2.5/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Parliament-Ottawa.jpg"
+ },
+ "bogota": {
+  "file": "/city-images/bogota.webp",
+  "artist": "Pedro Szekely from Los Angeles, USA",
+  "license": "CC BY-SA 2.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Bogota%2C_Colombia_%2836668708290%29.jpg"
+ },
+ "buenos-aires": {
+  "file": "/city-images/buenos-aires.webp",
+  "artist": "Deensel",
+  "license": "CC BY 2.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Puerto_Madero%2C_Buenos_Aires_%2840689219792%29_%28cropped%29.jpg"
+ },
+ "floripa": {
+  "file": "/city-images/floripa.webp",
+  "artist": "oscar fava",
+  "license": "CC BY 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/3.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Morro_da_Cruz%2C_Florian%C3%B3polis_-_SC%2C_Brazil_-_panoramio_%28cropped%29.jpg"
+ },
+ "cuzco": {
+  "file": "/city-images/cuzco.webp",
+  "artist": "tomscoffin",
+  "license": "CC BY 2.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Vista_Calle_Suecia.jpg"
+ },
+ "rio": {
+  "file": "/city-images/rio.webp",
+  "artist": "Rafael Rabello de Barros",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Cidade_Maravilhosa.jpg"
+ },
+ "lima": {
+  "file": "/city-images/lima.webp",
+  "artist": "David Felipe Ruiz Hoyos",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Bas%C3%ADlica_Catedral_Metropolitana_de_Lima_%28cropped%29.jpg"
+ },
+ "medellin": {
+  "file": "/city-images/medellin.webp",
+  "artist": "Daniel-1-1",
+  "license": "CC BY 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/3.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:El_Poblado_Medell%C3%ADn.jpg"
+ },
+ "montevideo": {
+  "file": "/city-images/montevideo.webp",
+  "artist": "Eduardo Ruggieri",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:PALACIO_LEGISLATIVO_01.JPG"
+ },
+ "santiago": {
+  "file": "/city-images/santiago.webp",
+  "artist": "Miguel hernandez",
+  "license": "CC BY-SA 2.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Palacio_de_La_Moneda_-_miguelreflex.jpg"
+ },
+ "sao-paulo": {
+  "file": "/city-images/sao-paulo.webp",
+  "artist": "Agent010",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Marginal_Pinheiros_e_Jockey_Club.jpg"
+ },
+ "belo-horizonte": {
+  "file": "/city-images/belo-horizonte.webp",
+  "artist": "Marina Campos Vinhal",
+  "license": "CC BY 2.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Praca_do_Papa%2C_Belo_Horizonte_%28cropped%292.jpg"
+ },
+ "curitiba": {
+  "file": "/city-images/curitiba.webp",
+  "artist": "Vitor Hirota",
+  "license": "CC BY-SA 2.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Tangu%C3%A1_Curitiba.jpg"
+ },
+ "cordoba-ar": {
+  "file": "/city-images/cordoba-ar.webp",
+  "artist": "Bob Betzen",
+  "license": "CC BY 2.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Cathedral_Main_Square.jpg"
+ },
+ "mendoza": {
+  "file": "/city-images/mendoza.webp",
+  "artist": "CavernSaga",
+  "license": "CC BY 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/3.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Aerial_view_of_Mendoza.png"
+ },
+ "valparaiso": {
+  "file": "/city-images/valparaiso.webp",
+  "artist": "Julia Sumangil",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Historic_Quarter_of_the_Seaport_City_of_Valpara%C3%ADso_04.jpg"
+ },
+ "cali": {
+  "file": "/city-images/cali.webp",
+  "artist": "Aleko | David Alejandro Rendón ©",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Santiago_de_Cali.jpg"
+ },
+ "bucaramanga": {
+  "file": "/city-images/bucaramanga.webp",
+  "artist": "EEIM",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Bucaramanga_3_Sder_Col_enr_2022.jpg"
+ },
+ "arequipa": {
+  "file": "/city-images/arequipa.webp",
+  "artist": "Hans Brian Brandsberg Berg",
+  "license": "CC BY 2.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Plaza_de_Armas%2C_Arequipa_2006.jpg"
+ },
+ "auckland": {
+  "file": "/city-images/auckland.webp",
+  "artist": "elpinto007",
+  "license": "CC BY-SA 2.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Auckland_skyline_-_May_2024_%282%29.jpg"
+ },
+ "brisbane": {
+  "file": "/city-images/brisbane.webp",
+  "artist": "Chris Olszewski",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Brisbane_CBD_seen_from_Kangaroo_Point%2C_2024%2C_01_%282%29.jpg"
+ },
+ "wellington": {
+  "file": "/city-images/wellington.webp",
+  "artist": "russellstreet",
+  "license": "CC BY-SA 2.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Seddon_Statue_in_Parliament_Grounds.jpg"
+ },
+ "melbourne": {
+  "file": "/city-images/melbourne.webp",
+  "artist": "Melbpal",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Melbourne_skyline_sor.jpg"
+ },
+ "nadi": {
+  "file": "/city-images/nadi.webp",
+  "artist": "Henning Blatt",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Nadi.jpg"
+ },
+ "perth": {
+  "file": "/city-images/perth.webp",
+  "artist": "File:Perth CBD skyline from State War Memorial Lookout, 2023, 04.jpg: Kgbo\nderivative work: Georgfotoart",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Perth_CBD_skyline_from_State_War_Memorial_Lookout%2C_2023%2C_04_b.jpg"
+ },
+ "sydney": {
+  "file": "/city-images/sydney.webp",
+  "artist": "Benh LIEU SONG (Flickr)",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Sydney_Opera_House_and_Harbour_Bridge_Dusk_%282%29_2019-06-21.jpg"
+ },
+ "adelaide": {
+  "file": "/city-images/adelaide.webp",
+  "artist": "File:Adelaide skyline, December 2022.jpg: Ardash Muradian from Australia\nderivative work: Georgfotoart",
+  "license": "CC BY-SA 2.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Adelaide_skyline%2C_December_2022_b.jpg"
+ },
+ "canberra": {
+  "file": "/city-images/canberra.webp",
+  "artist": "The 3B's",
+  "license": "CC BY 2.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Canberra_panorama_from_Mount_Ainslie.jpg"
+ },
+ "gold-coast": {
+  "file": "/city-images/gold-coast.webp",
+  "artist": "Jordan Gellie jordan_gellie",
+  "license": "CC0",
+  "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Gold_Coast_skyline_%28Unsplash%29.jpg"
+ },
+ "hobart": {
+  "file": "/city-images/hobart.webp",
+  "artist": "File:Franklin Wharf 2015.jpg: Michael fromholtz\nderivative work: Georgfotoart",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Franklin_Wharf_2015_b_%28cropped%29.jpg"
+ },
+ "cairns": {
+  "file": "/city-images/cairns.webp",
+  "artist": "Bernard Gagnon",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Cairns_%28Queensland%29_%28cropped%29.jpg"
+ },
+ "christchurch": {
+  "file": "/city-images/christchurch.webp",
+  "artist": "Bernard Spragg. NZ from Christchurch, New Zealand",
+  "license": "CC0",
+  "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:The_%22Brill%22_Tram_178.New_Regent_St_Christchurch._%2811510530335%29.jpg"
+ },
+ "hamilton-nz": {
+  "file": "/city-images/hamilton-nz.webp",
+  "artist": "Johnragla",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Hamilton_montage.jpg"
+ },
+ "dunedin": {
+  "file": "/city-images/dunedin.webp",
+  "artist": "Diego Delso",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Dunedin-Nueva_Zelanda01.JPG"
+ },
+ "queenstown": {
+  "file": "/city-images/queenstown.webp",
+  "artist": "Bernard Spragg. NZ from Christchurch, New Zealand",
+  "license": "CC0",
+  "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Queenstown_1_%288168013172%29.jpg"
+ },
+ "suva": {
+  "file": "/city-images/suva.webp",
+  "artist": "Maksym Kozlenko",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "source": "Wikimedia Commons",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Suva%2C_Fiji_77.jpg"
+ }
+}

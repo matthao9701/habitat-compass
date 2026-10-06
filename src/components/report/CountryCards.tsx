@@ -2,6 +2,7 @@ import { getCountry } from '../../data/countries';
 import type { CityMatch } from '../../lib/engine';
 import { useI18n, getCurrentLang } from '../../i18n';
 import { countryName, formatDate } from '../../lib/format';
+import { currencyLabel, languageLabel, visaOverviewLabel } from '../../i18n/countryGlossary';
 import { PassportVisaBlock, LongStayBlock } from './PassportVisaBlock';
 
 /**
@@ -60,8 +61,8 @@ function CountryCard({ match }: { match: CityMatch }) {
 
       <dl className="mt-5 grid grid-cols-2 gap-x-6 gap-y-2.5 text-[12.5px] sm:grid-cols-3">
         <Stat label={t('cty.capital')} value={country.capital ?? '—'} />
-        <Stat label={t('cty.languages')} value={country.languages?.join('、') ?? '—'} />
-        <Stat label={t('cty.currency')} value={country.currency ?? '—'} />
+        <Stat label={t('cty.languages')} value={country.languages?.map((l) => languageLabel(l)).join(' / ') ?? '—'} />
+        <Stat label={t('cty.currency')} value={currencyLabel(country.currency)} />
         <Stat label={t('cty.population')} value={country.population != null ? formatPop(country.population) : '—'} />
         <Stat
           label={t('cty.gdp')}
@@ -104,7 +105,7 @@ function CountryCard({ match }: { match: CityMatch }) {
           <p className="font-mono text-[9.5px] uppercase tracking-eyebrow text-ink-soft">
             {t('cty.visaOverview')}
           </p>
-          <p className="mt-1.5 text-[12.5px] leading-[1.7]">{country.visaOverview}</p>
+          <p className="mt-1.5 text-[12.5px] leading-[1.7]">{visaOverviewLabel(country.visaOverview)}</p>
         </div>
       ) : null}
 

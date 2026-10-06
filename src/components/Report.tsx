@@ -3,13 +3,8 @@ import { motion } from 'framer-motion';
 import CompassMark from './CompassMark';
 import RadarChart from './RadarChart';
 import { mbtiProfiles } from '../data/mbtiProfiles';
-import { interestLabelById } from '../data/interests';
 import type { AssessmentResult, AxisName, CityMatch } from '../lib/engine';
-import {
-  formatCost,
-  CLIMATE_LABEL,
-  INTERNET_LABEL,
-} from '../lib/engine';
+import { formatCost } from '../lib/engine';
 import { cityPros, cityCons, settlementBadge, type BadgeLevel } from '../lib/analysis';
 import WeightDonut from './report/WeightDonut';
 import BreakdownSection from './report/BreakdownSection';
@@ -22,7 +17,8 @@ import CountryCards from './report/CountryCards';
 import VerificationChecklist from './report/VerificationChecklist';
 import { MBTI_SOURCE } from '../data/questions';
 import { useI18n, translate, getCurrentLang } from '../i18n';
-import { cityName } from '../lib/format';
+import { cityName, cityCountryName, profileTagLabel, tagLabel, climateSummary } from '../lib/format';
+import { visaLabelText } from '../i18n/countryGlossary';
 
 interface ReportProps {
   result: AssessmentResult;
@@ -127,13 +123,13 @@ export default function Report({ result, onRestart, isDemo = false, onStartQuiz 
                 {result.typeCode}
               </motion.h1>
               <p className="mt-4 font-heading text-xl font-bold text-paper/85">
-                {profile?.name ?? ''} · {profile?.motto ?? ''}
+                {profile ? t(`type.${result.typeCode}.name`) : ''} · {profile ? t(`type.${result.typeCode}.motto`) : ''}
               </p>
             </div>
             <div className="max-w-sm">
-              <p className="text-[14px] leading-[1.9] text-paper/75">{profile?.desc ?? ''}</p>
+              <p className="text-[14px] leading-[1.9] text-paper/75">{profile ? t(`type.${result.typeCode}.desc`) : ''}</p>
               <p className="mt-4 border-l-2 border-clay pl-4 text-[15px] font-light leading-relaxed text-paper/85">
-                {profile?.nomadStyle ?? ''}
+                {profile ? t(`type.${result.typeCode}.style`) : ''}
               </p>
             </div>
           </div>
@@ -152,7 +148,7 @@ export default function Report({ result, onRestart, isDemo = false, onStartQuiz 
                     : 'border-paper/25 text-paper/75'
                 }`}
               >
-                {tag}
+                {profileTagLabel(tag)}
               </motion.span>
             ))}
           </div>
@@ -360,7 +356,7 @@ function CityCard({ match, rank }: CityCardProps) {
   const { t } = useI18n();
   const { city } = match;
   const cityInterests = city.tags
-    .map((t) => interestLabelById.get(t) ?? t)
+    .map((g) => tagLabel(g))
     .slice(0, 5);
   const badge = settlementBadge(match.match);
   const pros = cityPros(city);
@@ -407,7 +403,7 @@ function CityCard({ match, rank }: CityCardProps) {
             {cityName(city)}
           </h3>
           <p className="mt-1 font-mono text-[10.5px] uppercase tracking-wide text-ink-soft">
-            {city.nameEn} · {city.countryZh}
+            {city.nameEn} · {cityCountryName(city)}
           </p>
 
           <dl className="mt-6 space-y-2.5 text-[12.5px]">
@@ -421,7 +417,7 @@ function CityCard({ match, rank }: CityCardProps) {
               label={t('cmp.data.internet')}
               value={
                 city.internetMbps != null && city.internet != null
-                  ? `${city.internetMbps} Mbps · ${INTERNET_LABEL[city.internet]}`
+                  ? `${city.internetMbps} Mbps · ${t(`internet.band.${city.internet}`)}`
                   : city.internetMbps != null
                     ? `${city.internetMbps} Mbps`
                     : '—'
@@ -431,9 +427,9 @@ function CityCard({ match, rank }: CityCardProps) {
               label={t('cmp.data.climate')}
               value={
                 city.climate != null && city.tempC != null
-                  ? `${CLIMATE_LABEL[city.climate]} · ${t('rep.climate.avg', { temp: city.tempC })}`
+                  ? `${t(`climate.type.${city.climate}`)} · ${t('rep.climate.avg', { temp: city.tempC })}`
                   : city.climateDetail != null
-                    ? t('rep.climate.avgDetail', { temp: city.climateDetail.avgTempC, summary: city.climateDetail.summary })
+                    ? t('rep.climate.avgDetail', { temp: city.climateDetail.avgTempC, summary: climateSummary(city.climateDetail) ?? '' })
                     : '—'
               }
             />
@@ -467,7 +463,7 @@ function CityCard({ match, rank }: CityCardProps) {
             <p className="font-mono text-[9.5px] uppercase tracking-eyebrow text-ink-soft">
               visa snapshot
             </p>
-            <p className="mt-1.5 text-[12.5px] leading-[1.7]">{city.visaLabel}</p>
+            <p className="mt-1.5 text-[12.5px] leading-[1.7]">{visaLabelText(city.visaLabel)}</p>
           </div>
 
           <div className="mt-4 flex flex-wrap gap-1.5">
@@ -648,10 +644,14 @@ function buildSummaryText(result: AssessmentResult): string {
   ).join(' · ');
   const lines: string[] = [
     t('report.copy.header'),
-    t('report.copy.persona', { code: result.typeCode, name: profile?.name ?? '', motto: profile?.motto ?? '' }),
+    t('report.copy.persona', {
+      code: result.typeCode,
+      name: profile ? t(`type.${result.typeCode}.name`) : '',
+      motto: profile ? t(`type.${result.typeCode}.motto`) : '',
+    }),
     t('report.copy.axis', { axis: axisText }),
-    t('report.copy.style', { style: profile?.nomadStyle ?? '' }),
-    t('report.copy.tags', { tags: result.profileTags.join(' / ') }),
+    t('report.copy.style', { style: profile ? t(`type.${result.typeCode}.style`) : '' }),
+    t('report.copy.tags', { tags: result.profileTags.map((g) => profileTagLabel(g)).join(' / ') }),
     '',
     t('report.copy.top5'),
   ];
@@ -660,7 +660,7 @@ function buildSummaryText(result: AssessmentResult): string {
       t('report.copy.city', {
         i: i + 1,
         name: cityName(m.city),
-        country: m.city.countryZh,
+        country: cityCountryName(m.city),
         match: m.match,
         cost: m.city.monthlyCostUSD != null ? `~$${m.city.monthlyCostUSD.toLocaleString('en-US')}` : t('report.copy.na'),
         net: m.city.internetMbps ?? '—',

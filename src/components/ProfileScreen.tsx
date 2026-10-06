@@ -6,7 +6,7 @@ import * as storage from '../lib/storage';
 import { cities } from '../data';
 import { getFunnel, type FunnelEvent, type FunnelData } from '../lib/telemetry';
 import { useI18n, translate, getCurrentLang } from '../i18n';
-import { cityName, formatMoney } from '../lib/format';
+import { cityName, cityCountryName, formatMoney } from '../lib/format';
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
@@ -175,7 +175,7 @@ export default function ProfileScreen({
                 <div key={c.id} className="card-paper p-4">
                   <div className="flex items-baseline justify-between gap-2">
                     <p className="font-medium text-[15px]">{cityName(c)}</p>
-                    <span className="font-mono text-[10px] text-ink-soft">{c.countryZh}</span>
+                    <span className="font-mono text-[10px] text-ink-soft">{cityCountryName(c)}</span>
                   </div>
                   <p className="mt-1.5 font-mono text-[10.5px] text-ink-soft">
                     {c.monthlyCostUSD != null ? t('cost.perMonth', { cost: formatMoney(c.monthlyCostUSD) }) : t('cost.naLong')} ·{' '}

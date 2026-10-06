@@ -1,6 +1,8 @@
 import type { Country, PassportCode } from '../../data/types';
 import { useI18n } from '../../i18n';
 import { loadPassport } from '../../lib/storage';
+import { entryNote } from '../../lib/format';
+import { rentalLabel } from '../../i18n/countryGlossary';
 
 /**
  * PassportVisaBlock / LongStayBlock — 第九轮共享展示块
@@ -48,7 +50,7 @@ export function PassportVisaBlock({ country }: { country: Country }) {
               {t(`pv.entry.${snap.entry}`)}
             </span>
             {snap.entryNote ? (
-              <span className="text-[11.5px] leading-snug text-ink-soft">{snap.entryNote}</span>
+              <span className="text-[11.5px] leading-snug text-ink-soft">{entryNote(snap.entryNote)}</span>
             ) : null}
           </div>
 
@@ -114,7 +116,7 @@ export function LongStayBlock({ country }: { country: Country }) {
           </div>
           <div className="flex flex-wrap items-baseline gap-x-2">
             <dt className="shrink-0 text-ink-soft">{t('longstay.rentalLabel')}</dt>
-            <dd className="text-ink">{ls.rentalCustom ?? '—'}</dd>
+            <dd className="text-ink">{rentalLabel(ls.rentalCustom)}</dd>
           </div>
         </dl>
       ) : (

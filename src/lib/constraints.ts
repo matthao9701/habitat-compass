@@ -12,6 +12,7 @@
  */
 import type { City, PassportCode } from '../data/types';
 import { getCountry } from '../data/countries';
+import { translate } from '../i18n';
 
 /** 人民币 → 美元近似汇率（仅用于预算上限换算，DATA.md 注明） */
 export const CNY_USD_RATE = 7.2;
@@ -54,7 +55,13 @@ export interface ExcludedEntry {
   cityId: string;
   nameZh: string;
   countryZh: string;
+  /** 城市内嵌英文国名（en 展示用，可空回落到 countryZh） */
+  countryEn?: string | null;
+  /** 中文原因原文（zh 直接展示，保持与既有数据一致） */
   reason: string;
+  /** 本地化原因词典键与插值变量（en 展示用） */
+  reasonKey: string;
+  reasonVars?: Record<string, string | number>;
   /** 该城是否本可通过放宽保留（仅预算维度、差距 < 15%） */
   relaxable: boolean;
 }
@@ -107,37 +114,36 @@ export function applyHardConstraints(cities: City[], hc: HardConstraints | null)
   const passportSkipped = hc.visaLine === 'visaFree' && hc.passport !== 'CN';
 
   // 签证 + 安全检查（独立函数，预算通过者与放宽回填者共用，保证语义一致）
-  const checkVisaSafety = (city: City): string | null => {
+  // 返回本地化所需 { key, vars }；reason 中文原文由 key 对应词典 zh 值提供，避免重复维护。
+  const checkVisaSafety = (city: City): { key: string; vars?: Record<string, string | number> } | null => {
     // ---- 第九轮：免签/落地签优先（按所选护照的国家快照过滤）----
     if (hc.visaLine === 'visaFree' && !passportSkipped) {
       const snap = getCountry(city.countryCode)?.visaPassport ?? null;
       if (!snap) {
-        return '该国家暂无护照免签快照，无法核验入境待遇';
+        return { key: 'cn.reason.visaFreeNoSnapshot' };
       }
       if (!isVisaFreeFriendly(snap.entry)) {
-        return '持当前护照入境需提前办签或电子签，不满足免签/落地签优先';
+        return { key: 'cn.reason.visaFreeNeedVisa' };
       }
     }
     // 第九轮：免签档只按护照快照过滤，不再走城市档位检查（visaStatus null 不参与该档）
     if (hc.visaLine === 'official' || hc.visaLine === 'alternative') {
       if (city.visaStatus == null) {
-        return hc.visaLine === 'official'
-          ? '签证档位未核实，无法确认有官方数字游民签证'
-          : '签证档位未核实，无法确认有官方签证或长期居留替代路径';
+        return { key: hc.visaLine === 'official' ? 'cn.reason.officialUnknown' : 'cn.reason.alternativeUnknown' };
       }
       if (hc.visaLine === 'official' && city.visaStatus !== 'official') {
-        return '无官方数字游民签证（与你设定的签证底线不符）';
+        return { key: 'cn.reason.officialMismatch' };
       }
       if (hc.visaLine === 'alternative' && city.visaStatus !== 'official' && city.visaStatus !== 'alternative') {
-        return '既无官方数字游民签证，也无长期居留替代路径记录';
+        return { key: 'cn.reason.alternativeMismatch' };
       }
     }
     if (hc.safetyEnabled) {
       if (city.safety == null) {
-        return `安全指数未核实，无法核验是否高于阈值 ${hc.safetyThreshold}`;
+        return { key: 'cn.reason.safetyUnknown', vars: { threshold: hc.safetyThreshold } };
       }
       if (city.safety < hc.safetyThreshold) {
-        return `安全指数 ${city.safety} 低于你设定的阈值 ${hc.safetyThreshold}`;
+        return { key: 'cn.reason.safetyBelow', vars: { safety: city.safety, threshold: hc.safetyThreshold } };
       }
     }
     return null;
@@ -146,10 +152,19 @@ export function applyHardConstraints(cities: City[], hc: HardConstraints | null)
   const excluded: ExcludedEntry[] = [];
   // 同城去重：放宽回填者在阶段 1 已因预算被排除过，回填失败时不再重复登记
   const excludedIds = new Set<string>();
-  const pushExcluded = (city: City, reason: string, relaxable: boolean): void => {
+  const pushExcluded = (city: City, key: string, vars: Record<string, string | number> | undefined, relaxable: boolean): void => {
     if (excludedIds.has(city.id)) return;
     excludedIds.add(city.id);
-    excluded.push({ cityId: city.id, nameZh: city.nameZh, countryZh: city.countryZh, reason, relaxable });
+    excluded.push({
+      cityId: city.id,
+      nameZh: city.nameZh,
+      countryZh: city.countryZh,
+      countryEn: city.countryEn,
+      reason: translate('zh', key, vars),
+      reasonKey: key,
+      reasonVars: vars,
+      relaxable,
+    });
   };
 
   // ---- 阶段 1：月预算上限 ----
@@ -161,14 +176,19 @@ export function applyHardConstraints(cities: City[], hc: HardConstraints | null)
       continue;
     }
     if (city.monthlyCostUSD == null) {
-      pushExcluded(city, `月成本估算缺失，无法核验是否在上限 $${cap.toLocaleString('en-US')} 之内`, false);
+      pushExcluded(city, 'cn.reason.costMissing', { cap: cap.toLocaleString('en-US') }, false);
       continue;
     }
     if (city.monthlyCostUSD > cap) {
       const gap = (city.monthlyCostUSD - cap) / cap;
       pushExcluded(
         city,
-        `月成本 ~$${city.monthlyCostUSD.toLocaleString('en-US')} 超出上限 $${cap.toLocaleString('en-US')}（超出 ${(gap * 100).toFixed(0)}%）`,
+        'cn.reason.overBudget',
+        {
+          cost: city.monthlyCostUSD.toLocaleString('en-US'),
+          cap: cap.toLocaleString('en-US'),
+          pct: (gap * 100).toFixed(0),
+        },
         gap < OVER_BUDGET_BAND,
       );
       budgetExcluded.push({ city, relaxable: gap < OVER_BUDGET_BAND });
@@ -180,8 +200,8 @@ export function applyHardConstraints(cities: City[], hc: HardConstraints | null)
   // ---- 阶段 2：签证 + 安全（只对预算通过者）----
   const kept: City[] = [];
   for (const city of passBudget) {
-    const reason = checkVisaSafety(city);
-    if (reason) pushExcluded(city, reason, false);
+    const hit = checkVisaSafety(city);
+    if (hit) pushExcluded(city, hit.key, hit.vars, false);
     else kept.push(city);
   }
 
@@ -191,9 +211,9 @@ export function applyHardConstraints(cities: City[], hc: HardConstraints | null)
   if (cap != null && kept.length < RELAX_MIN_KEEP) {
     const relaxable = budgetExcluded.filter((e) => e.relaxable);
     for (const { city } of relaxable) {
-      const reason = checkVisaSafety(city);
-      if (reason) {
-        pushExcluded(city, reason, false);
+      const hit = checkVisaSafety(city);
+      if (hit) {
+        pushExcluded(city, hit.key, hit.vars, false);
         continue;
       }
       if (!relaxed) relaxed = true;

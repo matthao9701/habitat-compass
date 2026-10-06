@@ -1,56 +1,16 @@
 /**
  * 画册式城市卡片 + 右侧速览抽屉（编辑部风改版核心交互）。
- * 卡片：生活剪影（程序化 SVG 地平线/海平线）+ 右上角数据胶囊 + 衬线城市名 + 六维罗盘雷达。
+ * 卡片：城市实景照片（自由许可，兜底程序化剪影）+ 右上角数据胶囊 + 衬线城市名 + 六维罗盘雷达。
  * 抽屉：右侧滑出，上半城市实景与氛围，下半紧凑数据表（税阶/签证/合规注意点）。
  */
 import { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import CompassRadar, { buildCompassData } from './CompassRadar';
+import CityPhoto, { PhotoCredit } from './CityPhoto';
 import { getCountry } from '../../data/countries';
-import { cityName, countryName } from '../../lib/format';
+import { cityName, countryName, climateSummary, tagLabel, englishBandLabel, entryNote } from '../../lib/format';
 import { useI18n } from '../../i18n';
 import type { City } from '../../data/types';
-
-/** 程序化「生活剪影」：按城市 id 生成确定性的地平线 + 日轮 + 经纬网格 */
-function CityScape({ cityId, hue }: { cityId: string; hue: string }) {
-  // 确定性伪随机（同 id 同图，避免每次渲染跳动）
-  let seed = 0;
-  for (let i = 0; i < cityId.length; i++) seed = (seed * 31 + cityId.charCodeAt(i)) % 997;
-  const rand = (n: number): number => ((seed * (n * 7 + 13)) % 89) / 89;
-  const buildings = Array.from({ length: 9 }, (_, i) => {
-    const h = 18 + rand(i + 1) * 52;
-    const w = 14 + rand(i + 9) * 26;
-    const x = 8 + i * 52 + rand(i + 3) * 18;
-    return { x, w, h };
-  });
-  const sunX = 40 + rand(5) * 220;
-
-  return (
-    <svg viewBox="0 0 400 130" className="h-full w-full" preserveAspectRatio="xMidYMax slice" aria-hidden>
-      {/* 纸底天空 */}
-      <rect width="400" height="130" fill="#F1EFEA" />
-      {/* 细线经纬网格 */}
-      {[26, 52, 78, 104].map((y) => (
-        <line key={y} x1="0" y1={y} x2="400" y2={y} stroke="#E5E7EB" strokeWidth="1" />
-      ))}
-      {[50, 120, 190, 260, 330].map((x) => (
-        <line key={x} x1={x} y1="0" x2={x} y2="130" stroke="#E5E7EB" strokeWidth="1" opacity="0.6" />
-      ))}
-      {/* 日轮 */}
-      <circle cx={sunX} cy={34 + rand(7) * 20} r="13" fill="none" stroke={hue} strokeWidth="1" opacity="0.75" />
-      {/* 地平线剪影 */}
-      {buildings.map((b, i) => (
-        <rect key={i} x={b.x} y={130 - b.h} width={b.w} height={b.h} fill={hue} opacity={0.14 + rand(i + 20) * 0.12} />
-      ))}
-      {/* 海平线 */}
-      <line x1="0" y1="129.5" x2="400" y2="129.5" stroke={hue} strokeWidth="1.4" />
-      {/* 等高线小点 */}
-      {Array.from({ length: 7 }, (_, i) => (
-        <circle key={i} cx={20 + i * 58 + rand(i + 30) * 20} cy={112 + rand(i + 40) * 10} r="1.2" fill={hue} opacity="0.5" />
-      ))}
-    </svg>
-  );
-}
 
 /** 数据胶囊标签（右上角浮动） */
 function Pill({ children }: { children: React.ReactNode }) {
@@ -75,6 +35,7 @@ export function AtlasCard({ city, index, onOpen, formatMoney }: AtlasCardProps) 
     { ...city, internetMbps: city.internetMbps ?? country?.internetMbpsFixed ?? null },
     country,
   );
+  const climate = climateSummary(city.climateDetail, undefined);
   return (
     <motion.button
       type="button"
@@ -86,9 +47,11 @@ export function AtlasCard({ city, index, onOpen, formatMoney }: AtlasCardProps) 
       onClick={() => onOpen(city)}
       className="group flex flex-col overflow-hidden rounded-card border border-line bg-card text-left transition-all duration-300 ease-chart hover:border-ink/25 hover:shadow-[0_10px_32px_rgba(31,36,33,0.07)]"
     >
-      {/* 生活剪影 + 数据胶囊 */}
-      <div className="relative h-[130px] overflow-hidden border-b border-line">
-        <CityScape cityId={city.id} hue="#1D3557" />
+      {/* 城市实景 + 数据胶囊 */}
+      <div className="relative h-[150px] overflow-hidden border-b border-line">
+        <CityPhoto cityId={city.id} hue="#1D3557" className="h-full w-full object-cover transition-transform duration-500 ease-chart group-hover:scale-[1.03]" />
+        {/* 顶部渐隐，保证胶囊可读 */}
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-ink/25 to-transparent" />
         <div className="absolute right-2.5 top-2.5 flex max-w-[75%] flex-wrap justify-end gap-1.5">
           {city.monthlyCostUSD != null && <Pill>{formatMoney(city.monthlyCostUSD)}{t('atlas.card.perMonth')}</Pill>}
           {city.climateDetail && <Pill>{Math.round(city.climateDetail.avgTempC)}°C</Pill>}
@@ -97,9 +60,13 @@ export function AtlasCard({ city, index, onOpen, formatMoney }: AtlasCardProps) 
           {country?.visaPassport?.entry === 'eVisa' && <Pill>{t('atlas.card.eVisa')}</Pill>}
         </div>
         {/* 期号式角标 */}
-        <span className="absolute left-3 top-2.5 font-data text-[10px] tracking-[0.18em] text-ink/45">
+        <span className="absolute left-3 top-2.5 rounded-[4px] bg-ink/45 px-1 py-0.5 font-data text-[10px] tracking-[0.18em] text-white/85 backdrop-blur-[2px]">
           Nº {String(index + 1).padStart(3, '0')}
         </span>
+        {/* 图片署名（合规） */}
+        <div className="absolute bottom-1.5 left-2.5">
+          <PhotoCredit cityId={city.id} />
+        </div>
       </div>
 
       {/* 内容区 */}
@@ -113,7 +80,7 @@ export function AtlasCard({ city, index, onOpen, formatMoney }: AtlasCardProps) 
           </span>
         </div>
         <p className="mt-0.5 font-data text-[10.5px] text-ink-soft">
-          {countryName(country)} · {city.climateDetail?.summary ?? t('atlas.card.climatePending')}
+          {countryName(country)} · {climate ?? t('atlas.card.climatePending')}
         </p>
 
         <div className="mt-3 flex items-center justify-between gap-2 border-t border-line pt-3">
@@ -182,6 +149,7 @@ export function CityDrawer({ city, onClose, formatMoney }: DrawerProps) {
   const compass = city
     ? buildCompassData({ ...city, internetMbps: city.internetMbps ?? country?.internetMbpsFixed ?? null }, country)
     : [];
+  const climate = city ? climateSummary(city.climateDetail, undefined) : null;
 
   return (
     <AnimatePresence>
@@ -207,9 +175,11 @@ export function CityDrawer({ city, onClose, formatMoney }: DrawerProps) {
             aria-modal="true"
             aria-label={t('atlas.drawer.aria', { name: cityName(city) })}
           >
-            {/* 顶部：实景剪影 + 标题 */}
-            <div className="relative h-[200px] shrink-0 overflow-hidden border-b border-line">
-              <CityScape cityId={city.id} hue="#1D3557" />
+            {/* 顶部：城市实景 + 标题 */}
+            <div className="relative h-[220px] shrink-0 overflow-hidden border-b border-line">
+              <CityPhoto cityId={city.id} hue="#1D3557" className="h-full w-full object-cover" />
+              {/* 底部渐隐，标题可读 */}
+              <div className="pointer-events-none absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-ink/70 via-ink/25 to-transparent" />
               <button
                 type="button"
                 onClick={onClose}
@@ -219,15 +189,18 @@ export function CityDrawer({ city, onClose, formatMoney }: DrawerProps) {
                 ✕
               </button>
               <div className="absolute bottom-3 left-4 right-4">
-                <p className="font-data text-[10px] uppercase tracking-[0.2em] text-ink/55">
+                <p className="font-data text-[10px] uppercase tracking-[0.2em] text-white/75">
                   field notes · {city.nameEn}
                 </p>
-                <h3 className="font-display text-[30px] font-semibold leading-tight text-ink">
+                <h3 className="font-display text-[30px] font-semibold leading-tight text-white">
                   {cityName(city)}
-                  <span className="ml-2.5 align-middle font-data text-[11px] font-normal tracking-[0.12em] text-ink-soft">
+                  <span className="ml-2.5 align-middle font-data text-[11px] font-normal tracking-[0.12em] text-white/80">
                     {countryName(country)}
                   </span>
                 </h3>
+              </div>
+              <div className="absolute right-3 bottom-3">
+                <PhotoCredit cityId={city.id} />
               </div>
             </div>
 
@@ -253,21 +226,21 @@ export function CityDrawer({ city, onClose, formatMoney }: DrawerProps) {
                 <div className="flex-1 pt-1">
                   <p className="eyebrow mb-2">{t('atlas.drawer.ambience')}</p>
                   <p className="text-[12.5px] leading-[1.8] text-ink-soft">
-                    {city.climateDetail
+                    {climate
                       ? t('atlas.drawer.climateLine', {
-                          summary: city.climateDetail.summary,
-                          sun: city.climateDetail.sunshineHours,
-                          precip: city.climateDetail.annualPrecipMm,
+                          summary: climate,
+                          sun: city.climateDetail!.sunshineHours,
+                          precip: city.climateDetail!.annualPrecipMm,
                         })
                       : t('atlas.drawer.climatePending')}
                     {city.airQuality
-                      ? t('atlas.drawer.airLine', {
+                      ? ' ' + t('atlas.drawer.airLine', {
                           band: t(`air.band.${city.airQuality.band}`),
                           pm25: city.airQuality.pm25,
                         })
                       : ''}
                     {city.tags.length > 0
-                      ? t('atlas.drawer.tagsLine', { tags: city.tags.slice(0, 4).join(' / ') })
+                      ? ' ' + t('atlas.drawer.tagsLine', { tags: city.tags.slice(0, 4).map((g) => tagLabel(g)).join(' / ') })
                       : ''}
                   </p>
                 </div>
@@ -286,7 +259,7 @@ export function CityDrawer({ city, onClose, formatMoney }: DrawerProps) {
                     <Row label={t('atlas.drawer.row.internet')} value={netMbps != null ? t('atlas.drawer.row.internetVal', { v: netMbps }) : t('profile.visa.pending')} />
                     <Row
                       label={t('atlas.drawer.row.entry')}
-                      value={country?.visaPassport ? t('atlas.drawer.row.entryVal', { label: t(VISA_LABEL_KEYS[country.visaPassport.entry]), note: country.visaPassport.entryNote }) : t('profile.visa.pending')}
+                      value={country?.visaPassport ? t('atlas.drawer.row.entryVal', { label: t(VISA_LABEL_KEYS[country.visaPassport.entry]), note: entryNote(country.visaPassport.entryNote) }) : t('profile.visa.pending')}
                     />
                     <Row
                       label={t('atlas.drawer.row.dnVisa')}
@@ -297,7 +270,7 @@ export function CityDrawer({ city, onClose, formatMoney }: DrawerProps) {
                       value={country?.longStay?.taxResidencyDays != null ? t('atlas.drawer.row.taxResidencyVal', { days: country.longStay.taxResidencyDays }) : t('profile.visa.pending')}
                     />
                     <Row label={t('atlas.drawer.row.safety')} value={city.safety != null ? t('atlas.drawer.row.safetyVal', { v: city.safety }) : t('profile.visa.pending')} />
-                    <Row label={t('atlas.drawer.row.english')} value={city.englishBand ?? t('profile.visa.pending')} />
+                    <Row label={t('atlas.drawer.row.english')} value={englishBandLabel(city.englishBand)} />
                   </tbody>
                 </table>
               </div>

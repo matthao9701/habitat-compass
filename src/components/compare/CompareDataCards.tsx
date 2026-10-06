@@ -1,12 +1,11 @@
 // 数据卡区：生活成本对比（真实字段计算 + 规则模板结论） + 公开数据对比表（仅列数据库实际字段）
 // + 国家级参考对比行（第六轮：同国城市合并为一列，参考信息不参与打分）
 import { useState } from 'react';
-import { CLIMATE_LABEL } from '../../lib/engine';
 import { compareCost, type CompareRow } from '../../lib/compare';
 import { getCountry } from '../../data/countries';
 import type { Country } from '../../data/types';
 import { useI18n, getCurrentLang } from '../../i18n';
-import { cityName, countryName, formatMoney, formatDate } from '../../lib/format';
+import { cityName, countryName, formatMoney, formatDate, climateSummary } from '../../lib/format';
 import { AIR_BAND_TONE } from '../../lib/colors';
 
 const fmt = (n: number): string => `$${n.toLocaleString('en-US')}`;
@@ -29,8 +28,8 @@ export default function CompareDataCards({ rows }: { rows: CompareRow[] }) {
       label: t('cmp.data.climate'),
       valueOf: (r) =>
         r.city.climate != null
-          ? CLIMATE_LABEL[r.city.climate]
-          : (r.city.climateDetail?.summary ?? '—'),
+          ? t(`climate.type.${r.city.climate}`)
+          : (climateSummary(r.city.climateDetail) ?? '—'),
     },
     {
       label: t('cmp.data.avgTemp'),

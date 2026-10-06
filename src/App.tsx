@@ -1,12 +1,14 @@
-import { useState } from 'react';
+import { lazy, Suspense, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import Landing from './components/Landing';
-import Quiz from './components/Quiz';
-import Report from './components/Report';
 import TabBar, { type TabId } from './components/TabBar';
 import Footer from './components/Footer';
-import CompareScreen from './components/compare/CompareScreen';
-import ProfileScreen from './components/ProfileScreen';
+
+// 首页（Landing）同步加载，保证首屏最快；其余页面按需懒加载，拆出独立 chunk。
+const Quiz = lazy(() => import('./components/Quiz'));
+const Report = lazy(() => import('./components/Report'));
+const CompareScreen = lazy(() => import('./components/compare/CompareScreen'));
+const ProfileScreen = lazy(() => import('./components/ProfileScreen'));
 import { assess, type UserAnswers, type AssessmentResult, type QuizVersion } from './lib/engine';
 import { DEMO_PROFILES, buildDemoAnswers } from './data/demoProfiles';
 import * as storage from './lib/storage';
@@ -16,6 +18,15 @@ import { cities as CITIES } from './data';
 import { I18nProvider } from './i18n';
 
 type Screen = 'landing' | 'quiz' | 'report' | 'compare' | 'profile';
+
+/** 懒加载页面的占位：保持版式稳定，避免布局跳动 */
+function ScreenFallback() {
+  return (
+    <div className="flex min-h-[60vh] items-center justify-center">
+      <span className="font-data text-[11px] uppercase tracking-[0.22em] text-ink-soft">Loading…</span>
+    </div>
+  );
+}
 
 /** Tab 栏仅在三个常驻页面显示（quiz / report 为专注模式） */
 const TAB_SCREENS: Screen[] = ['landing', 'compare', 'profile'];
@@ -137,30 +148,32 @@ export default function App() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
           >
-            {screen === 'landing' && (
-              <Landing onStart={startQuiz} onDemo={openDemo} />
-            )}
-            {screen === 'quiz' && (
-              <Quiz onComplete={completeQuiz} onExit={exitQuiz} version={quizVersion} />
-            )}
-            {screen === 'report' && result && (
-              <Report result={result} onRestart={restart} isDemo={isDemo} onStartQuiz={startQuiz} />
-            )}
-            {screen === 'compare' && (
-              <CompareScreen
-                result={result}
-                answers={answers}
-                seedCities={compareSeed}
-                onOpenQuiz={startQuiz}
-              />
-            )}
-            {screen === 'profile' && (
-              <ProfileScreen
-                onOpenQuiz={startQuiz}
-                onOpenHistory={openHistory}
-                onOpenCompare={openCompare}
-              />
-            )}
+            <Suspense fallback={<ScreenFallback />}>
+              {screen === 'landing' && (
+                <Landing onStart={startQuiz} onDemo={openDemo} />
+              )}
+              {screen === 'quiz' && (
+                <Quiz onComplete={completeQuiz} onExit={exitQuiz} version={quizVersion} />
+              )}
+              {screen === 'report' && result && (
+                <Report result={result} onRestart={restart} isDemo={isDemo} onStartQuiz={startQuiz} />
+              )}
+              {screen === 'compare' && (
+                <CompareScreen
+                  result={result}
+                  answers={answers}
+                  seedCities={compareSeed}
+                  onOpenQuiz={startQuiz}
+                />
+              )}
+              {screen === 'profile' && (
+                <ProfileScreen
+                  onOpenQuiz={startQuiz}
+                  onOpenHistory={openHistory}
+                  onOpenCompare={openCompare}
+                />
+              )}
+            </Suspense>
           </motion.div>
         </AnimatePresence>
         {TAB_SCREENS.includes(screen) && <Footer />}

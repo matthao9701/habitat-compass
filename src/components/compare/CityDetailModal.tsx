@@ -1,9 +1,10 @@
 import { useEffect } from 'react';
-import { CLIMATE_LABEL, INTERNET_LABEL, formatCost } from '../../lib/engine';
+import { formatCost } from '../../lib/engine';
 import { getCountry } from '../../data/countries';
 import type { CompareRow } from '../../lib/compare';
 import { useI18n, getCurrentLang } from '../../i18n';
-import { cityName, countryName, formatDate } from '../../lib/format';
+import { cityName, countryName, formatDate, cityCountryName, climateSummary } from '../../lib/format';
+import { visaLabelText } from '../../i18n/countryGlossary';
 import { PassportVisaBlock, LongStayBlock } from '../report/PassportVisaBlock';
 import { AIR_BAND_TONE } from '../../lib/colors';
 
@@ -52,7 +53,7 @@ export default function CityDetailModal({
           <div>
             <h3 className="font-display text-xl font-bold tracking-tight text-ink">{cityName(city)}</h3>
             <p className="mt-0.5 font-mono text-[10px] uppercase tracking-wide text-ink-soft">
-              {city.nameEn} · {city.countryZh}
+              {city.nameEn} · {cityCountryName(city)}
             </p>
           </div>
           <button
@@ -84,7 +85,7 @@ export default function CityDetailModal({
               label={t('cmp.data.internet')}
               value={
                 city.internetMbps != null && city.internet != null
-                  ? `${city.internetMbps} Mbps · ${t(INTERNET_LABEL[city.internet])}`
+                  ? `${city.internetMbps} Mbps · ${t(`internet.band.${city.internet}`)}`
                   : city.internetMbps != null
                     ? `${city.internetMbps} Mbps`
                     : '—'
@@ -97,9 +98,9 @@ export default function CityDetailModal({
               label={t('cmp.data.climate')}
               value={
                 city.climate != null && city.tempC != null
-                  ? `${t(CLIMATE_LABEL[city.climate])} · ${city.tempC}°C`
+                  ? `${t(`climate.type.${city.climate}`)} · ${city.tempC}°C`
                   : city.climateDetail != null
-                    ? `${city.climateDetail.avgTempC}°C · ${t(city.climateDetail.summary)}`
+                    ? `${city.climateDetail.avgTempC}°C · ${climateSummary(city.climateDetail) ?? ''}`
                     : '—'
               }
             />
@@ -119,7 +120,7 @@ export default function CityDetailModal({
           </dl>
           {city.visaLabel ? (
             <p className="mt-3 rounded-[6px] bg-paper-deep/70 px-3.5 py-2.5 text-[12px] leading-[1.7] text-ink">
-              {city.visaLabel}
+              {visaLabelText(city.visaLabel)}
             </p>
           ) : null}
           {city.airQuality ? (
