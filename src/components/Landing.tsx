@@ -65,17 +65,17 @@ export default function Landing({ onStart, onDemo }: LandingProps) {
         }}
       />
       {/* 顶部导航 */}
-      <header className="mx-auto flex max-w-almanac items-center justify-between px-6 py-6 md:px-10">
-        <div className="flex items-center gap-3 text-ink">
+      <header className="mx-auto flex max-w-almanac items-center justify-between gap-3 px-5 py-6 sm:px-6 md:px-10">
+        <div className="flex min-w-0 items-center gap-3 text-ink">
           <CompassMark size={32} />
-          <div className="leading-tight">
-            <p className="font-display text-[17px] font-bold tracking-wide">{t('landing.hero.title')}</p>
-            <p className="font-mono text-[9px] uppercase tracking-eyebrow text-ink-soft">
+          <div className="min-w-0 leading-tight">
+            <p className="truncate font-display text-[15px] font-bold tracking-wide sm:text-[17px]">{t('landing.hero.title')}</p>
+            <p className="hidden font-mono text-[9px] uppercase tracking-eyebrow text-ink-soft sm:block">
               overseas almanac
             </p>
           </div>
         </div>
-        <button type="button" onClick={() => setPickerOpen(true)} className="btn-clay !px-6 !py-2.5 text-sm">
+        <button type="button" onClick={() => setPickerOpen(true)} className="btn-clay shrink-0 !px-4 !py-2.5 text-sm sm:!px-6">
           {t('nav.startQuiz')}
         </button>
       </header>
@@ -96,7 +96,7 @@ export default function Landing({ onStart, onDemo }: LandingProps) {
           initial="hidden"
           animate="visible"
           custom={1}
-          className="max-w-3xl font-display text-[42px] font-medium leading-[1.14] tracking-tight md:text-[64px]"
+          className="max-w-3xl font-display text-[32px] font-medium leading-[1.16] tracking-tight sm:text-[38px] md:text-[64px] md:leading-[1.14]"
         >
           {t('landing.hero.l1')}
           <br />
@@ -210,9 +210,9 @@ export default function Landing({ onStart, onDemo }: LandingProps) {
                     {t('landing.demo.cta')}
                   </span>
                 </div>
-                <p className="font-heading text-lg font-bold text-ink">{profile.label}</p>
-                <p className="mt-1.5 font-mono text-[11px] text-ochre">{profile.tagline}</p>
-                <p className="mt-3 text-[13px] leading-relaxed text-ink-soft">{profile.desc}</p>
+                <p className="font-heading text-lg font-bold text-ink">{t(`demo.${profile.id}.label`)}</p>
+                <p className="mt-1.5 font-mono text-[11px] text-ochre">{t(`demo.${profile.id}.tagline`)}</p>
+                <p className="mt-3 text-[13px] leading-relaxed text-ink-soft">{t(`demo.${profile.id}.desc`)}</p>
                 <div className="mt-4 flex items-center justify-between border-t hairline pt-3">
                   <span className="font-mono text-[10px] uppercase tracking-eyebrow text-ink-soft">
                     {t('landing.demo.expected')} {profile.expectedType}

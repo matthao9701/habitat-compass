@@ -131,6 +131,38 @@ const zh: D = {
   'hc.safety.below': '安全指数 {v} 低于你设定的阈值 {n}',
   'hc.budget.pending': '月成本估算缺失，无法核验是否在上限 ${cap} 之内',
   'hc.budget.over': '月成本 ~${v} 超出上限 ${cap}（超出 {pct}%）',
+  // 网络速度档位
+  'internet.band.0': '',
+  'internet.band.1': '基础',
+  'internet.band.2': '可用',
+  'internet.band.3': '良好',
+  'internet.band.4': '快速',
+  'internet.band.5': '极速',
+  // 气候类型
+  'climate.type.tropical': '热带',
+  'climate.type.subtropical': '亚热带',
+  'climate.type.mediterranean': '地中海气候',
+  'climate.type.temperate': '温带气候',
+  'climate.type.continental': '大陆性气候',
+  'climate.type.desert': '干旱/沙漠气候',
+  // 引擎推荐理由
+  'reason.persona': '城市气质偏{persona}，与你的人格倾向同频',
+  'reason.interests': '覆盖你关注的「{labels}」场景',
+  'reason.budget': '月生活成本 {cost}，与你的预算区间高度匹配',
+  'reason.english': '英语友好度高，办事、就医与日常沟通门槛低',
+  'reason.visa': '签证 / 居留路径灵活，适合反复进出或长期停留',
+  'reason.internet': '网络基础设施出色，远程办公与视频会议稳定',
+  'reason.safety': '安全指数 {n}，夜间出行与长住更安心',
+  'reason.fallback': '在人格、偏好与兴趣三维度综合表现均衡',
+  // 气质类型名称
+  'reason.trait.EI.pos': '外向社交型',
+  'reason.trait.EI.neg': '内向独处型',
+  'reason.trait.SN.pos': '直觉探索型',
+  'reason.trait.SN.neg': '务实落地型',
+  'reason.trait.TF.pos': '情感共鸣型',
+  'reason.trait.TF.neg': '逻辑效率型',
+  'reason.trait.JP.pos': '随兴灵活型',
+  'reason.trait.JP.neg': '规划秩序型',
 };
 
 const en: D = {
@@ -260,6 +292,38 @@ const en: D = {
   'hc.safety.below': 'Safety index {v} is below your threshold {n}',
   'hc.budget.pending': 'Monthly cost estimate missing — cannot verify against the ${cap} cap',
   'hc.budget.over': 'Monthly cost ~${v} exceeds the ${cap} cap (by {pct}%)',
+  // Internet speed bands
+  'internet.band.0': '',
+  'internet.band.1': 'Basic',
+  'internet.band.2': 'Usable',
+  'internet.band.3': 'Good',
+  'internet.band.4': 'Fast',
+  'internet.band.5': 'Ultra-fast',
+  // Climate types
+  'climate.type.tropical': 'Tropical',
+  'climate.type.subtropical': 'Subtropical',
+  'climate.type.mediterranean': 'Mediterranean',
+  'climate.type.temperate': 'Temperate',
+  'climate.type.continental': 'Continental',
+  'climate.type.desert': 'Arid / Desert',
+  // Engine match reasons
+  'reason.persona': 'City vibe leans {persona}, in tune with your personality',
+  'reason.interests': 'Covers the scenarios you care about: {labels}',
+  'reason.budget': 'Monthly cost {cost} matches your budget range well',
+  'reason.english': 'High English friendliness — low barrier for errands, healthcare and daily life',
+  'reason.visa': 'Flexible visa / residence path — easy for repeated entries or long stays',
+  'reason.internet': 'Solid internet infrastructure — stable remote work and video calls',
+  'reason.safety': 'Safety index {n} — safer for night travel and long stays',
+  'reason.fallback': 'Balanced across personality, preferences and interests',
+  // Trait persona names
+  'reason.trait.EI.pos': 'extroverted-social',
+  'reason.trait.EI.neg': 'introverted-solitary',
+  'reason.trait.SN.pos': 'intuitive-exploratory',
+  'reason.trait.SN.neg': 'pragmatic-grounded',
+  'reason.trait.TF.pos': 'empathic-resonant',
+  'reason.trait.TF.neg': 'logical-efficiency',
+  'reason.trait.JP.pos': 'spontaneous-flexible',
+  'reason.trait.JP.neg': 'planned-orderly',
 };
 
 export const ANALYSIS_DICT: Record<Lang, D> = { zh, en };

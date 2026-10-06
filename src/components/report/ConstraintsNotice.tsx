@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import type { ExcludedEntry } from '../../lib/constraints';
-import { useI18n } from '../../i18n';
+import { useI18n, getCurrentLang } from '../../i18n';
 import { cityNameById } from '../../lib/format';
 
 /**
@@ -21,6 +21,7 @@ export default function ConstraintsNotice({
 }) {
   const { t } = useI18n();
   const [open, setOpen] = useState(false);
+  const en = getCurrentLang() === 'en';
 
   return (
     <section className="border-b hairline bg-clay/[0.06]">
@@ -57,8 +58,8 @@ export default function ConstraintsNotice({
             {excluded.map((e) => (
               <li key={e.cityId} className="flex items-baseline gap-2 text-[12px] leading-[1.7]">
                 <span className="shrink-0 font-medium text-ink">{cityNameById(e.cityId, e.nameZh)}</span>
-                <span className="font-mono text-[10px] text-ink-soft">{e.countryZh}</span>
-                <span className="text-ink-soft">— {e.reason}</span>
+                <span className="font-mono text-[10px] text-ink-soft">{en ? (e.countryEn ?? e.countryZh) : e.countryZh}</span>
+                <span className="text-ink-soft">— {en ? t(e.reasonKey, e.reasonVars) : e.reason}</span>
               </li>
             ))}
           </ul>

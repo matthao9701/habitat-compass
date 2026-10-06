@@ -3,6 +3,11 @@
 export const interestsDict: Record<'zh' | 'en', Record<string, string>> = {
   zh: {
     // ---- 28 个一级标签（16 共用 + 12 新增）----
+    'tag.culture': '城市文化', 'tag.dance': '舞蹈音乐',
+    'tag.entertainment': '娱乐演出', 'tag.street-markets': '街头市集',
+    'tag.street-art': '街头艺术', 'tag.wine': '葡萄酒', 'tag.beer-culture': '精酿啤酒',
+    'tag.tea-culture': '茶文化', 'tag.fruit': '热带果物',
+    'tag.golf': '高尔夫', 'tag.adventure-sports': '探险运动', 'tag.winter-sports': '冬季运动',
     'tag.outdoor': '户外徒步', 'tag.outdoor.desc': '登山 · 骑行 · 露营',
     'tag.watersports': '水上运动', 'tag.watersports.desc': '冲浪 · 潜水 · 帆船',
     'tag.beach': '海滩生活', 'tag.beach.desc': '日落 · 沙滩 · 海风',
@@ -139,6 +144,11 @@ export const interestsDict: Record<'zh' | 'en', Record<string, string>> = {
 
   en: {
     // ---- 28 primary tags ----
+    'tag.culture': 'Urban Culture', 'tag.dance': 'Dance & Music',
+    'tag.entertainment': 'Live Entertainment', 'tag.street-markets': 'Street Markets',
+    'tag.street-art': 'Street Art', 'tag.wine': 'Wine', 'tag.beer-culture': 'Craft Beer',
+    'tag.tea-culture': 'Tea Culture', 'tag.fruit': 'Tropical Fruit',
+    'tag.golf': 'Golf', 'tag.adventure-sports': 'Adventure Sports', 'tag.winter-sports': 'Winter Sports',
     'tag.outdoor': 'Outdoors', 'tag.outdoor.desc': 'Hiking · Cycling · Camping',
     'tag.watersports': 'Water Sports', 'tag.watersports.desc': 'Surfing · Diving · Sailing',
     'tag.beach': 'Beach Life', 'tag.beach.desc': 'Sunset · Sand · Sea breeze',

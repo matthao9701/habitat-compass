@@ -1,7 +1,7 @@
 import type { City, CityTraitVector, PassportCode } from '../data/types';
 import { cities } from '../data';
-import { interestLabelById } from '../data/interests';
-import { interestLabelProById } from '../data/interestsPro';
+import { getCurrentLang, translate } from '../i18n';
+import { tagLabel } from './format';
 import {
   deriveRiasec,
   deriveRisk,
@@ -246,16 +246,6 @@ const clamp = (v: number, min: number, max: number): number => Math.min(max, Mat
 // ---------------------------------------------------------------------------
 
 export const INTERNET_SPEED = [0, 12, 25, 45, 75, 110];
-export const INTERNET_LABEL = ['', '基础', '可用', '良好', '快速', '极速'];
-
-export const CLIMATE_LABEL: Record<string, string> = {
-  tropical: '热带',
-  subtropical: '亚热带',
-  mediterranean: '地中海气候',
-  temperate: '温带气候',
-  continental: '大陆性气候',
-  desert: '干旱/沙漠气候',
-};
 
 export const AXIS_LABEL: Record<AxisName, [string, string]> = {
   EI: ['外向 E', '内向 I'],
@@ -272,7 +262,7 @@ export function scoreLevel(v: number): string {
 }
 
 export function formatCost(city: City): string {
-  if (!city.cost) return '成本数据暂缺';
+  if (!city.cost) return translate(getCurrentLang(), 'cost.naLong');
   return `$${city.cost[0].toLocaleString('en-US')} – $${city.cost[1].toLocaleString('en-US')}`;
 }
 
@@ -600,11 +590,15 @@ export function getPersonality(answers: UserAnswers): {
 // ---------------------------------------------------------------------------
 
 const TRAIT_NAME: Record<AxisName, { positive: string; negative: string }> = {
-  EI: { positive: '外向社交型', negative: '内向独处型' },
-  SN: { positive: '直觉探索型', negative: '务实落地型' },
-  TF: { positive: '情感共鸣型', negative: '逻辑效率型' },
-  JP: { positive: '随兴灵活型', negative: '规划秩序型' },
+  EI: { positive: 'rep.trait.EI.pos', negative: 'rep.trait.EI.neg' },
+  SN: { positive: 'rep.trait.SN.pos', negative: 'rep.trait.SN.neg' },
+  TF: { positive: 'rep.trait.TF.pos', negative: 'rep.trait.TF.neg' },
+  JP: { positive: 'rep.trait.JP.pos', negative: 'rep.trait.JP.neg' },
 };
+
+/** 规则层本地化：当前语言词典查找（zh 回中文原文，en 输出英文） */
+const tr = (key: string, vars?: Record<string, string | number>): string =>
+  translate(getCurrentLang(), key, vars);
 
 function buildReasons(
   city: City,
@@ -630,10 +624,10 @@ function buildReasons(
     const best = traitDiffs[0];
     if (best.diff <= 40) {
       const cityIsPositive = traits[best.axis.toLowerCase() as 'ei' | 'sn' | 'tf' | 'jp'] >= 0;
-      const persona = cityIsPositive
+      const personaKey = cityIsPositive
         ? TRAIT_NAME[best.axis].positive
         : TRAIT_NAME[best.axis].negative;
-      reasons.push(`城市气质偏${persona}，与你的人格倾向同频`);
+      reasons.push(tr('rep.reason.persona', { persona: tr(personaKey) }));
     }
   }
 
@@ -642,39 +636,39 @@ function buildReasons(
   if (matchedInterests.length > 0) {
     const labels = matchedInterests
       .slice(0, 3)
-      .map((t) => interestLabelById.get(t) ?? t)
+      .map((t) => tagLabel(t))
       .join('、');
-    reasons.push(`覆盖你关注的「${labels}」场景`);
+    reasons.push(tr('rep.reason.interests', { labels }));
   }
 
   // 预算
   if (result.costFitScore != null && result.costFitScore >= 80) {
-    reasons.push(`月生活成本 ${formatCost(city)}，与你的预算区间高度匹配`);
+    reasons.push(tr('rep.reason.budget', { cost: formatCost(city) }));
   }
 
   // 英语
   if (result.scores.english != null && result.scores.english >= 80) {
-    reasons.push('英语友好度高，办事、就医与日常沟通门槛低');
+    reasons.push(tr('rep.reason.english'));
   }
 
   // 签证
   if (result.scores.visa != null && result.scores.visa >= 80) {
-    reasons.push('签证 / 居留路径灵活，适合反复进出或长期停留');
+    reasons.push(tr('rep.reason.visa'));
   }
 
   // 网络
   if (result.scores.internet != null && result.scores.internet >= 80) {
-    reasons.push('网络基础设施出色，远程办公与视频会议稳定');
+    reasons.push(tr('rep.reason.network'));
   }
 
   // 安全
   if (result.scores.safety != null && result.scores.safety >= 72) {
-    reasons.push(`安全指数 ${city.safety}，夜间出行与长住更安心`);
+    reasons.push(tr('rep.reason.safety', { n: city.safety ?? '' }));
   }
 
   // 兜底
   if (reasons.length === 0) {
-    reasons.push('在人格、偏好与兴趣三维度综合表现均衡');
+    reasons.push(tr('rep.reason.balanced'));
   }
 
   return reasons.slice(0, 3);
@@ -694,10 +688,14 @@ export function buildProfileTags(result: {
   for (const q of lifestyleQuestions) {
     const value = result.preferences[q.id];
     const option = q.options.find((o) => o.value === value);
-    if (option) tags.push(option.label);
+    if (option) {
+      // Use translation key if available, otherwise fall back to label
+      const key = `ls.${q.id}.opt.${value}.label`;
+      tags.push(tr(key, {}));
+    }
   }
   for (const id of result.interests.slice(0, 6)) {
-    tags.push(interestLabelById.get(id) ?? interestLabelProById.get(id) ?? id);
+    tags.push(tagLabel(id));
   }
   return tags;
 }

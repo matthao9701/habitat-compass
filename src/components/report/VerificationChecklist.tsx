@@ -1,6 +1,7 @@
 import type { CityMatch } from '../../lib/engine';
 import { useI18n } from '../../i18n';
-import { cityName } from '../../lib/format';
+import { cityName, cityCountryName } from '../../lib/format';
+import { visaLabelText } from '../../i18n/countryGlossary';
 
 /**
  * VerificationChecklist — 报告页「搬家前待核实清单」模块（第六轮）
@@ -47,8 +48,8 @@ function ChecklistCard({ match, index }: { match: CityMatch; index: number }) {
     {
       title: t('report.verify.visa'),
       detail: visaKnown
-        ? t('vc.visa.item', { country: city.countryZh, label: t(city.visaLabel ?? '') })
-        : t('vc.visa.itemNull', { country: city.countryZh }),
+        ? t('vc.visa.item', { country: cityCountryName(city), label: visaLabelText(city.visaLabel) })
+        : t('vc.visa.itemNull', { country: cityCountryName(city) }),
     },
     {
       title: t('report.verify.rent'),
@@ -78,7 +79,7 @@ function ChecklistCard({ match, index }: { match: CityMatch; index: number }) {
         <h3 className="font-heading text-base font-bold text-ink">
           {cityName(city)}
           <span className="ml-2 font-mono text-[10px] font-normal text-ink-soft">
-            {city.countryZh}
+            {cityCountryName(city)}
           </span>
         </h3>
       </div>

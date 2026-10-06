@@ -1,8 +1,10 @@
 // 名称 / 金额 / 日期的本地化格式化（第七轮 i18n）
-import { getCurrentLang, type Lang } from '../i18n';
+import { getCurrentLang, translate, type Lang } from '../i18n';
+import { ENTRY_NOTE_EN } from '../i18n/entryNotes';
 import type { City, Country } from '../data/types';
 import { CNY_USD_RATE } from './constraints';
 import { cities } from '../data';
+import { getCountry } from '../data/countries';
 
 let CITY_INDEX: Map<string, City> | null = null;
 
@@ -37,6 +39,14 @@ export function countryName(country: Country | null | undefined, lang?: Lang): s
   return l === 'en' ? (country.nameEn ?? country.nameZh) : country.nameZh;
 }
 
+/** 城市内嵌国家名（City 自带 countryZh/countryEn；countryEn 缺失时按 countryCode 查 Country 快照补全） */
+export function cityCountryName(city: City, lang?: Lang): string {
+  const l = lang ?? getCurrentLang();
+  if (l !== 'en') return city.countryZh;
+  if (city.countryEn) return city.countryEn;
+  return getCountry(city.countryCode)?.nameEn ?? city.countryZh;
+}
+
 function fmt(n: number): string {
   return n.toLocaleString('en-US');
 }
@@ -65,4 +75,64 @@ export function formatDate(iso: string, lang?: Lang): string {
     }
   }
   return iso;
+}
+
+/**
+ * 气候舒适简评本地化。
+ * 数据层 summary 为中文确定性规则产物（见 scripts/pipeline/fetch-climate.mjs summarize），
+ * 阈值固定：温度 14–24 温和 / <14 偏凉 / >24 偏热；降水 700/1300；日照 1800/2500。
+ * en 下由数值重新拼英文，不依赖数据层中文串；zh 直接回原文，保持与既有数据一致。
+ */
+export function climateSummary(
+  detail: { avgTempC: number; annualPrecipMm: number; sunshineHours: number; summary: string } | null,
+  lang?: Lang,
+): string | null {
+  if (!detail) return null;
+  const l = lang ?? getCurrentLang();
+  if (l !== 'en') return detail.summary;
+  const tt = detail.avgTempC >= 14 && detail.avgTempC <= 24 ? 'climate.t.mild' : detail.avgTempC < 14 ? 'climate.t.cool' : 'climate.t.hot';
+  const pp = detail.annualPrecipMm <= 700 ? 'climate.p.low' : detail.annualPrecipMm <= 1300 ? 'climate.p.mid' : 'climate.p.high';
+  const ss = detail.sunshineHours >= 2500 ? 'climate.s.high' : detail.sunshineHours >= 1800 ? 'climate.s.mid' : 'climate.s.low';
+  return `${translate(l, tt)}, ${translate(l, pp)}, ${translate(l, ss)}`;
+}
+
+/** 城市兴趣标签本地化（词典键约定 tag.<name>）；未登记键回落原值 */
+export function tagLabel(tag: string, lang?: Lang): string {
+  return translate(lang ?? getCurrentLang(), `tag.${tag}`);
+}
+
+/** 英语环境评级本地化（词典键 band.english.<band>） */
+export function englishBandLabel(band: string | null | undefined, lang?: Lang): string {
+  if (!band) return '—';
+  return translate(lang ?? getCurrentLang(), `band.english.${band}`);
+}
+
+/** 次区域标签本地化（词典键 subregion.<key>）；未登记键回落原值 */
+export function subregionName(key: string | null | undefined, lang?: Lang): string {
+  if (!key) return '—';
+  return translate(lang ?? getCurrentLang(), `subregion.${key}`);
+}
+
+/** 偏好维度标签本地化（词典键 dim.<key>） */
+export function dimensionLabel(key: string, lang?: Lang): string {
+  return translate(lang ?? getCurrentLang(), `dim.${key}`);
+}
+
+/**
+ * 用户画像标签本地化（档案标签来自 engine.buildProfileTags，为中文原文）：
+ * - 16 型代码（如 INTJ）→ 词典键 type.<CODE>.name
+ * - 其余为生活方式选项 / 兴趣标签的中文原文 → 反查词典（REVERSE_ZH）输出对应语言
+ */
+export function profileTagLabel(tag: string, lang?: Lang): string {
+  const l = lang ?? getCurrentLang();
+  if (/^[EI][NS][TF][JP]$/.test(tag)) return translate(l, `type.${tag}.name`);
+  return translate(l, tag);
+}
+
+/** 护照入境备注本地化：数据层为简体中文快照，en 查静态译表，未命中回落原文 */
+export function entryNote(note: string | null | undefined, lang?: Lang): string {
+  if (!note) return '—';
+  const l = lang ?? getCurrentLang();
+  if (l !== 'en') return note;
+  return ENTRY_NOTE_EN[note] ?? note;
 }

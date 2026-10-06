@@ -48,9 +48,9 @@ export default function TabBar({ active, onChange }: { active: TabId; onChange: 
   const { t } = useI18n();
   return (
     <header className="sticky top-0 z-40 border-b border-ink/10 bg-paper/95 backdrop-blur-sm">
-      <div className="mx-auto flex h-16 max-w-almanac items-center justify-between px-4 md:px-10">
+      <div className="mx-auto flex h-16 max-w-almanac items-center justify-between gap-2 px-3 sm:px-4 md:px-10">
         <nav
-          className="flex items-center gap-1.5 md:mx-auto md:gap-8"
+          className="flex min-w-0 items-center gap-0.5 sm:gap-1.5 md:mx-auto md:gap-8"
           aria-label={t('nav.ariaLabel')}
         >
           {TAB_KEYS.map((tb) => {
@@ -61,7 +61,7 @@ export default function TabBar({ active, onChange }: { active: TabId; onChange: 
                 type="button"
                 onClick={() => onChange(tb.id)}
                 aria-current={isActive ? 'page' : undefined}
-                className={`flex items-center gap-1.5 whitespace-nowrap rounded-[7px] px-2.5 py-2 font-heading text-[13px] font-medium tracking-wide transition-colors duration-200 md:gap-2 md:px-4 ${
+                className={`flex items-center gap-1.5 whitespace-nowrap rounded-[7px] px-2 py-2 font-heading text-[13px] font-medium tracking-wide transition-colors duration-200 sm:px-2.5 md:gap-2 md:px-4 ${
                   isActive
                     ? 'bg-clay/10 text-clay'
                     : 'text-ink-soft hover:bg-ink/5 hover:text-ink'

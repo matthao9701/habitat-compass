@@ -232,6 +232,17 @@ const zh: Record<string, string> = {
   'cn.rule': '硬性条件在打分之前一票否决，不参与 v3 分层权重（核心匹配 42/30/18 + 加分层 ≤10%）；可返回测评前的「硬性条件」步骤修改后重算。',
   'cn.relaxedRule': '放宽规则：预算过滤后剩余城市不足 5 座时，「超上限但差距 < 15%」的城市保留进入打分，并在匹配分上扣减 3 分、标注「超预算」。',
   'cn.passportSkipped': '降级说明：「免签 / 落地签优先」底线因所选护照暂无入境快照而未启用过滤；签证维度仍按城市档位在详情中展示。',
+  // ---- 硬性条件排除原因（可解释性；键化以便 en 展示） ----
+  'cn.reason.costMissing': '月成本估算缺失，无法核验是否在上限 ${cap} 之内',
+  'cn.reason.overBudget': '月成本 ~${cost} 超出上限 ${cap}（超出 {pct}%）',
+  'cn.reason.visaFreeNoSnapshot': '该国家暂无护照免签快照，无法核验入境待遇',
+  'cn.reason.visaFreeNeedVisa': '持当前护照入境需提前办签或电子签，不满足免签/落地签优先',
+  'cn.reason.officialUnknown': '签证档位未核实，无法确认有官方数字游民签证',
+  'cn.reason.alternativeUnknown': '签证档位未核实，无法确认有官方签证或长期居留替代路径',
+  'cn.reason.officialMismatch': '无官方数字游民签证（与你设定的签证底线不符）',
+  'cn.reason.alternativeMismatch': '既无官方数字游民签证，也无长期居留替代路径记录',
+  'cn.reason.safetyUnknown': '安全指数未核实，无法核验是否高于阈值 {threshold}',
+  'cn.reason.safetyBelow': '安全指数 {safety} 低于你设定的阈值 {threshold}',
   'cons.budget.placeholder': '如 8000',
 
   // ---- 持当前护照签证卡（第九轮） ----
@@ -295,6 +306,23 @@ const zh: Record<string, string> = {
   'quiz.rank.allocated': '已分配 {sum} / {total} 点',
   'quiz.interest.refine': '细化 · 选中子项将强化该兴趣权重',
   'cons.saveCta': '保存条件，开始测评',
+  // ---- 推荐理由（引擎 buildReasons）----
+  'rep.trait.EI.pos': '外向社交型',
+  'rep.trait.EI.neg': '内向独处型',
+  'rep.trait.SN.pos': '直觉探索型',
+  'rep.trait.SN.neg': '务实落地型',
+  'rep.trait.TF.pos': '情感共鸣型',
+  'rep.trait.TF.neg': '逻辑效率型',
+  'rep.trait.JP.pos': '随兴灵活型',
+  'rep.trait.JP.neg': '规划秩序型',
+  'rep.reason.persona': '城市气质偏{persona}，与你的人格倾向同频',
+  'rep.reason.interests': '覆盖你关注的「{labels}」场景',
+  'rep.reason.budget': '月生活成本 {cost}，与你的预算区间高度匹配',
+  'rep.reason.english': '英语友好度高，办事、就医与日常沟通门槛低',
+  'rep.reason.visa': '签证 / 居留路径灵活，适合反复进出或长期停留',
+  'rep.reason.network': '网络基础设施出色，远程办公与视频会议稳定',
+  'rep.reason.safety': '安全指数 {n}，夜间出行与长住更安心',
+  'rep.reason.balanced': '在人格、偏好与兴趣三维度综合表现均衡',
 };
 
 const en: Record<string, string> = {
@@ -515,6 +543,16 @@ const en: Record<string, string> = {
   'cn.rule': 'Hard constraints veto before scoring and don\'t participate in the v3 layered weights (core 42/30/18 + bonus layer <=10%); go back to the "Hard constraints" step before the quiz to edit and re-run.',
   'cn.relaxedRule': 'Relaxation rule: if fewer than 5 cities remain after budget filtering, cities "over the cap but within a < 15% gap" enter scoring with a 3-point deduction and an "over budget" marker.',
   'cn.passportSkipped': 'Downgraded: the "visa-free / VOA preferred" bottom line was not enforced because the selected passport has no entry snapshot; visa tiers are still shown in details as reference.',
+  'cn.reason.costMissing': 'Monthly cost estimate missing — cannot verify it is within the ${cap} cap',
+  'cn.reason.overBudget': 'Monthly cost ~${cost} exceeds the ${cap} cap (over by {pct}%)',
+  'cn.reason.visaFreeNoSnapshot': 'No visa-free snapshot for this country — entry treatment cannot be verified',
+  'cn.reason.visaFreeNeedVisa': 'Entry with the selected passport requires a prior visa or eVisa — does not meet the visa-free / VOA preference',
+  'cn.reason.officialUnknown': 'Visa tier not verified — cannot confirm an official digital-nomad visa',
+  'cn.reason.alternativeUnknown': 'Visa tier not verified — cannot confirm an official visa or long-stay alternative',
+  'cn.reason.officialMismatch': 'No official digital-nomad visa (does not meet your visa bottom line)',
+  'cn.reason.alternativeMismatch': 'Neither an official digital-nomad visa nor a documented long-stay alternative',
+  'cn.reason.safetyUnknown': 'Safety index not verified — cannot check it against the threshold {threshold}',
+  'cn.reason.safetyBelow': 'Safety index {safety} is below your threshold {threshold}',
   'cons.budget.placeholder': 'e.g. 1200',
 
   // ---- Passport visa snapshot card (round 9) ----
@@ -575,6 +613,23 @@ const en: Record<string, string> = {
   'quiz.rank.allocated': 'Allocated {sum} / {total} points',
   'quiz.interest.refine': 'Refine · selected sub-items reinforce this interest weight',
   'cons.saveCta': 'Save & start assessment',
+  // ---- recommendation reasons (engine buildReasons) ----
+  'rep.trait.EI.pos': 'Outgoing social',
+  'rep.trait.EI.neg': 'Introverted & private',
+  'rep.trait.SN.pos': 'Intuitive explorer',
+  'rep.trait.SN.neg': 'Practical & grounded',
+  'rep.trait.TF.pos': 'Empathetic connector',
+  'rep.trait.TF.neg': 'Logical & efficient',
+  'rep.trait.JP.pos': 'Spontaneous & flexible',
+  'rep.trait.JP.neg': 'Ordered & planned',
+  'rep.reason.persona': 'The city leans {persona}, in tune with your personality',
+  'rep.reason.interests': 'Covers the neighbourhoods you care about: {labels}',
+  'rep.reason.budget': 'Monthly living cost {cost} — a strong match for your budget band',
+  'rep.reason.english': 'Highly English-friendly — low friction for errands, healthcare and daily life',
+  'rep.reason.visa': 'Flexible visa / residency path — good for repeated entries or long stays',
+  'rep.reason.network': 'Excellent connectivity — stable for remote work and video calls',
+  'rep.reason.safety': 'Safety index {n} — easier for night travel and long stays',
+  'rep.reason.balanced': 'Well balanced across personality, preferences and interests',
 };
 
 export const extraDict: Record<Lang, Record<string, string>> = { zh, en };
