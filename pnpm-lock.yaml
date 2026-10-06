@@ -12,10 +12,16 @@ importers:
 
   .:
     dependencies:
+      '@fontsource-variable/jetbrains-mono':
+        specifier: ^5.3.0
+        version: 5.3.0
       '@fontsource/ibm-plex-mono':
         specifier: ^5.3.0
         version: 5.3.0
       '@fontsource/noto-sans-sc':
+        specifier: ^5.3.0
+        version: 5.3.0
+      '@fontsource/playfair-display':
         specifier: ^5.3.0
         version: 5.3.0
       '@fontsource/source-serif-4':
@@ -63,7 +69,7 @@ importers:
         version: 10.4.23(postcss@8.5.6)
       coze-coding-dev-sdk:
         specifier: ^0.7.32
-        version: 0.7.32(openai@7.27.0(zod@4.6.5))
+        version: 0.7.32(openai@7.27.0(ws@8.19.0)(zod@4.6.5))(ws@8.19.0)
       esbuild:
         specifier: ^0.27.2
         version: 0.27.2
@@ -539,11 +545,17 @@ packages:
     resolution: {integrity: sha512-43/qtrDUokr7LJqoF2c3+RInu/t4zfrpYdoSDfYyhg52rwLV6TnOvdG4fXm7IkSB3wErkcmJS9iEhjVtOSEjjA==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
+  '@fontsource-variable/jetbrains-mono@5.3.0':
+    resolution: {integrity: sha512-F32xpS2NsGYoQi2ADSkKTgpJj7ozajsGgDJ8woTnqjmIB+dxDIqImjl4pXZVEExu8UFZ2ndhmX18EBS/hdz3Lw==}
+
   '@fontsource/ibm-plex-mono@5.3.0':
     resolution: {integrity: sha512-eTgnZjZEGk1QtD3ZstF+Vclo2HLAni8YMy34/DxllwZvyz1lR/1RF/xTiAquOBO7MvqBx8D2Ig2WCPMVfdZu7Q==}
 
   '@fontsource/noto-sans-sc@5.3.0':
     resolution: {integrity: sha512-HeqIlGm0+ohOKxZLuHj1qW6r6avHH0OWdKERAcSDI0RQ+MXrteuLKA+M+5eOA8rYy0MFvOR5AT0fQo2rUkye0Q==}
+
+  '@fontsource/playfair-display@5.3.0':
+    resolution: {integrity: sha512-uJSABalvdWc10fEPppQjQocamT21LEyRfzzWfRfqbkPz+sRv+kKpYDKyluBUskvJREkJTos9epj1WjQROGu99Q==}
 
   '@fontsource/source-serif-4@5.3.0':
     resolution: {integrity: sha512-yQz8xmIgMzks8zQbpuca3UYtjxK798XCyQAGdDXmzBgvV7sdoK6d0YvE9F9kiYxORCEMRBgGZDZsSYcXj5KvwA==}
@@ -3234,9 +3246,13 @@ snapshots:
       '@eslint/core': 0.17.0
       levn: 0.4.1
 
+  '@fontsource-variable/jetbrains-mono@5.3.0': {}
+
   '@fontsource/ibm-plex-mono@5.3.0': {}
 
   '@fontsource/noto-sans-sc@5.3.0': {}
+
+  '@fontsource/playfair-display@5.3.0': {}
 
   '@fontsource/source-serif-4@5.3.0': {}
 
@@ -3285,12 +3301,12 @@ snapshots:
 
   '@keyv/serialize@1.1.1': {}
 
-  '@langchain/core@1.2.14(openai@7.27.0(zod@4.6.5))':
+  '@langchain/core@1.2.14(openai@7.27.0(ws@8.19.0)(zod@4.6.5))(ws@8.19.0)':
     dependencies:
       '@cfworker/json-schema': 4.1.1
       '@standard-schema/spec': 1.1.0
       js-tiktoken: 1.0.21
-      langsmith: 0.10.7(openai@7.27.0(zod@4.6.5))
+      langsmith: 0.10.7(openai@7.27.0(ws@8.19.0)(zod@4.6.5))(ws@8.19.0)
       mustache: 4.2.0
       p-queue: 6.6.2
       zod: 4.6.5
@@ -3301,11 +3317,11 @@ snapshots:
       - openai
       - ws
 
-  '@langchain/openai@1.6.2(@langchain/core@1.2.14(openai@7.27.0(zod@4.6.5)))':
+  '@langchain/openai@1.6.2(@langchain/core@1.2.14(openai@7.27.0(ws@8.19.0)(zod@4.6.5))(ws@8.19.0))(ws@8.19.0)':
     dependencies:
-      '@langchain/core': 1.2.14(openai@7.27.0(zod@4.6.5))
+      '@langchain/core': 1.2.14(openai@7.27.0(ws@8.19.0)(zod@4.6.5))(ws@8.19.0)
       js-tiktoken: 1.0.21
-      openai: 7.27.0(zod@4.6.5)
+      openai: 7.27.0(ws@8.19.0)(zod@4.6.5)
       zod: 4.6.5
     transitivePeerDependencies:
       - '@aws-sdk/credential-provider-node'
@@ -3915,10 +3931,10 @@ snapshots:
     optionalDependencies:
       typescript: 5.9.3
 
-  coze-coding-dev-sdk@0.7.32(openai@7.27.0(zod@4.6.5)):
+  coze-coding-dev-sdk@0.7.32(openai@7.27.0(ws@8.19.0)(zod@4.6.5))(ws@8.19.0):
     dependencies:
-      '@langchain/core': 1.2.14(openai@7.27.0(zod@4.6.5))
-      '@langchain/openai': 1.6.2(@langchain/core@1.2.14(openai@7.27.0(zod@4.6.5)))
+      '@langchain/core': 1.2.14(openai@7.27.0(ws@8.19.0)(zod@4.6.5))(ws@8.19.0)
+      '@langchain/openai': 1.6.2(@langchain/core@1.2.14(openai@7.27.0(ws@8.19.0)(zod@4.6.5))(ws@8.19.0))(ws@8.19.0)
       '@supabase/supabase-js': 2.95.3
       axios: 1.20.0
       pg: 8.23.1
@@ -4748,11 +4764,12 @@ snapshots:
 
   known-css-properties@0.37.0: {}
 
-  langsmith@0.10.7(openai@7.27.0(zod@4.6.5)):
+  langsmith@0.10.7(openai@7.27.0(ws@8.19.0)(zod@4.6.5))(ws@8.19.0):
     dependencies:
       p-queue: 6.6.2
     optionalDependencies:
-      openai: 7.27.0(zod@4.6.5)
+      openai: 7.27.0(ws@8.19.0)(zod@4.6.5)
+      ws: 8.19.0
 
   levn@0.4.1:
     dependencies:
@@ -4916,8 +4933,9 @@ snapshots:
     dependencies:
       which-pm-runs: 1.1.0
 
-  openai@7.27.0(zod@4.6.5):
+  openai@7.27.0(ws@8.19.0)(zod@4.6.5):
     optionalDependencies:
+      ws: 8.19.0
       zod: 4.6.5
 
   optionator@0.9.4:

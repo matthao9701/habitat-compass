@@ -9,8 +9,9 @@
 
 @layer base {
   :root {
-    --background: #f0f7fa;
-    --foreground: #0a2530;
+    /* 编辑部风：燕麦羊皮纸 + 炭墨 */
+    --background: #f9f8f6;
+    --foreground: #1f2421;
   }
 
   html {
@@ -27,8 +28,8 @@
   }
 
   ::selection {
-    background: rgba(231, 111, 81, 0.22);
-    color: #0a2530;
+    background: rgba(201, 106, 82, 0.2);
+    color: #1f2421;
   }
 
   button {
@@ -37,15 +38,15 @@
 }
 
 @layer components {
-  /* 海图波浪纹（纯几何 SVG，极淡） */
+  /* 纸张纤维纹（极淡，编辑部质感） */
   .grain::before {
     content: "";
     position: fixed;
     inset: 0;
     z-index: 60;
     pointer-events: none;
-    opacity: 0.55;
-    background-image: url("data:image/svg+xml,%3Csvg width='280' height='120' viewBox='0 0 280 120' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%230a4d68' stroke-width='1'%3E%3Cpath d='M0 30 Q 35 18 70 30 T 140 30 T 210 30 T 280 30' opacity='0.05'/%3E%3Cpath d='M0 30 Q 35 18 70 30 T 140 30 T 210 30 T 280 30' transform='translate(0 44)' opacity='0.035'/%3E%3Cpath d='M0 30 Q 35 18 70 30 T 140 30 T 210 30 T 280 30' transform='translate(0 88)' opacity='0.05'/%3E%3C/g%3E%3C/svg%3E");
+    opacity: 0.5;
+    background-image: url("data:image/svg+xml,%3Csvg width='240' height='240' viewBox='0 0 240 240' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)' opacity='0.028'/%3E%3C/svg%3E");
   }
 
   .eyebrow {
@@ -53,32 +54,33 @@
     letter-spacing: 0.22em;
   }
 
+  /* 极细单像素浅线（编辑部规范：1px #E5E7EB） */
   .hairline {
-    border-color: rgba(10, 37, 48, 0.14);
+    border-color: #e5e7eb;
   }
 
   .hairline-light {
-    border-color: rgba(251, 248, 239, 0.18);
+    border-color: rgba(249, 248, 246, 0.22);
   }
 
   .card-paper {
-    @apply bg-card border hairline rounded-[14px];
+    @apply bg-card border hairline rounded-card;
   }
 
   .btn-clay {
-    @apply inline-flex items-center justify-center gap-2 bg-clay text-paper font-medium rounded-full px-7 py-3.5
-      transition-all duration-300 ease-chart hover:bg-clay-deep active:scale-[0.98] disabled:opacity-40
+    @apply inline-flex items-center justify-center gap-2 bg-pine text-paper font-medium rounded-[6px] px-7 py-3.5
+      transition-all duration-300 ease-chart hover:bg-[#152a44] active:scale-[0.98] disabled:opacity-40
       disabled:pointer-events-none;
   }
 
   .btn-ghost {
-    @apply inline-flex items-center justify-center gap-2 bg-transparent text-ink font-medium rounded-full px-6 py-3.5
+    @apply inline-flex items-center justify-center gap-2 bg-transparent text-ink font-medium rounded-[6px] px-6 py-3.5
       border hairline transition-all duration-300 ease-chart hover:bg-ink/[0.04] active:scale-[0.98]
       disabled:opacity-30 disabled:pointer-events-none;
   }
 
   .chip-choice {
-    @apply w-full text-left px-5 py-4 rounded-[12px] border hairline bg-card text-ink
+    @apply w-full text-left px-5 py-4 rounded-[8px] border hairline bg-card text-ink
       transition-all duration-200 ease-chart cursor-pointer select-none;
   }
 
@@ -87,8 +89,8 @@
   }
 
   .chip-choice[data-selected="true"] {
-    @apply border-clay bg-clay/[0.06];
-    box-shadow: inset 3px 0 0 #e76f51;
+    @apply border-pine bg-pine/[0.05];
+    box-shadow: inset 3px 0 0 #1d3557;
   }
 }
 
