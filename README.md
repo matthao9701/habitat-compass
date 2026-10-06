@@ -36,6 +36,37 @@ coze-dev start
 
 在本地启动一个静态服务器，预览生产构建的效果。
 
+## 部署到 Cloudflare
+
+本项目为**纯前端静态应用**（无任何后端 API 调用，数据全部存于浏览器 localStorage），
+因此以 Cloudflare 静态资源模式部署，`dist/`（Vite 主应用 + 543 个 SEO 落地页）直接对外服务。
+
+根目录的 `wrangler.jsonc` 是唯一必要的部署配置：
+
+```jsonc
+{
+  "name": "habitat-compass",
+  "compatibility_date": "2025-10-01",
+  "assets": { "directory": "./dist", "not_found_handling": "single-page-application" }
+}
+```
+
+> ⚠️ **必须提交 `wrangler.jsonc`**：否则 `wrangler deploy` 会进入交互式脚手架，
+> 向 `vite.config.ts` 注入 ESM-only 的 `@cloudflare/vite-plugin`，在无 `"type":"module"`
+> 的 CommonJS 上下文中 `require` 失败并崩溃。
+
+**Cloudflare Pages → Settings → Build configuration：**
+
+| 项 | 值 |
+| --- | --- |
+| Build command | `pnpm build:cf` |
+| Build output directory | `dist` |
+| Environment variable | `SITE_URL = https://<你的域名>`（用于 canonical/sitemap/hreflang，可省略） |
+
+`pnpm build:cf` 等价于 `vite build && node scripts/generate-landing.mjs`，
+不依赖 Coze 专有的 `scripts/build.sh`。若改用 Workers `wrangler deploy` 直连，
+命令为 `pnpm build:cf && pnpm deploy:cf`（需设置 `CLOUDFLARE_API_TOKEN`）。
+
 ## 项目结构
 
 ```

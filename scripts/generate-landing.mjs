@@ -8,7 +8,8 @@ import path from 'node:path';
 const ROOT = process.cwd();
 const DIST = path.join(ROOT, 'dist');
 const DOMAIN = (() => {
-  const raw = process.env.COZE_PROJECT_DOMAIN_DEFAULT || 'https://demo.dev.coze.site';
+  // Cloudflare Pages/Workers 走 SITE_URL；Coze 走 COZE_PROJECT_DOMAIN_DEFAULT；本地兜底 demo 域名。
+  const raw = process.env.SITE_URL || process.env.CF_PAGES_URL || process.env.COZE_PROJECT_DOMAIN_DEFAULT || 'https://demo.dev.coze.site';
   const withProto = raw.startsWith('http') ? raw : `https://${raw}`;
   return withProto.replace(/\/+$/, '');
 })();

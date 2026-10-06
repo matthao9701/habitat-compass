@@ -1,0 +1,12 @@
+{
+  // ABOUTME: Cloudflare 部署配置（静态资源模式）。存在此文件后，`wrangler deploy` 不再
+  // ABOUTME: 交互式脚手架，也就不会向 vite.config.ts 注入 @cloudflare/vite-plugin（本次崩溃根因）。
+  // ABOUTME: dist/ 由构建命令（pnpm build 或 pnpm build:cf）产出：Vite 主应用 + 200 城/65 国静态落地页。
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "habitat-compass",
+  "compatibility_date": "2025-10-01",
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "single-page-application"
+  }
+}
