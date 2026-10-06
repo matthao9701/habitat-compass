@@ -254,3 +254,57 @@
 - **品牌 NomadMatch → Habitat Compass**：generate-landing（22 处 + 控制者名 + 邮箱 habitatcompass.app + og:url + JSON-LD）、index.html JSON-LD、Footer、`title.ts` en、ui 词典 en hero/footer.brand/`report.copy.header`（旧值 Compass Living 为十二轮前遗留未同步词，全库清零）、方法论页；grep -ri nomadmatch 仅剩 nomadmatch.v1 技术键与 legal 静态页披露（允许保留）。
 - **文案校对（zh/en 对照要点）**：测评时长统一「约 8 分钟」（step1/ctaHint/demo.cta2/land.cta.meta，en 同步 About 8 minutes）；标准版描述去总题数 168（改为分量列举 120+20+10+28+30）；`landing.stat.threshold` 注册门槛→上手门槛；RIASEC/IPIP 量表标签统一（'不好确定'→'不确定'、'非常感兴趣'→'非常喜欢'，**数据文件 questionsPro.ts/riasec.ts 与词典同步**——REVERSE_ZH 反查前提）；`quiz.riasec.source` O*NET 'Public Domain'→'CC BY 4.0'（与十三轮许可口径对齐）；'重网络'→'网络密集型'（analysis.ts 规则串与词典 analysis.ts 同步反查一致）；en 混中文修复（'公开统计测算'→'public statistical estimates'）；`landing.version.desc` 100-city→200-city（十轮漏网）；en 'pick the 16'→'pick from the 16'；`pf.funnel.times` hits→times；`bf.compare.pro/proOnly` Pro→Standard；`profile.empty/history/funnel` Pro→Standard 对齐；落地页：城市页成本 FAQ 删单餐价（单品口径）、'来源: '半角→'来源：'全角（`${S}` 常量含冒号重构 10 处拼接）、GPI null 时 '（IEP ）'空串 bug 条件化、en '(no city-level public estimate yet)' 重复 yet 修复。
 - **合规复查（零命中维持 + 收尾）**：Ookla 中性化——`snapshot-gpispeed.mjs` NET_SOURCE/注释 4 处 → '公开网速榜单'，重跑幂等回填 countries.json（数值不变仅 sources），`verify-country-v3` 断言 'Speedtest'→'公开网速榜单' 同步；管道 EF EPI 注释/console 清零（fetch-efepi.mjs/assemble.mjs）；**删除 `public/nomadmatch-src.zip`**（十三轮误留的 pre-深化源码快照，vite build 每次复制进 dist 导致 numbeo/旧品牌残留——dist/public 双删后零命中）；第三方脚本外链/外部图片/Google Fonts 外链 dist 全零；mealUSD 组件零消费。
+
+## 判例索引（工程经验教训，蒸馏自 Boss 的判例库 172 条）
+
+> 来源：Boss 用 workbuddy 沉淀的判例库（J-000~J-171，覆盖 2026-09-28~10-04）。以下仅收录在本沙箱环境可验证适用、且与本仓库开发直接相关的条目。**判例是假设，不是操作手册**——每条使用前先确认在本环境成立（J-029/J-013 的教训：判例自身也会过期或错误）。完整原文见判例库全库文档（J-000~J-171）。
+
+### 验证与断言（本项目 verify-* 脚本体系的直接养料）
+
+- **J-019/J-110**：构建通过 ≠ 能跑，类型检查全绿 ≠ 页面能跑——前端必须验到 headless Chrome 控制台无错（本仓库可用 chromium --headless --dump-dom 或 playwright 实测）。
+- **J-120**：断言全绿 ≠ 画面画对了——涉及视觉的改动必须实拍截图人眼看一次。
+- **J-031**：判定链必须先用「必失败样本」自检——新增 verify 断言时先故意破坏一次，确认它能红。
+- **J-129/J-130**：`check(name, true, '')` 是空断言；测试参数可能把断言绕过去——每个断言先问「它能不能区分好坏」（J-036）。
+- **J-150**：断言覆盖范围本身必须被断言——遍历清单式测试要加一条「清单条目数 == 期望值」，否则删页面 = 删清单项 = 全绿。
+- **J-147**：「验证全绿」只证明系统内部自洽，不证明与事实源一致——断言基准若是快照，存在「两边一起旧」的窗口。
+- **J-034/J-035**：分页/交互类断言勿用「行数变化」这类弱信号，要断言具体元素存在性；CLS 的 hadRecentInput 会吃掉点击引起的位移。
+- **J-032**：headless 下性能与样式类断言最容易假绿，要加反证条件。
+- **J-040**：重构后端点没报错 ≠ 产物没变——必须比对中间产物（dist 产物 diff）。
+
+### 沙箱与环境（本云沙箱实测吻合）
+
+- **J-038**：并行度按 cgroup 配额算，不按 nproc/free——本沙箱实测 cpu.max=4 核、memory.max=8 GiB、无 swap（已实测与判例一致）。
+- **J-081**：服务监听回环地址时端口转发必然失效——排查前先看 `ss -ltnp` 的监听地址；对外预览必须绑 0.0.0.0。
+- **J-115**：chromium 的 SingletonLock 跨沙箱残留——CDP 起不来先删 ~/.cache/ms-playwright 或 profile 下的锁文件。
+- **J-066**：`/dev/shm` 仅 64 MiB——Chrome 必须带 --disable-dev-shm-usage。
+- **J-092/J-106**：容器是内网环境，依赖外部直连的工具有时断时续——「000 + 5s」是网络拦截不是服务挂了，先重试再换路。
+- **J-050**：GitHub 直连时断时续，克隆/推送失败先重试，不要急着换路。
+- **J-116**：`set -e` 下调用「返非 0 表示无需处理」的函数必须 `|| true`（本仓库 scripts/*.sh 均在 set -Eeuo pipefail 下）。
+- **J-099/J-098**：长输出 CLI 经管道可能抛 EIO 被误判为崩溃；zsh 无 /dev/tcp（本沙箱是 bash，但脚本要考虑可移植）。
+
+### 流程与协作
+
+- **J-002**：并行子代理写同一文件会互相覆盖且静默丢失——并行探索类任务各自指定独立输出路径，或直接回传不落盘。
+- **J-010**：给用户操作指引前必须实际验证（WebFetch 读内容，不只看 HTTP 200）；否定性结论要用最高标准——「我没找到」≠「不存在」。
+- **J-011**：换方案前先验证新旧卡点是否同一个，否则换 = 白干 + 假进展。
+- **J-012**：官方文档说「不支持」≠ 没有通路——底层组件（CLI --help、DLL、配置）往往暴露文档未写的能力。
+- **J-008**：一个 URL 404 不能证明整条通道断了——先找官方清单文件读真实 URL，别自己拼路径。
+- **J-045/J-114**：判据的兜底逻辑会把「全体失败」伪装成「通过」；上游脏值会短路 `a or b()` 兜底——兜底前先校验值本身有效。
+- **J-159**：凭记忆给政策/事实类状态下结论必错——联网事实必须联网核实。
+- **J-095**：删除前先归档并校验——归档是后悔药。
+- **J-006**：交付 HTML 报告不用 emoji（无字体环境渲染为豆腐块），箭头用 ->，交付前实际渲染一次。
+
+### 数据与 i18n（本仓库特有风险的对应警戒）
+
+- **J-097**：改结构化单行 JSON 用解析器，不用文本替换（countries.json/cities/*.json 均为单行大 JSON）。
+- **J-118/J-152**：参数漂移是「面」不是「点」——改一处要扫全库；同一个数字在两处各写各的 = 迟早漂移（本仓库引擎权重/词典键/i18n 反查是高危区：改 REVERSE_ZH 依赖的中文值必须同步数据文件与词典）。
+- **J-142/J-143**：0-based 拼字符串会出「0月」这类界面 bug；断言「包含某字符」抓不到「值本身错」。
+- **J-160**：同一个数字在三个来源间三个值——数据管道多源对账时先定义口径（J-113/J-063：报数前先定义口径，两口径读数不可跨比）。
+
+### 元判例
+
+- **J-000**：每次开工先读本索引，判断哪些条目与本次任务相关。
+- **J-029/J-013 复核**：判例自身也会过期或出错，否定性结论必须标注排查范围；读了判例就照做、不再实测 = 把错误永久固化。
+- **J-145**：阶段未到时，画面打磨是过度投入——优先级错配比做错更贵。
+- **J-148**：P0 的验收尺度 ≠ demo 的试玩尺度——先确认本次交付的性质再定验收强度。
+- **J-084**：调研/报告类产出：区分「实测数据」与「估计/攻略」并分别标注来源。

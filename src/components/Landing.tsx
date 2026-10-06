@@ -1,14 +1,15 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import CompassMark from './CompassMark';
-import RouteChart from './RouteChart';
 import VersionPicker from './VersionPicker';
+import { AtlasCard, CityDrawer } from './atlas/AtlasCard';
+import SentenceFilter, { DEFAULT_FILTER, filterCities, type FilterState } from './atlas/SentenceFilter';
 import { cities } from '../data';
 import { DEMO_PROFILES } from '../data/demoProfiles';
-import { REGION_LABEL, REGION_ORDER, subregionLabel } from '../data/regions';
-import { formatCost } from '../lib/engine';
+import { REGION_ORDER } from '../data/regions';
+import { formatMoney } from '../lib/format';
+import type { City } from '../data/types';
 import { useI18n, translate, getCurrentLang } from '../i18n';
-import { cityName, formatMoney } from '../lib/format';
 
 interface LandingProps {
   onStart: (version?: 'lite' | 'pro') => void;
@@ -45,13 +46,13 @@ function steps(): { no: string; title: string; desc: string }[] {
 
 export default function Landing({ onStart, onDemo }: LandingProps) {
   const { t } = useI18n();
-  const marqueeList = [...cities, ...cities];
   const [atlasRegion, setAtlasRegion] = useState<string>('all');
   /** 第十一轮入口收纳：主入口统一弹出版本选择 */
   const [pickerOpen, setPickerOpen] = useState(false);
-  const atlasCities =
-    atlasRegion === 'all' ? cities : cities.filter((c) => c.region === atlasRegion);
-  const regionCount = (r: string) => cities.filter((c) => c.region === r).length;
+  /** 编辑部风改版：首屏句子过滤器 + 画册卡片 + 速览抽屉 */
+  const [filter, setFilter] = useState<FilterState>(DEFAULT_FILTER);
+  const [drawerCity, setDrawerCity] = useState<City | null>(null);
+  const filteredCities = filterCities(cities, filter);
 
   return (
     <div className="grain min-h-screen bg-paper text-ink">
@@ -79,105 +80,102 @@ export default function Landing({ onStart, onDemo }: LandingProps) {
         </button>
       </header>
 
-      {/* Hero */}
-      <section className="mx-auto max-w-almanac px-6 pb-16 pt-8 md:px-10 md:pb-24 md:pt-14">
-        <div className="grid items-center gap-12 lg:grid-cols-[1.05fr_0.95fr]">
-          <div>
-            <motion.p
-              variants={fadeUp}
-              initial="hidden"
-              animate="visible"
-              custom={0}
-              className="eyebrow mb-6"
-            >
-              {t('landing.hero.vol')}
-            </motion.p>
-            <motion.h1
-              variants={fadeUp}
-              initial="hidden"
-              animate="visible"
-              custom={1}
-              className="font-display text-[40px] font-black leading-[1.18] tracking-tight md:text-[60px]"
-            >
-              {t('landing.hero.l1')}
-              <br />
-              {t('landing.hero.l2a')}<span className="text-clay">{t('landing.hero.lead')}</span>{t('landing.hero.l2b')}
-              <br />
-              {t('landing.hero.l3')}
-            </motion.h1>
-            <motion.p
-              variants={fadeUp}
-              initial="hidden"
-              animate="visible"
-              custom={2}
-              className="mt-4 font-serif-accent text-[14px] lowercase tracking-[0.32em] text-ink-soft"
-            >
-              habitat compass
-            </motion.p>
-            <motion.p
-              variants={fadeUp}
-              initial="hidden"
-              animate="visible"
-              custom={2}
-              className="mt-6 max-w-md text-[15.5px] leading-[1.9] text-ink-soft"
-            >
-              {t('landing.hero.desc1')}
-              {t('landing.hero.desc2')}
-            </motion.p>
-            <motion.div
-              variants={fadeUp}
-              initial="hidden"
-              animate="visible"
-              custom={3}
-              className="mt-9 flex flex-wrap items-center gap-4"
-            >
-              <button type="button" onClick={() => setPickerOpen(true)} className="btn-clay">
-                {t('landing.hero.cta')}
-                <span className="font-mono text-xs opacity-80">→</span>
-              </button>
-              {/* 第十一轮：报告样例次入口（与演示档案同数据源同渲染） */}
-              <button
-                type="button"
-                onClick={() => onDemo(DEMO_PROFILES[0]?.id ?? '')}
-                className="btn-ghost !text-[13px]"
-              >
-                {t('landing.hero.sampleCta')}
-              </button>
-              <p className="font-mono text-[11px] text-ink-soft">
-                {t('landing.hero.ctaHint')}
-              </p>
-            </motion.div>
-          </div>
+      {/* Hero —— 编辑部风：衬线大标题 + 留白 + 一句话过滤器 */}
+      <section className="mx-auto max-w-almanac px-6 pb-10 pt-8 md:px-10 md:pb-14 md:pt-14">
+        <motion.p
+          variants={fadeUp}
+          initial="hidden"
+          animate="visible"
+          custom={0}
+          className="eyebrow mb-6"
+        >
+          {t('landing.hero.vol')}
+        </motion.p>
+        <motion.h1
+          variants={fadeUp}
+          initial="hidden"
+          animate="visible"
+          custom={1}
+          className="max-w-3xl font-display text-[42px] font-medium leading-[1.14] tracking-tight md:text-[64px]"
+        >
+          {t('landing.hero.l1')}
+          <br />
+          {t('landing.hero.l2a')}<span className="italic text-clay">{t('landing.hero.lead')}</span>{t('landing.hero.l2b')}
+          <br />
+          {t('landing.hero.l3')}
+        </motion.h1>
+        <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-3">
+          <p className="font-data text-[11px] uppercase tracking-[0.28em] text-ink-soft">
+            habitat compass — field almanac for the deliberate mover
+          </p>
+        </div>
+        <motion.p
+          variants={fadeUp}
+          initial="hidden"
+          animate="visible"
+          custom={2}
+          className="mt-5 max-w-xl text-[15px] leading-[1.9] text-ink-soft"
+        >
+          {t('landing.hero.desc1')}
+          {t('landing.hero.desc2')}
+        </motion.p>
 
-          {/* 海图卡片 */}
-          <motion.div
-            initial={{ opacity: 0, y: 26 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
-            className="relative overflow-hidden rounded-[12px] border hairline bg-ink p-6 md:p-8"
+        {/* 首屏轻量过滤器：一句话自然填空 + 微调滑块 */}
+        <motion.div
+          variants={fadeUp}
+          initial="hidden"
+          animate="visible"
+          custom={3}
+          className="mt-9"
+        >
+          <SentenceFilter
+            value={filter}
+            onChange={setFilter}
+            matchedCount={filteredCities.length}
+            totalCount={cities.length}
+          />
+        </motion.div>
+
+        <motion.div
+          variants={fadeUp}
+          initial="hidden"
+          animate="visible"
+          custom={4}
+          className="mt-7 flex flex-wrap items-center gap-4"
+        >
+          <button type="button" onClick={() => setPickerOpen(true)} className="btn-clay">
+            {t('landing.hero.cta')}
+            <span className="font-data text-xs opacity-80">→</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => onDemo(DEMO_PROFILES[0]?.id ?? '')}
+            className="btn-ghost !text-[13px]"
           >
-            <div className="mb-4 flex items-center justify-between text-paper">
-              <p className="font-mono text-[10px] uppercase tracking-eyebrow text-paper/60">
-                chart 100 · nomad routes
+            {t('landing.hero.sampleCta')}
+          </button>
+          <p className="font-data text-[11px] text-ink-soft">
+            {t('landing.hero.ctaHint')}
+          </p>
+        </motion.div>
+      </section>
+
+      {/* 刊头统计条：极简单行，等宽数字 */}
+      <section className="border-y border-line">
+        <div className="mx-auto grid max-w-almanac grid-cols-2 divide-x divide-line px-0 md:grid-cols-4">
+          {[
+            ['200', t('landing.stat.cities')],
+            ['6', t('landing.stat.continents')],
+            ['65', t('landing.stat.dataFiles')],
+            ['0', t('landing.stat.threshold')],
+          ].map(([v, l]) => (
+            <div key={l} className="px-6 py-5 md:px-10">
+              <p className="font-data text-[26px] font-medium leading-none text-ink">{v}</p>
+              <p className="mt-1.5 font-data text-[9.5px] uppercase tracking-[0.18em] text-ink-soft">
+                {l}
               </p>
-              <CompassMark size={26} className="text-paper/70" />
             </div>
-            <RouteChart cities={cities} compact className="text-paper/70 w-full" />
-            <div className="mt-4 grid grid-cols-3 gap-px overflow-hidden rounded-[6px] border border-paper/15 text-center">
-              {[
-                ['200', t('landing.stat.cities')],
-                ['6', t('landing.stat.continents')],
-                ['0', t('landing.stat.threshold')],
-              ].map(([v, l]) => (
-                <div key={l} className="bg-paper/[0.04] px-2 py-3">
-                  <p className="font-mono text-lg text-paper">{v}</p>
-                  <p className="font-mono text-[9px] uppercase tracking-eyebrow text-paper/50">
-                    {l}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </motion.div>
+          ))}
         </div>
       </section>
 
@@ -284,133 +282,97 @@ export default function Landing({ onStart, onDemo }: LandingProps) {
         </div>
       </section>
 
-      {/* 城市图集：按大洲浏览 */}
-      <section className="border-y hairline bg-card/50">
+      {/* 城市图集：画册式卡片 + 速览抽屉（编辑部风核心交互） */}
+      <section className="border-y border-line bg-paper-deep/40">
         <div className="mx-auto max-w-almanac px-6 py-16 md:px-10 md:py-20">
           <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
             <div>
-              <p className="eyebrow mb-3">03 / the atlas</p>
-              <h2 className="font-display text-3xl font-bold tracking-tight md:text-4xl">{t('landing.atlas.title')}</h2>
+              <p className="eyebrow mb-3">{t('landing.atlas.eyebrow')}</p>
+              <h2 className="font-display text-3xl font-medium tracking-tight md:text-4xl">
+                {t('landing.atlas.heading')}
+              </h2>
             </div>
             <p className="hidden max-w-xs text-sm leading-relaxed text-ink-soft md:block">
-              {t('landing.atlas.desc')}
+              {t('landing.atlas.sideNote')}
             </p>
           </div>
 
-          {/* 第十二轮：SEO/GEO 资料库入口（每城/每国独立资料页，可被搜索引擎与 AI 收录） */}
-          <div className="mb-7">
-            <a
-              href="/cities/"
-              className="inline-flex items-center gap-1.5 text-sm font-semibold text-pine underline decoration-pine/30 decoration-2 underline-offset-4 hover:decoration-pine"
-            >
-              {t('landing.library.link')} <span aria-hidden>→</span>
-            </a>
-          </div>
-
+          {/* 大洲筛选 */}
           <div className="mb-7 flex flex-wrap gap-2">
             <button
               type="button"
               onClick={() => setAtlasRegion('all')}
-              className={`rounded-full border px-4 py-1.5 font-mono text-[11px] transition-colors ${
+              className={`rounded-[5px] border px-3.5 py-1.5 font-data text-[11px] transition-colors ${
                 atlasRegion === 'all'
-                  ? 'border-clay bg-clay/10 text-clay'
-                  : 'border-ink/15 bg-card text-ink-soft hover:border-clay/50'
+                  ? 'border-pine bg-pine text-paper'
+                  : 'border-line bg-card text-ink-soft hover:border-pine/50'
               }`}
             >
-              {t('landing.atlas.all')} · {cities.length}
+              {t('landing.atlas.all')} · {filteredCities.length}
             </button>
-            {REGION_ORDER.map((r) => (
-              <button
-                key={r}
-                type="button"
-                onClick={() => setAtlasRegion(r)}
-                className={`rounded-full border px-4 py-1.5 font-mono text-[11px] transition-colors ${
-                  atlasRegion === r
-                    ? 'border-clay bg-clay/10 text-clay'
-                    : 'border-ink/15 bg-card text-ink-soft hover:border-clay/50'
-                }`}
-              >
-                {REGION_LABEL[r]} · {regionCount(r)}
-              </button>
-            ))}
+            {REGION_ORDER.map((r) => {
+              const count = filteredCities.filter((c) => c.region === r).length;
+              if (count === 0) return null;
+              return (
+                <button
+                  key={r}
+                  type="button"
+                  onClick={() => setAtlasRegion(r)}
+                  className={`rounded-[5px] border px-3.5 py-1.5 font-data text-[11px] transition-colors ${
+                    atlasRegion === r
+                      ? 'border-pine bg-pine text-paper'
+                      : 'border-line bg-card text-ink-soft hover:border-pine/50'
+                  }`}
+                >
+                  {t(`region.${r}`)} · {count}
+                </button>
+              );
+            })}
           </div>
 
-          {atlasRegion === 'all' ? (
-            <div className="grid gap-6 md:grid-cols-2">
-              {REGION_ORDER.map((r) => {
-                const pool = cities.filter((c) => c.region === r);
-                return (
-                  <div key={r} className="rounded-[10px] border hairline bg-card p-5">
-                    <div className="mb-3 flex items-baseline justify-between">
-                      <h3 className="font-heading text-base font-bold">{REGION_LABEL[r]}</h3>
-                      <span className="font-mono text-[10px] text-ink-soft">{t('landing.atlas.count', { count: pool.length })}</span>
-                    </div>
-                    <div className="flex flex-wrap gap-1.5">
-                      {pool.map((c) => (
-                        <button
-                          key={c.id}
-                          type="button"
-                          onClick={() => setAtlasRegion(r)}
-                          className="rounded-[5px] border border-ink/10 bg-paper px-2 py-1 text-[11.5px] text-ink transition-colors hover:border-clay/60 hover:text-clay"
-                        >
-                          {cityName(c)}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          ) : (
-            <div className="overflow-hidden rounded-[10px] border hairline bg-card">
-              {atlasCities.map((c, i) => (
-                <div
-                  key={c.id}
-                  className="flex items-baseline justify-between gap-4 border-b hairline px-5 py-3 last:border-b-0"
-                >
-                  <div className="flex min-w-0 items-baseline gap-3">
-                    <span className="w-6 shrink-0 font-mono text-[10px] text-ink-soft/70">
-                      {String(i + 1).padStart(2, '0')}
-                    </span>
-                    <span className="text-[13.5px] font-medium text-ink">{cityName(c)}</span>
-                    <span className="shrink-0 font-mono text-[10px] text-ink-soft">
-                      {c.countryZh} · {subregionLabel(c.subregion)}
-                    </span>
-                  </div>
-                  <div className="hidden shrink-0 items-baseline gap-4 sm:flex">
-                    <span className="font-mono text-[10.5px] text-ink-soft">
-                      {c.monthlyCostUSD != null ? t('landing.cost.perMonth', { cost: formatMoney(c.monthlyCostUSD) }) : t('landing.cost.na')}
-                    </span>
-                    <span className="max-w-[220px] truncate text-[11px] text-ink-soft">
-                      {c.climateDetail?.summary ?? t('landing.cost.climateNA')}
-                    </span>
-                  </div>
+          {/* 画册网格 */}
+          {(() => {
+            const shown = atlasRegion === 'all'
+              ? filteredCities
+              : filteredCities.filter((c) => c.region === atlasRegion);
+            if (shown.length === 0) {
+              return (
+                <div className="rounded-card border border-dashed border-line bg-card px-6 py-14 text-center">
+                  <p className="font-display text-xl text-ink">{t('landing.atlas.emptyTitle')}</p>
+                  <p className="mt-2 text-sm text-ink-soft">{t('landing.atlas.emptyHint')}</p>
+                  <button
+                    type="button"
+                    onClick={() => setFilter(DEFAULT_FILTER)}
+                    className="mt-5 font-data text-[11px] uppercase tracking-[0.14em] text-pine underline decoration-pine/30 underline-offset-4 hover:decoration-pine"
+                  >
+                    {t('landing.atlas.resetFilter')}
+                  </button>
                 </div>
-              ))}
-            </div>
-          )}
-          <p className="mt-4 font-mono text-[10px] text-ink-soft">
+              );
+            }
+            return (
+              <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                {shown.slice(0, 24).map((c, i) => (
+                  <AtlasCard
+                    key={c.id}
+                    city={c}
+                    index={i}
+                    onOpen={setDrawerCity}
+                    formatMoney={(usd) => formatMoney(usd)}
+                  />
+                ))}
+              </div>
+            );
+          })()}
+
+          <p className="mt-5 font-data text-[10px] text-ink-soft">
             {t('landing.atlas.footnote')}
           </p>
         </div>
       </section>
 
-      {/* 深色城市带 */}
-      <section className="overflow-hidden border-y hairline bg-ink py-10">
-        <p className="mx-auto mb-7 max-w-almanac px-6 font-mono text-[10px] uppercase tracking-eyebrow text-paper/50 md:px-10">
-          200 cities · 6 continents — from lisbon to nadi
-        </p>
-        <div className="relative flex w-max animate-marquee gap-10 whitespace-nowrap">
-          {marqueeList.map((c, i) => (
-            <div key={`${c.id}-${i}`} className="flex items-baseline gap-3 text-paper/80">
-              <span className="font-medium text-lg">{cityName(c)}</span>
-              <span className="font-mono text-[10px] uppercase tracking-wide text-paper/40">
-                {c.nameEn} · {formatCost(c)}
-              </span>
-            </div>
-          ))}
-        </div>
-      </section>
+      {/* 速览抽屉（不跳页，右侧滑出） */}
+      <CityDrawer city={drawerCity} onClose={() => setDrawerCity(null)} formatMoney={formatMoney} />
 
       {/* 结尾 CTA：版本选择 */}
       <section className="mx-auto max-w-almanac px-6 py-20 text-center md:px-10 md:py-28">

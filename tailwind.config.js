@@ -5,38 +5,74 @@ export default {
   theme: {
     extend: {
       colors: {
-        // 第十一轮「天空蓝白」换肤：token 名不变只换值（组件零 diff）
-        paper: '#F0F9FF',
-        'paper-deep': '#E0F2FE',
+        // 编辑部风改版：燕麦羊皮纸底 + 炭墨 + 深海航海蓝 / 暖赤陶
+        paper: '#F9F8F6',
+        'paper-deep': '#F1EFEA',
         card: '#FFFFFF',
         ink: {
-          DEFAULT: '#082F49',
-          soft: '#4E7A96',
+          DEFAULT: '#1F2421',
+          soft: '#6B6F6C',
         },
-        pine: '#0369A1', // 主操作深天蓝（白字对比 ≥5:1）
+        pine: '#1D3557', // 主操作 · 深海航海蓝（白字对比 ≥10:1）
         clay: {
-          DEFAULT: '#EE6C4D',
-          deep: '#D14E2F',
+          DEFAULT: '#C96A52', // 暖赤陶强调
+          deep: '#A94F38',
         },
-        ochre: '#D9A441',
-        teal: '#17A2C6', // 亮天蓝 accent
-        moss: '#2E8B74',
-        sea: '#57B4E0',
+        line: '#E5E7EB', // 极细浅线边框
+        ochre: '#B98A2F',
+        teal: '#3E7C8F',
+        moss: '#5F7A5A',
+        sea: '#7FA8B8',
       },
       fontFamily: {
-        // 字体层级 token：各组件按 token 引用，不散落硬编码
-        display: ['"Noto Sans SC"', 'system-ui', 'sans-serif'], // 页面大标题/Hero（配 font-black/font-bold + tracking-tight）
-        heading: ['"Noto Sans SC"', 'system-ui', 'sans-serif'], // 区块标题（font-bold）
-        body: ['"Noto Sans SC"', 'system-ui', 'sans-serif'], // 正文（font-normal，行高放宽）
-        data: ['"IBM Plex Mono"', 'ui-monospace', 'SFMono-Regular', 'monospace'], // 数字/数据（tabular 等宽）
+        // 编辑部风：衬线大标题（Playfair Display，CJK 回退到系统衬线）+ JetBrains Mono 数据
+        // 性能：西文用自托管 latin 子集，中文一律走系统字体（PingFang SC / 思源黑体 …），
+        // 避免打包数百个 CJK 切片字体文件拖慢移动端首屏。
+        display: [
+          '"Playfair Display"',
+          '"Source Serif 4"',
+          'Georgia',
+          '"Songti SC"',
+          '"Noto Serif CJK SC"',
+          'serif',
+        ], // 大标题/城市名（旅程探索感）
+        heading: [
+          '"Playfair Display"',
+          '"Source Serif 4"',
+          'Georgia',
+          '"Songti SC"',
+          '"Noto Serif CJK SC"',
+          'serif',
+        ], // 区块标题
+        body: [
+          '-apple-system',
+          'BlinkMacSystemFont',
+          '"PingFang SC"',
+          '"Hiragino Sans GB"',
+          '"Microsoft YaHei"',
+          '"Noto Sans CJK SC"',
+          'system-ui',
+          'sans-serif',
+        ], // 正文（font-normal，行高放宽）
+        data: ['"JetBrains Mono Variable"', '"IBM Plex Mono"', 'ui-monospace', 'monospace'], // 指标/坐标（等宽）
         'serif-accent': ['"Source Serif 4"', 'Georgia', 'serif'], // 英文副标/引用衬线点缀
         // 兼容映射
-        sans: ['"Noto Sans SC"', 'system-ui', 'sans-serif'],
-        serif: ['"Source Serif 4"', '"Noto Sans SC"', 'Georgia', 'serif'],
-        mono: ['"IBM Plex Mono"', 'ui-monospace', 'SFMono-Regular', 'monospace'],
+        sans: [
+          '-apple-system',
+          'BlinkMacSystemFont',
+          '"PingFang SC"',
+          '"Microsoft YaHei"',
+          '"Noto Sans CJK SC"',
+          'system-ui',
+          'sans-serif',
+        ],
+        serif: ['"Playfair Display"', '"Source Serif 4"', '"Noto Sans SC"', 'Georgia', 'serif'],
+        mono: ['"JetBrains Mono Variable"', '"IBM Plex Mono"', 'ui-monospace', 'monospace'],
       },
       borderRadius: {
         chart: '4px',
+        card: '8px',
+        drawer: '6px',
       },
       letterSpacing: {
         eyebrow: '0.22em',
