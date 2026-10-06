@@ -2,9 +2,12 @@
  * 极简数据终端风六维罗盘雷达图（SVG，细线 1px）。
  * 六维：生活成本 / 税优 / 网速基建 / 社群活力 / 气候 / 签证门槛。
  * 值域 0-100；null 维不编造，绘图时以 0 长度 + 空心点表示并标注「—」。
+ * 维度标签本地化：CompassDatum.label 存 i18n 键，渲染时按当前语言输出。
  */
+import { useI18n } from '../../i18n';
 
 export interface CompassDatum {
+  /** i18n 键（如 atlas.radar.cost），渲染时按语言翻译 */
   label: string;
   /** 0-100；null 表示数据缺失（不编造） */
   value: number | null;
@@ -27,10 +30,17 @@ export default function CompassRadar({
   fill = 'rgba(29, 53, 87, 0.08)',
   className,
 }: CompassRadarProps) {
+  const { t } = useI18n();
   const n = data.length;
   const cx = size / 2;
   const cy = size / 2;
   const r = size / 2 - 14; // 留出标签空间
+  // 标签可能比绘图区更宽（英文 Social/Climate 等），viewBox 向外扩边距避免裁切；
+  // SVG 占位仍保持 size×size（缩放显示），不影响卡片布局。
+  const padX = Math.round(size * 0.22);
+  const padY = Math.round(size * 0.09);
+  const vbW = size + padX * 2;
+  const vbH = size + padY * 2;
   const angleStep = (Math.PI * 2) / n;
   // 顶部起始，顺时针
   const angleAt = (i: number): number => -Math.PI / 2 + i * angleStep;
@@ -44,12 +54,12 @@ export default function CompassRadar({
 
   return (
     <svg
-      viewBox={`0 0 ${size} ${size}`}
+      viewBox={`${-padX} ${-padY} ${vbW} ${vbH}`}
       width={size}
       height={size}
       className={className}
       role="img"
-      aria-label="六维罗盘契合度雷达图"
+      aria-label={t('atlas.radar.aria')}
     >
       {/* 网格：3 层同心多边形 + 轴线，全部细线 */}
       {[1 / 3, 2 / 3, 1].map((f) => (
@@ -96,7 +106,7 @@ export default function CompassRadar({
             fill={d.value == null ? '#9CA3AF' : '#6B6F6C'}
             fontFamily="'JetBrains Mono Variable', monospace"
           >
-            {d.value == null ? `${d.label} —` : d.label}
+            {d.value == null ? `${t(d.label)} —` : t(d.label)}
           </text>
         );
       })}
@@ -138,11 +148,11 @@ export function buildCompassData(
   const visa = city.visaScore ?? (country?.visaPassport ? (country.visaPassport.digitalNomad === 'friendly' ? 85 : null) : null);
 
   return [
-    { label: '成本', value: cost },
-    { label: '税优', value: tax },
-    { label: '网速', value: net },
-    { label: '社群', value: community },
-    { label: '气候', value: climate },
-    { label: '签证', value: visa },
+    { label: 'atlas.radar.cost', value: cost },
+    { label: 'atlas.radar.tax', value: tax },
+    { label: 'atlas.radar.speed', value: net },
+    { label: 'atlas.radar.community', value: community },
+    { label: 'atlas.radar.climate', value: climate },
+    { label: 'atlas.radar.visa', value: visa },
   ];
 }

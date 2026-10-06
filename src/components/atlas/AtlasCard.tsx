@@ -7,6 +7,8 @@ import { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import CompassRadar, { buildCompassData } from './CompassRadar';
 import { getCountry } from '../../data/countries';
+import { cityName, countryName } from '../../lib/format';
+import { useI18n } from '../../i18n';
 import type { City } from '../../data/types';
 
 /** 程序化「生活剪影」：按城市 id 生成确定性的地平线 + 日轮 + 经纬网格 */
@@ -67,6 +69,7 @@ export interface AtlasCardProps {
 }
 
 export function AtlasCard({ city, index, onOpen, formatMoney }: AtlasCardProps) {
+  const { t } = useI18n();
   const country = getCountry(city.countryCode);
   const compass = buildCompassData(
     { ...city, internetMbps: city.internetMbps ?? country?.internetMbpsFixed ?? null },
@@ -87,11 +90,11 @@ export function AtlasCard({ city, index, onOpen, formatMoney }: AtlasCardProps) 
       <div className="relative h-[130px] overflow-hidden border-b border-line">
         <CityScape cityId={city.id} hue="#1D3557" />
         <div className="absolute right-2.5 top-2.5 flex max-w-[75%] flex-wrap justify-end gap-1.5">
-          {city.monthlyCostUSD != null && <Pill>{formatMoney(city.monthlyCostUSD)}/月</Pill>}
+          {city.monthlyCostUSD != null && <Pill>{formatMoney(city.monthlyCostUSD)}{t('atlas.card.perMonth')}</Pill>}
           {city.climateDetail && <Pill>{Math.round(city.climateDetail.avgTempC)}°C</Pill>}
-          {country?.visaPassport?.entry === 'visaFree' && <Pill>免签</Pill>}
-          {country?.visaPassport?.entry === 'visaOnArrival' && <Pill>落地签</Pill>}
-          {country?.visaPassport?.entry === 'eVisa' && <Pill>e签</Pill>}
+          {country?.visaPassport?.entry === 'visaFree' && <Pill>{t('atlas.card.visaFree')}</Pill>}
+          {country?.visaPassport?.entry === 'visaOnArrival' && <Pill>{t('atlas.card.visaOnArrival')}</Pill>}
+          {country?.visaPassport?.entry === 'eVisa' && <Pill>{t('atlas.card.eVisa')}</Pill>}
         </div>
         {/* 期号式角标 */}
         <span className="absolute left-3 top-2.5 font-data text-[10px] tracking-[0.18em] text-ink/45">
@@ -103,32 +106,32 @@ export function AtlasCard({ city, index, onOpen, formatMoney }: AtlasCardProps) 
       <div className="flex flex-1 flex-col p-4">
         <div className="flex items-baseline justify-between gap-2">
           <h3 className="font-display text-[19px] font-semibold tracking-wide text-ink transition-colors group-hover:text-pine">
-            {city.nameZh}
+            {cityName(city)}
           </h3>
           <span className="shrink-0 font-data text-[10px] uppercase tracking-[0.14em] text-ink-soft">
             {city.nameEn}
           </span>
         </div>
         <p className="mt-0.5 font-data text-[10.5px] text-ink-soft">
-          {city.countryZh} · {city.climateDetail?.summary ?? '气候待核实'}
+          {countryName(country)} · {city.climateDetail?.summary ?? t('atlas.card.climatePending')}
         </p>
 
         <div className="mt-3 flex items-center justify-between gap-2 border-t border-line pt-3">
           <CompassRadar data={compass} size={116} />
           <div className="flex flex-col items-end gap-1.5 text-right">
             <span className="font-data text-[10px] leading-tight text-ink-soft">
-              {city.safety != null ? `安全 ${city.safety}` : '安全 —'}
+              {city.safety != null ? t('atlas.card.safety', { v: city.safety }) : t('atlas.card.safetyNA')}
             </span>
             <span className="font-data text-[10px] leading-tight text-ink-soft">
-              {country?.taxTopRatePct != null ? `个税 ≤${country.taxTopRatePct}%` : '税 —'}
+              {country?.taxTopRatePct != null ? t('atlas.card.tax', { v: country.taxTopRatePct }) : t('atlas.card.taxNA')}
             </span>
             <span className="font-data text-[10px] leading-tight text-ink-soft">
               {(city.internetMbps ?? country?.internetMbpsFixed) != null
                 ? `${city.internetMbps ?? country?.internetMbpsFixed} Mbps`
-                : '网速 —'}
+                : t('atlas.card.netNA')}
             </span>
             <span className="mt-1 font-data text-[9.5px] uppercase tracking-[0.16em] text-clay opacity-0 transition-opacity group-hover:opacity-100">
-              展开速览 →
+              {t('atlas.card.expand')}
             </span>
           </div>
         </div>
@@ -144,20 +147,21 @@ interface DrawerProps {
   formatMoney: (usd: number) => string;
 }
 
-const VISA_LABEL: Record<string, string> = {
-  visaFree: '免签',
-  visaOnArrival: '落地签',
-  eVisa: '电子签',
-  visaRequired: '需签证',
+const VISA_LABEL_KEYS: Record<string, string> = {
+  visaFree: 'atlas.visa.visaFree',
+  visaOnArrival: 'atlas.visa.visaOnArrival',
+  eVisa: 'atlas.visa.eVisa',
+  visaRequired: 'atlas.visa.visaRequired',
 };
 
-const DN_LABEL: Record<string, string> = {
-  friendly: '友好',
-  restricted: '受限',
-  unknown: '待核实',
+const DN_LABEL_KEYS: Record<string, string> = {
+  friendly: 'atlas.dn.friendly',
+  restricted: 'atlas.dn.restricted',
+  unknown: 'profile.visa.pending',
 };
 
 export function CityDrawer({ city, onClose, formatMoney }: DrawerProps) {
+  const { t } = useI18n();
   // Esc 关闭 + 打开时锁滚动
   useEffect(() => {
     if (!city) return;
@@ -174,6 +178,7 @@ export function CityDrawer({ city, onClose, formatMoney }: DrawerProps) {
   }, [city, onClose]);
 
   const country = city ? getCountry(city.countryCode) : null;
+  const netMbps = city ? city.internetMbps ?? country?.internetMbpsFixed ?? null : null;
   const compass = city
     ? buildCompassData({ ...city, internetMbps: city.internetMbps ?? country?.internetMbpsFixed ?? null }, country)
     : [];
@@ -200,7 +205,7 @@ export function CityDrawer({ city, onClose, formatMoney }: DrawerProps) {
             className="fixed inset-y-0 right-0 z-50 flex w-full max-w-[460px] flex-col border-l border-line bg-paper shadow-[-12px_0_40px_rgba(31,36,33,0.10)]"
             role="dialog"
             aria-modal="true"
-            aria-label={`${city.nameZh} 速览`}
+            aria-label={t('atlas.drawer.aria', { name: cityName(city) })}
           >
             {/* 顶部：实景剪影 + 标题 */}
             <div className="relative h-[200px] shrink-0 overflow-hidden border-b border-line">
@@ -209,7 +214,7 @@ export function CityDrawer({ city, onClose, formatMoney }: DrawerProps) {
                 type="button"
                 onClick={onClose}
                 className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-[6px] border border-line bg-white/90 font-data text-sm text-ink transition-colors hover:bg-white"
-                aria-label="关闭速览"
+                aria-label={t('atlas.drawer.close')}
               >
                 ✕
               </button>
@@ -218,9 +223,9 @@ export function CityDrawer({ city, onClose, formatMoney }: DrawerProps) {
                   field notes · {city.nameEn}
                 </p>
                 <h3 className="font-display text-[30px] font-semibold leading-tight text-ink">
-                  {city.nameZh}
+                  {cityName(city)}
                   <span className="ml-2.5 align-middle font-data text-[11px] font-normal tracking-[0.12em] text-ink-soft">
-                    {city.countryZh}
+                    {countryName(country)}
                   </span>
                 </h3>
               </div>
@@ -231,8 +236,8 @@ export function CityDrawer({ city, onClose, formatMoney }: DrawerProps) {
               {/* 氛围行 */}
               <div className="grid grid-cols-3 gap-px overflow-hidden rounded-[6px] border border-line bg-line text-center">
                 {[
-                  [city.monthlyCostUSD != null ? `${formatMoney(city.monthlyCostUSD)}` : '—', '月成本'],
-                  [city.climateDetail ? `${Math.round(city.climateDetail.avgTempC)}°C` : '—', '年均温'],
+                  [city.monthlyCostUSD != null ? `${formatMoney(city.monthlyCostUSD)}` : '—', t('atlas.drawer.monthCost')],
+                  [city.climateDetail ? `${Math.round(city.climateDetail.avgTempC)}°C` : '—', t('atlas.drawer.avgTemp')],
                   [(city.internetMbps ?? country?.internetMbpsFixed)?.toString() ?? '—', 'Mbps'],
                 ].map(([v, l]) => (
                   <div key={l} className="bg-white px-2 py-3">
@@ -246,16 +251,23 @@ export function CityDrawer({ city, onClose, formatMoney }: DrawerProps) {
               <div className="mt-5 flex items-start gap-4">
                 <CompassRadar data={compass} size={168} />
                 <div className="flex-1 pt-1">
-                  <p className="eyebrow mb-2">生活氛围</p>
+                  <p className="eyebrow mb-2">{t('atlas.drawer.ambience')}</p>
                   <p className="text-[12.5px] leading-[1.8] text-ink-soft">
                     {city.climateDetail
-                      ? `${city.climateDetail.summary}，年日照约 ${city.climateDetail.sunshineHours} 小时，降水 ${city.climateDetail.annualPrecipMm}mm。`
-                      : '气候数据待核实。'}
+                      ? t('atlas.drawer.climateLine', {
+                          summary: city.climateDetail.summary,
+                          sun: city.climateDetail.sunshineHours,
+                          precip: city.climateDetail.annualPrecipMm,
+                        })
+                      : t('atlas.drawer.climatePending')}
                     {city.airQuality
-                      ? `空气 ${city.airQuality.band === 'good' ? '优良' : city.airQuality.band === 'moderate' ? '一般' : '偏差'}（PM2.5 ${city.airQuality.pm25}）。`
+                      ? t('atlas.drawer.airLine', {
+                          band: t(`air.band.${city.airQuality.band}`),
+                          pm25: city.airQuality.pm25,
+                        })
                       : ''}
                     {city.tags.length > 0
-                      ? `城市气质：${city.tags.slice(0, 4).join(' / ')}。`
+                      ? t('atlas.drawer.tagsLine', { tags: city.tags.slice(0, 4).join(' / ') })
                       : ''}
                   </p>
                 </div>
@@ -264,40 +276,40 @@ export function CityDrawer({ city, onClose, formatMoney }: DrawerProps) {
               {/* 数据表 */}
               <div className="mt-5 overflow-hidden rounded-[6px] border border-line">
                 <p className="border-b border-line bg-paper-deep px-4 py-2 font-data text-[10px] uppercase tracking-[0.18em] text-ink-soft">
-                  data sheet · 数据速览
+                  {t('atlas.drawer.dataSheet')}
                 </p>
                 <table className="w-full text-left text-[12px]">
                   <tbody className="divide-y divide-line">
-                    <Row label="月度生活成本" value={city.monthlyCostUSD != null ? `${formatMoney(city.monthlyCostUSD)} / 月` : '待核实'} />
-                    <Row label="居住成本指数" value={city.livingScore != null ? `${city.livingScore}（NYC=100）` : '待核实'} />
-                    <Row label="最高边际个税率" value={country?.taxTopRatePct != null ? `${country.taxTopRatePct}%（不含地方附加与社保）` : '待核实'} />
-                    <Row label="固定宽带网速" value={(city.internetMbps ?? country?.internetMbpsFixed) != null ? `${city.internetMbps ?? country?.internetMbpsFixed} Mbps` : '待核实'} />
+                    <Row label={t('atlas.drawer.row.monthlyCost')} value={city.monthlyCostUSD != null ? t('atlas.drawer.row.monthlyCostVal', { money: formatMoney(city.monthlyCostUSD) }) : t('profile.visa.pending')} />
+                    <Row label={t('atlas.drawer.row.living')} value={city.livingScore != null ? t('atlas.drawer.row.livingVal', { v: city.livingScore }) : t('profile.visa.pending')} />
+                    <Row label={t('atlas.drawer.row.taxTop')} value={country?.taxTopRatePct != null ? t('atlas.drawer.row.taxTopVal', { v: country.taxTopRatePct }) : t('profile.visa.pending')} />
+                    <Row label={t('atlas.drawer.row.internet')} value={netMbps != null ? t('atlas.drawer.row.internetVal', { v: netMbps }) : t('profile.visa.pending')} />
                     <Row
-                      label="中国大陆护照入境"
-                      value={country?.visaPassport ? `${VISA_LABEL[country.visaPassport.entry]}（${country.visaPassport.entryNote}）` : '待核实'}
+                      label={t('atlas.drawer.row.entry')}
+                      value={country?.visaPassport ? t('atlas.drawer.row.entryVal', { label: t(VISA_LABEL_KEYS[country.visaPassport.entry]), note: country.visaPassport.entryNote }) : t('profile.visa.pending')}
                     />
                     <Row
-                      label="数字游民签适用"
-                      value={country?.visaPassport ? DN_LABEL[country.visaPassport.digitalNomad] : '待核实'}
+                      label={t('atlas.drawer.row.dnVisa')}
+                      value={country?.visaPassport ? t(DN_LABEL_KEYS[country.visaPassport.digitalNomad]) : t('profile.visa.pending')}
                     />
                     <Row
-                      label="税务居民认定"
-                      value={country?.longStay?.taxResidencyDays != null ? `居住 ${country.longStay.taxResidencyDays} 天/年 起` : '待核实'}
+                      label={t('atlas.drawer.row.taxResidency')}
+                      value={country?.longStay?.taxResidencyDays != null ? t('atlas.drawer.row.taxResidencyVal', { days: country.longStay.taxResidencyDays }) : t('profile.visa.pending')}
                     />
-                    <Row label="安全指数" value={city.safety != null ? `${city.safety} / 100` : '待核实'} />
-                    <Row label="英语环境" value={city.englishBand ?? '待核实'} />
+                    <Row label={t('atlas.drawer.row.safety')} value={city.safety != null ? t('atlas.drawer.row.safetyVal', { v: city.safety }) : t('profile.visa.pending')} />
+                    <Row label={t('atlas.drawer.row.english')} value={city.englishBand ?? t('profile.visa.pending')} />
                   </tbody>
                 </table>
               </div>
 
               {/* 合规注意点 */}
               <div className="mt-4 rounded-[6px] border border-line bg-white p-4">
-                <p className="eyebrow mb-2">合规注意</p>
+                <p className="eyebrow mb-2">{t('atlas.drawer.compliance')}</p>
                 <ul className="list-disc space-y-1.5 pl-4 text-[12px] leading-[1.75] text-ink-soft">
-                  <li>签证政策多变，出行前务必核实官方渠道（快照日期 {country?.visaPassport?.snapshotDate ?? '—'}）。</li>
-                  <li>个税与税务居民认定因个人情况而异，此处为国家级事实参考，非税务建议。</li>
+                  <li>{t('atlas.drawer.comp1', { date: country?.visaPassport?.snapshotDate ?? '—' })}</li>
+                  <li>{t('atlas.drawer.comp2')}</li>
                   {country?.longStay?.socialSecurityCn != null && country.longStay.socialSecurityCn !== 'none' && (
-                    <li>与中国有社保协定（{country.longStay.socialSecurityCn === 'treaty' ? '已生效' : '谈判中'}），可能避免双重缴纳。</li>
+                    <li>{t('atlas.drawer.comp3', { status: country.longStay.socialSecurityCn === 'treaty' ? t('atlas.drawer.ssActive') : t('atlas.drawer.ssNegotiating') })}</li>
                   )}
                 </ul>
               </div>

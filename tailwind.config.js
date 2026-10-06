@@ -25,14 +25,47 @@ export default {
         sea: '#7FA8B8',
       },
       fontFamily: {
-        // 编辑部风：衬线大标题（Playfair Display + Noto Serif SC 回退）+ JetBrains Mono 数据
-        display: ['"Playfair Display"', '"Source Serif 4"', 'Georgia', 'serif'], // 大标题/城市名（旅程探索感）
-        heading: ['"Playfair Display"', '"Source Serif 4"', 'Georgia', 'serif'], // 区块标题
-        body: ['"Noto Sans SC"', 'system-ui', 'sans-serif'], // 正文（font-normal，行高放宽）
+        // 编辑部风：衬线大标题（Playfair Display，CJK 回退到系统衬线）+ JetBrains Mono 数据
+        // 性能：西文用自托管 latin 子集，中文一律走系统字体（PingFang SC / 思源黑体 …），
+        // 避免打包数百个 CJK 切片字体文件拖慢移动端首屏。
+        display: [
+          '"Playfair Display"',
+          '"Source Serif 4"',
+          'Georgia',
+          '"Songti SC"',
+          '"Noto Serif CJK SC"',
+          'serif',
+        ], // 大标题/城市名（旅程探索感）
+        heading: [
+          '"Playfair Display"',
+          '"Source Serif 4"',
+          'Georgia',
+          '"Songti SC"',
+          '"Noto Serif CJK SC"',
+          'serif',
+        ], // 区块标题
+        body: [
+          '-apple-system',
+          'BlinkMacSystemFont',
+          '"PingFang SC"',
+          '"Hiragino Sans GB"',
+          '"Microsoft YaHei"',
+          '"Noto Sans CJK SC"',
+          'system-ui',
+          'sans-serif',
+        ], // 正文（font-normal，行高放宽）
         data: ['"JetBrains Mono Variable"', '"IBM Plex Mono"', 'ui-monospace', 'monospace'], // 指标/坐标（等宽）
         'serif-accent': ['"Source Serif 4"', 'Georgia', 'serif'], // 英文副标/引用衬线点缀
         // 兼容映射
-        sans: ['"Noto Sans SC"', 'system-ui', 'sans-serif'],
+        sans: [
+          '-apple-system',
+          'BlinkMacSystemFont',
+          '"PingFang SC"',
+          '"Microsoft YaHei"',
+          '"Noto Sans CJK SC"',
+          'system-ui',
+          'sans-serif',
+        ],
         serif: ['"Playfair Display"', '"Source Serif 4"', '"Noto Sans SC"', 'Georgia', 'serif'],
         mono: ['"JetBrains Mono Variable"', '"IBM Plex Mono"', 'ui-monospace', 'monospace'],
       },

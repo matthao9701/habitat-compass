@@ -6,6 +6,7 @@
 import { useMemo } from 'react';
 import type { City } from '../../data/types';
 import { getCountry } from '../../data/countries';
+import { useI18n } from '../../i18n';
 
 export interface FilterState {
   /** 月预算上限 USD（500–4000） */
@@ -70,26 +71,23 @@ interface SentenceFilterProps {
   totalCount: number;
 }
 
-const CLIMATE_WORDS: Record<FilterState['climate'], string> = {
-  any: '气候宜人',
-  warm: '气候温暖',
-  cool: '气候凉爽',
-};
-
 function InlineSelect<T extends string>({
   options,
   value,
   onChange,
+  ariaLabel,
 }: {
   options: { v: T; label: string }[];
   value: T;
   onChange: (v: T) => void;
+  ariaLabel?: string;
 }): React.ReactElement {
   return (
     <span className="relative inline-flex">
       <select
         value={value}
         onChange={(e) => onChange(e.target.value as T)}
+        aria-label={ariaLabel}
         className="cursor-pointer appearance-none rounded-[5px] border border-line bg-white px-2.5 py-0.5 font-body text-[13px] font-medium text-pine outline-none transition-colors hover:border-pine/50 focus:border-pine"
       >
         {options.map((o) => (
@@ -106,6 +104,7 @@ function InlineSelect<T extends string>({
 }
 
 export default function SentenceFilter({ value, onChange, matchedCount, totalCount }: SentenceFilterProps) {
+  const { t } = useI18n();
   const budgetLabel = useMemo(
     () => `$${Math.round(value.budget).toLocaleString('en-US')}`,
     [value.budget],
@@ -116,7 +115,7 @@ export default function SentenceFilter({ value, onChange, matchedCount, totalCou
       {/* 一句话填空 */}
       <div className="flex flex-wrap items-center gap-x-1.5 gap-y-2.5 px-5 py-4 text-[14px] leading-loose text-ink md:px-6 md:text-[15px]">
         <span className="font-serif-accent italic text-ink-soft">“</span>
-        我想在每月预算
+        {t('landing.filter.lead')}
         <span className="relative inline-flex flex-col">
           <span className="inline-flex min-w-[118px] items-center justify-between rounded-[5px] border border-line bg-white px-2.5 py-0.5 font-data text-[13px] font-semibold text-pine">
             {budgetLabel}
@@ -130,17 +129,18 @@ export default function SentenceFilter({ value, onChange, matchedCount, totalCou
             value={value.budget}
             onChange={(e) => onChange({ ...value, budget: Number(e.target.value) })}
             className="absolute -bottom-1 left-0 h-1 w-full cursor-pointer appearance-none rounded-full bg-line accent-[#1D3557]"
-            aria-label="月度预算上限"
+            aria-label={t('landing.filter.budgetAria')}
           />
         </span>
-        左右，寻找一个
+        {t('landing.filter.trailing')}
         <InlineSelect
           value={value.climate}
+          ariaLabel={t('landing.filter.climateAria')}
           onChange={(v) => onChange({ ...value, climate: v })}
           options={[
-            { v: 'any', label: CLIMATE_WORDS.any },
-            { v: 'warm', label: CLIMATE_WORDS.warm },
-            { v: 'cool', label: CLIMATE_WORDS.cool },
+            { v: 'any', label: t('landing.filter.any') },
+            { v: 'warm', label: t('landing.filter.warm') },
+            { v: 'cool', label: t('landing.filter.cool') },
           ]}
         />
         <span
@@ -154,19 +154,19 @@ export default function SentenceFilter({ value, onChange, matchedCount, totalCou
               : 'border-line bg-white text-ink-soft hover:border-pine/50'
           }`}
         >
-          {value.visaFriendly ? '对数字游民签证友好' : '签证宽松（可选）'}
+          {value.visaFriendly ? t('landing.filter.visaOn') : t('landing.filter.visaOff')}
         </span>
-        的定居城市
+        {t('landing.filter.settle')}
         <span className="font-serif-accent italic text-ink-soft">”</span>
         <span className="ml-auto font-data text-[11px] text-ink-soft">
-          {matchedCount} / {totalCount} 城
+          {t('landing.filter.count', { matched: matchedCount, total: totalCount })}
         </span>
       </div>
 
       {/* 紧凑多维微调滑块行 */}
       <div className="grid gap-x-8 gap-y-3 border-t border-line px-5 py-3.5 md:grid-cols-[1fr_1fr_auto] md:px-6">
         <label className="flex items-center gap-3">
-          <span className="shrink-0 font-data text-[10px] uppercase tracking-[0.14em] text-ink-soft">网速底线</span>
+          <span className="shrink-0 font-data text-[10px] uppercase tracking-[0.14em] text-ink-soft">{t('landing.filter.mbps')}</span>
           <input
             type="range"
             min={0}
@@ -175,14 +175,14 @@ export default function SentenceFilter({ value, onChange, matchedCount, totalCou
             value={value.minMbps}
             onChange={(e) => onChange({ ...value, minMbps: Number(e.target.value) })}
             className="h-1 flex-1 cursor-pointer appearance-none rounded-full bg-line accent-[#1D3557]"
-            aria-label="最低网速 Mbps"
+            aria-label={t('landing.filter.mbps')}
           />
           <span className="w-16 shrink-0 text-right font-data text-[11px] font-medium text-ink">
-            {value.minMbps === 0 ? '不限' : `≥${value.minMbps}M`}
+            {value.minMbps === 0 ? t('landing.filter.unlimited') : `≥${value.minMbps}M`}
           </span>
         </label>
         <label className="flex items-center gap-3">
-          <span className="shrink-0 font-data text-[10px] uppercase tracking-[0.14em] text-ink-soft">税负敏感</span>
+          <span className="shrink-0 font-data text-[10px] uppercase tracking-[0.14em] text-ink-soft">{t('landing.filter.tax')}</span>
           <input
             type="range"
             min={0}
@@ -191,10 +191,10 @@ export default function SentenceFilter({ value, onChange, matchedCount, totalCou
             value={value.taxLight ? 1 : 0}
             onChange={(e) => onChange({ ...value, taxLight: e.target.value === '1' })}
             className="h-1 flex-1 cursor-pointer appearance-none rounded-full bg-line accent-[#1D3557]"
-            aria-label="是否偏好低税负"
+            aria-label={t('landing.filter.tax')}
           />
           <span className="w-16 shrink-0 text-right font-data text-[11px] font-medium text-ink">
-            {value.taxLight ? '≤30% 优先' : '不限'}
+            {value.taxLight ? t('landing.filter.taxOn') : t('landing.filter.unlimited')}
           </span>
         </label>
         <button
@@ -202,7 +202,7 @@ export default function SentenceFilter({ value, onChange, matchedCount, totalCou
           onClick={() => onChange(DEFAULT_FILTER)}
           className="justify-self-start font-data text-[10.5px] text-ink-soft underline decoration-line underline-offset-4 transition-colors hover:text-clay md:justify-self-end"
         >
-          重置
+          {t('landing.filter.reset')}
         </button>
       </div>
     </div>

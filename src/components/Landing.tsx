@@ -6,7 +6,7 @@ import { AtlasCard, CityDrawer } from './atlas/AtlasCard';
 import SentenceFilter, { DEFAULT_FILTER, filterCities, type FilterState } from './atlas/SentenceFilter';
 import { cities } from '../data';
 import { DEMO_PROFILES } from '../data/demoProfiles';
-import { REGION_LABEL, REGION_ORDER } from '../data/regions';
+import { REGION_ORDER } from '../data/regions';
 import { formatMoney } from '../lib/format';
 import type { City } from '../data/types';
 import { useI18n, translate, getCurrentLang } from '../i18n';
@@ -166,7 +166,7 @@ export default function Landing({ onStart, onDemo }: LandingProps) {
           {[
             ['200', t('landing.stat.cities')],
             ['6', t('landing.stat.continents')],
-            ['65', '国家数据档案'],
+            ['65', t('landing.stat.dataFiles')],
             ['0', t('landing.stat.threshold')],
           ].map(([v, l]) => (
             <div key={l} className="px-6 py-5 md:px-10">
@@ -287,13 +287,13 @@ export default function Landing({ onStart, onDemo }: LandingProps) {
         <div className="mx-auto max-w-almanac px-6 py-16 md:px-10 md:py-20">
           <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
             <div>
-              <p className="eyebrow mb-3">the atlas · 城市画册</p>
+              <p className="eyebrow mb-3">{t('landing.atlas.eyebrow')}</p>
               <h2 className="font-display text-3xl font-medium tracking-tight md:text-4xl">
-                按图索骥，找到你的下一座城
+                {t('landing.atlas.heading')}
               </h2>
             </div>
             <p className="hidden max-w-xs text-sm leading-relaxed text-ink-soft md:block">
-              点击卡片展开速览抽屉——成本、税制、签证、网速，全部来自官方开放数据。
+              {t('landing.atlas.sideNote')}
             </p>
           </div>
 
@@ -308,7 +308,7 @@ export default function Landing({ onStart, onDemo }: LandingProps) {
                   : 'border-line bg-card text-ink-soft hover:border-pine/50'
               }`}
             >
-              全部 · {filteredCities.length}
+              {t('landing.atlas.all')} · {filteredCities.length}
             </button>
             {REGION_ORDER.map((r) => {
               const count = filteredCities.filter((c) => c.region === r).length;
@@ -324,7 +324,7 @@ export default function Landing({ onStart, onDemo }: LandingProps) {
                       : 'border-line bg-card text-ink-soft hover:border-pine/50'
                   }`}
                 >
-                  {REGION_LABEL[r]} · {count}
+                  {t(`region.${r}`)} · {count}
                 </button>
               );
             })}
@@ -338,14 +338,14 @@ export default function Landing({ onStart, onDemo }: LandingProps) {
             if (shown.length === 0) {
               return (
                 <div className="rounded-card border border-dashed border-line bg-card px-6 py-14 text-center">
-                  <p className="font-display text-xl text-ink">没有匹配的城市</p>
-                  <p className="mt-2 text-sm text-ink-soft">试着放宽预算或气候条件。</p>
+                  <p className="font-display text-xl text-ink">{t('landing.atlas.emptyTitle')}</p>
+                  <p className="mt-2 text-sm text-ink-soft">{t('landing.atlas.emptyHint')}</p>
                   <button
                     type="button"
                     onClick={() => setFilter(DEFAULT_FILTER)}
                     className="mt-5 font-data text-[11px] uppercase tracking-[0.14em] text-pine underline decoration-pine/30 underline-offset-4 hover:decoration-pine"
                   >
-                    重置过滤器
+                    {t('landing.atlas.resetFilter')}
                   </button>
                 </div>
               );
