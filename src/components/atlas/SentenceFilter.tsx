@@ -165,7 +165,7 @@ export default function SentenceFilter({ value, onChange, matchedCount, totalCou
 
       {/* 紧凑多维微调滑块行 */}
       <div className="grid gap-x-8 gap-y-3 border-t border-line px-5 py-3.5 md:grid-cols-[1fr_1fr_auto] md:px-6">
-        <label className="flex items-center gap-3">
+        <label className="flex min-w-0 items-center gap-3">
           <span className="shrink-0 font-data text-[10px] uppercase tracking-[0.14em] text-ink-soft">{t('landing.filter.mbps')}</span>
           <input
             type="range"
@@ -174,14 +174,14 @@ export default function SentenceFilter({ value, onChange, matchedCount, totalCou
             step={10}
             value={value.minMbps}
             onChange={(e) => onChange({ ...value, minMbps: Number(e.target.value) })}
-            className="h-1 flex-1 cursor-pointer appearance-none rounded-full bg-line accent-[#1D3557]"
+            className="h-1 min-w-0 flex-1 cursor-pointer appearance-none rounded-full bg-line accent-[#1D3557]"
             aria-label={t('landing.filter.mbps')}
           />
           <span className="w-16 shrink-0 text-right font-data text-[11px] font-medium text-ink">
             {value.minMbps === 0 ? t('landing.filter.unlimited') : `≥${value.minMbps}M`}
           </span>
         </label>
-        <label className="flex items-center gap-3">
+        <label className="flex min-w-0 items-center gap-3">
           <span className="shrink-0 font-data text-[10px] uppercase tracking-[0.14em] text-ink-soft">{t('landing.filter.tax')}</span>
           <input
             type="range"
@@ -190,7 +190,7 @@ export default function SentenceFilter({ value, onChange, matchedCount, totalCou
             step={1}
             value={value.taxLight ? 1 : 0}
             onChange={(e) => onChange({ ...value, taxLight: e.target.value === '1' })}
-            className="h-1 flex-1 cursor-pointer appearance-none rounded-full bg-line accent-[#1D3557]"
+            className="h-1 min-w-0 flex-1 cursor-pointer appearance-none rounded-full bg-line accent-[#1D3557]"
             aria-label={t('landing.filter.tax')}
           />
           <span className="w-16 shrink-0 text-right font-data text-[11px] font-medium text-ink">

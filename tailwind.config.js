@@ -25,26 +25,28 @@ export default {
         sea: '#7FA8B8',
       },
       fontFamily: {
-        // 编辑部风：衬线大标题（Playfair Display，CJK 回退到系统衬线）+ JetBrains Mono 数据
-        // 性能：西文用自托管 latin 子集，中文一律走系统字体（PingFang SC / 思源黑体 …），
-        // 避免打包数百个 CJK 切片字体文件拖慢移动端首屏。
+        // 编辑部风字体系统（全部自托管可变字体，latin 子集）：
+        //   标题  Fraunces（soft serif，带光学尺寸，旅程探索感）
+        //   点缀  Newsreader（衬线引用/副标）
+        //   正文  Inter（英文）；中文走系统字体栈（PingFang SC / 思源黑体 …）
+        //   数据  JetBrains Mono / IBM Plex Mono
+        // 中文正文不再自托管 Noto Sans SC（会切出数百个 CJK 切片文件，拖慢移动端首屏）。
         display: [
-          '"Playfair Display"',
-          '"Source Serif 4"',
+          '"Fraunces Variable"',
           'Georgia',
           '"Songti SC"',
           '"Noto Serif CJK SC"',
           'serif',
         ], // 大标题/城市名（旅程探索感）
         heading: [
-          '"Playfair Display"',
-          '"Source Serif 4"',
+          '"Fraunces Variable"',
           'Georgia',
           '"Songti SC"',
           '"Noto Serif CJK SC"',
           'serif',
         ], // 区块标题
         body: [
+          '"Inter Variable"',
           '-apple-system',
           'BlinkMacSystemFont',
           '"PingFang SC"',
@@ -55,9 +57,10 @@ export default {
           'sans-serif',
         ], // 正文（font-normal，行高放宽）
         data: ['"JetBrains Mono Variable"', '"IBM Plex Mono"', 'ui-monospace', 'monospace'], // 指标/坐标（等宽）
-        'serif-accent': ['"Source Serif 4"', 'Georgia', 'serif'], // 英文副标/引用衬线点缀
+        'serif-accent': ['"Newsreader Variable"', 'Georgia', 'serif'], // 英文副标/引用衬线点缀
         // 兼容映射
         sans: [
+          '"Inter Variable"',
           '-apple-system',
           'BlinkMacSystemFont',
           '"PingFang SC"',
@@ -66,7 +69,7 @@ export default {
           'system-ui',
           'sans-serif',
         ],
-        serif: ['"Playfair Display"', '"Source Serif 4"', '"Noto Sans SC"', 'Georgia', 'serif'],
+        serif: ['"Fraunces Variable"', '"Newsreader Variable"', 'Georgia', 'serif'],
         mono: ['"JetBrains Mono Variable"', '"IBM Plex Mono"', 'ui-monospace', 'monospace'],
       },
       borderRadius: {
