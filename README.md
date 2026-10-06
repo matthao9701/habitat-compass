@@ -55,17 +55,25 @@ coze-dev start
 > 向 `vite.config.ts` 注入 ESM-only 的 `@cloudflare/vite-plugin`，在无 `"type":"module"`
 > 的 CommonJS 上下文中 `require` 失败并崩溃。
 
-**Cloudflare Pages → Settings → Build configuration：**
+**Cloudflare Workers Builds（Connect Git）部署配置：**
 
-| 项 | 值 |
+| 字段 | 值 |
 | --- | --- |
-| Build command | `pnpm build:cf` |
-| Build output directory | `dist` |
-| Environment variable | `SITE_URL = https://<你的域名>`（用于 canonical/sitemap/hreflang，可省略） |
+| 构建命令 | `pnpm run build:cf` |
+| 部署命令 | `npx wrangler deploy` |
+| 预览命令 | `npx wrangler preview` |
+| 环境变量 `NODE_VERSION` | `24`（Vite 7 要求 Node ≥ 20.19 / 22.12） |
+| 环境变量 `SITE_URL` | `https://<你的域名>`（canonical/sitemap/hreflang 用，可省略） |
+
+> 注意：构建命令**不要**用 `pnpm run build`——那会走 Coze 专有的 `scripts/build.sh`
+> （多打一个用不上的 Express 后端）。用 `pnpm run build:cf`。
+
+若在 Cloudflare **Pages** 上部署，则对应填写：Build command `pnpm run build:cf`、
+Build output directory `dist`。本地直连 Workers 则执行 `pnpm build:cf && pnpm deploy:cf`
+（需设置 `CLOUDFLARE_API_TOKEN`）。
 
 `pnpm build:cf` 等价于 `vite build && node scripts/generate-landing.mjs`，
-不依赖 Coze 专有的 `scripts/build.sh`。若改用 Workers `wrangler deploy` 直连，
-命令为 `pnpm build:cf && pnpm deploy:cf`（需设置 `CLOUDFLARE_API_TOKEN`）。
+不依赖 Coze 专有的 `scripts/build.sh`。
 
 ## 项目结构
 
