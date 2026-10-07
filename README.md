@@ -77,13 +77,6 @@ Build output directory `dist`。本地直连 Workers 则执行 `pnpm build:cf &&
 
 `pnpm build:cf` 等价于 `vite build && tsx scripts/generate-landing.mjs`。
 
-> **sitemap `lastmod` 与浅克隆**：`scripts/generate-landing.mjs` 优先用 `git log` 取每个
-> 数据文件的真实最后提交日期作为 `<lastmod>`。Cloudflare 构建默认 `--depth 1` 浅克隆、
-> 无 git 历史，此时会回落到已提交的 `scripts/content-dates.json` 清单（由具备完整历史的
-> 构建自动生成并提交），因此线上 `lastmod` 仍为真实内容日而非构建日。若希望 CI 直接从
-> git 读取，可在 Cloudflare 构建环境变量中设置 `GIT_CLONE_DEPTH=0`（不完全克隆）；两条路径
-> 结果一致。修改「数据文件」或生成脚本后，务必在本地跑一次 `pnpm build:cf` 让清单随之更新并提交。
-
 > **必须设置 `NODE_VERSION=24`**：`generate-landing` 用 `tsx` 直接复用 `src/i18n` 的 TS 英译表，
 > 需要 Node ≥ 22。Vite 7 本身也要求 Node ≥ 20.19 / 22.12。
 

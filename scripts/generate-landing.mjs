@@ -40,38 +40,19 @@ const BUILD_DATE = new Date().toISOString().slice(0, 10);
 // ---------- lastmod 来源：数据文件的最后提交日期 ----------
 // 此前所有 URL 一律用 BUILD_DATE，导致每次部署都声称「全站刚更新」——搜索引擎会因此
 // 降低对 lastmod 的信任甚至忽略。改为取该页数据文件的 git 最后提交日期（YYYY-MM-DD）。
-//
-// 浅克隆的 CI（Cloudflare Workers Builds 默认 --depth 1，无历史）取不到提交日期，
-// 因此把「有 git 历史时」解析出的真实日期固化到 scripts/content-dates.json 并提交，
-// 浅克隆构建直接复用它，lastmod 依然是真实内容日而非构建日。优先级：
-//   git log（有历史）> 清单（浅克隆）> BUILD_DATE（最终兜底，保证不崩、不编造）。
-const MANIFEST_PATH = path.join(ROOT, 'scripts/content-dates.json');
-let dateManifest = {};
-try {
-  dateManifest = JSON.parse(fs.readFileSync(MANIFEST_PATH, 'utf8')).dates || {};
-} catch {
-  // 首次运行 / 清单缺失：忽略，后续由 git 结果回填
-}
-let gitHistoryAvailable = false;
-const gitDates = new Map(); // 仅记录真正从 git 取到的日期，用于回写清单
+// CI/浅克隆或非 git 环境（无 .git / 未安装 git）取不到，则回落到 BUILD_DATE，保证不崩、不编造。
 const gitDateCache = new Map();
 function fileLastModified(relPath) {
   if (gitDateCache.has(relPath)) return gitDateCache.get(relPath);
-  let date = null;
+  let date = BUILD_DATE;
   try {
     const out = execFileSync('git', ['log', '-1', '--format=%cs', '--', relPath], {
       cwd: ROOT, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'],
     }).trim();
-    if (/^\d{4}-\d{2}-\d{2}$/.test(out)) {
-      date = out;
-      gitHistoryAvailable = true;
-      gitDates.set(relPath, out);
-    }
+    if (/^\d{4}-\d{2}-\d{2}$/.test(out)) date = out;
   } catch {
-    // 非 git 环境 / 该文件无历史：走清单回落
+    // 非 git 环境：回落 BUILD_DATE
   }
-  if (!date) date = dateManifest[relPath] || null; // 浅克隆回落清单
-  if (!date) date = BUILD_DATE; // 最终兜底
   gitDateCache.set(relPath, date);
   return date;
 }
@@ -1356,27 +1337,6 @@ ${sitemapUrls.map(({ p, lastmod }) => `  <url>
 `;
   assertSitemapWellFormed(sitemap);
   write('sitemap.xml', sitemap);
-
-  // 回写内容日期清单：仅在本次构建确实读到 git 历史时进行，
-  // 使浅克隆的 CI 版生成结果也能保持真实内容日（而非被构建日覆盖）。
-  if (gitHistoryAvailable) {
-    const sorted = Object.fromEntries([...gitDates.entries()].sort(([a], [b]) => (a < b ? -1 : 1)));
-    fs.writeFileSync(
-      MANIFEST_PATH,
-      JSON.stringify(
-        {
-          $comment:
-            '由 scripts/generate-landing.mjs 在具备 git 历史时自动生成并提交；浅克隆的 CI 无 git 历史，改用此清单作为 lastmod 回退源。请勿手动编辑。',
-          dates: sorted,
-        },
-        null,
-        2,
-      ) + '\n',
-    );
-    console.log(`内容日期清单已更新：scripts/content-dates.json（${Object.keys(sorted).length} 项）`);
-  } else {
-    console.log('未检测到 git 历史（浅克隆/非 git），lastmod 沿用 scripts/content-dates.json 清单。');
-  }
 
   console.log(`\n落地页生成完成：${count} 页 + robots.txt + llms.txt + sitemap.xml（${sitemapUrls.length} URL）→ dist/`);
   console.log(`域名：${DOMAIN}`);
