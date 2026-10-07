@@ -4,6 +4,7 @@
 // 数据来源：src/data/cities/*.json 与 src/data/countries.json（null 不编造）
 import fs from 'node:fs';
 import path from 'node:path';
+import { execFileSync } from 'node:child_process';
 // 复用主应用同一份英译表（TS 文件，经 tsx 运行时可加载），保证 EN 落地页与前端 EN 口径一致。
 // 注意：tsx 对静态 import 的 .ts 说明符不做命名导出链接，须用动态 import。
 const { ENTRY_NOTE_EN } = await import('../src/i18n/entryNotes.ts');
@@ -35,6 +36,37 @@ const DOMAIN = (() => {
   return withProto.replace(/\/+$/, '');
 })();
 const BUILD_DATE = new Date().toISOString().slice(0, 10);
+
+// ---------- lastmod 来源：数据文件的最后提交日期 ----------
+// 此前所有 URL 一律用 BUILD_DATE，导致每次部署都声称「全站刚更新」——搜索引擎会因此
+// 降低对 lastmod 的信任甚至忽略。改为取该页数据文件的 git 最后提交日期（YYYY-MM-DD）。
+// CI/浅克隆或非 git 环境（无 .git / 未安装 git）取不到，则回落到 BUILD_DATE，保证不崩、不编造。
+const gitDateCache = new Map();
+function fileLastModified(relPath) {
+  if (gitDateCache.has(relPath)) return gitDateCache.get(relPath);
+  let date = BUILD_DATE;
+  try {
+    const out = execFileSync('git', ['log', '-1', '--format=%cs', '--', relPath], {
+      cwd: ROOT, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'],
+    }).trim();
+    if (/^\d{4}-\d{2}-\d{2}$/.test(out)) date = out;
+  } catch {
+    // 非 git 环境：回落 BUILD_DATE
+  }
+  gitDateCache.set(relPath, date);
+  return date;
+}
+/** 取一组数据文件中最新的一次提交日期（代表该页面所依据数据的刷新时间） */
+function dataLastModified(relPaths) {
+  return relPaths
+    .map(fileLastModified)
+    .reduce((a, b) => (a > b ? a : b), '0000-00-00');
+}
+const CITY_DATA_FILES = fs.readdirSync(path.join(ROOT, 'src/data/cities')).map((f) => `src/data/cities/${f}`);
+const CITY_DATA_DATE = dataLastModified(CITY_DATA_FILES);
+const COUNTRY_DATA_DATE = dataLastModified(['src/data/countries.json']);
+// 代码驱动页（首页/方法论/法律页）的内容随生成脚本走，取其最后提交日期。
+const SCRIPT_DATE = fileLastModified('scripts/generate-landing.mjs');
 
 // ---------- token 色值：从 tailwind.config.js 提取（与主站唯一事实源同步） ----------
 function readToken(name) {
@@ -655,6 +687,24 @@ function writeLegal(rel, content) {
 const sitemapUrls = [];
 const addUrl = (p, lastmod) => sitemapUrls.push({ p, lastmod });
 
+/**
+ * 生成某个路径的 xhtml:link 语言互链（与页面 HTML 内 <link rel="alternate" hreflang> 同口径）。
+ * 站点语言约定：zh 为首选（x-default 指向 zh），英文页统一带 /en 前缀。
+ * - 传 zh 路径（如 /city/x/）→ 返回 zh + en + x-default 三条
+ * - 传 en 路径（如 /en/city/x/）→ 返回 null（同一互链组只在一侧声明，避免重复）
+ * - 首页 / 与 /en/ 也适用于同一规则
+ */
+function hreflangLinks(p) {
+  if (p.startsWith('/en/')) return null;
+  const zhPath = p;
+  const enPath = p === '/' ? '/en/' : `/en${p}`;
+  return [
+    `    <xhtml:link rel="alternate" hreflang="zh-Hans" href="${page(zhPath)}"/>`,
+    `    <xhtml:link rel="alternate" hreflang="en" href="${page(enPath)}"/>`,
+    `    <xhtml:link rel="alternate" hreflang="x-default" href="${page(zhPath)}"/>`,
+  ].join('\n');
+}
+
 // ---------- 第十三轮：法律页（隐私政策 / 用户协议，zh/en） ----------
 // ABOUTME: 内容如实披露 storage.ts 实际键清单（nomadmatch.v1 前缀）；联系邮箱 hi@habitatcompass.com；占位项：适用法域
 const LEGAL_PRIVACY = {
@@ -1165,27 +1215,27 @@ function main() {
   for (const city of CITIES) {
     write(`city/${city.id}/index.html`, renderCityPage(city, 'zh')); count++;
     write(`en/city/${city.id}/index.html`, renderCityPage(city, 'en')); count++;
-    addUrl(`/city/${city.id}/`, BUILD_DATE); addUrl(`/en/city/${city.id}/`, BUILD_DATE);
+    addUrl(`/city/${city.id}/`, CITY_DATA_DATE); addUrl(`/en/city/${city.id}/`, CITY_DATA_DATE);
   }
   for (const co of COUNTRIES) {
     write(`country/${co.code.toLowerCase()}/index.html`, renderCountryPage(co, 'zh')); count++;
     write(`en/country/${co.code.toLowerCase()}/index.html`, renderCountryPage(co, 'en')); count++;
-    addUrl(`/country/${co.code.toLowerCase()}/`, co.updatedAt ?? BUILD_DATE); addUrl(`/en/country/${co.code.toLowerCase()}/`, co.updatedAt ?? BUILD_DATE);
+    addUrl(`/country/${co.code.toLowerCase()}/`, co.updatedAt ?? COUNTRY_DATA_DATE); addUrl(`/en/country/${co.code.toLowerCase()}/`, co.updatedAt ?? COUNTRY_DATA_DATE);
   }
   write('cities/index.html', renderCitiesIndex('zh')); write('en/cities/index.html', renderCitiesIndex('en')); count += 2;
-  addUrl('/cities/', BUILD_DATE); addUrl('/en/cities/', BUILD_DATE);
+  addUrl('/cities/', CITY_DATA_DATE); addUrl('/en/cities/', CITY_DATA_DATE);
   write('countries/index.html', renderCountriesIndex('zh')); write('en/countries/index.html', renderCountriesIndex('en')); count += 2;
-  addUrl('/countries/', BUILD_DATE); addUrl('/en/countries/', BUILD_DATE);
+  addUrl('/countries/', COUNTRY_DATA_DATE); addUrl('/en/countries/', COUNTRY_DATA_DATE);
   write('methodology/index.html', renderMethodology('zh')); write('en/methodology/index.html', renderMethodology('en')); count += 2;
-  addUrl('/methodology/', BUILD_DATE); addUrl('/en/methodology/', BUILD_DATE);
+  addUrl('/methodology/', SCRIPT_DATE); addUrl('/en/methodology/', SCRIPT_DATE);
   // 第十三轮：法律页（隐私政策 / 用户协议 / 免责声明，zh/en；双写 public/ 供 dev 直达）
   writeLegal('privacy/index.html', renderLegalPage('privacy', 'zh')); writeLegal('en/privacy/index.html', renderLegalPage('privacy', 'en')); count += 2;
-  addUrl('/privacy/', BUILD_DATE); addUrl('/en/privacy/', BUILD_DATE);
+  addUrl('/privacy/', SCRIPT_DATE); addUrl('/en/privacy/', SCRIPT_DATE);
   writeLegal('terms/index.html', renderLegalPage('terms', 'zh')); writeLegal('en/terms/index.html', renderLegalPage('terms', 'en')); count += 2;
-  addUrl('/terms/', BUILD_DATE); addUrl('/en/terms/', BUILD_DATE);
+  addUrl('/terms/', SCRIPT_DATE); addUrl('/en/terms/', SCRIPT_DATE);
   writeLegal('disclaimer/index.html', renderLegalPage('disclaimer', 'zh')); writeLegal('en/disclaimer/index.html', renderLegalPage('disclaimer', 'en')); count += 2;
-  addUrl('/disclaimer/', BUILD_DATE); addUrl('/en/disclaimer/', BUILD_DATE);
-  addUrl('/', BUILD_DATE); addUrl('/en/', BUILD_DATE);
+  addUrl('/disclaimer/', SCRIPT_DATE); addUrl('/en/disclaimer/', SCRIPT_DATE);
+  addUrl('/', SCRIPT_DATE); addUrl('/en/', SCRIPT_DATE);
   write('en/index.html', renderEnHome()); count++;
   // 404 页（Cloudflare 静态资源 not_found_handling: "404-page" 命中；不进 sitemap）
   write('404.html', renderNotFound()); count++;
@@ -1229,10 +1279,17 @@ function main() {
   write('llms.txt', llms);
 
   // sitemap.xml
+  // 每个 <url> 内嵌 xhtml:link 语言互链（与页面 HTML 的 rel="alternate" hreflang 同口径），
+  // 让 Google 直接在 sitemap 里读到 zh/en/x-default 对应关系，无需爬取 HTML。
+  // 互链组只在 zh 侧声明（见 hreflangLinks），避免同一组重复出现两份。
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
-<!-- 中文区（zh-Hans） -->
+<!-- 中文区（zh-Hans）+ 英文区（/en）· 每个 URL 内嵌 xhtml:link 语言互链 -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
-${sitemapUrls.map(({ p, lastmod }) => `  <url><loc>${page(p)}</loc><lastmod>${lastmod}</lastmod><changefreq>monthly</changefreq><priority>${p === '/' ? '1.0' : p.startsWith('/city') || p.startsWith('/country') ? '0.7' : '0.8'}</priority></url>`).join('\n')}
+${sitemapUrls.map(({ p, lastmod }) => {
+    const links = hreflangLinks(p);
+    const inner = `    <loc>${page(p)}</loc>\n    <lastmod>${lastmod}</lastmod>\n    <changefreq>monthly</changefreq>\n    <priority>${p === '/' ? '1.0' : p.startsWith('/city') || p.startsWith('/country') ? '0.7' : '0.8'}</priority>`;
+    return `  <url>\n${inner}${links ? '\n' + links : ''}\n  </url>`;
+  }).join('\n')}
 </urlset>
 `;
   write('sitemap.xml', sitemap);
