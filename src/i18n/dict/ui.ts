@@ -141,8 +141,10 @@ const zh: D = {
   'atlas.tz.overlapBeijing': '与北京重叠 {h} 小时',
   'atlas.tz.overlapBoth': '与伦敦重叠 {london} 小时 · 与北京重叠 {beijing} 小时',
   'atlas.tz.overlapNone': '与伦敦/北京几无重叠',
-  // 签证难易度彩色胶囊
+  // 签证难易度彩色胶囊（数据忠实口径：入境便利 / 数字游民签 / 长期居留）；电子签与需提前办理合为一条
   'atlas.visa.difficultyEasy': '落地即签',
+  'atlas.visa.difficultyEVisa': '电子签（在线办理）',
+  'atlas.visa.difficultyAdvance': '需提前办签证',
   'atlas.visa.difficultyDnEasy': '数字游民签（门槛低）',
   'atlas.visa.difficultyLongHard': '长居较难',
   'atlas.drawer.aria': '{name} 速览',
@@ -716,8 +718,10 @@ const en: D = {
   'atlas.tz.overlapBeijing': '{h}h overlap with Beijing',
   'atlas.tz.overlapBoth': '{london}h with London · {beijing}h with Beijing',
   'atlas.tz.overlapNone': 'little overlap with London/Beijing',
-  // Visa difficulty colored pills
+  // Visa difficulty colored pills (data-faithful: entry / nomad visa / long stay)
   'atlas.visa.difficultyEasy': 'Visa on arrival',
+  'atlas.visa.difficultyEVisa': 'e-Visa (online)',
+  'atlas.visa.difficultyAdvance': 'Visa in advance',
   'atlas.visa.difficultyDnEasy': 'Nomad visa (low bar)',
   'atlas.visa.difficultyLongHard': 'Long stay harder',
   'atlas.drawer.aria': '{name} brief',

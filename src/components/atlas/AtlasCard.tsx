@@ -22,12 +22,13 @@ function Pill({ children }: { children: React.ReactNode }) {
   );
 }
 
-/** 签证难易度彩色胶囊（人话：落地即签 / 数字游民签门槛低 / 长居较难） */
-type VisaTone = 'easy' | 'dn' | 'hard';
+/** 签证彩色胶囊（数据忠实：入境便利 / 长期居留难度；数字游民签门槛低为独立正面信号） */
+type VisaTone = 'easy' | 'mid' | 'dn' | 'hard';
 
 function VisaPill({ tone, children }: { tone: VisaTone; children: React.ReactNode }) {
   const style: Record<VisaTone, string> = {
     easy: 'border-moss/45 bg-moss/10 text-moss',
+    mid: 'border-line bg-white/92 text-ink',
     dn: 'border-sea/45 bg-sea/10 text-sea',
     hard: 'border-clay/45 bg-clay/10 text-clay-deep',
   };
@@ -59,6 +60,7 @@ export function AtlasCard({ city, index, onOpen, formatMoney, badge }: AtlasCard
   const london = overlapHours(city.timezone, 'london');
   const visaEntry = country?.visaPassport?.entry ?? null;
   const dnFriendly = country?.visaPassport?.digitalNomad ?? null;
+  const longTermRestricted = country?.visaPassport?.longTerm === 'restricted';
   return (
     <motion.button
       type="button"
@@ -77,9 +79,10 @@ export function AtlasCard({ city, index, onOpen, formatMoney, badge }: AtlasCard
         <div className="pointer-events-none absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-ink/25 to-transparent" />
         <div className="absolute right-2.5 top-2.5 flex max-w-[75%] flex-wrap justify-end gap-1.5">
           {(visaEntry === 'visaFree' || visaEntry === 'visaOnArrival') && <VisaPill tone="easy">{t('atlas.visa.difficultyEasy')}</VisaPill>}
-          {visaEntry === 'eVisa' && <VisaPill tone="dn">{t('atlas.visa.difficultyDnEasy')}</VisaPill>}
-          {visaEntry === 'visaRequired' && <VisaPill tone="hard">{t('atlas.visa.difficultyLongHard')}</VisaPill>}
-          {dnFriendly === 'friendly' && visaEntry !== 'visaFree' && visaEntry !== 'visaOnArrival' && (
+          {visaEntry === 'eVisa' && <VisaPill tone="mid">{t('atlas.visa.difficultyEVisa')}</VisaPill>}
+          {visaEntry === 'visaRequired' && <VisaPill tone="hard">{t('atlas.visa.difficultyAdvance')}</VisaPill>}
+          {longTermRestricted && <VisaPill tone="hard">{t('atlas.visa.difficultyLongHard')}</VisaPill>}
+          {dnFriendly === 'friendly' && (
             <VisaPill tone="dn">{t('atlas.visa.difficultyDnEasy')}</VisaPill>
           )}
           {city.monthlyCostUSD != null && <Pill>{formatMoney(city.monthlyCostUSD)}{t('atlas.card.perMonth')}</Pill>}

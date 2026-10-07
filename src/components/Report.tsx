@@ -493,16 +493,16 @@ function CityCard({ match, rank }: CityCardProps) {
                 </span>
               )}
               {visaEntry === 'eVisa' && (
-                <span className="rounded-full border border-sea/45 bg-sea/10 px-2.5 py-1 font-mono text-[10px] font-medium text-sea">
-                  {t('atlas.visa.difficultyDnEasy')}
+                <span className="rounded-full border hairline bg-white px-2.5 py-1 font-mono text-[10px] font-medium text-ink">
+                  {t('atlas.visa.difficultyEVisa')}
                 </span>
               )}
               {visaEntry === 'visaRequired' && (
                 <span className="rounded-full border border-clay/45 bg-clay/10 px-2.5 py-1 font-mono text-[10px] font-medium text-clay-deep">
-                  {t('atlas.visa.difficultyLongHard')}
+                  {t('atlas.visa.difficultyAdvance')}
                 </span>
               )}
-              {dnFriendly === 'friendly' && visaEntry !== 'visaFree' && visaEntry !== 'visaOnArrival' && (
+              {dnFriendly === 'friendly' && (
                 <span className="rounded-full border border-sea/45 bg-sea/10 px-2.5 py-1 font-mono text-[10px] font-medium text-sea">
                   {t('atlas.visa.difficultyDnEasy')}
                 </span>
