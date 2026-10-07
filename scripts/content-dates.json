@@ -1,0 +1,13 @@
+{
+  "$comment": "由 scripts/generate-landing.mjs 在具备 git 历史时自动生成并提交；浅克隆的 CI 无 git 历史，改用此清单作为 lastmod 回退源。请勿手动编辑。",
+  "dates": {
+    "scripts/generate-landing.mjs": "2026-10-07",
+    "src/data/cities/africa.json": "2026-10-04",
+    "src/data/cities/asia.json": "2026-10-04",
+    "src/data/cities/europe.json": "2026-10-04",
+    "src/data/cities/north-america.json": "2026-10-04",
+    "src/data/cities/oceania.json": "2026-10-04",
+    "src/data/cities/south-america.json": "2026-10-04",
+    "src/data/countries.json": "2026-10-04"
+  }
+}
