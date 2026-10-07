@@ -192,13 +192,7 @@ const zh: Record<string, string> = {
   'quiz.interests.refine': '细化 · 选中子项将强化该兴趣权重',
 
   // ---- 硬约束步骤 ConstraintsStep ----
-  'cons.intro': '三项硬性条件会在打分之前做一票否决过滤——不符合的城市不会进入匹配，保证结果先满足底线、再谈性格契合。全部留空则不过滤。',
-  'cons.unit.cny': '元 / 月',
-  'cons.budget.hint': '按近似汇率 1 USD ≈ {rate} CNY 折算：月成本估算高于 ${cap} 的城市将被排除（排除后不足 5 城时，差距 15% 内的超预算城市会保留并降权标注）。',
-  'cons.visa.any': '不限',
-  'cons.visa.hint': '依据城市库的结构化签证档位（官方签证 / 替代路径 / 无）；档位未核实的城市在设底线时会被排除并在报告中注明。',
   'cons.safety.threshold': '阈值 {v} / 100',
-  'cons.cta.apply': '保存条件，开始测评',
   'cons.footer': '条件会与测验进度一起保存在本地，之后可随时回来修改并重算。',
 
   // ---- 拆解 / 试住 / 分析 ----
@@ -505,13 +499,7 @@ const en: Record<string, string> = {
   'quiz.rank.moveDown': 'Move "{label}" down',
   'quiz.interests.refine': 'Refine · selected sub-items reinforce this interest\'s weight',
 
-  'cons.intro': 'Three hard constraints are veto-filtered before scoring — non-qualifying cities never enter matching, so bottom lines come first and personality fit second. Leave all empty to skip filtering.',
-  'cons.unit.cny': 'CNY / month',
-  'cons.budget.hint': 'At an approximate rate of 1 USD ≈ {rate} CNY: cities with estimated monthly cost above ${cap} will be excluded (if fewer than 5 cities remain, over-budget cities within a 15% gap are kept with a down-weighted marker).',
-  'cons.visa.any': 'No limit',
-  'cons.visa.hint': 'Based on the structured visa tiers in the city database (official visa / alternative path / none); cities with unverified tiers are excluded when you set a bottom line, and noted in the report.',
   'cons.safety.threshold': 'Threshold {v} / 100',
-  'cons.cta.apply': 'Save constraints & start',
   'cons.footer': 'Constraints are saved locally together with quiz progress; come back anytime to edit and re-run.',
 
   'an.breakdown.title': 'Breakdown · why {name} ranks first',

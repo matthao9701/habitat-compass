@@ -1,6 +1,15 @@
 /**
- * 首屏轻量过滤器：一句话自然填空 + 紧凑多维微调滑块。
- * 填空式交互：「我想在每月预算 [滑块] 左右，寻找一个 [气候偏好] 、[签证友好] 的定居城市」。
+ * 首屏轻量过滤器（第十四轮移动端重构）
+ *
+ * 旧版把预算数值框、range 滑块、下拉与按钮全部塞进一句话里，靠 `absolute` 把滑块
+ * 压在数值框下方——375px 竖屏下必然与文字重叠、标点被控件切碎。现改为块级垂直分组：
+ *
+ *   ① 引导标题（保留自然语言语意）+ 动态匹配计数
+ *   ② 每月预算：标签行 + 通栏滑块（手指滑动不会遮挡上方数值）
+ *   ③ 偏好标签：气候胶囊组 + 签证胶囊开关
+ *   ④ 进阶底线：网速 / 税负，双列等宽，右侧实时状态
+ *   ⑤ 重置：带底色的微型按钮
+ *
  * 结果实时过滤城市列表（前端纯计算，与引擎约束层口径独立，属轻量预览）。
  */
 import { useMemo } from 'react';
@@ -71,135 +80,188 @@ interface SentenceFilterProps {
   totalCount: number;
 }
 
-function InlineSelect<T extends string>({
-  options,
-  value,
-  onChange,
+/** 胶囊按钮：选中用松绿实底，未选用纸底细线 */
+function Chip({
+  active,
+  onClick,
+  children,
   ariaLabel,
 }: {
-  options: { v: T; label: string }[];
-  value: T;
-  onChange: (v: T) => void;
+  active: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
   ariaLabel?: string;
-}): React.ReactElement {
+}) {
   return (
-    <span className="relative inline-flex">
-      <select
-        value={value}
-        onChange={(e) => onChange(e.target.value as T)}
-        aria-label={ariaLabel}
-        className="min-h-[44px] cursor-pointer appearance-none rounded-[5px] border border-line bg-white px-3 py-2 font-body text-[13px] font-medium text-pine outline-none transition-colors hover:border-pine/50 focus:border-pine"
-      >
-        {options.map((o) => (
-          <option key={o.v} value={o.v}>
-            {o.label}
-          </option>
-        ))}
-      </select>
-      <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 font-data text-[8px] text-ink-soft">
-        ▼
-      </span>
-    </span>
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={active}
+      aria-label={ariaLabel}
+      className={`inline-flex min-h-[44px] items-center rounded-full border px-4 text-[13px] transition-colors ${
+        active
+          ? 'border-pine bg-pine font-medium text-paper'
+          : 'border-line bg-white text-ink-soft hover:border-pine/50 hover:text-ink'
+      }`}
+    >
+      {children}
+    </button>
   );
 }
 
 export default function SentenceFilter({ value, onChange, matchedCount, totalCount }: SentenceFilterProps) {
   const { t } = useI18n();
   const budgetLabel = useMemo(
-    () => `$${Math.round(value.budget).toLocaleString('en-US')}`,
+    () => Math.round(value.budget).toLocaleString('en-US'),
     [value.budget],
   );
 
+  const climateOptions = [
+    { v: 'any' as const, label: t('landing.filter.any') },
+    { v: 'warm' as const, label: t('landing.filter.warm') },
+    { v: 'cool' as const, label: t('landing.filter.cool') },
+  ];
+
   return (
     <div className="rounded-card border border-line bg-card">
-      {/* 一句话填空 */}
-      <div className="flex flex-wrap items-center gap-x-1.5 gap-y-2.5 px-5 py-4 text-[14px] leading-loose text-ink md:px-6 md:text-[15px]">
-        <span className="font-serif-accent italic text-ink-soft">“</span>
-        {t('landing.filter.lead')}
-        <span className="relative inline-flex flex-col">
-          <span className="inline-flex min-h-[44px] min-w-[118px] items-center justify-between rounded-[5px] border border-line bg-white px-3 py-2 font-data text-[13px] font-semibold text-pine">
-            {budgetLabel}
-            <span className="ml-1 text-[8px] text-ink-soft">USD</span>
-          </span>
-          <input
-            type="range"
-            min={800}
-            max={4000}
-            step={100}
-            value={value.budget}
-            onChange={(e) => onChange({ ...value, budget: Number(e.target.value) })}
-            className="absolute -bottom-0.5 left-0 h-6 w-full cursor-pointer accent-[#1D3557]"
-            aria-label={t('landing.filter.budgetAria')}
-          />
-        </span>
-        {t('landing.filter.trailing')}
-        <InlineSelect
-          value={value.climate}
-          ariaLabel={t('landing.filter.climateAria')}
-          onChange={(v) => onChange({ ...value, climate: v })}
-          options={[
-            { v: 'any', label: t('landing.filter.any') },
-            { v: 'warm', label: t('landing.filter.warm') },
-            { v: 'cool', label: t('landing.filter.cool') },
-          ]}
-        />
-        <button
-          type="button"
-          onClick={() => onChange({ ...value, visaFriendly: !value.visaFriendly })}
-          aria-pressed={value.visaFriendly}
-          className={`inline-flex min-h-[44px] cursor-pointer items-center rounded-[5px] border px-3 py-2.5 text-[13px] font-medium transition-colors ${
-            value.visaFriendly
-              ? 'border-pine bg-pine text-paper'
-              : 'border-line bg-white text-ink-soft hover:border-pine/50'
-          }`}
-        >
-          {value.visaFriendly ? t('landing.filter.visaOn') : t('landing.filter.visaOff')}
-        </button>
-        {t('landing.filter.settle')}
-        <span className="font-serif-accent italic text-ink-soft">”</span>
-        <span className="ml-auto font-data text-[11px] text-ink-soft">
+      {/* ① 引导标题 + 匹配计数 */}
+      <div className="flex items-start justify-between gap-4 px-5 pb-4 pt-5 md:px-6">
+        <div className="min-w-0">
+          <p className="eyebrow mb-2">{t('landing.filter.eyebrow')}</p>
+          <p className="font-heading text-[15px] font-bold leading-snug text-ink md:text-base">
+            {t('landing.filter.lead')}
+          </p>
+        </div>
+        <span className="mt-0.5 shrink-0 rounded-full bg-paper-deep px-3 py-1.5 font-data text-[11px] tabular-nums text-ink-soft">
           {t('landing.filter.count', { matched: matchedCount, total: totalCount })}
         </span>
       </div>
 
-      {/* 紧凑多维微调滑块行 */}
-      <div className="grid gap-x-8 gap-y-4 border-t border-line px-5 py-4 md:grid-cols-[1fr_1fr_auto] md:px-6">
-        <label className="flex min-w-0 items-center gap-3 py-1.5">
-          <span className="shrink-0 font-data text-[10px] uppercase tracking-[0.14em] text-ink-soft">{t('landing.filter.mbps')}</span>
-          <input
-            type="range"
-            min={0}
-            max={200}
-            step={10}
-            value={value.minMbps}
-            onChange={(e) => onChange({ ...value, minMbps: Number(e.target.value) })}
-            className="h-6 min-w-0 flex-1 cursor-pointer accent-[#1D3557]"
-            aria-label={t('landing.filter.mbps')}
-          />
-          <span className="w-16 shrink-0 text-right font-data text-[11px] font-medium text-ink">
-            {value.minMbps === 0 ? t('landing.filter.unlimited') : `≥${value.minMbps}M`}
+      {/* ② 每月预算：标签与数值同行，滑块独占通栏 */}
+      <div className="border-t border-line px-5 py-5 md:px-6">
+        <div className="flex items-center justify-between gap-4">
+          <label htmlFor="filter-budget" className="font-data text-[10px] uppercase tracking-[0.14em] text-ink-soft">
+            {t('landing.filter.budgetTag')}
+          </label>
+          <span
+            aria-hidden="true"
+            className="inline-flex items-baseline gap-1.5 rounded-lg border border-line bg-white px-3 py-2 font-data text-[15px] font-semibold tabular-nums text-pine"
+          >
+            ${budgetLabel}
+            <span className="text-[9px] font-normal text-ink-soft">USD</span>
           </span>
-        </label>
-        <label className="flex min-w-0 items-center gap-3 py-1.5">
-          <span className="shrink-0 font-data text-[10px] uppercase tracking-[0.14em] text-ink-soft">{t('landing.filter.tax')}</span>
-          <input
-            type="range"
-            min={0}
-            max={1}
-            step={1}
-            value={value.taxLight ? 1 : 0}
-            onChange={(e) => onChange({ ...value, taxLight: e.target.value === '1' })}
-            className="h-6 min-w-0 flex-1 cursor-pointer accent-[#1D3557]"
-            aria-label={t('landing.filter.tax')}
-          />
-          <span className="w-16 shrink-0 text-right font-data text-[11px] font-medium text-ink">
-            {value.taxLight ? t('landing.filter.taxOn') : t('landing.filter.unlimited')}
-          </span>
-        </label>
+        </div>
+        <input
+          id="filter-budget"
+          type="range"
+          min={800}
+          max={4000}
+          step={100}
+          value={value.budget}
+          onChange={(e) => onChange({ ...value, budget: Number(e.target.value) })}
+          aria-label={t('landing.filter.budgetAria')}
+          aria-valuetext={`$${budgetLabel} USD`}
+          className="hc-range mt-3 w-full"
+        />
+      </div>
+
+      {/* ③ 偏好标签：气候胶囊组 + 签证开关 */}
+      <div className="border-t border-line px-5 py-5 md:px-6">
+        <p className="mb-3 font-data text-[10px] uppercase tracking-[0.14em] text-ink-soft">
+          {t('landing.filter.chipsLabel')}
+        </p>
+        <div className="flex flex-wrap gap-2">
+          {climateOptions.map((o) => (
+            <Chip
+              key={o.v}
+              active={value.climate === o.v}
+              onClick={() => onChange({ ...value, climate: o.v })}
+              ariaLabel={t('landing.filter.climateAria')}
+            >
+              {o.label}
+            </Chip>
+          ))}
+          <Chip
+            active={value.visaFriendly}
+            onClick={() => onChange({ ...value, visaFriendly: !value.visaFriendly })}
+          >
+            {value.visaFriendly ? t('landing.filter.visaOn') : t('landing.filter.visaOff')}
+          </Chip>
+        </div>
+      </div>
+
+      {/* ④ 进阶底线：两行等宽，右侧实时状态 */}
+      <div className="border-t border-line px-5 py-5 md:px-6">
+        <p className="mb-3 font-data text-[10px] uppercase tracking-[0.14em] text-ink-soft">
+          {t('landing.filter.baseline')}
+        </p>
+        <div className="space-y-3">
+          <div className="flex items-center gap-3 sm:gap-4">
+            <label
+              htmlFor="filter-mbps"
+              className="w-24 shrink-0 font-data text-[10px] uppercase tracking-[0.14em] text-ink-soft sm:w-32"
+            >
+              {t('landing.filter.mbps')}
+            </label>
+            <input
+              id="filter-mbps"
+              type="range"
+              min={0}
+              max={200}
+              step={10}
+              value={value.minMbps}
+              onChange={(e) => onChange({ ...value, minMbps: Number(e.target.value) })}
+              aria-label={t('landing.filter.mbps')}
+              aria-valuetext={
+                value.minMbps === 0 ? t('landing.filter.unlimited') : `≥${value.minMbps} Mbps`
+              }
+              className="hc-range min-w-0 flex-1"
+            />
+            <span
+              className={`w-20 shrink-0 whitespace-nowrap text-right font-data text-[11.5px] font-medium tabular-nums ${
+                value.minMbps === 0 ? 'text-ink-soft/70' : 'text-pine'
+              }`}
+            >
+              {value.minMbps === 0 ? t('landing.filter.unlimited') : `≥${value.minMbps} Mbps`}
+            </span>
+          </div>
+
+          <div className="flex items-center gap-3 sm:gap-4">
+            <label
+              htmlFor="filter-tax"
+              className="w-24 shrink-0 font-data text-[10px] uppercase tracking-[0.14em] text-ink-soft sm:w-32"
+            >
+              {t('landing.filter.tax')}
+            </label>
+            <input
+              id="filter-tax"
+              type="range"
+              min={0}
+              max={1}
+              step={1}
+              value={value.taxLight ? 1 : 0}
+              onChange={(e) => onChange({ ...value, taxLight: e.target.value === '1' })}
+              aria-label={t('landing.filter.tax')}
+              aria-valuetext={value.taxLight ? t('landing.filter.taxOn') : t('landing.filter.unlimited')}
+              className="hc-range min-w-0 flex-1"
+            />
+            <span
+              className={`w-[5.5rem] shrink-0 whitespace-nowrap text-right font-data text-[11.5px] font-medium ${
+                value.taxLight ? 'text-pine' : 'text-ink-soft/70'
+              }`}
+            >
+              {value.taxLight ? t('landing.filter.taxOn') : t('landing.filter.unlimited')}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* ⑤ 重置 */}
+      <div className="border-t border-line px-5 py-4 md:px-6">
         <button
           type="button"
           onClick={() => onChange(DEFAULT_FILTER)}
-          className="min-h-[44px] justify-self-start font-data text-[10.5px] text-ink-soft underline decoration-line underline-offset-4 transition-colors hover:text-clay md:justify-self-end"
+          className="inline-flex min-h-[36px] items-center rounded-lg border border-line bg-paper-deep px-4 font-data text-[11.5px] text-ink-soft transition-colors hover:border-ink/25 hover:text-clay"
         >
           {t('landing.filter.reset')}
         </button>

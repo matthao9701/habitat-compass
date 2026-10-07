@@ -1,0 +1,22 @@
+{
+  "id": "/?source=pwa",
+  "name": "栖居罗盘 · Habitat Compass",
+  "short_name": "栖居罗盘",
+  "description": "数字游民与远程工作者的海外城市定居决策工具：200 城匹配、生活成本对比、网速与签证指南。",
+  "lang": "zh-Hans",
+  "dir": "ltr",
+  "start_url": "/?source=pwa",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui", "browser"],
+  "orientation": "any",
+  "background_color": "#F9F8F6",
+  "theme_color": "#1D3557",
+  "categories": ["travel", "lifestyle", "productivity"],
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-maskable-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

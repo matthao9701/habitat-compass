@@ -1,8 +1,9 @@
-import { lazy, Suspense, useState } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import Landing from './components/Landing';
 import TabBar, { type TabId } from './components/TabBar';
 import Footer from './components/Footer';
+import PwaInstallCard from './components/PwaInstallCard';
 
 // 首页（Landing）同步加载，保证首屏最快；其余页面按需懒加载，拆出独立 chunk。
 const Quiz = lazy(() => import('./components/Quiz'));
@@ -13,6 +14,7 @@ import { assess, type UserAnswers, type AssessmentResult, type QuizVersion } fro
 import { DEMO_PROFILES, buildDemoAnswers } from './data/demoProfiles';
 import * as storage from './lib/storage';
 import { applyHardConstraints, applyOverBudgetPenalty, hasAnyConstraint, type HardConstraints } from './lib/constraints';
+import { registerServiceWorker } from './lib/pwa';
 import { track, trackStage } from './lib/telemetry';
 import { cities as CITIES } from './data';
 import { I18nProvider } from './i18n';
@@ -38,6 +40,11 @@ export default function App() {
   const [isDemo, setIsDemo] = useState(false);
   const [quizVersion, setQuizVersion] = useState<QuizVersion>('lite');
   const [compareSeed, setCompareSeed] = useState<string[]>([]);
+
+  // PWA：注册 Service Worker（仅支持原生安装事件的浏览器；见 lib/pwa.ts 说明）
+  useEffect(() => {
+    registerServiceWorker();
+  }, []);
 
   function go(next: Screen): void {
     window.scrollTo(0, 0);
@@ -177,6 +184,9 @@ export default function App() {
           </motion.div>
         </AnimatePresence>
         {TAB_SCREENS.includes(screen) && <Footer />}
+        {/* 常驻挂载以捕获 beforeinstallprompt（该事件每页只触发一次）；
+            仅在常驻页面展示：测评/报告是专注模式，底部固定操作栏会被浮层遮挡 */}
+        <PwaInstallCard enabled={TAB_SCREENS.includes(screen)} />
       </div>
     </I18nProvider>
   );

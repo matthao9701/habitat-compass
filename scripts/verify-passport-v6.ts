@@ -12,7 +12,7 @@
  *     US + visaFree → passportSkipped 降级全保留；CN + visaFree 保留数 = visaFree + visaOnArrival 国家城市数；
  *     两阶段（预算 → 签证）顺序不回归
  *  4. 引擎集成冒烟：visaFree 过滤后 assess 正常出 Top5；computeCityFits 不受 passport 影响
- *  5. 双语键完整：passport.* / cons.visa.visaFree.* / pv.* / longstay.* / cmp.taxDays /
+ *  5. 双语键完整：passport.* / cons.visa.quick.* / pv.* / longstay.* / cmp.taxDays /
  *     cn.passportSkipped / cons.budget.placeholder 在 zh+en 都存在；
  *     hc.visafree.* zh 值与 constraints.ts reason 串完全一致（REVERSE_ZH 反查前提）
  *  6. REVERSE_ZH 反查命中：两个新 reason 串 en 反查非恒等
@@ -186,7 +186,7 @@ check(
   'passport.* 15 键 zh+en 齐全',
   passportKeys.every((k) => uiZh[`passport.${k}`]?.length > 0 && uiEn[`passport.${k}`]?.length > 0),
 );
-check('cons.visa.visaFree(.desc) zh+en', ['cons.visa.visaFree', 'cons.visa.visaFree.desc'].every((k) => uiZh[k]?.length > 0 && uiEn[k]?.length > 0));
+check('cons.visa.quick.* zh+en', ['cons.visa.quick.visaFree', 'cons.visa.quick.official', 'cons.visa.quick.alternative', 'cons.visa.quick.none'].every((k) => uiZh[k]?.length > 0 && uiEn[k]?.length > 0));
 const pvKeys = ['title', 'entry.visaFree', 'entry.visaOnArrival', 'entry.eVisa', 'entry.visaRequired', 'work', 'digitalNomad', 'longTerm', 'level.friendly', 'level.restricted', 'level.unknown', 'disclaimer', 'snapshot', 'fallback'];
 check('pv.* 14 键 zh+en 齐全', pvKeys.every((k) => uiZh[`pv.${k}`]?.length > 0 && uiEn[`pv.${k}`]?.length > 0));
 const lsKeys = ['title', 'taxDaysLabel', 'taxDays', 'ssLabel', 'ss.treaty', 'ss.none', 'ss.negotiating', 'rentalLabel', 'verify', 'none'];

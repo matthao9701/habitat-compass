@@ -141,22 +141,37 @@ export default function Landing({ onStart, onDemo }: LandingProps) {
           initial="hidden"
           animate="visible"
           custom={4}
-          className="mt-7 flex flex-wrap items-center gap-4"
+          className="mt-7"
         >
-          <button type="button" onClick={() => setPickerOpen(true)} className="btn-clay">
-            {t('landing.hero.cta')}
-            <span className="font-data text-xs opacity-80">→</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => onDemo(DEMO_PROFILES[0]?.id ?? '')}
-            className="btn-ghost !text-[13px]"
-          >
-            {t('landing.hero.sampleCta')}
-          </button>
-          <p className="font-data text-[11px] text-ink-soft">
-            {t('landing.hero.ctaHint')}
-          </p>
+          {/* 微标置于主按钮上方：先降低心理门槛，再给出行动点 */}
+          <div className="mb-4 flex flex-wrap items-center gap-x-2 gap-y-2">
+            {[
+              t('landing.cta.badgeTime'),
+              t('landing.cta.badgeQuestions'),
+              t('landing.cta.badgeNoSignup'),
+            ].map((label) => (
+              <span
+                key={label}
+                className="inline-flex items-center gap-1.5 rounded-full border hairline bg-card px-2.5 py-1 font-data text-[10.5px] text-ink-soft"
+              >
+                <span className="h-1 w-1 rounded-full bg-moss" aria-hidden="true" />
+                {label}
+              </span>
+            ))}
+          </div>
+          <div className="flex flex-wrap items-center gap-3">
+            <button type="button" onClick={() => setPickerOpen(true)} className="btn-clay flex-1 sm:flex-none">
+              {t('landing.hero.cta')}
+              <span className="font-data text-xs opacity-80">→</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => onDemo(DEMO_PROFILES[0]?.id ?? '')}
+              className="btn-ghost flex-1 !text-[13px] sm:flex-none"
+            >
+              {t('landing.hero.sampleCta')}
+            </button>
+          </div>
         </motion.div>
       </section>
 

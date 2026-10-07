@@ -206,6 +206,13 @@ ${Object.entries(hreflang).map(([k, v]) => `<link rel="alternate" hreflang="${k 
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="${T.pine}">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="栖居罗盘">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <title>${esc(title)}</title>
 <meta name="description" content="${esc(desc)}">
 ${robotsHead}

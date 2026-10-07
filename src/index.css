@@ -92,15 +92,58 @@
     @apply border-pine bg-pine/[0.05];
     box-shadow: inset 3px 0 0 #1d3557;
   }
-}
 
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
+  /* 通栏 range 滑块（第十四轮）：轨道视觉 6px，但控件本身 44px 高，
+     保证移动端有足够拇指热区；滑块独占一行，不会与上方数值重叠。 */
+  .hc-range {
+    appearance: none;
+    width: 100%;
+    height: 44px;
+    background: transparent;
+    cursor: pointer;
+  }
+
+  .hc-range::-webkit-slider-runnable-track {
+    height: 6px;
+    border-radius: 999px;
+    background: #e5e7eb;
+  }
+
+  .hc-range::-webkit-slider-thumb {
+    appearance: none;
+    width: 22px;
+    height: 22px;
+    margin-top: -8px;
+    border-radius: 999px;
+    background: #1d3557;
+    border: 3px solid #fff;
+    box-shadow: 0 1px 4px rgb(31 36 33 / 28%);
+  }
+
+  .hc-range::-moz-range-track {
+    height: 6px;
+    border-radius: 999px;
+    background: #e5e7eb;
+  }
+
+  .hc-range::-moz-range-thumb {
+    width: 22px;
+    height: 22px;
+    border-radius: 999px;
+    background: #1d3557;
+    border: 3px solid #fff;
+    box-shadow: 0 1px 4px rgb(31 36 33 / 28%);
+  }
+
+  .hc-range:focus-visible {
+    outline: none;
+  }
+
+  .hc-range:focus-visible::-webkit-slider-thumb {
+    box-shadow: 0 0 0 3px rgb(29 53 87 / 28%);
+  }
+
+  .hc-range:focus-visible::-moz-range-thumb {
+    box-shadow: 0 0 0 3px rgb(29 53 87 / 28%);
   }
 }
