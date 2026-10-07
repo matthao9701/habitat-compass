@@ -60,7 +60,6 @@ export function AtlasCard({ city, index, onOpen, formatMoney, badge }: AtlasCard
   const london = overlapHours(city.timezone, 'london');
   const visaEntry = country?.visaPassport?.entry ?? null;
   const dnFriendly = country?.visaPassport?.digitalNomad ?? null;
-  const longTermRestricted = country?.visaPassport?.longTerm === 'restricted';
   return (
     <motion.button
       type="button"
@@ -81,7 +80,6 @@ export function AtlasCard({ city, index, onOpen, formatMoney, badge }: AtlasCard
           {(visaEntry === 'visaFree' || visaEntry === 'visaOnArrival') && <VisaPill tone="easy">{t('atlas.visa.difficultyEasy')}</VisaPill>}
           {visaEntry === 'eVisa' && <VisaPill tone="mid">{t('atlas.visa.difficultyEVisa')}</VisaPill>}
           {visaEntry === 'visaRequired' && <VisaPill tone="hard">{t('atlas.visa.difficultyAdvance')}</VisaPill>}
-          {longTermRestricted && <VisaPill tone="hard">{t('atlas.visa.difficultyLongHard')}</VisaPill>}
           {dnFriendly === 'friendly' && (
             <VisaPill tone="dn">{t('atlas.visa.difficultyDnEasy')}</VisaPill>
           )}
@@ -179,6 +177,11 @@ const DN_LABEL_KEYS: Record<string, string> = {
   friendly: 'atlas.dn.friendly',
   restricted: 'atlas.dn.restricted',
   unknown: 'profile.visa.pending',
+};
+
+/** 长期居留友好度：restricted 显示「长居较难」，其余不展示（避免中性标签噪音） */
+const LONG_STAY_KEYS: Record<string, string> = {
+  restricted: 'atlas.visa.difficultyLongHard',
 };
 
 export function CityDrawer({ city, onClose, formatMoney }: DrawerProps) {
@@ -342,6 +345,9 @@ export function CityDrawer({ city, onClose, formatMoney }: DrawerProps) {
                       label={t('atlas.drawer.row.dnVisa')}
                       value={country?.visaPassport ? t(DN_LABEL_KEYS[country.visaPassport.digitalNomad]) : t('profile.visa.pending')}
                     />
+                    {country?.visaPassport && LONG_STAY_KEYS[country.visaPassport.longTerm] && (
+                      <Row label={t('atlas.drawer.row.longStay')} value={t(LONG_STAY_KEYS[country.visaPassport.longTerm])} />
+                    )}
                     <Row
                       label={t('atlas.drawer.row.taxResidency')}
                       value={country?.longStay?.taxResidencyDays != null ? t('atlas.drawer.row.taxResidencyVal', { days: country.longStay.taxResidencyDays }) : t('profile.visa.pending')}

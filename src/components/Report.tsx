@@ -376,6 +376,7 @@ function CityCard({ match, rank }: CityCardProps) {
         : null;
   const visaEntry = country?.visaPassport?.entry ?? null;
   const dnFriendly = country?.visaPassport?.digitalNomad ?? null;
+  const longStayRestricted = country?.visaPassport?.longTerm === 'restricted';
 
   const BADGE_STYLE: Record<BadgeLevel, string> = {
     good: 'border-moss/55 bg-moss/10 text-moss',
@@ -500,6 +501,11 @@ function CityCard({ match, rank }: CityCardProps) {
               {visaEntry === 'visaRequired' && (
                 <span className="rounded-full border border-clay/45 bg-clay/10 px-2.5 py-1 font-mono text-[10px] font-medium text-clay-deep">
                   {t('atlas.visa.difficultyAdvance')}
+                </span>
+              )}
+              {longStayRestricted && (
+                <span className="rounded-full border border-clay/45 bg-clay/10 px-2.5 py-1 font-mono text-[10px] font-medium text-clay-deep">
+                  {t('atlas.visa.difficultyLongHard')}
                 </span>
               )}
               {dnFriendly === 'friendly' && (
