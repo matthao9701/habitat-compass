@@ -1,6 +1,6 @@
 /* 字体策略（构建期自托管，不依赖外部 CDN）：
-   - Fraunces / Newsreader / Inter / IBM Plex Mono / JetBrains Mono（SIL OFL）：西文可变字体，仅打包 latin 子集
-   - 中文不再自托管 Noto Sans SC（会切出数百个 CJK 字体文件，拖慢移动端首屏），改走系统字体栈 */
+   - Fraunces / Newsreader / Manrope（SIL OFL）：西文可变字体，仅打包 latin 子集
+   - 中文字体不自托管（Noto Sans SC 会切出 101 个 CJK 切片，拖慢移动端首屏），走系统黑体栈 */
 
 @tailwind base;
 @tailwind components;
@@ -20,7 +20,7 @@
   body {
     background-color: var(--background);
     color: var(--foreground);
-    font-family: "Inter Variable", -apple-system, BlinkMacSystemFont, "PingFang SC",
+    font-family: "Manrope Variable", -apple-system, BlinkMacSystemFont, "PingFang SC",
       "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", system-ui, sans-serif;
     font-weight: 400;
     -webkit-font-smoothing: antialiased;

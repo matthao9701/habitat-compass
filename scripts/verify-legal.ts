@@ -71,7 +71,7 @@ for (const { rel, lang, kind } of pages) {
 
 console.log('\n══ 二、隐私政策关键要素（GDPR 信息义务） ══');
 const PRIV_ZH: Array<[string, string]> = [
-  ['控制者与占位邮箱', 'privacy@habitatcompass.app'],
+  ['控制者与联系邮箱', 'hi@habitatcompass.com'],
   ['存储键披露', 'nomadmatch.v1'],
   ['法律基础 Art. 6(1)(b)', '6(1)(b)'],
   ['ePrivacy strictly necessary', 'strictly necessary'],
@@ -83,20 +83,24 @@ const PRIV_ZH: Array<[string, string]> = [
   ['无国际传输', '不存在国际数据传输'],
   ['保存期至用户清除', '直到你自行清除'],
   ['访问权 15', '第 15 条'],
+  ['更正权 16', '第 16 条'],
   ['删除权 17', '第 17 条'],
+  ['限制处理权 18', '第 18 条'],
   ['可携带权 20', '第 20 条'],
   ['反对权 21', '第 21 条'],
   ['监管机构申诉 77', '第 77 条'],
   ['30 天响应', '30 天内'],
   ['未成年人 16 岁 Art. 8', '16 周岁'],
   ['泄露 72 小时', '72 小时'],
+  ['数据共享/披露节', '数据共享与披露'],
+  ['第三方链接节', '第三方链接'],
   ['CCPA 补充', 'CCPA'],
   ['清除数据按钮', '清除我的所有数据'],
   ['eraseAll 最小 JS', 'function eraseAll'],
 ];
 for (const [name, kw] of PRIV_ZH) check(`zh 隐私页：${name}`, htmls['privacy/index.html']?.includes(kw) ?? false, kw);
 const PRIV_EN: Array<[string, string]> = [
-  ['placeholder mailbox', 'privacy@habitatcompass.app'],
+  ['contact mailbox', 'hi@habitatcompass.com'],
   ['key prefix disclosure', 'nomadmatch.v1'],
   ['Art. 6(1)(b)', 'Art. 6(1)(b)'],
   ['Art. 5(3) ePrivacy', 'Art. 5(3)'],
@@ -109,13 +113,17 @@ const PRIV_EN: Array<[string, string]> = [
   ['no international transfer', 'no international data transfer'],
   ['retention until erase', 'until you erase it'],
   ['right of access Art. 15', 'right of access (Art. 15)'],
+  ['rectification Art. 16', 'rectification (Art. 16)'],
   ['erasure Art. 17', 'erasure (Art. 17)'],
+  ['restriction Art. 18', 'restriction of processing (Art. 18)'],
   ['portability Art. 20', 'data portability (Art. 20)'],
   ['objection Art. 21', 'right to object (Art. 21)'],
   ['supervisory authority Art. 77', 'supervisory authority (Art. 77)'],
   ['30-day response', 'within'],
   ['children 16 Art. 8', 'under 16'],
   ['breach 72 hours', '72 hours'],
+  ['sharing & disclosure section', 'Sharing &amp; disclosure'],
+  ['third-party links section', 'Third-party links'],
   ['CCPA/CPRA', 'CCPA/CPRA'],
   ['erase button', 'Erase all my data'],
   ['eraseAll JS', 'function eraseAll'],
@@ -136,16 +144,22 @@ for (const rel of ['terms/index.html', 'en/terms/index.html']) {
 
 console.log('\n══ 四、用户协议关键要素 ══');
 const TERMS_ZH: Array<[string, string]> = [
+  ['协议接受要件', '即表示你已阅读、理解并同意受本协议约束'],
+  ['最低年龄 16', '年满 <strong>16 周岁</strong>'],
   ['as-is 免责', '现状'],
   ['非专业建议（九类）', '不构成移民、签证、居留、法律、税务、医疗、保险、财务或投资建议'],
   ['第三方快照可能过时', '可能过时或存在误差'],
   ['签证以官方渠道为准', '通过官方渠道核实'],
   ['责任限制', '责任限制'],
-  ['全量免费（计费节已删）', '全部功能<strong>无需付费</strong>'],
+  ['赔偿条款', '赔偿并使其免受损害'],
+  ['可分割性', '可分割性'],
+  ['全量免费（计费节已删）', '无需付费'],
+  ['无账号声明', '无需注册账号'],
   ['去品牌化：来源统一表述', '官方开放数据（Open Data）与公开统计测算'],
   ['GeoNames CC BY', 'GeoNames（CC BY 4.0）'],
   ['Open-Meteo CC BY', 'Open-Meteo'],
   ['OEJTS 许可', 'CC BY-NC-SA 4.0'],
+  ['字体 OFL 署名', 'SIL Open Font License'],
   ['适用法域占位', '占位：待正式部署后补充法域与管辖条款'],
   ['无付费残留', '¥29.9|退款|撤回权|订单|计费|买断'],
 ];
@@ -157,15 +171,21 @@ for (const [name, kw] of TERMS_ZH) {
   }
 }
 const TERMS_EN: Array<[string, string]> = [
+  ['acceptance clause', 'you have read, understood and agree to be bound'],
+  ['minimum age 16', 'at least <strong>16 years old</strong>'],
   ['as-is', 'as is'],
-  ['not professional advice (unified wording)', 'not immigration, visa, legal, tax, medical, or financial advice'],
+  ['not professional advice (unified wording)', 'not immigration, visa, legal, tax, medical, insurance, financial or investment advice'],
   ['snapshots may be outdated', 'may be outdated or imprecise'],
   ['verify official channels', 'verify with official channels'],
   ['limitation of liability', 'Limitation of liability'],
+  ['indemnification', 'indemnify and hold the operator harmless'],
+  ['severability', 'Severability'],
   ['free of charge (billing removed)', 'free of charge'],
+  ['no account', 'no account'],
   ['open data wording', 'official open data & public statistical estimates'],
   ['GeoNames CC BY', 'GeoNames (CC BY 4.0)'],
   ['OEJTS licence', 'CC BY-NC-SA 4.0'],
+  ['typeface OFL attribution', 'SIL Open Font License'],
   ['governing law placeholder', 'placeholder: jurisdiction and venue to be added'],
   ['no paid residue', '¥29\\.9|no refunds|withdrawal|orders|billing|one-time purchase'],
 ];
@@ -176,6 +196,18 @@ for (const [name, kw] of TERMS_EN) {
     check(`en 协议页：${name}`, htmls['en/terms/index.html']?.includes(kw) ?? false, kw);
   }
 }
+
+console.log('\n══ 四之二、法务文本结构升级（摘要条 / 目录 / CC BY-SA 署名） ══');
+for (const rel of ['privacy/index.html', 'en/privacy/index.html', 'terms/index.html', 'en/terms/index.html']) {
+  const html = htmls[rel] ?? '';
+  check(`${rel} 含摘要条 .notice`, html.includes('class="notice"'));
+  check(`${rel} 含目录 nav.toc + 锚点`, html.includes('class="toc"') && html.includes('href="#s0"'));
+  check(`${rel} 含 CC BY-SA 4.0 开源模板署名`, html.includes('creativecommons.org/licenses/by-sa/4.0') && html.includes('Legalmattic'));
+  check(`${rel} 章节均有 id 锚点`, (html.match(/<h2 id="s\d+">/g) ?? []).length >= 10);
+}
+check('zh 隐私页披露"无账号/无服务器"立场', (htmls['privacy/index.html'] ?? '').includes('没有账号体系、没有服务器端数据库'));
+check('en 隐私页 disclose no-account stance', (htmls['en/privacy/index.html'] ?? '').includes('no server-side database'));
+check('免责页不含目录（短文本）', !(htmls['disclaimer/index.html'] ?? '').includes('class="toc"'));
 
 console.log('\n══ 五、法律页互链与页脚链接 ══');
 for (const { rel, lang, kind } of pages) {
@@ -293,7 +325,7 @@ for (const [tag, html] of [['zh', methZh], ['en', methEn]] as const) {
     check(`方法论页(${tag})：无受限商业源品牌`, !BRANDED_RE.test(html));
   check(`方法论页(${tag})：GeoNames/Open-Meteo/World Bank 带 CC BY 4.0 许可链接`, (html.match(/creativecommons\.org\/licenses\/by\/4\.0/g) ?? []).length >= 3);
   check(`方法论页(${tag})：源站链接（geonames/open-meteo，去品牌化）`, html.includes('geonames.org') && html.includes('open-meteo.com') && !html.includes(NB + '.com'));
-  check(`方法论页(${tag})：字体 OFL 声明`, html.includes('SIL Open Font License 1.1') && html.includes('Noto Sans SC'));
+  check(`方法论页(${tag})：字体 OFL 声明`, html.includes('SIL Open Font License 1.1') && html.includes('Manrope'));
 }
 // 9.5 法律页 dev 可达（public 同步）
 for (const rel of ['privacy/index.html', 'terms/index.html', 'disclaimer/index.html', 'en/privacy/index.html', 'en/terms/index.html', 'en/disclaimer/index.html']) {

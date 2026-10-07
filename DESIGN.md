@@ -43,17 +43,18 @@
 - 图表配色统一蓝青渐变系为主（deep-sea → ocean 青 → 浅青），序列需要第四色或暖强调时用 coral / sand；多城对比四色 = COMPARE_COLORS（deep-sea / coral / sand / teal）。
 - 演示档案态：报告头部「演示档案」徽标（ochre 描边 + 等宽小字），底部固定示例报告 CTA 引导回正式测评。
 
-## 字体排版（第三轮改版：黑体主导）
+## 字体排版（第十五轮改版：几何黑体 / 数字重排）
 
-- 基础字体：中文全站 **Noto Sans SC（思源黑体，SIL OFL）**，通过 `@fontsource/noto-sans-sc` 自托管打包（300/400/500/700/900），不依赖外部 CDN；Fraunces / Manrope / Noto Serif SC 已移除。
+- 西文与数字：**Manrope**（几何人文黑体，SIL OFL，`@fontsource-variable/manrope` 可变字体），经构建自托管打包，仅 latin / latin-ext 子集，不依赖外部 CDN。承担正文、UI 与全部数字。
+- 中文：走**系统黑体栈**（`-apple-system` / PingFang SC / 微软雅黑 / 思源黑体）——不自托管 CJK 字体，避免 @fontsource/noto-sans-sc 的 101 个切片拖慢移动端首屏。
+- 标题衬线：**Fraunces**（soft serif，带光学尺寸），token `font-display` / `font-heading`，用于 Hero 大标题与区块标题；**Newsreader** 作英文副标/引用点缀，token `font-serif-accent`。
 - 层级阶梯（大小-字重-灰度分明）：
-  - 页面大标题 / Hero：`font-display` + Black(900)/Bold(700) + `tracking-tight` 收紧字距（tailwind token：display/heading/body/data/serif-accent）。
+  - 页面大标题 / Hero：`font-display` + Bold(700)/Black + `tracking-tight` 收紧字距。
   - 区块标题：`font-heading` + Bold(700)。
   - 正文：`font-body`（默认继承 body）Regular(400)，行高 1.8-1.9。
-  - 辅助说明 / 脚注：Light(300) 或 Regular + 灰度降一档（text-ink-soft）。
-- 数字与数据：**IBM Plex Mono**（OFL，`@fontsource/ibm-plex-mono` 400/500/600），token `font-data`；评分/成本/指数表/雷达数值启用等宽与 `tabular-nums` 保证纵向对齐。
-- 英文点缀：**Source Serif 4**（OFL，`@fontsource/source-serif-4` 400/400-italic），token `font-serif-accent`——仅用于 Hero 英文副标（小写 `habitat compass` + 宽字距）与引用；不与中文混排，中文一律黑体。
-- 页脚署名：「字体：思源黑体 / IBM Plex Mono / Source Serif 4（OFL 开源许可）」极小字，与数据口径脚注并列（Landing 页脚 + 报告免责区）。
+  - 辅助说明 / 脚注：Regular + 灰度降一档（text-ink-soft）。
+- 数字与数据：**不再使用等宽字体**（原 JetBrains Mono / IBM Plex Mono 的「代码感」与品牌气质不符）。token `font-data` 与历史类名 `font-mono` 统一指向 Manrope；评分/成本/指数/雷达数值通过 `font-variant-numeric: tabular-nums`（Tailwind `tabular-nums`）保证纵向对齐——Manrope 含真 `tnum` 特性。
+- 页脚署名：「字体：系统中文黑体 / Fraunces / Newsreader / Manrope（OFL 开源许可）」极小字，与数据口径脚注并列（Landing 页脚 + 报告免责区）。
 - 节奏：杂志式编号章节（`01 / 02 / 03`）、宽字距 eyebrow 标签、大量细线分隔；数字是视觉锚点。
 
 ## 动效与交互

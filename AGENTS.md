@@ -10,7 +10,7 @@
 - **核心**: React 19, Vite 7, TypeScript 5（`moduleResolution: bundler`）
 - **服务**: Express（仅承载 Vite 开发中间件与生产静态文件，无业务 API）
 - **UI**: Tailwind CSS 3 + framer-motion 13（过渡动画）
-- **字体**（第三轮起，全部 OFL 自托管，禁外部 CDN）：Noto Sans SC（display/heading/body，@fontsource/noto-sans-sc 300-900）、IBM Plex Mono（data/等宽数字）、Source Serif 4（英文点缀，仅 serif-accent）；tailwind fontFamily 层级 token：`display/heading/body/data/serif-accent`（兼容映射 sans/serif/mono）
+- **字体**（第十五轮改版，全部 OFL 自托管，禁外部 CDN）：Manrope（正文/UI/数字，@fontsource-variable/manrope 可变字体；含真 `tnum` 等宽数字特性）、Fraunces（display/heading 衬线标题）、Newsreader（serif-accent 英文点缀）；中文走系统黑体栈不自托管；tailwind fontFamily 层级 token：`display/heading/body/data/serif-accent`（兼容映射 sans/serif/mono，其中 `data`/`mono` 均指向 Manrope，数字靠 `tabular-nums` 对齐）
 - **图表**: 自绘 SVG（六维雷达图、维度条形图、世界海图）
 - **i18n（第七轮）**: 自研轻量双语（zh/en）——LangContext + useI18n + REVERSE_ZH 反查，六域词典自托管，无第三方 i18n 依赖
 

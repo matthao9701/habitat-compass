@@ -467,8 +467,8 @@ export default function CompareScreen({ result, answers, seedCities, onOpenQuiz 
                     </p>
                     <p className="font-mono text-[16px] text-ink">{r.composite}</p>
                   </div>
-                  <div className="mt-1.5 flex items-center gap-3">
-                    <div className="h-[5px] flex-1 overflow-hidden rounded-full bg-ink/10">
+                  <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1">
+                    <div className="h-[5px] min-w-[72px] flex-1 overflow-hidden rounded-full bg-ink/10">
                       <motion.div
                         className="h-full rounded-full"
                         style={{ backgroundColor: r.color }}

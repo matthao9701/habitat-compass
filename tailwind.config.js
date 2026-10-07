@@ -25,12 +25,12 @@ export default {
         sea: '#7FA8B8',
       },
       fontFamily: {
-        // 编辑部风字体系统（全部自托管可变字体，latin 子集）：
+        // 第十五轮字体改版（全部 OFL 自托管可变字体，仅打包 latin 子集）：
         //   标题  Fraunces（soft serif，带光学尺寸，旅程探索感）
         //   点缀  Newsreader（衬线引用/副标）
-        //   正文  Inter（英文）；中文走系统字体栈（PingFang SC / 思源黑体 …）
-        //   数据  JetBrains Mono / IBM Plex Mono
-        // 中文正文不再自托管 Noto Sans SC（会切出数百个 CJK 切片文件，拖慢移动端首屏）。
+        //   正文 / 数据  Manrope（几何人文黑体；数字为真等宽数字，替代原 JetBrains/IBM Plex Mono 的「代码感」等宽字体）
+        // 中文走系统黑体栈（PingFang SC / 微软雅黑 / 思源黑体），不自托管 CJK 字体：
+        // @fontsource/noto-sans-sc 会切出 101 个切片文件，移动端首屏代价过高。
         display: [
           '"Fraunces Variable"',
           'Georgia',
@@ -46,7 +46,7 @@ export default {
           'serif',
         ], // 区块标题
         body: [
-          '"Inter Variable"',
+          '"Manrope Variable"',
           '-apple-system',
           'BlinkMacSystemFont',
           '"PingFang SC"',
@@ -56,11 +56,18 @@ export default {
           'system-ui',
           'sans-serif',
         ], // 正文（font-normal，行高放宽）
-        data: ['"JetBrains Mono Variable"', '"IBM Plex Mono"', 'ui-monospace', 'monospace'], // 指标/坐标（等宽）
+        data: [
+          '"Manrope Variable"',
+          '-apple-system',
+          '"PingFang SC"',
+          '"Microsoft YaHei"',
+          'system-ui',
+          'sans-serif',
+        ], // 指标/数值（font-variant-numeric: tabular-nums 保证纵向对齐）
         'serif-accent': ['"Newsreader Variable"', 'Georgia', 'serif'], // 英文副标/引用衬线点缀
         // 兼容映射
         sans: [
-          '"Inter Variable"',
+          '"Manrope Variable"',
           '-apple-system',
           'BlinkMacSystemFont',
           '"PingFang SC"',
@@ -70,7 +77,16 @@ export default {
           'sans-serif',
         ],
         serif: ['"Fraunces Variable"', '"Newsreader Variable"', 'Georgia', 'serif'],
-        mono: ['"JetBrains Mono Variable"', '"IBM Plex Mono"', 'ui-monospace', 'monospace'],
+        // 旧 `font-mono` 类名保留但改指 Manrope：全站等宽小字（eyebrow 标签、脚注、数值）
+        // 多为排版用途而非代码，改用几何黑体后观感更整洁。
+        mono: [
+          '"Manrope Variable"',
+          '-apple-system',
+          '"PingFang SC"',
+          '"Microsoft YaHei"',
+          'system-ui',
+          'sans-serif',
+        ],
       },
       borderRadius: {
         chart: '4px',

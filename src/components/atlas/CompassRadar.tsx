@@ -104,7 +104,7 @@ export default function CompassRadar({
             dominantBaseline="middle"
             fontSize={size >= 150 ? 9.5 : 8.5}
             fill={d.value == null ? '#9CA3AF' : '#6B6F6C'}
-            fontFamily="'JetBrains Mono Variable', monospace"
+            fontFamily="'Manrope Variable', system-ui, sans-serif"
           >
             {d.value == null ? `${t(d.label)} —` : t(d.label)}
           </text>

@@ -62,7 +62,7 @@ export default function CompareCharts({ rows }: { rows: CompareRow[] }) {
 
         <div className="mt-8 grid gap-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)]">
           {/* 多城雷达 */}
-          <div className="card-paper p-5 md:p-7">
+          <div className="card-paper min-w-0 p-5 md:p-7">
             {series.length > 0 ? (
               <RadarChart axes={radarAxes()} series={series} size={320} />
             ) : (
@@ -88,7 +88,7 @@ export default function CompareCharts({ rows }: { rows: CompareRow[] }) {
           </div>
 
           {/* 逐维条形 + 数值表 */}
-          <div className="flex flex-col gap-8">
+          <div className="flex min-w-0 flex-col gap-8">
             <div className="flex flex-col gap-4">
               {dimRows.map((dim, di) => (
                 <motion.div

@@ -128,7 +128,7 @@ const TAG_LABEL = {
 const CSS = `
 :root{--pine:${T.pine};--pine-deep:${T.pineDeep};--teal:${T.teal};--paper:${T.paper};--paper-deep:${T.paperDeep};--ink:${T.ink};--ink-soft:${T.inkSoft};--clay:${T.clay};--clay-deep:${T.clayDeep};--ochre:${T.ochre};--moss:${T.moss};--sea:${T.sea};--card:${T.card}}
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Noto Sans SC',-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;background:var(--paper);color:var(--ink);line-height:1.7;font-size:16px;overflow-wrap:break-word}
+body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Hiragino Sans GB','Microsoft YaHei','Noto Sans SC',system-ui,sans-serif;background:var(--paper);color:var(--ink);line-height:1.7;font-size:16px;overflow-wrap:break-word}
 .wrap{max-width:880px;margin:0 auto;padding:0 20px}
 header{background:var(--card);border-bottom:1px solid var(--paper-deep)}
 .hd{display:flex;align-items:center;justify-content:space-between;padding:14px 0;gap:12px;flex-wrap:wrap}
@@ -174,6 +174,22 @@ footer{border-top:1px solid var(--paper-deep);background:var(--card);padding:18p
 .legal-list{margin:6px 0 14px 20px}
 .legal-list li{list-style:disc;margin:6px 0;font-size:15px;color:var(--ink)}
 .notice{background:var(--paper-deep);border-left:4px solid var(--clay);border-radius:10px;padding:12px 14px;margin:14px 0 18px;font-size:15px;color:var(--ink);line-height:1.7}
+.toc{background:var(--card);border:1px solid var(--paper-deep);border-radius:14px;padding:16px 20px;margin:0 0 22px}
+.toc-h{font-size:13px;font-weight:700;letter-spacing:.4px;color:var(--ink-soft);margin-bottom:8px}
+.toc ol{margin:0;padding-left:20px;columns:2;column-gap:26px}
+.toc li{font-size:13.5px;margin:4px 0;break-inside:avoid}
+.toc a{color:var(--pine);text-decoration:none}
+.toc a:hover{text-decoration:underline}
+.attr{font-size:12.5px;color:var(--ink-soft);line-height:1.7;margin:0 0 18px;padding-top:14px;border-top:1px dashed var(--paper-deep)}
+.attr a{color:var(--pine);text-decoration:none}
+.attr a:hover{text-decoration:underline}
+h2[id]{scroll-margin-top:16px}
+@media(max-width:560px){
+  .toc ol{columns:1}
+  h1{font-size:25px}
+  .grid{grid-template-columns:1fr}
+  .wrap{padding:0 16px}
+}
 .legal p code{background:var(--paper-deep);border-radius:6px;padding:1px 7px;font-size:13.5px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
 .erase{margin:8px 0 26px;border-left:4px solid var(--clay)}
 .erase h2{margin-top:0}
@@ -610,7 +626,7 @@ function renderMethodology(lang) {
 <li>${lang === 'zh' ? '公开英语熟练度排名 / World Bank / UNDP / Transparency International / IEP' : 'Public English-proficiency ranking / World Bank / UNDP / Transparency International / IEP'}<span class="meta">${lang === 'zh' ? '国家级参考 · 官方开放数据与公开统计' : 'country-level reference · official open data & public statistics'} · <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="license noopener">CC BY 4.0</a> / ${lang === 'zh' ? '手工快照' : 'hand snapshot'}</span></li>
 <li>OEJTS 1.2<span class="meta">${lang === 'zh' ? '简易版 16 型人格题库（Jungian 双极结构）' : 'lite 16-type personality test (Jungian bipolar structure)'} · <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="license noopener">CC BY-NC-SA 4.0</a> · Open Psychometrics</span></li>
 <li>WHO Global Air Quality Guidelines 2021<span class="meta">${lang === 'zh' ? 'PM2.5 年均分档口径（优 ≤10 / 良 ≤15 / 一般 ≤25 / 差 >25）' : 'annual PM2.5 bands (good ≤10 / fair ≤15 / moderate ≤25 / poor >25)'}</span></li>
-<li>${lang === 'zh' ? '字体 Fraunces / Newsreader / Inter / JetBrains Mono / IBM Plex Mono / 系统中文' : 'Typefaces Fraunces / Newsreader / Inter / JetBrains Mono / IBM Plex Mono / system CJK'}<span class="meta">SIL Open Font License 1.1 · ${lang === 'zh' ? '经 @fontsource 自托管打包，无外部 CDN' : 'self-hosted via @fontsource, no external CDN'}</span></li>
+<li>${lang === 'zh' ? '字体 Fraunces / Newsreader / Manrope / 系统中文黑体' : 'Typefaces Fraunces / Newsreader / Manrope / system CJK'}<span class="meta">SIL Open Font License 1.1 · ${lang === 'zh' ? '经 @fontsource 自托管打包，无外部 CDN' : 'self-hosted via @fontsource, no external CDN'}</span></li>
 </ul>
 <h2>${lang === 'zh' ? '更新频率与免责声明' : 'Update cadence & disclaimer'}</h2>
 <p class="note">${lang === 'zh'
@@ -644,122 +660,174 @@ const addUrl = (p, lastmod) => sitemapUrls.push({ p, lastmod });
 const LEGAL_PRIVACY = {
   zh: {
     title: '隐私政策 | 栖居罗盘',
-    desc: '本站不使用追踪 Cookie、无第三方分析、无广告；你的全部数据仅存于浏览器本地存储（nomadmatch.v1），可随时一键清除。隐私政策全文。',
+    desc: '本站不使用追踪 Cookie、无第三方分析、无广告、无账号体系；你的全部数据仅存于浏览器本地存储（nomadmatch.v1），可随时一键清除。隐私政策全文。',
     updated: `最后更新：${BUILD_DATE}`,
+    notice: '一句话概括：<strong>你在本站的一切数据都只留在你自己的浏览器里。</strong>我们没有账号体系、没有服务器端数据库，也读不到你的任何信息。',
+    attribution: '本政策的结构与措辞参考了 Automattic 以 <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="license noopener">CC BY-SA 4.0</a> 开放的法律文本（Legalmattic），并已按本站「无账号、无服务器、纯本地」的实际做法全面改写。',
     sections: [
-      { h: '一、概要与数据控制者', ps: [
-        '栖居罗盘（Habitat Compass，下称"本站"）是一个运行于浏览器的海外城市定居决策辅助工具。<strong>本站没有账号体系，没有服务器端用户数据库</strong>——所有与"你"有关的信息只存在于你自己的设备中。',
-        '数据控制者：Habitat Compass 运营者（主体信息待正式部署后补充）。联系邮箱：<code>hi@habitatcompass.com</code>。',
+      { h: '一、我们是谁，本政策覆盖什么', ps: [
+        '栖居罗盘（Habitat Compass，下称"本站"）是一个<strong>完全运行于浏览器</strong>的海外城市定居决策辅助工具。它没有账号、没有登录、没有后台用户库——你把网页关掉，我们这边不会留下任何与你有关的记录。',
+        '<strong>数据控制者</strong>：Habitat Compass 运营者（主体信息待正式部署后补充）。任何与隐私有关的问题，都请写信至 <code>hi@habitatcompass.com</code>。',
+        '本政策说明：我们<strong>不</strong>收集什么、你输入的数据存在哪里、你有权做什么，以及如何一次性清除全部数据。',
       ] },
-      { h: '二、我们处理哪些数据', ps: [
-        '本站<strong>不收集、不上传任何个人数据</strong>。你在使用中产生的全部数据仅保存在<strong>你自己设备浏览器的 localStorage</strong>（键名前缀 <code>nomadmatch.v1</code>），具体包括：',
+      { h: '二、我们的四条基本原则', ps: [
+        '沿用开源法律模板的做法，先把立场说清楚，再讲细则：',
+      ], list: [
+        '<strong>最小化</strong>：只在你主动输入时才产生数据，且只存在你的设备上；',
+        '<strong>不索取身份</strong>：不要求姓名、邮箱、电话、精确位置等任何可直接识别你身份的信息；',
+        '<strong>不设保存期限的例外</strong>：数据不会过期删除，而是<strong>一直属于你</strong>，直至你亲自清除；',
+        '<strong>可完全掌控</strong>：查看、导出、删除、限制处理，全部可以在你的浏览器里即时完成，无需向我们申请。',
+      ] },
+      { h: '三、我们处理哪些数据', ps: [
+        '本站<strong>不收集、不上传任何个人数据</strong>。你在使用中产生的全部数据，仅保存在<strong>你自己设备浏览器的 localStorage</strong> 中，键名统一以 <code>nomadmatch.v1</code> 为前缀，具体包括：',
       ], list: [
         '测评草稿与作答记录（draft / proDraft）——目的地偏好、预算、问卷答案',
         '测评结果与最近一次历史（history / proHistory）——匹配得分与报告数据',
-        '收藏城市（favorites）与对比现场、对比存档（compare / archives）',
+        '收藏城市（favorites）、对比现场与对比存档（compare / archives）',
         '硬性条件与护照选择（hardConstraints / passport）——预算上限、签证底线、安全阈值',
-        '界面语言设置（lang）、匿名漏斗计数（funnel）——仅阶段计数，无任何身份信息',
+        '界面语言设置（lang）、匿名漏斗计数（funnel）——仅阶段计数，不含任何身份信息',
       ], after: [
-        '以上数据均由你主动输入或由你的输入直接计算产生；不含姓名、邮箱、电话、精确位置等直接身份信息。',
+        '以上数据均由你主动输入，或由你的输入直接计算产生；<strong>不包含</strong>姓名、邮箱、电话、精确位置等直接身份信息，也不包含任何可用于追踪你跨站行为的标识符。',
       ] },
-      { h: '三、我们不做什么（重点声明）', ps: [
+      { h: '四、我们如何获取数据（以及为什么没有"自动收集"）', ps: [
+        '多数网站的隐私政策需要分列"你提供的信息""自动收集的信息""从第三方获得的信息"三类。本站只存在第一类：',
+        '<strong>你提供的信息</strong>——仅指你在本机输入的内容，且它从未离开你的设备；',
+        '<strong>自动收集的信息</strong>——无。本站不记录日志、不采集设备指纹、不读取 IP 用于画像、不设置任何用于追踪的标识符；',
+        '<strong>来自第三方的信息</strong>——无。本站不接入任何社交登录、广告网络或数据经纪服务。',
+      ] },
+      { h: '五、我们明确不做的四件事', ps: [
         '<strong>无追踪 Cookie</strong>——本站不设置任何 Cookie，也不读取第三方 Cookie。',
-        '<strong>无第三方分析与广告</strong>——不加载 Google Analytics 或任何分析/广告脚本，不向任何第三方发送你的数据。',
-        '<strong>无 AI 模型处理</strong>——匹配计算完全在你的浏览器内完成，你的作答不会发送给任何 AI 模型或服务器。',
+        '<strong>无第三方分析与广告</strong>——不加载 Google Analytics 或任何分析、广告、社交插件，不向任何第三方发送你的数据。',
+        '<strong>无 AI 模型处理</strong>——匹配计算完全在你的浏览器内完成，你的作答不会被发送给任何 AI 模型或服务器。',
+        '<strong>无账号与云端同步</strong>——本站没有登录，也没有云端备份；换一台设备就不会看到此前的数据，这是我们刻意的设计。',
       ] },
-      { h: '四、处理目的与法律基础', ps: [
-        '处理目的：仅为你正在请求的服务本身——保存测评进度、生成报告、记忆界面设置（GDPR 第 6(1)(b) 条：为履行合同所必需的处理）。',
-        '本站不设置 Cookie、不访问终端设备信息用于追踪，上述本地存储属于提供你明确请求的服务所<strong>严格必需（strictly necessary）</strong>的范围（参见 ePrivacy 指令第 5(3) 条的豁免逻辑）。因此本站<strong>不设 Cookie 同意横幅</strong>。',
+      { h: '六、处理目的与法律基础', ps: [
+        '处理目的：仅为你正在请求的服务本身——保存测评进度、生成报告、记忆界面设置（GDPR 第 6(1)(b) 条：为履行你所请求的服务所必需的处理）。',
+        '本站不设置 Cookie、不访问终端设备信息用于追踪；上述本地存储属于提供你明确请求的服务所<strong>严格必需（strictly necessary）</strong>的范围（参见 ePrivacy 指令第 5(3) 条的豁免逻辑）。因此本站<strong>不设 Cookie 同意横幅</strong>。<strong>本站不进行任何基于自动化决策的画像，也不进行广告定向。</strong>',
       ] },
-      { h: '五、存储位置与国际传输', ps: [
-        '全部数据仅存在于你的设备本地。<strong>没有任何数据上传到服务器，因此不存在国际数据传输</strong>，也不存在服务器端泄露面。',
+      { h: '七、存储位置与国际传输', ps: [
+        '全部数据仅存在于你的设备本地。<strong>没有任何数据上传到服务器，因此不存在国际数据传输</strong>，也不存在服务器端的泄露面。',
+        '我们使用的字体等静态资源在构建时打包进站点，页面运行过程中不向第三方发起请求。',
       ] },
-      { h: '六、保存期限', ps: [
-        '本地数据会一直保留，<strong>直到你自行清除</strong>——通过浏览器"清除站点数据"，或使用下方"清除我的所有数据"按钮。',
+      { h: '八、保存期限', ps: [
+        '本地数据会一直保留，<strong>直到你自行清除</strong>——通过浏览器"清除站点数据"，或使用下方"清除我的所有数据"按钮。我们无法、也不会在后台替你删除或备份这些数据。',
       ] },
-      { h: '七、你的权利（GDPR 第 15–22 条）', ps: [
+      { h: '九、数据共享与披露', ps: [
+        '我们<strong>不向任何第三方出售、出租或共享</strong>你的数据——因为从技术上讲，我们根本没有这些数据可分享。',
+        '关于政府或执法调取：由于本站不存在服务器端存储，我们无法响应任何要求提供用户数据的请求；我们能提供的只有空白。若收到此类要求，我们会在法律允许的范围内透明说明我们"无从提供"。',
+      ] },
+      { h: '十、你的权利（GDPR 第 15–22 条）', ps: [
         '依 GDPR，你享有：访问权（第 15 条）、更正权（第 16 条）、删除权 / 被遗忘权（第 17 条）、处理限制权（第 18 条）、数据可携带权（第 20 条）、反对权（第 21 条），以及向监管机构申诉的权利（第 77 条）。',
-        '<strong>本站的数据全部在你的设备本地，你可以即时、完全地行使上述全部权利</strong>：',
+        '<strong>由于全部数据都在你的设备本地，上述权利你可以即时、完全地亲自行使</strong>：',
       ], list: [
         '访问 / 可携带：浏览器开发者工具（Application → Local Storage）可直接查看并导出全部数据',
-        '更正 / 删除 / 限制 / 反对：清除对应存储键即告完成——最简单的方式是下方按钮或浏览器"清除站点数据"',
-        '如需协助，可发邮件至 hi@habitatcompass.com，我们在 <strong>30 天内</strong>回复',
+        '更正 / 删除 / 限制 / 反对：删除对应存储键即告完成——最简单的方式是下方按钮或浏览器"清除站点数据"',
+        '如需任何协助，可发邮件至 hi@habitatcompass.com，我们在 <strong>30 天内</strong>回复',
       ] },
-      { h: '八、未成年人（第 8 条）', ps: [
+      { h: '十一、未成年人（第 8 条）', ps: [
         '本服务不面向 <strong>16 周岁以下</strong>用户；如你未满 16 周岁，请勿使用本站。',
       ] },
-      { h: '九、数据泄露（第 33 / 34 条）', ps: [
+      { h: '十二、数据泄露（第 33 / 34 条）', ps: [
         '本站无服务器端存储，常规情况下不存在服务器泄露风险。尽管如此，若发生影响你数据的安全事件，我们将<strong>在知悉后 72 小时内</strong>通过本页显著公告，并在可能时逐一通知受影响用户。',
       ] },
-      { h: '十、EEA / 英国补充与加州（CCPA / CPRA）说明', ps: [
-        'EEA / 英国：本政策即 GDPR 第 13 条信息义务的完整披露；处理行为均在你设备本地完成，无代表处理者、无自动化决策。',
+      { h: '十三、EEA / 英国 / 瑞士补充与加州（CCPA / CPRA）说明', ps: [
+        'EEA / 英国 / 瑞士：本政策即 GDPR 第 13 条信息义务的完整披露；处理行为均在你设备本地完成，无代表处理者、无自动化决策。',
         '加州：本站不出售也不共享（sell / share）任何个人信息——数据从未离开你的设备，"Do Not Sell My Personal Information" 的要求在本站天然得到满足；加州居民同样享有知情权、删除权与不受歧视的权利。',
       ] },
-      { h: '十一、政策变更', ps: [
-        '本政策如有实质变更，将在本页更新并标注日期；重大变更时在首页显著位置提示。',
+      { h: '十四、第三方链接', ps: [
+        '本站可能包含指向外部网站（如数据来源、官方移民机构）的链接。这些站点由其各自的运营者负责，其隐私做法适用它们自己的政策，本政策不适用于本站之外的页面。',
       ] },
-      { h: '十二、联系我们', ps: [
+      { h: '十五、政策变更', ps: [
+        '本政策如有实质变更，将在本页更新并标注日期；重大变更时在首页显著位置提示。建议你在重要节点回看本页的"最后更新"日期。',
+      ] },
+      { h: '十六、联系我们', ps: [
         'hi@habitatcompass.com。',
       ] },
     ],
   },
   en: {
     title: 'Privacy Policy | Habitat Compass',
-    desc: 'No tracking cookies, no third-party analytics, no ads. All your data stays in your browser local storage (nomadmatch.v1) and can be erased anytime with one click.',
+    desc: 'No tracking cookies, no third-party analytics, no ads, no accounts. All your data stays in your browser local storage (nomadmatch.v1) and can be erased anytime with one click.',
     updated: `Last updated: ${BUILD_DATE}`,
+    notice: 'In one sentence: <strong>everything you do on this site stays inside your own browser.</strong> There are no accounts, no server-side database, and we cannot read any of it.',
+    attribution: 'The structure and wording of this policy draw on the openly licensed (<a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="license noopener">CC BY-SA 4.0</a>) legal documents published by Automattic (Legalmattic), fully rewritten to match how this site actually works: no accounts, no server, local-only.',
     sections: [
-      { h: '1. Overview & controller', ps: [
-        'Habitat Compass ("the site") is a browser-based decision-support tool for settling abroad. <strong>There are no user accounts and no server-side user database</strong> — everything that relates to you lives only on your own device.',
-        'Data controller: the Habitat Compass operator (entity details to be added before official launch). Contact: <code>hi@habitatcompass.com</code>.',
+      { h: '1. Who we are and what this policy covers', ps: [
+        'Habitat Compass ("the site") is a <strong>browser-only</strong> decision-support tool for settling abroad. There is no account, no login and no back-end user database — close the tab and nothing about you remains on our side.',
+        '<strong>Data controller</strong>: the Habitat Compass operator (entity details to be added before official launch). For any privacy question, write to <code>hi@habitatcompass.com</code>.',
+        'This policy explains what we do <strong>not</strong> collect, where the data you enter lives, what you may do with it, and how to erase it all in one click.',
       ] },
-      { h: '2. What data we process', ps: [
-        'The site <strong>collects and uploads no personal data</strong>. Everything you produce while using it is stored only in <strong>your browser\'s localStorage</strong> (key prefix <code>nomadmatch.v1</code>):',
+      { h: '2. Our four principles', ps: [
+        'Following the practice of open legal templates, we state our position first and the fine print after:',
+      ], list: [
+        '<strong>Minimal</strong>: data exists only when you type it, and only on your device;',
+        '<strong>No identity</strong>: we never ask for a name, e-mail, phone number or precise location;',
+        '<strong>No expiry clause</strong>: your data does not "expire" — it stays <strong>yours</strong> until you erase it yourself;',
+        '<strong>Fully yours to control</strong>: access, export, erasure and restriction all happen instantly in your browser, with no request to us.',
+      ] },
+      { h: '3. What data we process', ps: [
+        'The site <strong>collects and uploads no personal data</strong>. Everything you produce while using it is stored only in <strong>your browser\'s localStorage</strong>, under keys prefixed <code>nomadmatch.v1</code>:',
       ], list: [
         'Quiz drafts & answers (draft / proDraft) — destination preferences, budget, questionnaire answers',
         'Results & latest history (history / proHistory) — match scores and report data',
-        'Favorite cities (favorites), compare session and archives (compare / archives)',
+        'Favourite cities (favorites), compare session and archives (compare / archives)',
         'Hard constraints & passport choice (hardConstraints / passport) — budget cap, visa floor, safety threshold',
         'Interface language (lang), anonymous funnel counters (funnel) — stage counts only, no identity data',
       ], after: [
-        'All of it is entered by you or derived from your input. It contains no name, e-mail, phone number or precise location.',
+        'All of it is entered by you or derived from your input. It contains <strong>no</strong> name, e-mail, phone number or precise location, and no identifier that could track you across other sites.',
       ] },
-      { h: '3. What we do NOT do', ps: [
+      { h: '4. How we obtain data (and why there is no "automatic collection"', ps: [
+        'Most privacy policies must split data into "information you provide", "information collected automatically" and "information from third parties". Here only the first category exists:',
+        '<strong>Information you provide</strong> — content you type on this machine, which never leaves the device;',
+        '<strong>Automatically collected information</strong> — none. No logs, no device fingerprinting, no IP profiling, no tracking identifiers;',
+        '<strong>Information from third parties</strong> — none. No social login, no ad network, no data brokers.',
+      ] },
+      { h: '5. Four things we explicitly do NOT do', ps: [
         '<strong>No tracking cookies</strong> — the site sets no cookies and reads no third-party cookies.',
         '<strong>No third-party analytics or ads</strong> — no Google Analytics, no ad networks, no social plugins; nothing is sent to anyone.',
         '<strong>No AI processing</strong> — matching runs entirely in your browser; your answers never reach any AI model or server.',
+        '<strong>No accounts and no cloud sync</strong> — there is no login and no cloud backup; switching device means starting fresh. That is deliberate.',
       ] },
-      { h: '4. Purpose & legal basis', ps: [
+      { h: '6. Purpose & legal basis', ps: [
         'Purpose: only the service you request — keeping quiz progress, generating reports, remembering your language setting (Art. 6(1)(b) GDPR: processing necessary for the performance of the service).',
-        'The site sets no cookies and does not access terminal equipment for tracking. The local storage described above is <strong>strictly necessary</strong> to provide the service you explicitly requested (cf. the exemption logic of Art. 5(3) ePrivacy Directive). The site therefore <strong>shows no consent banner</strong>.',
+        'The site sets no cookies and does not access terminal equipment for tracking. The local storage described above is <strong>strictly necessary</strong> to provide the service you explicitly requested (cf. the exemption logic of Art. 5(3) ePrivacy Directive). The site therefore <strong>shows no consent banner</strong>. <strong>We carry out no automated decision-making or profiling, and no ad targeting.</strong>',
       ] },
-      { h: '5. Storage location & international transfers', ps: [
+      { h: '7. Storage location & international transfers', ps: [
         'All data stays on your device. <strong>Nothing is uploaded to any server, so there is no international data transfer</strong> and no server-side breach surface.',
+        'Static assets such as fonts are bundled at build time; the running page makes no third-party requests.',
       ] },
-      { h: '6. Retention', ps: [
-        'Local data is kept <strong>until you erase it</strong> — via your browser\'s "clear site data", or the "Erase all my data" button below.',
+      { h: '8. Retention', ps: [
+        'Local data is kept <strong>until you erase it</strong> — via your browser\'s "clear site data", or the "Erase all my data" button below. We cannot, and will not, delete or back it up for you behind the scenes.',
       ] },
-      { h: '7. Your rights (GDPR Art. 15–22)', ps: [
+      { h: '9. Sharing & disclosure', ps: [
+        'We <strong>do not sell, rent or share</strong> your data with anyone — technically, we do not hold it in the first place.',
+        'On government or law-enforcement requests: with no server-side storage we cannot comply with any request for user data; all we could hand over is blank. Should such a request arrive, we will be transparent, to the extent the law allows, that we have nothing to provide.',
+      ] },
+      { h: '10. Your rights (GDPR Art. 15–22)', ps: [
         'Under the GDPR you have: the right of access (Art. 15), rectification (Art. 16), erasure (Art. 17), restriction of processing (Art. 18), data portability (Art. 20), the right to object (Art. 21), and the right to lodge a complaint with a supervisory authority (Art. 77).',
-        '<strong>All data lives on your device, so you can exercise every right instantly and completely</strong>:',
+        '<strong>Because all data lives on your device, you can exercise every one of these rights instantly and completely</strong>:',
       ], list: [
         'Access / portability: browser dev tools (Application → Local Storage) let you view and export everything',
         'Rectification / erasure / restriction / objection: removing the storage keys is the whole act — the button below or "clear site data" does it',
         'Need help? E-mail hi@habitatcompass.com — we reply within <strong>30 days</strong>',
       ] },
-      { h: '8. Children (Art. 8)', ps: [
+      { h: '11. Children (Art. 8)', ps: [
         'The service is not offered to anyone <strong>under 16</strong>. If you are under 16, please do not use the site.',
       ] },
-      { h: '9. Data breach (Art. 33/34)', ps: [
+      { h: '12. Data breach (Art. 33/34)', ps: [
         'With no server-side storage there is ordinarily no server breach risk. Should a security incident ever affect your data, we will publish a prominent notice on this page <strong>within 72 hours</strong> of becoming aware, and notify affected users individually where possible.',
       ] },
-      { h: '10. EEA/UK supplement & California (CCPA/CPRA)', ps: [
-        'EEA/UK: this policy constitutes the full Art. 13 GDPR information disclosure; processing happens locally on your device, with no processors and no automated decision-making.',
+      { h: '13. EEA/UK/Switzerland supplement & California (CCPA/CPRA)', ps: [
+        'EEA/UK/Switzerland: this policy constitutes the full Art. 13 GDPR information disclosure; processing happens locally on your device, with no processors and no automated decision-making.',
         'California: the site does not sell or share any personal information — data never leaves your device, so "Do Not Sell My Personal Information" is satisfied by design; California residents also enjoy the rights to know, to delete and to non-discrimination.',
       ] },
-      { h: '11. Changes to this policy', ps: [
-        'Material changes will be published on this page with an updated date; major changes are announced on the home page.',
+      { h: '14. Third-party links', ps: [
+        'The site may link to external websites (data sources, official immigration authorities). Those sites are run by their own operators and governed by their own policies; this policy does not cover any page beyond this site.',
       ] },
-      { h: '12. Contact', ps: [
+      { h: '15. Changes to this policy', ps: [
+        'Material changes will be published on this page with an updated date; major changes are announced on the home page. Please revisit the "last updated" date at important moments.',
+      ] },
+      { h: '16. Contact', ps: [
         'hi@habitatcompass.com.',
       ] },
     ],
@@ -769,87 +837,166 @@ const LEGAL_PRIVACY = {
 const LEGAL_TERMS = {
   zh: {
     title: '用户协议 | 栖居罗盘',
-    desc: '服务描述、可接受使用、知识产权与开源数据署名、免责声明、责任限制与争议解决。用户协议全文。',
+    desc: '服务描述、可接受使用、知识产权与开源数据署名、免责声明、责任限制、赔偿与争议解决。用户协议全文。',
     updated: `最后更新：${BUILD_DATE}`,
+    notice: '一句话概括：<strong>本站免费、无需注册，是一个决策辅助工具，不是移民/法律/税务建议。</strong>请务必通过官方渠道核实签证与入境政策。',
+    attribution: '本协议的结构参考了 Automattic 以 <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="license noopener">CC BY-SA 4.0</a> 开放的法律文本（Legalmattic），并已按本站「免费、无账号、纯本地」的实际做法全面改写。',
     sections: [
-      { h: '一、服务描述', ps: [
-        '栖居罗盘（Habitat Compass）为数字游民、自由职业者与远程工作者提供海外城市定居的<strong>决策辅助</strong>：基于你的偏好作答与公开数据快照，对库内 200 座城市加权打分并生成报告。',
-        '本站免费提供简易测评（32 题）、标准版深度测评与城市对比，全部功能<strong>无需付费</strong>。使用本站无需注册账号。',
+      { h: '一、协议双方与接受', ps: [
+        '本用户协议（下称"本协议"）是你与栖居罗盘（Habitat Compass，下称"本站"）运营者之间，就你访问和使用本站所达成的约定。',
+        '<strong>访问或使用本站的任何部分，即表示你已阅读、理解并同意受本协议约束。</strong>如果你不同意，请不要使用本站。',
+        '"你"指任何使用本站的个人或主体。若你代表某一主体使用本站，你声明并保证已获授权代表其接受本协议。',
       ] },
-      { h: '二、可接受使用', ps: [
+      { h: '二、服务描述', ps: [
+        '栖居罗盘为数字游民、自由职业者与远程工作者提供海外城市定居的<strong>决策辅助</strong>：基于你的偏好作答与公开数据快照，对库内 200 座城市加权打分并生成报告。',
+        '本站的简易测评（32 题）、标准版深度测评与城市对比，全部功能<strong>无需付费</strong>，也<strong>无需注册账号</strong>；不提供付费订阅、虚拟商品或任何形式的交易。',
+        '本站不提供账号体系，因此不存在"账户安全"义务；你的全部数据仅存于你自己的浏览器（详见<a href="/privacy/">《隐私政策》</a>）。',
+      ] },
+      { h: '三、使用资格与最低年龄', ps: [
+        '你须年满 <strong>16 周岁</strong>方可使用本站。使用本站即表示你已达到该年龄要求；若未满，请勿使用。',
+        '你须具备与本站交互所需的设备和浏览器环境，并自行承担联网费用。',
+      ] },
+      { h: '四、可接受使用', ps: [
         '你可以自由浏览与使用本站。你同意不：',
       ], list: [
-        '以自动化脚本对本站发起高频请求或以其他方式干扰服务可用性',
+        '以自动化脚本对本站发起高频请求，或以其他方式干扰服务的可用性与稳定性',
+        '尝试绕过、破坏或探测本站及其托管环境的安全机制',
         '将本站内容整体转售，或作为你自己产品的核心数据源再分发',
         '以自动化手段批量提取题库或报告数据',
+        '以任何违法方式使用本站，或将其用于侵犯他人权利的目的',
       ] },
-      { h: '三、知识产权与开源数据署名', ps: [
-        '本站的界面设计、文案与代码版权归栖居罗盘（Habitat Compass）运营者所有。',
-        '本站引用的公开数据与题库按其许可要求署名（完整清单见方法论页）：',
+      { h: '五、你的内容与责任', ps: [
+        '你在本站输入的偏好、作答与备注，是你自己的内容，且仅保存在你的设备本地。由于本站不上传、不保存你的内容，我们无法访问、修改或删除它，也无需对其负责。',
+        '你对自己在设备上的数据负全部责任，包括及时清除敏感信息（见<a href="/privacy/">《隐私政策》</a>的清除按钮）。',
+      ] },
+      { h: '六、知识产权与开源数据署名', ps: [
+        '本站的界面设计、文案与代码版权归栖居罗盘（Habitat Compass）运营者所有。除本协议明确许可外，未经书面同意不得复制、修改或再分发。',
+        '本站引用的公开数据、题库与字库按其许可要求署名（完整清单见<a href="/methodology/">方法论页</a>）：',
       ], list: [
         '官方开放数据（Open Data）与公开统计测算：成本 / 安全 / 医疗 / 生活质量 / 英语排名 / 宽带网速等（NYC=100 口径，完整口径与更新频率见方法论页）',
         'GeoNames（CC BY 4.0）、Open-Meteo Historical 与 Air Quality（CC BY 4.0）',
         'World Bank / UNDP / Transparency International / IEP 国家指标（开放数据与公开引用排名）',
         'OEJTS 1.2 人格题库（CC BY-NC-SA 4.0，Open Psychometrics）',
+        '字体 Fraunces / Newsreader / Manrope（SIL Open Font License 1.1）',
+      ], after: [
+        '本站法律文本自身的结构与措辞，部分参考了 Automattic 以 CC BY-SA 4.0 开放的法律文档（Legalmattic）。',
       ] },
-      { h: '四、免责声明', ps: [
-        '本站按"现状"（as-is）提供，不提供任何明示或默示的保证。',
+      { h: '七、第三方服务', ps: [
+        '本站运行时不加载任何第三方脚本、分析或广告服务，也不使用第三方登录。',
+        '本站可能含有指向外部网站（数据来源、官方移民机构等）的链接。这些网站由其各自运营者负责，我们不对其内容、可用性或做法作任何担保，访问风险由你自担。',
+      ] },
+      { h: '八、免责声明', ps: [
+        '本站按"现状"（as-is）与"可用"（as-available）提供，不提供任何明示或默示的保证，包括但不限于适销性、特定用途适用性与不侵权的担保。',
         '本站内容<strong>不构成移民、签证、居留、法律、税务、医疗、保险、财务或投资建议</strong>；匹配分数仅是基于你自述偏好与第三方公开数据快照的参考值，不构成对任何城市或国家的担保。',
         '数据（成本、安全、网速、签证概览等）为第三方来源的<strong>时点快照，可能过时或存在误差</strong>；签证与入境政策多变，出行与定居前务必通过官方渠道核实。',
+        '人格测评为自我探索工具，其算法输出不构成心理评估、诊断或临床建议。',
       ] },
-      { h: '五、责任限制', ps: [
+      { h: '九、责任限制', ps: [
         '在适用法律允许的最大范围内，运营者不对你因使用或无法使用本站而产生的任何间接、附带、特殊或后果性损失承担责任，也不对你的定居、出行或职业决策结果负责。',
+        '由于本站免费提供且数据仅存于你的设备本地，在适用法律允许的范围内，运营者对本站的全部累计责任以零为限。',
       ] },
-      { h: '六、服务变更与终止', ps: [
-        '我们可能随时修改、暂停或终止本站的全部或部分功能。你可以随时停止使用，并通过隐私政策中的按钮清除你的全部本地数据。',
+      { h: '十、赔偿', ps: [
+        '若因你违反本协议、违法使用本站，或侵犯第三方权利，而导致任何第三方对运营者提出索赔、要求或损失（含合理的法律费用），你同意就此对运营者进行赔偿并使其免受损害。',
       ] },
-      { h: '七、适用法律与争议解决', ps: [
-        '本协议适用运营者注册地法律（<strong>占位：待正式部署后补充法域与管辖条款</strong>）。因本协议产生的争议，双方应先友好协商解决。',
+      { h: '十一、服务变更与终止', ps: [
+        '我们可能随时修改、暂停或终止本站的全部或部分功能，且无需事先通知。你可以随时停止使用，并通过<a href="/privacy/">《隐私政策》</a>中的按钮清除你的全部本地数据。',
+        '本协议中依其性质应继续有效的条款（如知识产权、免责声明、责任限制、赔偿、适用法律），在协议终止后继续有效。',
       ] },
-      { h: '八、联系渠道', ps: [
+      { h: '十二、协议的变更', ps: [
+        '本协议如有实质变更，将在本页更新并标注日期。变更后你继续使用本站，即视为接受修订后的协议。',
+      ] },
+      { h: '十三、适用法律与争议解决', ps: [
+        '本协议适用运营者注册地法律（<strong>占位：待正式部署后补充法域与管辖条款</strong>）。',
+        '因本协议或本站产生的争议，双方应先本着诚信原则友好协商解决；协商不成的，提交运营者注册地有管辖权的法院解决。',
+      ] },
+      { h: '十四、可分割性与完整协议', ps: [
+        '若本协议任何条款被认定为无效或不可执行，该条款将在最小必要范围内被限制或剔除，其余条款仍完全有效。',
+        '本协议连同<a href="/privacy/">《隐私政策》</a>与<a href="/disclaimer/">《免责声明》</a>，构成你与运营者之间就本站达成的完整约定。',
+      ] },
+      { h: '十五、联系渠道', ps: [
         'hi@habitatcompass.com。',
       ] },
     ],
   },
   en: {
     title: 'Terms of Service | Habitat Compass',
-    desc: 'Service description, acceptable use, IP & open-data attribution, disclaimers, limitation of liability and dispute resolution.',
+    desc: 'Service description, acceptable use, IP & open-data attribution, disclaimers, limitation of liability, indemnification and dispute resolution.',
     updated: `Last updated: ${BUILD_DATE}`,
+    notice: 'In one sentence: <strong>this site is free, needs no account, and is a decision-support tool — not immigration, legal or tax advice.</strong> Always verify visa and entry rules with official channels.',
+    attribution: 'The structure of these terms draws on the openly licensed (<a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="license noopener">CC BY-SA 4.0</a>) legal documents published by Automattic (Legalmattic), fully rewritten to match how this site actually works: free, accountless, local-only.',
     sections: [
-      { h: '1. Service description', ps: [
-        'Habitat Compass provides <strong>decision support</strong> for digital nomads, freelancers and remote workers settling abroad: it scores the 200 cities in its library against your stated preferences and public data snapshots, and generates a report.',
-        'The lite assessment (32 questions), the in-depth Standard edition and city comparison are all <strong>free of charge</strong>. No account is required.',
+      { h: '1. Parties and acceptance', ps: [
+        'These Terms of Service ("Terms") set out the agreement between you and the operator of Habitat Compass ("the site") regarding your access to and use of the site.',
+        '<strong>By accessing or using any part of the site you confirm that you have read, understood and agree to be bound by these Terms.</strong> If you do not agree, please do not use the site.',
+        '"You" means any individual or entity using the site. If you use the site on behalf of an entity, you represent and warrant that you are authorised to accept these Terms on its behalf.',
       ] },
-      { h: '2. Acceptable use', ps: [
+      { h: '2. Service description', ps: [
+        'Habitat Compass provides <strong>decision support</strong> for digital nomads, freelancers and remote workers settling abroad: it scores the 200 cities in its library against your stated preferences and public data snapshots, and generates a report.',
+        'The lite assessment (32 questions), the in-depth Standard edition and city comparison are entirely <strong>free of charge</strong> and require <strong>no account</strong>. There are no subscriptions, virtual goods or transactions of any kind.',
+        'The site has no account system, so there is no "account security" duty; all your data stays in your own browser (see the <a href="/en/privacy/">Privacy Policy</a>).',
+      ] },
+      { h: '3. Eligibility and minimum age', ps: [
+        'You must be at least <strong>16 years old</strong> to use the site. By using it you confirm you meet that age requirement; if you do not, please do not use the site.',
+        'You are responsible for the device, browser and connectivity needed to use the site, and for any connection costs.',
+      ] },
+      { h: '4. Acceptable use', ps: [
         'You may browse and use the site freely. You agree not to:',
       ], list: [
-        'send high-frequency automated requests or otherwise disrupt availability',
+        'send high-frequency automated requests or otherwise disrupt the availability or stability of the service',
+        'attempt to bypass, break or probe the security of the site or its hosting environment',
         'resell the site\'s content as a whole or redistribute it as the core data source of your own product',
         'systematically scrape or redistribute the question bank or report data',
+        'use the site unlawfully or to infringe the rights of others',
       ] },
-      { h: '3. IP & open-data attribution', ps: [
-        'The interface design, copy and code are © the Habitat Compass operator. Public data and questionnaires are credited per their licences (full list on the Methodology page):',
+      { h: '5. Your content and responsibility', ps: [
+        'The preferences, answers and notes you enter are your own content, kept only in your browser\'s local storage. Because the site neither uploads nor stores your content, we cannot access, modify or delete it, and are not responsible for it.',
+        'You are solely responsible for the data on your device, including clearing sensitive information in good time (see the erase button in the <a href="/en/privacy/">Privacy Policy</a>).',
+      ] },
+      { h: '6. IP & open-data attribution', ps: [
+        'The interface design, copy and code are © the Habitat Compass operator. Except as expressly permitted here, you may not copy, modify or redistribute them without written consent.',
+        'Public data, questionnaires and typefaces are credited per their licences (full list on the <a href="/en/methodology/">Methodology page</a>):',
       ], list: [
         'Official open data & public statistical estimates: cost / safety / healthcare / quality of life / English-proficiency rank / broadband speeds (NYC=100 basis; full methodology on the Methodology page)',
         'GeoNames (CC BY 4.0), Open-Meteo Historical & Air Quality (CC BY 4.0)',
         'World Bank / UNDP / Transparency International / IEP country indicators (open data & publicly cited rankings)',
         'OEJTS 1.2 personality questionnaire (CC BY-NC-SA 4.0, Open Psychometrics)',
+        'Typefaces Fraunces / Newsreader / Manrope (SIL Open Font License 1.1)',
+      ], after: [
+        'The structure and wording of the site\'s own legal documents draw in part on Automattic\'s CC BY-SA 4.0 licensed legal texts (Legalmattic).',
       ] },
-      { h: '4. Disclaimers', ps: [
-        'The site is provided "as is", without warranty of any kind, express or implied.',
-        'Its content <strong>is not immigration, visa, legal, tax, medical, or financial advice</strong>; match scores are reference values derived from your self-reported preferences and third-party public snapshots, and are no guarantee of any city or country.',
+      { h: '7. Third-party services', ps: [
+        'The site loads no third-party scripts, analytics or advertising at runtime, and uses no third-party login.',
+        'The site may contain links to external websites (data sources, official immigration authorities). Those sites are run by their own operators; we make no warranty as to their content, availability or practices, and you visit them at your own risk.',
+      ] },
+      { h: '8. Disclaimers', ps: [
+        'The site is provided "as is" and "as available", without warranties of any kind, express or implied, including merchantability, fitness for a particular purpose and non-infringement.',
+        'Its content <strong>is not immigration, visa, legal, tax, medical, insurance, financial or investment advice</strong>; match scores are reference values derived from your self-reported preferences and third-party public snapshots, and are no guarantee of any city or country.',
         'Data (cost, safety, speeds, visa overviews) are <strong>point-in-time third-party snapshots and may be outdated or imprecise</strong>. Visa and entry rules change frequently — always verify with official channels before travelling or relocating.',
+        'The personality assessment is a self-exploration tool; its algorithmic output is not a psychological evaluation, diagnosis or clinical advice.',
       ] },
-      { h: '5. Limitation of liability', ps: [
+      { h: '9. Limitation of liability', ps: [
         'To the maximum extent permitted by applicable law, the operator is not liable for any indirect, incidental, special or consequential loss arising from your use of (or inability to use) the site, nor for the outcomes of your relocation, travel or career decisions.',
+        'Because the site is free and all data stays on your device, the operator\'s total aggregate liability in respect of the site is limited to zero, to the extent permitted by applicable law.',
       ] },
-      { h: '6. Changes & termination', ps: [
-        'We may modify, suspend or discontinue all or part of the site at any time. You may stop using it at any moment and erase all your local data via the button in the Privacy Policy.',
+      { h: '10. Indemnification', ps: [
+        'If your breach of these Terms, unlawful use of the site, or infringement of a third party\'s rights gives rise to any claim, demand or loss against the operator (including reasonable legal fees), you agree to indemnify and hold the operator harmless.',
       ] },
-      { h: '7. Governing law & dispute resolution', ps: [
-        'These terms are governed by the law of the operator\'s place of registration (<strong>placeholder: jurisdiction and venue to be added before official launch</strong>). Disputes shall first be resolved amicably.',
+      { h: '11. Changes & termination', ps: [
+        'We may modify, suspend or discontinue all or part of the site at any time, without prior notice. You may stop using it at any moment and erase all your local data via the button in the <a href="/en/privacy/">Privacy Policy</a>.',
+        'Sections that by their nature should survive termination (such as IP, disclaimers, limitation of liability, indemnification and governing law) will continue to apply.',
       ] },
-      { h: '8. Contact', ps: [
+      { h: '12. Changes to these Terms', ps: [
+        'Material changes will be published on this page with an updated date. Your continued use of the site after a change constitutes acceptance of the revised Terms.',
+      ] },
+      { h: '13. Governing law & dispute resolution', ps: [
+        'These terms are governed by the law of the operator\'s place of registration (<strong>placeholder: jurisdiction and venue to be added before official launch</strong>).',
+        'Disputes arising from these Terms or the site shall first be resolved amicably and in good faith; failing that, they shall be submitted to the competent courts at the operator\'s place of registration.',
+      ] },
+      { h: '14. Severability & entire agreement', ps: [
+        'If any provision of these Terms is held invalid or unenforceable, it will be limited or severed to the minimum extent necessary and the remaining provisions will stay in full force.',
+        'These Terms, together with the <a href="/en/privacy/">Privacy Policy</a> and the <a href="/en/disclaimer/">Disclaimer</a>, constitute the entire agreement between you and the operator regarding the site.',
+      ] },
+      { h: '15. Contact', ps: [
         'hi@habitatcompass.com.',
       ] },
     ],
@@ -926,9 +1073,20 @@ function renderLegalPage(kind, lang) {
       return html;
     })
     .join('');
-  const alertBox = kind === 'disclaimer'
+  // 摘要条：法律文本偏长，先给一句人话结论（隐私/协议各有 notice；免责页沿用固定警示）
+  const leadNotice = kind === 'disclaimer'
     ? `<div class="notice">${zh ? '<strong>本站内容仅为信息参考，不构成移民、签证、居留、法律、税务、医疗、保险、财务或投资建议。</strong>' : '<strong>Informational reference only — not immigration, visa, legal, tax, medical, or financial advice.</strong>'}</div>`
+    : d.notice
+      ? `<div class="notice">${d.notice}</div>`
+      : '';
+  // 目录：长文导航（仅隐私/协议；免责页较短可省）
+  const toc = kind !== 'disclaimer'
+    ? `<nav class="toc" aria-label="${zh ? '目录' : 'Contents'}"><p class="toc-h">${zh ? '目录' : 'Contents'}</p><ol>${d.sections
+        .map((s, i) => `<li><a href="#s${i}">${esc(s.h)}</a></li>`)
+        .join('')}</ol></nav>`
     : '';
+  // 署名：法律文本结构参考 CC BY-SA 4.0 开源模板（合规且诚实）
+  const attr = d.attribution ? `<p class="attr">${d.attribution}</p>` : '';
   const eraseBlock = kind === 'privacy'
     ? `<section class="card erase" id="erase">
 <h2>${zh ? '清除我的所有数据' : 'Erase all my data'}</h2>
@@ -970,9 +1128,11 @@ function eraseAll() {
   ];
   const body = `<p class="crumbs"><a href="${zh ? '/' : '/en/'}">${zh ? '首页' : 'Home'}</a> / ${zh ? '法律' : 'Legal'}</p>
 <h1>${name}</h1>
-<p class="sub">${d.updated}</p>${alertBox}
+<p class="sub">${d.updated}</p>${leadNotice}
+${toc}
 ${sections}
 ${eraseBlock}
+${attr}
 ${crossLink}`;
   return shell({ lang, title: d.title, desc: d.desc, canonical, hreflang: { zh: page(`/${kind}/`), en: page(`/en/${kind}/`) }, jsonLd, body });
 }

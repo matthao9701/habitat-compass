@@ -106,7 +106,7 @@ export default function RadarChart({ axes, series, size = 340 }: RadarChartProps
               textAnchor="middle"
               dominantBaseline="middle"
               className="fill-ink"
-              style={{ fontSize: 12, fontFamily: '"IBM Plex Mono", monospace' }}
+              style={{ fontSize: 12, fontFamily: '"Manrope Variable", system-ui, sans-serif' }}
             >
               {label}
             </text>

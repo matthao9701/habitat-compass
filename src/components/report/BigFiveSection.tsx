@@ -91,7 +91,7 @@ function PentagonRadar({ values }: { values: { label: string; pct: number }[] })
             textAnchor={anchor}
             className="fill-ink-soft"
             fontSize="9"
-            fontFamily="'IBM Plex Mono', monospace"
+            fontFamily="'Manrope Variable', system-ui, sans-serif"
           >
             {v.label} {Math.round(v.pct)}
           </text>
