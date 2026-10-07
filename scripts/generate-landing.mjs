@@ -688,21 +688,63 @@ const sitemapUrls = [];
 const addUrl = (p, lastmod) => sitemapUrls.push({ p, lastmod });
 
 /**
- * 生成某个路径的 xhtml:link 语言互链（与页面 HTML 内 <link rel="alternate" hreflang> 同口径）。
- * 站点语言约定：zh 为首选（x-default 指向 zh），英文页统一带 /en 前缀。
- * - 传 zh 路径（如 /city/x/）→ 返回 zh + en + x-default 三条
- * - 传 en 路径（如 /en/city/x/）→ 返回 null（同一互链组只在一侧声明，避免重复）
- * - 首页 / 与 /en/ 也适用于同一规则
+ * XML 文本转义：sitemap 只允许 <loc>/<lastmod> 等节点承载纯文本。
+ * 转义五个预定义实体，杜绝 & / < / > / " / ' 造成的非法节点或“标签外纯文本”。
  */
-function hreflangLinks(p) {
-  if (p.startsWith('/en/')) return null;
-  const zhPath = p;
-  const enPath = p === '/' ? '/en/' : `/en${p}`;
-  return [
-    `    <xhtml:link rel="alternate" hreflang="zh-Hans" href="${page(zhPath)}"/>`,
-    `    <xhtml:link rel="alternate" hreflang="en" href="${page(enPath)}"/>`,
-    `    <xhtml:link rel="alternate" hreflang="x-default" href="${page(zhPath)}"/>`,
-  ].join('\n');
+function xmlEsc(s) {
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;');
+}
+
+/**
+ * 自校验：确认生成的 sitemap 结构严格符合 sitemaps.org 0.9 规范。
+ * 任一断言失败即抛错终止构建，避免把非法 XML 部署上线。
+ */
+function assertSitemapWellFormed(xml) {
+  if (!xml.startsWith('<?xml version="1.0" encoding="UTF-8"?>\n')) {
+    throw new Error('sitemap 缺少标准 XML 文件头');
+  }
+  if (!xml.includes('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">')) {
+    throw new Error('sitemap 缺少带命名空间的 <urlset> 根节点');
+  }
+  if (!xml.endsWith('</urlset>\n')) {
+    throw new Error('sitemap 根节点未正确闭合');
+  }
+  // 标签外不得残留任何纯文本：遍历 token 跟踪嵌套深度，
+  // 深度为 0 处出现的非空白文本即为“标签外纯文本”（数组调试字符、拼接残留等）。
+  let depth = 0;
+  for (const tok of xml.match(/<[^>]*>|[^<]+/g) || []) {
+    if (tok[0] === '<') {
+      if (/^<\?/.test(tok) || /^<!/.test(tok)) continue; // 声明 / 注释
+      if (/^<\//.test(tok)) depth = Math.max(0, depth - 1);
+      else if (!/\/>$/.test(tok)) depth++;
+      continue;
+    }
+    if (depth === 0 && tok.trim()) {
+      throw new Error(`sitemap 标签外残留纯文本：${tok.trim().slice(0, 60)}`);
+    }
+  }
+  if (depth !== 0) throw new Error(`sitemap 标签未闭合（深度 ${depth}）`);
+  // 尖括号数量配平
+  const open = (xml.match(/</g) || []).length;
+  const close = (xml.match(/>/g) || []).length;
+  if (open !== close) throw new Error(`sitemap 尖括号不配平：< ${open} 个，> ${close} 个`);
+  // 每个 <url> 必须且只含 loc/lastmod/changefreq/priority
+  const blocks = xml.match(/<url>[\s\S]*?<\/url>/g) || [];
+  if (!blocks.length) throw new Error('sitemap 未输出任何 <url> 节点');
+  for (const b of blocks) {
+    for (const tag of ['loc', 'lastmod', 'changefreq', 'priority']) {
+      if (!b.includes(`<${tag}>`)) throw new Error(`<url> 缺少 <${tag}>：${b.slice(0, 80)}`);
+    }
+    const extra = (b.match(/<([a-zA-Z:]+)[\s>]/g) || [])
+      .map((m) => m.replace(/[<\s>]/g, ''))
+      .filter((t) => !['url', 'loc', 'lastmod', 'changefreq', 'priority'].includes(t));
+    if (extra.length) throw new Error(`<url> 含非标准节点：${[...new Set(extra)].join(', ')}`);
+  }
 }
 
 // ---------- 第十三轮：法律页（隐私政策 / 用户协议，zh/en） ----------
@@ -1278,20 +1320,22 @@ function main() {
 `;
   write('llms.txt', llms);
 
-  // sitemap.xml
-  // 每个 <url> 内嵌 xhtml:link 语言互链（与页面 HTML 的 rel="alternate" hreflang 同口径），
-  // 让 Google 直接在 sitemap 里读到 zh/en/x-default 对应关系，无需爬取 HTML。
-  // 互链组只在 zh 侧声明（见 hreflangLinks），避免同一组重复出现两份。
+  // sitemap.xml —— 严格 sitemaps.org 0.9 最小格式：
+  //   标准 XML 文件头 + 带命名空间的 <urlset> 根节点；
+  //   每个 URL 只包裹 <loc>/<lastmod>/<changefreq>/<priority>，标签外无任何纯文本。
+  //   语言互链由各页面 HTML 内的 <link rel="alternate" hreflang> 声明（zh/en 双向已在页面输出），
+  //   故此处不再嵌入 xhtml:link，避免半侧声明导致 Google 判为无效。
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
-<!-- 中文区（zh-Hans）+ 英文区（/en）· 每个 URL 内嵌 xhtml:link 语言互链 -->
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
-${sitemapUrls.map(({ p, lastmod }) => {
-    const links = hreflangLinks(p);
-    const inner = `    <loc>${page(p)}</loc>\n    <lastmod>${lastmod}</lastmod>\n    <changefreq>monthly</changefreq>\n    <priority>${p === '/' ? '1.0' : p.startsWith('/city') || p.startsWith('/country') ? '0.7' : '0.8'}</priority>`;
-    return `  <url>\n${inner}${links ? '\n' + links : ''}\n  </url>`;
-  }).join('\n')}
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${sitemapUrls.map(({ p, lastmod }) => `  <url>
+    <loc>${xmlEsc(page(p))}</loc>
+    <lastmod>${xmlEsc(lastmod)}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>${p === '/' ? '1.0' : p.startsWith('/city') || p.startsWith('/country') ? '0.7' : '0.8'}</priority>
+  </url>`).join('\n')}
 </urlset>
 `;
+  assertSitemapWellFormed(sitemap);
   write('sitemap.xml', sitemap);
 
   console.log(`\n落地页生成完成：${count} 页 + robots.txt + llms.txt + sitemap.xml（${sitemapUrls.length} URL）→ dist/`);
