@@ -8,7 +8,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import CompassRadar, { buildCompassData } from './CompassRadar';
 import CityPhoto, { PhotoCredit } from './CityPhoto';
 import { getCountry } from '../../data/countries';
-import { cityName, countryName, climateSummary, tagLabel, englishBandLabel, entryNote } from '../../lib/format';
+import { cityName, countryName, climateSummary, tagLabel, englishBandLabel, entryNote, formatMoneyShort } from '../../lib/format';
+import { overlapHours } from '../../lib/timezone';
 import { useI18n } from '../../i18n';
 import type { City } from '../../data/types';
 
@@ -21,14 +22,32 @@ function Pill({ children }: { children: React.ReactNode }) {
   );
 }
 
+/** 签证难易度彩色胶囊（人话：落地即签 / 数字游民签门槛低 / 长居较难） */
+type VisaTone = 'easy' | 'dn' | 'hard';
+
+function VisaPill({ tone, children }: { tone: VisaTone; children: React.ReactNode }) {
+  const style: Record<VisaTone, string> = {
+    easy: 'border-moss/45 bg-moss/10 text-moss',
+    dn: 'border-sea/45 bg-sea/10 text-sea',
+    hard: 'border-clay/45 bg-clay/10 text-clay-deep',
+  };
+  return (
+    <span className={`inline-flex items-center gap-1 rounded-[5px] border px-2 py-0.5 font-data text-[10.5px] font-medium leading-tight backdrop-blur-[2px] ${style[tone]}`}>
+      {children}
+    </span>
+  );
+}
+
 export interface AtlasCardProps {
   city: City;
   index: number;
   onOpen: (city: City) => void;
   formatMoney: (usd: number) => string;
+  /** 空状态「最接近」提示角标（可选） */
+  badge?: string;
 }
 
-export function AtlasCard({ city, index, onOpen, formatMoney }: AtlasCardProps) {
+export function AtlasCard({ city, index, onOpen, formatMoney, badge }: AtlasCardProps) {
   const { t } = useI18n();
   const country = getCountry(city.countryCode);
   const compass = buildCompassData(
@@ -36,6 +55,10 @@ export function AtlasCard({ city, index, onOpen, formatMoney }: AtlasCardProps) 
     country,
   );
   const climate = climateSummary(city.climateDetail, undefined);
+  const beijing = overlapHours(city.timezone, 'beijing');
+  const london = overlapHours(city.timezone, 'london');
+  const visaEntry = country?.visaPassport?.entry ?? null;
+  const dnFriendly = country?.visaPassport?.digitalNomad ?? null;
   return (
     <motion.button
       type="button"
@@ -53,18 +76,26 @@ export function AtlasCard({ city, index, onOpen, formatMoney }: AtlasCardProps) 
         {/* 顶部渐隐，保证胶囊可读 */}
         <div className="pointer-events-none absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-ink/25 to-transparent" />
         <div className="absolute right-2.5 top-2.5 flex max-w-[75%] flex-wrap justify-end gap-1.5">
+          {(visaEntry === 'visaFree' || visaEntry === 'visaOnArrival') && <VisaPill tone="easy">{t('atlas.visa.difficultyEasy')}</VisaPill>}
+          {visaEntry === 'eVisa' && <VisaPill tone="dn">{t('atlas.visa.difficultyDnEasy')}</VisaPill>}
+          {visaEntry === 'visaRequired' && <VisaPill tone="hard">{t('atlas.visa.difficultyLongHard')}</VisaPill>}
+          {dnFriendly === 'friendly' && visaEntry !== 'visaFree' && visaEntry !== 'visaOnArrival' && (
+            <VisaPill tone="dn">{t('atlas.visa.difficultyDnEasy')}</VisaPill>
+          )}
           {city.monthlyCostUSD != null && <Pill>{formatMoney(city.monthlyCostUSD)}{t('atlas.card.perMonth')}</Pill>}
-          {city.climateDetail && <Pill>{Math.round(city.climateDetail.avgTempC)}°C</Pill>}
-          {country?.visaPassport?.entry === 'visaFree' && <Pill>{t('atlas.card.visaFree')}</Pill>}
-          {country?.visaPassport?.entry === 'visaOnArrival' && <Pill>{t('atlas.card.visaOnArrival')}</Pill>}
-          {country?.visaPassport?.entry === 'eVisa' && <Pill>{t('atlas.card.eVisa')}</Pill>}
         </div>
+        {/* 空状态「最接近」角标（仅筛选无果时的兜底推荐显示） */}
+        {badge && (
+          <span className="absolute left-3 top-2.5 rounded-[4px] bg-clay/85 px-1.5 py-0.5 font-data text-[10px] tracking-[0.14em] text-paper backdrop-blur-[2px]">
+            {badge}
+          </span>
+        )}
         {/* 期号式角标 */}
-        <span className="absolute left-3 top-2.5 rounded-[4px] bg-ink/45 px-1 py-0.5 font-data text-[10px] tracking-[0.18em] text-white/85 backdrop-blur-[2px]">
+        <span className="absolute left-3 bottom-2.5 rounded-[4px] bg-ink/45 px-1 py-0.5 font-data text-[10px] tracking-[0.18em] text-white/85 backdrop-blur-[2px]">
           Nº {String(index + 1).padStart(3, '0')}
         </span>
         {/* 图片署名（合规） */}
-        <div className="absolute bottom-1.5 left-2.5">
+        <div className="absolute bottom-1.5 right-2.5">
           <PhotoCredit cityId={city.id} />
         </div>
       </div>
@@ -82,6 +113,26 @@ export function AtlasCard({ city, index, onOpen, formatMoney }: AtlasCardProps) 
         <p className="mt-0.5 font-data text-[10.5px] text-ink-soft">
           {countryName(country)} · {climate ?? t('atlas.card.climatePending')}
         </p>
+
+        {/* 人话信息行：时区重叠 + 成本拆解 */}
+        <div className="mt-2.5 space-y-1 font-data text-[10.5px] text-ink-soft">
+          {(beijing != null || london != null) && (
+            <p>
+              {beijing != null && london != null && beijing !== london
+                ? t('atlas.tz.overlapBoth', { london, beijing })
+                : beijing != null
+                  ? beijing === 0
+                    ? t('atlas.tz.overlapNone')
+                    : t('atlas.tz.overlapBeijing', { h: beijing })
+                  : t('atlas.tz.overlapLondon', { h: london as number })}
+            </p>
+          )}
+          {city.housingLevel != null && (
+            <p>
+              {t('atlas.cost.shareRoom')} {formatMoneyShort(city.housingLevel * 0.45)} · {t('atlas.cost.soloApt')} {formatMoneyShort(city.housingLevel)}
+            </p>
+          )}
+        </div>
 
         <div className="mt-3 flex items-center justify-between gap-2 border-t border-line pt-3">
           <CompassRadar data={compass} size={116} />
@@ -150,6 +201,15 @@ export function CityDrawer({ city, onClose, formatMoney }: DrawerProps) {
     ? buildCompassData({ ...city, internetMbps: city.internetMbps ?? country?.internetMbpsFixed ?? null }, country)
     : [];
   const climate = city ? climateSummary(city.climateDetail, undefined) : null;
+  const beijing = city ? overlapHours(city.timezone, 'beijing') : null;
+  const london = city ? overlapHours(city.timezone, 'london') : null;
+  const overlapText = beijing == null && london == null
+    ? null
+    : beijing != null && london != null && beijing !== london
+      ? t('atlas.tz.overlapBoth', { london, beijing })
+      : beijing != null
+        ? t('atlas.tz.overlapBeijing', { h: beijing })
+        : t('atlas.tz.overlapLondon', { h: london as number });
 
   return (
     <AnimatePresence>
@@ -257,6 +317,20 @@ export function CityDrawer({ city, onClose, formatMoney }: DrawerProps) {
                     <Row label={t('atlas.drawer.row.living')} value={city.livingScore != null ? t('atlas.drawer.row.livingVal', { v: city.livingScore }) : t('profile.visa.pending')} />
                     <Row label={t('atlas.drawer.row.taxTop')} value={country?.taxTopRatePct != null ? t('atlas.drawer.row.taxTopVal', { v: country.taxTopRatePct }) : t('profile.visa.pending')} />
                     <Row label={t('atlas.drawer.row.internet')} value={netMbps != null ? t('atlas.drawer.row.internetVal', { v: netMbps }) : t('profile.visa.pending')} />
+                    {city.housingLevel != null && (
+                      <Row
+                        label={t('atlas.drawer.row.housing')}
+                        value={t('atlas.drawer.row.housingVal', {
+                          shareRoom: t('atlas.cost.shareRoom'),
+                          share: formatMoney(Math.round(city.housingLevel * 0.45)),
+                          soloApt: t('atlas.cost.soloApt'),
+                          solo: formatMoney(city.housingLevel),
+                        })}
+                      />
+                    )}
+                    {overlapText != null && (
+                      <Row label={t('atlas.drawer.row.timezone')} value={t('atlas.drawer.row.timezoneVal', { overlap: overlapText, tz: city.timezone ?? '—' })} />
+                    )}
                     <Row
                       label={t('atlas.drawer.row.entry')}
                       value={country?.visaPassport ? t('atlas.drawer.row.entryVal', { label: t(VISA_LABEL_KEYS[country.visaPassport.entry]), note: entryNote(country.visaPassport.entryNote) }) : t('profile.visa.pending')}

@@ -64,6 +64,13 @@ export function formatMoney(usd: number, lang?: Lang): string {
   return `$${fmt(usd)}`;
 }
 
+/** 金额按 locale 短格式（单一币种，无括注；用于卡片内紧凑的房租拆解等） */
+export function formatMoneyShort(usd: number, lang?: Lang): string {
+  const l = lang ?? getCurrentLang();
+  if (l === 'zh') return `¥${fmt(Math.round(usd * CNY_USD_RATE))}`;
+  return `$${fmt(Math.round(usd))}`;
+}
+
 /** 日期按 locale：zh 用 YYYY-MM-DD（数据快照习惯），en 用英文月日年 */
 export function formatDate(iso: string, lang?: Lang): string {
   const l = lang ?? getCurrentLang();

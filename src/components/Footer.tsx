@@ -68,6 +68,21 @@ export default function Footer() {
                 <p className="mt-1 text-[11.5px] text-ink-soft">{t('footer.tagline')}</p>
               </div>
             </div>
+            {/* 社群信任：数据时效 + 纠错邮箱 */}
+            <p className="mt-5 inline-flex items-center gap-1.5 rounded-full border hairline bg-card px-3 py-1 font-mono text-[10px] uppercase tracking-eyebrow text-ink-soft">
+              <span className="h-1.5 w-1.5 rounded-full bg-moss" aria-hidden="true" />
+              {t('trust.dataUpdated')}
+            </p>
+            <p className="mt-3 text-[12px] leading-[1.8] text-ink-soft">
+              {t('trust.contactLead')}{' '}
+              <a
+                href="mailto:hi@habitatcompass.com"
+                className="font-medium text-pine underline decoration-pine/30 underline-offset-4 transition-colors hover:decoration-pine"
+              >
+                hi@habitatcompass.com
+              </a>
+              {t('trust.contactTail')}
+            </p>
           </div>
 
           {/* 法律与合规 */}

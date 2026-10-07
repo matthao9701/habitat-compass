@@ -166,6 +166,7 @@ details p{margin-top:8px;color:var(--ink);font-size:15px}
 .list li:last-child{border-bottom:none}
 .list .meta{color:var(--ink-soft);font-size:12.5px}
 footer{border-top:1px solid var(--paper-deep);background:var(--card);padding:18px 0 26px;font-size:12.5px;color:var(--ink-soft)}
+.fresh{font-size:12px;color:var(--ink-soft);margin-top:8px}
 .badge{display:inline-block;background:var(--paper-deep);color:var(--pine-deep);font-size:12px;font-weight:700;padding:2px 10px;border-radius:999px;margin-left:8px;vertical-align:middle}
 .note{font-size:13px;color:var(--ink-soft);margin:8px 0 18px}
 .lang{font-size:13px}
@@ -241,6 +242,7 @@ ${langSwitch}
     ? '数据来源：官方开放数据（Open Data）与公开统计测算 · Open-Meteo（CC BY 4.0）· GeoNames（CC BY 4.0）· WHO 2021 空气质量指导值分档 · 快照日期见各数据卡。签证与政策多变，出行前务必核实官方渠道；本站为决策辅助工具，不构成任何投资、法律或移民建议。'
     : 'Data sources: official open data & public statistical estimates · Open-Meteo (CC BY 4.0) · GeoNames (CC BY 4.0) · WHO 2021 air quality guideline bands · snapshot dates on each card. Visa policies change frequently — always verify with official channels before travelling. This site is a decision-support tool and is not immigration, visa, legal, tax, medical, or financial advice.'}</p>
 <p style="margin-top:6px">${lang === 'zh' ? '匹配口径与数据许可详见' : 'Scoring methodology & data licences:'} <a href="${lang === 'zh' ? '/methodology/' : '/en/methodology/'}" style="color:var(--pine)">${lang === 'zh' ? '方法论页' : 'Methodology'}</a> · <a href="${lang === 'zh' ? '/privacy/' : '/en/privacy/'}" style="color:var(--pine)">${lang === 'zh' ? '隐私政策' : 'Privacy'}</a> · <a href="${lang === 'zh' ? '/terms/' : '/en/terms/'}" style="color:var(--pine)">${lang === 'zh' ? '用户协议' : 'Terms'}</a> · <a href="${lang === 'zh' ? '/disclaimer/' : '/en/disclaimer/'}" style="color:var(--pine)">${lang === 'zh' ? '免责声明' : 'Disclaimer'}</a> · © 栖居罗盘 Habitat Compass</p>
+<p class="fresh">${lang === 'zh' ? '数据更新至 2026 年 Q4' : 'Data updated for Q4 2026'} · ${lang === 'zh' ? '发现租金或网速数据有误？写信给' : 'Spotted inaccurate rent or internet speed? Drop a note to'} <a href="mailto:hi@habitatcompass.com" style="color:var(--pine)">hi@habitatcompass.com</a> ${lang === 'zh' ? '，帮助更多同路人。' : 'and help fellow nomads.'}</p>
 </div></footer>
 </body>
 </html>`;
@@ -631,7 +633,7 @@ const sitemapUrls = [];
 const addUrl = (p, lastmod) => sitemapUrls.push({ p, lastmod });
 
 // ---------- 第十三轮：法律页（隐私政策 / 用户协议，zh/en） ----------
-// ABOUTME: 内容如实披露 storage.ts 实际键清单（nomadmatch.v1 前缀）；占位项：联系邮箱 / 适用法域
+// ABOUTME: 内容如实披露 storage.ts 实际键清单（nomadmatch.v1 前缀）；联系邮箱 hi@habitatcompass.com；占位项：适用法域
 const LEGAL_PRIVACY = {
   zh: {
     title: '隐私政策 | 栖居罗盘',
@@ -640,7 +642,7 @@ const LEGAL_PRIVACY = {
     sections: [
       { h: '一、概要与数据控制者', ps: [
         '栖居罗盘（Habitat Compass，下称"本站"）是一个运行于浏览器的海外城市定居决策辅助工具。<strong>本站没有账号体系，没有服务器端用户数据库</strong>——所有与"你"有关的信息只存在于你自己的设备中。',
-        '数据控制者：Habitat Compass 运营者（主体信息待正式部署后补充）。联系邮箱：<code>privacy@habitatcompass.app</code>（占位邮箱，正式部署前将替换为实际邮箱）。',
+        '数据控制者：Habitat Compass 运营者（主体信息待正式部署后补充）。联系邮箱：<code>hi@habitatcompass.com</code>。',
       ] },
       { h: '二、我们处理哪些数据', ps: [
         '本站<strong>不收集、不上传任何个人数据</strong>。你在使用中产生的全部数据仅保存在<strong>你自己设备浏览器的 localStorage</strong>（键名前缀 <code>nomadmatch.v1</code>），具体包括：',
@@ -674,7 +676,7 @@ const LEGAL_PRIVACY = {
       ], list: [
         '访问 / 可携带：浏览器开发者工具（Application → Local Storage）可直接查看并导出全部数据',
         '更正 / 删除 / 限制 / 反对：清除对应存储键即告完成——最简单的方式是下方按钮或浏览器"清除站点数据"',
-        '如需协助，可发邮件至 privacy@habitatcompass.app，我们在 <strong>30 天内</strong>回复',
+        '如需协助，可发邮件至 hi@habitatcompass.com，我们在 <strong>30 天内</strong>回复',
       ] },
       { h: '八、未成年人（第 8 条）', ps: [
         '本服务不面向 <strong>16 周岁以下</strong>用户；如你未满 16 周岁，请勿使用本站。',
@@ -690,7 +692,7 @@ const LEGAL_PRIVACY = {
         '本政策如有实质变更，将在本页更新并标注日期；重大变更时在首页显著位置提示。',
       ] },
       { h: '十二、联系我们', ps: [
-        'privacy@habitatcompass.app（占位邮箱，正式部署前替换为实际联系渠道）。',
+        'hi@habitatcompass.com。',
       ] },
     ],
   },
@@ -701,7 +703,7 @@ const LEGAL_PRIVACY = {
     sections: [
       { h: '1. Overview & controller', ps: [
         'Habitat Compass ("the site") is a browser-based decision-support tool for settling abroad. <strong>There are no user accounts and no server-side user database</strong> — everything that relates to you lives only on your own device.',
-        'Data controller: the Habitat Compass operator (entity details to be added before official launch). Contact: <code>privacy@habitatcompass.app</code> (placeholder, to be replaced with the real mailbox).',
+        'Data controller: the Habitat Compass operator (entity details to be added before official launch). Contact: <code>hi@habitatcompass.com</code>.',
       ] },
       { h: '2. What data we process', ps: [
         'The site <strong>collects and uploads no personal data</strong>. Everything you produce while using it is stored only in <strong>your browser\'s localStorage</strong> (key prefix <code>nomadmatch.v1</code>):',
@@ -735,7 +737,7 @@ const LEGAL_PRIVACY = {
       ], list: [
         'Access / portability: browser dev tools (Application → Local Storage) let you view and export everything',
         'Rectification / erasure / restriction / objection: removing the storage keys is the whole act — the button below or "clear site data" does it',
-        'Need help? E-mail privacy@habitatcompass.app — we reply within <strong>30 days</strong>',
+        'Need help? E-mail hi@habitatcompass.com — we reply within <strong>30 days</strong>',
       ] },
       { h: '8. Children (Art. 8)', ps: [
         'The service is not offered to anyone <strong>under 16</strong>. If you are under 16, please do not use the site.',
@@ -751,7 +753,7 @@ const LEGAL_PRIVACY = {
         'Material changes will be published on this page with an updated date; major changes are announced on the home page.',
       ] },
       { h: '12. Contact', ps: [
-        'privacy@habitatcompass.app (placeholder, to be replaced with the actual contact channel).',
+        'hi@habitatcompass.com.',
       ] },
     ],
   },
@@ -798,7 +800,7 @@ const LEGAL_TERMS = {
         '本协议适用运营者注册地法律（<strong>占位：待正式部署后补充法域与管辖条款</strong>）。因本协议产生的争议，双方应先友好协商解决。',
       ] },
       { h: '八、联系渠道', ps: [
-        'privacy@habitatcompass.app（占位邮箱，正式部署前替换为实际联系渠道）。',
+        'hi@habitatcompass.com。',
       ] },
     ],
   },
@@ -841,7 +843,7 @@ const LEGAL_TERMS = {
         'These terms are governed by the law of the operator\'s place of registration (<strong>placeholder: jurisdiction and venue to be added before official launch</strong>). Disputes shall first be resolved amicably.',
       ] },
       { h: '8. Contact', ps: [
-        'privacy@habitatcompass.app (placeholder, to be replaced with the actual contact channel).',
+        'hi@habitatcompass.com.',
       ] },
     ],
   },

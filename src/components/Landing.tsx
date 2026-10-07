@@ -302,7 +302,7 @@ export default function Landing({ onStart, onDemo }: LandingProps) {
             <button
               type="button"
               onClick={() => setAtlasRegion('all')}
-              className={`rounded-[5px] border px-3.5 py-1.5 font-data text-[11px] transition-colors ${
+              className={`inline-flex min-h-[44px] items-center rounded-[5px] border px-4 py-2.5 font-data text-[11px] transition-colors ${
                 atlasRegion === 'all'
                   ? 'border-pine bg-pine text-paper'
                   : 'border-line bg-card text-ink-soft hover:border-pine/50'
@@ -318,7 +318,7 @@ export default function Landing({ onStart, onDemo }: LandingProps) {
                   key={r}
                   type="button"
                   onClick={() => setAtlasRegion(r)}
-                  className={`rounded-[5px] border px-3.5 py-1.5 font-data text-[11px] transition-colors ${
+                  className={`inline-flex min-h-[44px] items-center rounded-[5px] border px-4 py-2.5 font-data text-[11px] transition-colors ${
                     atlasRegion === r
                       ? 'border-pine bg-pine text-paper'
                       : 'border-line bg-card text-ink-soft hover:border-pine/50'
@@ -336,17 +336,44 @@ export default function Landing({ onStart, onDemo }: LandingProps) {
               ? filteredCities
               : filteredCities.filter((c) => c.region === atlasRegion);
             if (shown.length === 0) {
+              // 空状态：不摆硬边界，改为「最接近」的 3 城 + 一键重置（人话提示）
+              const closest = filteredCities.slice(0, 3);
               return (
-                <div className="rounded-card border border-dashed border-line bg-card px-6 py-14 text-center">
-                  <p className="font-display text-xl text-ink">{t('landing.atlas.emptyTitle')}</p>
-                  <p className="mt-2 text-sm text-ink-soft">{t('landing.atlas.emptyHint')}</p>
-                  <button
-                    type="button"
-                    onClick={() => setFilter(DEFAULT_FILTER)}
-                    className="mt-5 font-data text-[11px] uppercase tracking-[0.14em] text-pine underline decoration-pine/30 underline-offset-4 hover:decoration-pine"
-                  >
-                    {t('landing.atlas.resetFilter')}
-                  </button>
+                <div>
+                  <div className="rounded-card border border-dashed border-line bg-card px-6 py-10 text-center">
+                    <p className="font-display text-xl text-ink">{t('landing.atlas.closestTitle')}</p>
+                    <p className="mt-2 text-sm text-ink-soft">
+                      {closest.length > 0
+                        ? t('landing.atlas.closestHint', { count: closest.length })
+                        : t('landing.atlas.emptyHint')}
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => setFilter(DEFAULT_FILTER)}
+                      className="mt-5 inline-flex min-h-[44px] items-center rounded-full border border-pine px-5 py-2.5 font-data text-[11px] uppercase tracking-[0.14em] text-pine transition-colors hover:bg-pine hover:text-paper"
+                    >
+                      {t('landing.atlas.resetFilter')}
+                    </button>
+                  </div>
+                  {closest.length > 0 && (
+                    <div className="mt-6">
+                      <p className="mb-3 font-data text-[10px] uppercase tracking-[0.18em] text-ink-soft">
+                        {t('landing.atlas.closestAction')}
+                      </p>
+                      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                        {closest.map((c, i) => (
+                          <AtlasCard
+                            key={c.id}
+                            city={c}
+                            index={i}
+                            onOpen={setDrawerCity}
+                            formatMoney={(usd) => formatMoney(usd)}
+                            badge={t('landing.atlas.closestBadge')}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
               );
             }
@@ -436,10 +463,20 @@ export default function Landing({ onStart, onDemo }: LandingProps) {
           </div>
           <div className="flex flex-col gap-1 md:items-end">
             <p>{t('landing.footer.disclaimer')}</p>
-            <p className="font-light">
-              {t('landing.footer.data')}
-            </p>
+            <p className="font-light">{t('landing.footer.data')}</p>
             <p className="font-light">{t('landing.footer.fonts')}</p>
+            {/* 信任锚点：数据时效 + 社群纠错邮箱 */}
+            <p className="font-mono text-[10px] uppercase tracking-eyebrow">{t('trust.dataUpdated')}</p>
+            <p className="font-light">
+              {t('trust.contactLead')}{' '}
+              <a
+                href="mailto:hi@habitatcompass.com"
+                className="text-pine underline decoration-pine/30 underline-offset-4 hover:decoration-pine"
+              >
+                hi@habitatcompass.com
+              </a>
+              {t('trust.contactTail')}
+            </p>
           </div>
         </div>
       </footer>

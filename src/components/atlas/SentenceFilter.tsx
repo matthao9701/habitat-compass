@@ -88,7 +88,7 @@ function InlineSelect<T extends string>({
         value={value}
         onChange={(e) => onChange(e.target.value as T)}
         aria-label={ariaLabel}
-        className="cursor-pointer appearance-none rounded-[5px] border border-line bg-white px-2.5 py-0.5 font-body text-[13px] font-medium text-pine outline-none transition-colors hover:border-pine/50 focus:border-pine"
+        className="min-h-[44px] cursor-pointer appearance-none rounded-[5px] border border-line bg-white px-3 py-2 font-body text-[13px] font-medium text-pine outline-none transition-colors hover:border-pine/50 focus:border-pine"
       >
         {options.map((o) => (
           <option key={o.v} value={o.v}>
@@ -117,7 +117,7 @@ export default function SentenceFilter({ value, onChange, matchedCount, totalCou
         <span className="font-serif-accent italic text-ink-soft">“</span>
         {t('landing.filter.lead')}
         <span className="relative inline-flex flex-col">
-          <span className="inline-flex min-w-[118px] items-center justify-between rounded-[5px] border border-line bg-white px-2.5 py-0.5 font-data text-[13px] font-semibold text-pine">
+          <span className="inline-flex min-h-[44px] min-w-[118px] items-center justify-between rounded-[5px] border border-line bg-white px-3 py-2 font-data text-[13px] font-semibold text-pine">
             {budgetLabel}
             <span className="ml-1 text-[8px] text-ink-soft">USD</span>
           </span>
@@ -128,7 +128,7 @@ export default function SentenceFilter({ value, onChange, matchedCount, totalCou
             step={100}
             value={value.budget}
             onChange={(e) => onChange({ ...value, budget: Number(e.target.value) })}
-            className="absolute -bottom-1 left-0 h-1 w-full cursor-pointer appearance-none rounded-full bg-line accent-[#1D3557]"
+            className="absolute -bottom-0.5 left-0 h-6 w-full cursor-pointer accent-[#1D3557]"
             aria-label={t('landing.filter.budgetAria')}
           />
         </span>
@@ -143,19 +143,18 @@ export default function SentenceFilter({ value, onChange, matchedCount, totalCou
             { v: 'cool', label: t('landing.filter.cool') },
           ]}
         />
-        <span
-          role="button"
-          tabIndex={0}
+        <button
+          type="button"
           onClick={() => onChange({ ...value, visaFriendly: !value.visaFriendly })}
-          onKeyDown={(e) => e.key === 'Enter' && onChange({ ...value, visaFriendly: !value.visaFriendly })}
-          className={`cursor-pointer rounded-[5px] border px-2.5 py-0.5 text-[13px] font-medium transition-colors ${
+          aria-pressed={value.visaFriendly}
+          className={`inline-flex min-h-[44px] cursor-pointer items-center rounded-[5px] border px-3 py-2.5 text-[13px] font-medium transition-colors ${
             value.visaFriendly
               ? 'border-pine bg-pine text-paper'
               : 'border-line bg-white text-ink-soft hover:border-pine/50'
           }`}
         >
           {value.visaFriendly ? t('landing.filter.visaOn') : t('landing.filter.visaOff')}
-        </span>
+        </button>
         {t('landing.filter.settle')}
         <span className="font-serif-accent italic text-ink-soft">”</span>
         <span className="ml-auto font-data text-[11px] text-ink-soft">
@@ -164,8 +163,8 @@ export default function SentenceFilter({ value, onChange, matchedCount, totalCou
       </div>
 
       {/* 紧凑多维微调滑块行 */}
-      <div className="grid gap-x-8 gap-y-3 border-t border-line px-5 py-3.5 md:grid-cols-[1fr_1fr_auto] md:px-6">
-        <label className="flex min-w-0 items-center gap-3">
+      <div className="grid gap-x-8 gap-y-4 border-t border-line px-5 py-4 md:grid-cols-[1fr_1fr_auto] md:px-6">
+        <label className="flex min-w-0 items-center gap-3 py-1.5">
           <span className="shrink-0 font-data text-[10px] uppercase tracking-[0.14em] text-ink-soft">{t('landing.filter.mbps')}</span>
           <input
             type="range"
@@ -174,14 +173,14 @@ export default function SentenceFilter({ value, onChange, matchedCount, totalCou
             step={10}
             value={value.minMbps}
             onChange={(e) => onChange({ ...value, minMbps: Number(e.target.value) })}
-            className="h-1 min-w-0 flex-1 cursor-pointer appearance-none rounded-full bg-line accent-[#1D3557]"
+            className="h-6 min-w-0 flex-1 cursor-pointer accent-[#1D3557]"
             aria-label={t('landing.filter.mbps')}
           />
           <span className="w-16 shrink-0 text-right font-data text-[11px] font-medium text-ink">
             {value.minMbps === 0 ? t('landing.filter.unlimited') : `≥${value.minMbps}M`}
           </span>
         </label>
-        <label className="flex min-w-0 items-center gap-3">
+        <label className="flex min-w-0 items-center gap-3 py-1.5">
           <span className="shrink-0 font-data text-[10px] uppercase tracking-[0.14em] text-ink-soft">{t('landing.filter.tax')}</span>
           <input
             type="range"
@@ -190,7 +189,7 @@ export default function SentenceFilter({ value, onChange, matchedCount, totalCou
             step={1}
             value={value.taxLight ? 1 : 0}
             onChange={(e) => onChange({ ...value, taxLight: e.target.value === '1' })}
-            className="h-1 min-w-0 flex-1 cursor-pointer appearance-none rounded-full bg-line accent-[#1D3557]"
+            className="h-6 min-w-0 flex-1 cursor-pointer accent-[#1D3557]"
             aria-label={t('landing.filter.tax')}
           />
           <span className="w-16 shrink-0 text-right font-data text-[11px] font-medium text-ink">
@@ -200,7 +199,7 @@ export default function SentenceFilter({ value, onChange, matchedCount, totalCou
         <button
           type="button"
           onClick={() => onChange(DEFAULT_FILTER)}
-          className="justify-self-start font-data text-[10.5px] text-ink-soft underline decoration-line underline-offset-4 transition-colors hover:text-clay md:justify-self-end"
+          className="min-h-[44px] justify-self-start font-data text-[10.5px] text-ink-soft underline decoration-line underline-offset-4 transition-colors hover:text-clay md:justify-self-end"
         >
           {t('landing.filter.reset')}
         </button>

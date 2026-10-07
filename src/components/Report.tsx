@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import CompassMark from './CompassMark';
 import RadarChart from './RadarChart';
 import { mbtiProfiles } from '../data/mbtiProfiles';
+import { getCountry } from '../data/countries';
 import type { AssessmentResult, AxisName, CityMatch } from '../lib/engine';
 import { formatCost } from '../lib/engine';
 import { cityPros, cityCons, settlementBadge, type BadgeLevel } from '../lib/analysis';
@@ -17,7 +18,8 @@ import CountryCards from './report/CountryCards';
 import VerificationChecklist from './report/VerificationChecklist';
 import { MBTI_SOURCE } from '../data/questions';
 import { useI18n, translate, getCurrentLang } from '../i18n';
-import { cityName, cityCountryName, profileTagLabel, tagLabel, climateSummary } from '../lib/format';
+import { cityName, cityCountryName, profileTagLabel, tagLabel, climateSummary, formatMoneyShort } from '../lib/format';
+import { overlapHours } from '../lib/timezone';
 import { visaLabelText } from '../i18n/countryGlossary';
 
 interface ReportProps {
@@ -361,6 +363,19 @@ function CityCard({ match, rank }: CityCardProps) {
   const badge = settlementBadge(match.match);
   const pros = cityPros(city);
   const cons = cityCons(city);
+  const country = getCountry(city.countryCode);
+  const housing = city.housingLevel;
+  const beijing = overlapHours(city.timezone, 'beijing');
+  const london = overlapHours(city.timezone, 'london');
+  const overlapText = beijing != null && london != null && beijing !== london
+    ? t('atlas.tz.overlapBoth', { london, beijing })
+    : beijing != null
+      ? t('atlas.tz.overlapBeijing', { h: beijing })
+      : london != null
+        ? t('atlas.tz.overlapLondon', { h: london })
+        : null;
+  const visaEntry = country?.visaPassport?.entry ?? null;
+  const dnFriendly = country?.visaPassport?.digitalNomad ?? null;
 
   const BADGE_STYLE: Record<BadgeLevel, string> = {
     good: 'border-moss/55 bg-moss/10 text-moss',
@@ -412,6 +427,13 @@ function CityCard({ match, rank }: CityCardProps) {
               label={t('rep.stat.avgAll')}
               value={city.monthlyCostUSD != null ? `~$${city.monthlyCostUSD.toLocaleString('en-US')}` : '—'}
             />
+            {housing != null && (
+              <Stat
+                label={`${t('atlas.cost.shareRoom')} / ${t('atlas.cost.soloApt')}`}
+                value={`${formatMoneyShort(housing * 0.45)} / ${formatMoneyShort(housing)}`}
+              />
+            )}
+            {overlapText && <Stat label={t('atlas.drawer.row.timezone')} value={overlapText} />}
             <Stat label={t('rep.stat.living')} value={city.livingScore != null ? `${city.livingScore} · NYC=100` : '—'} />
             <Stat
               label={t('cmp.data.internet')}
@@ -464,6 +486,28 @@ function CityCard({ match, rank }: CityCardProps) {
               visa snapshot
             </p>
             <p className="mt-1.5 text-[12.5px] leading-[1.7]">{visaLabelText(city.visaLabel)}</p>
+            <div className="mt-2.5 flex flex-wrap gap-1.5">
+              {(visaEntry === 'visaFree' || visaEntry === 'visaOnArrival') && (
+                <span className="rounded-full border border-moss/45 bg-moss/10 px-2.5 py-1 font-mono text-[10px] font-medium text-moss">
+                  {t('atlas.visa.difficultyEasy')}
+                </span>
+              )}
+              {visaEntry === 'eVisa' && (
+                <span className="rounded-full border border-sea/45 bg-sea/10 px-2.5 py-1 font-mono text-[10px] font-medium text-sea">
+                  {t('atlas.visa.difficultyDnEasy')}
+                </span>
+              )}
+              {visaEntry === 'visaRequired' && (
+                <span className="rounded-full border border-clay/45 bg-clay/10 px-2.5 py-1 font-mono text-[10px] font-medium text-clay-deep">
+                  {t('atlas.visa.difficultyLongHard')}
+                </span>
+              )}
+              {dnFriendly === 'friendly' && visaEntry !== 'visaFree' && visaEntry !== 'visaOnArrival' && (
+                <span className="rounded-full border border-sea/45 bg-sea/10 px-2.5 py-1 font-mono text-[10px] font-medium text-sea">
+                  {t('atlas.visa.difficultyDnEasy')}
+                </span>
+              )}
+            </div>
           </div>
 
           <div className="mt-4 flex flex-wrap gap-1.5">

@@ -1,11 +1,14 @@
 /** 每种语言的 SEO 标题（运行时随语言切换写入 document.title） */
 export const TITLE_BY_LANG: Record<'zh' | 'en', string> = {
-  zh: '栖居罗盘 · 海外定居指南',
-  en: 'Habitat Compass · Overseas Settlement Guide',
+  zh: '栖居罗盘 | 数字游民城市与全球生活成本指数',
+  en: 'Habitat Compass | Find Your Ideal Nomad City & Global Living Index',
 };
 
 /** index.html 静态 meta 的双语 description（构建期默认 zh，运行时标题随语言切换） */
 export const DESCRIPTION_BY_LANG: Record<'zh' | 'en', string> = {
-  zh: '面向数字游民与自由职业者的海外城市定居决策工具：性格与偏好测评、200 城六洲加权匹配、成本与安全对比、硬约束过滤与国家参考数据。',
-  en: 'A settlement decision tool for digital nomads and freelancers: personality & preference quiz, weighted matching across 200 cities on 6 continents, cost & safety comparison, hard-constraint filtering and country-level reference data.',
+  zh: '面向数字游民、远程办公者与海外移居者的定居决策工具：Digital Nomad 城市匹配、Cost of Living 生活成本对比、Remote Work 网速与签证指南（Visa Guide）、200 城六洲加权测评与硬约束过滤。',
+  en: 'A decision tool for digital nomads, remote workers and overseas movers: digital nomad city matching, cost of living comparison, remote work internet speed and a visa guide — 200 cities across 6 continents, weighted quiz and hard-constraint filtering.',
 };
+
+/** SEO 关键词（强化 Digital Nomad / Cost of Living / Remote Work / Visa Guide） */
+export const KEYWORDS = 'digital nomad, cost of living, remote work, visa guide, digital nomad visa, best cities for digital nomads, remote work cities, cost of living index, 数字游民, 生活成本, 远程办公, 签证指南';
