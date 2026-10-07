@@ -8,7 +8,7 @@ import fs from 'fs';
 import { createServer as createViteServer } from 'vite';
 import viteConfig from '../vite.config';
 
-const isDev = process.env.COZE_PROJECT_ENV !== 'PROD';
+const isDev = process.env.APP_ENV !== 'PROD';
 
 // 预渲染法律页在 dev 模式的可达性：
 // generate-landing.mjs 会把 privacy/terms/disclaimer（zh/en）同步写入 public/，

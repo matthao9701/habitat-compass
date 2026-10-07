@@ -208,7 +208,7 @@
 ## 第十二轮：SEO/GEO 基建——预渲染落地页 + AI 可见性
 
 - **架构定位**：落地页是主应用外的新增静态层，主应用（测评/报告/对比）零改动；无路由库——落地页不进 SPA，由构建管道生成自包含静态 HTML，生产环境 `express.static(dist)` 自动命中 `dist/city/<id>/index.html` 等目录（fallback 顺序在后不吞）；dev 模式 /city/* 走 SPA fallback 属预期。
-- **生成管道**：`scripts/generate-landing.mjs`（Node ESM，build.sh 中 vite build 之后运行）——读 `src/data/cities/*.json` + `countries.json`，token 色值从 `tailwind.config.js` 正则提取（config 为唯一事实源）；域名取 `COZE_PROJECT_DOMAIN_DEFAULT`（构建时固化进 canonical/sitemap/robots）。产物：`city/<id>/` + `en/city/<id>/`（200×2）+ `country/<code>/` + `en/country/<code>/`（65×2）+ `cities|countries|methodology`（zh+en）= 536 页 + robots.txt + llms.txt + sitemap.xml（538 URL）。
+- **生成管道**：`scripts/generate-landing.mjs`（vite build 之后由 `tsx` 运行以便复用 src/i18n 的 TS 英译表）——读 `src/data/cities/*.json` + `countries.json`，token 色值从 `tailwind.config.js` 正则提取（config 为唯一事实源）；域名取 `SITE_URL`（或 Cloudflare 的 `CF_PAGES_URL`），本地兜底 `https://gethabitatcompass.com`（构建时固化进 canonical/sitemap/robots）。产物：`city/<id>/` + `en/city/<id>/`（200×2）+ `country/<code>/` + `en/country/<code>/`（65×2）+ `cities|countries|methodology`（zh+en）+ `en/index.html` + `404.html` = 544 页 + robots.txt + llms.txt + sitemap.xml（544 URL）。EN 城市/国家页经 countryGlossary/entryNotes 英译，无中文残留。
 - **页面要素（answer-first）**：首屏直答段（50-80 字）→ 6 张数据卡（成本/安全/气候/网速/空气/签证，**每卡标注来源与日期**：官方开放数据与公开统计测算/Open-Meteo 2015-2024/CAMS+WHO 2021 分档/公开网速榜单/快照日期）→ FAQ 3-5 问（`<details>` 零 JS）+ FAQPage JSON-LD + BreadcrumbList JSON-LD → CTA 链回主应用；每页 canonical + OG/Twitter 卡 + hreflang（zh-Hans/en/x-default）双语互链。
 - **null 不编造**：无公开统计详情的城直答段与 FAQ 用「待核实/待补充」措辞并给出国家级参考（verify-seo-v9 第 3 节断言）。
 - **自包含 HTML**：内联精简 CSS（CSS 变量 = 主站 token 值）、系统字体栈（不加载 webfont，LCP 最优）、零 JS；英文版 meta+直答+FAQ 完整、数据卡与中文版同构。

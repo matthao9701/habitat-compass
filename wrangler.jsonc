@@ -6,7 +6,9 @@
   "name": "habitat-compass",
   "compatibility_date": "2025-10-01",
   "assets": {
+    // 无客户端 URL 路由（纯状态驱动 SPA），故不需要 single-page-application 回退；
+    // 用 404-page 让未匹配路径返回真正的 HTTP 404（否则会退化成软 404，损害 SEO）。
     "directory": "./dist",
-    "not_found_handling": "single-page-application"
+    "not_found_handling": "404-page"
   }
 }

@@ -6,7 +6,7 @@ import express from 'express';
 import router from './routes/index';
 import { setupVite } from './vite';
 
-const isDev = process.env.COZE_PROJECT_ENV !== 'PROD';
+const isDev = process.env.APP_ENV !== 'PROD';
 const port = parseInt(process.env.PORT || '5000', 10);
 const hostname = process.env.HOSTNAME || 'localhost';
 const app = express();

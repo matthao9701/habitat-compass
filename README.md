@@ -1,19 +1,19 @@
-# projects
+# 栖居罗盘 Habitat Compass
 
-这是一个基于 Express + Vite + TypeScript + Tailwind CSS 的全栈 Web 应用项目，由扣子编程 CLI 创建。
+这是一个面向数字游民与远程工作者的海外城市定居决策工具，基于 React + Vite + TypeScript + Tailwind CSS，附带一个可选的 Express 静态/SSR 服务端。
 
 **核心特性：**
-- 🚀 前端：Vite + TypeScript + Tailwind CSS
-- 🔧 后端：Express + TypeScript，提供 RESTful API
-- 🔥 开发模式：Vite HMR + Express API，单进程启动
-- 📦 生产模式：Express 静态服务 + API，高性能部署
+- 🚀 前端：React 19 + Vite 7 + TypeScript + Tailwind CSS
+- 🔧 后端（可选）：Express，本地开发时为 Vite 提供中间件；生产部署为纯静态资源
+- 🔥 开发模式：Vite HMR + Express，单进程启动
+- 📦 生产模式：静态构建产物 `dist/`（含 543 个 SEO 落地页），可直接部署到任意静态托管
 
 ## 快速开始
 
 ### 启动开发服务器
 
 ```bash
-coze-dev dev
+pnpm run dev
 ```
 
 启动后，在浏览器中打开 [http://localhost:5000](http://localhost:5000) 查看应用。
@@ -23,7 +23,7 @@ coze-dev dev
 ### 构建生产版本
 
 ```bash
-coze-dev build
+pnpm run build
 ```
 
 构建产物位于 `dist/` 目录，可直接部署到静态托管服务。
@@ -31,15 +31,15 @@ coze-dev build
 ### 预览生产版本
 
 ```bash
-coze-dev start
+pnpm run start
 ```
 
-在本地启动一个静态服务器，预览生产构建的效果。
+在本地启动一个服务器，预览生产构建的效果。
 
 ## 部署到 Cloudflare
 
 本项目为**纯前端静态应用**（无任何后端 API 调用，数据全部存于浏览器 localStorage），
-因此以 Cloudflare 静态资源模式部署，`dist/`（Vite 主应用 + 543 个 SEO 落地页）直接对外服务。
+因此以 Cloudflare 静态资源模式部署，`dist/`（Vite 主应用 + 544 个 SEO 落地页 + 404 页）直接对外服务。
 
 根目录的 `wrangler.jsonc` 是唯一必要的部署配置：
 
@@ -47,9 +47,12 @@ coze-dev start
 {
   "name": "habitat-compass",
   "compatibility_date": "2025-10-01",
-  "assets": { "directory": "./dist", "not_found_handling": "single-page-application" }
+  "assets": { "directory": "./dist", "not_found_handling": "404-page" }
 }
 ```
+
+> 主应用无客户端 URL 路由，故用 `404-page`（未匹配路径返回真正的 HTTP 404），
+> 而非 `single-page-application`（会把任意路径都当 200 → 软 404，损害 SEO）。
 
 > ⚠️ **必须提交 `wrangler.jsonc`**：否则 `wrangler deploy` 会进入交互式脚手架，
 > 向 `vite.config.ts` 注入 ESM-only 的 `@cloudflare/vite-plugin`，在无 `"type":"module"`
@@ -65,15 +68,17 @@ coze-dev start
 | 环境变量 `NODE_VERSION` | `24`（Vite 7 要求 Node ≥ 20.19 / 22.12） |
 | 环境变量 `SITE_URL` | `https://<你的域名>`（canonical/sitemap/hreflang 用，可省略） |
 
-> 注意：构建命令**不要**用 `pnpm run build`——那会走 Coze 专有的 `scripts/build.sh`
-> （多打一个用不上的 Express 后端）。用 `pnpm run build:cf`。
+> 注意：此处**不要**用 `pnpm run build`（它会额外打包一个用不上的 Express 后端）。
+> 用 `pnpm run build:cf`。
 
 若在 Cloudflare **Pages** 上部署，则对应填写：Build command `pnpm run build:cf`、
 Build output directory `dist`。本地直连 Workers 则执行 `pnpm build:cf && pnpm deploy:cf`
 （需设置 `CLOUDFLARE_API_TOKEN`）。
 
-`pnpm build:cf` 等价于 `vite build && node scripts/generate-landing.mjs`，
-不依赖 Coze 专有的 `scripts/build.sh`。
+`pnpm build:cf` 等价于 `vite build && tsx scripts/generate-landing.mjs`。
+
+> **必须设置 `NODE_VERSION=24`**：`generate-landing` 用 `tsx` 直接复用 `src/i18n` 的 TS 英译表，
+> 需要 Node ≥ 22。Vite 7 本身也要求 Node ≥ 20.19 / 22.12。
 
 ## 项目结构
 
@@ -105,18 +110,18 @@ Build output directory `dist`。本地直连 Workers 则执行 `pnpm build:cf &&
 
 **工作原理：**
 
-- **开发模式** (`coze-dev dev`)：
+- **开发模式** (`pnpm run dev`)：
   - 运行 `server/server.ts` 启动 Express 服务器
   - Vite 以 middleware 模式集成到 Express
   - 前端支持 HMR（热模块替换）
-  - 后端 API 和前端在同一进程，端口 5000
+  - 后端和前端在同一进程，端口 5000
 
-- **生产模式** (`coze-dev start`)：
-  - `coze-dev build` 构建前端 → `dist/` 目录
-  - `coze-dev build` 构建后端 → `dist-server/index.js` (CommonJS 格式)
-  - 运行 `dist-server/index.js` 启动生产服务器
-  - Express 服务静态文件 + API 路由
-  - 单一 Node.js 进程，轻量高效
+- **生产模式** (`pnpm run start`)：
+  - `pnpm run build` 构建前端 → `dist/` 目录
+  - `pnpm run build` 构建服务端 → `dist-server/server.js` (CommonJS 格式)
+  - 运行 `dist-server/server.js` 启动生产服务器
+  - Express 服务静态文件
+  - 单一 Node.js 进程，轻量高效；也可仅部署 `dist/` 到纯静态托管
 
 ## 核心开发规范
 
@@ -425,7 +430,7 @@ console.log(apiUrl); // https://api.example.com
 2. **使用 TypeScript** 进行类型安全开发，避免使用 `any`
 3. **使用 Tailwind CSS** 进行样式开发，支持响应式和暗色模式
 4. **环境变量必须以 `VITE_` 开头** 才能在客户端代码中访问
-5. **开发时使用 `coze-dev dev`**，支持热更新和快速刷新
+5. **开发时使用 `pnpm run dev`**，支持热更新和快速刷新
 6. **API 路由以 `/api` 开头**，避免与前端路由冲突
 7. **单进程架构**：开发和生产环境都是前后端在同一进程中运行
 
@@ -451,7 +456,7 @@ const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 
 **Q: 如何部署？**
 
-1. 运行 `coze-dev build` 构建前后端
+1. 运行 `pnpm run build` 构建前后端
 2. 将整个项目上传到服务器
 3. 运行 `pnpm install --prod`
-4. 运行 `coze-dev start` 启动服务
+4. 运行 `pnpm run start` 启动服务

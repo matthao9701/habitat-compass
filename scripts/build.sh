@@ -1,18 +1,17 @@
 #!/bin/bash
 set -Eeuo pipefail
 
-COZE_WORKSPACE_PATH="${COZE_WORKSPACE_PATH:-$(pwd)}"
-
-cd "${COZE_WORKSPACE_PATH}"
+WORKSPACE_PATH="${WORKSPACE_PATH:-$(pwd)}"
+cd "${WORKSPACE_PATH}"
 
 echo "Installing dependencies..."
-bash "$COZE_WORKSPACE_PATH/scripts/prepare-node-modules.sh" --prefer-frozen-lockfile --prefer-offline --loglevel debug --reporter=append-only
+pnpm install --frozen-lockfile --prefer-offline
 
 echo "Building frontend with Vite..."
 pnpm vite build
 
-echo "Generating SEO landing pages (200 cities + 65 countries + indexes + methodology + robots/llms/sitemap)..."
-node scripts/generate-landing.mjs
+echo "Generating SEO landing pages (200 cities + 65 countries + indexes + methodology + robots/llms/sitemap + 404)..."
+pnpm tsx scripts/generate-landing.mjs
 
 echo "Bundling server with tsup..."
 # --shims 修复：plugin-react 等 ESM 依赖被内联进 CJS bundle 后，import.meta.url 会变成 undefined，

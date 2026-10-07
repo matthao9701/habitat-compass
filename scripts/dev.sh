@@ -1,13 +1,13 @@
 #!/bin/bash
+# 本地开发服务器启动脚本：以后台进程组方式运行 Express + Vite（tsx watch），
+# 日志写入 logs/server.log，PID 写入 logs/server.pid；超过 MAX_RUNTIME_SECONDS 自动回收。
 set -Eeuo pipefail
 
-
+WORKSPACE_PATH="${WORKSPACE_PATH:-$(pwd)}"
 PORT=5000
-COZE_WORKSPACE_PATH="${COZE_WORKSPACE_PATH:-$(pwd)}"
 DEPLOY_RUN_PORT="${DEPLOY_RUN_PORT:-${PORT}}"
 
-
-cd "${COZE_WORKSPACE_PATH}"
+cd "${WORKSPACE_PATH}"
 
 kill_port_if_listening() {
     local pids
@@ -28,7 +28,7 @@ kill_port_if_listening() {
 }
 
 
-LOG_DIR="${COZE_LOG_DIR:-${COZE_WORKSPACE_PATH}/logs}"
+LOG_DIR="${LOG_DIR:-${WORKSPACE_PATH}/logs}"
 LOG_FILE="${LOG_DIR}/server.log"
 PID_FILE="${LOG_DIR}/server.pid"
 
@@ -36,7 +36,7 @@ PID_FILE="${LOG_DIR}/server.pid"
 MAX_RUNTIME_SECONDS=3600
 
 timeout_watchdog_enabled() {
-  [[ -z "${COZE_EVAL:-}" && -z "${COZE_PROJECT_TYPE:-}" ]]
+  [[ -z "${EVAL_MODE:-}" && -z "${PROJECT_TYPE:-}" ]]
 }
 
 # 真正被 detach 的是这层 bash wrapper：它是进程组 leader，组内 watchdog 到点回收整组
@@ -63,7 +63,6 @@ wait "${child_pid}"
 kill -KILL -- "-$$" 2>/dev/null || true
 '
 
-# coze-daemon 会在 runtime shell 退出时清理原进程组。
 # 通过 Node detached spawn 创建独立 session/进程组，并将 stdio 直接写入日志。
 # 返回的 PID 是 wrapper 的，同时也是整个进程组的 PGID，后续按组回收。
 spawn_detached() {
@@ -123,7 +122,7 @@ mkdir -p "${LOG_DIR}"
 : > "${LOG_FILE}"
 
 export PORT="${DEPLOY_RUN_PORT}"
-server_pid="$(spawn_detached "${COZE_WORKSPACE_PATH}" "${LOG_FILE}" \
+server_pid="$(spawn_detached "${WORKSPACE_PATH}" "${LOG_FILE}" \
   "$(command -v pnpm)" tsx watch server/server.ts)"
 echo "${server_pid}" > "${PID_FILE}"
 
@@ -141,4 +140,3 @@ if timeout_watchdog_enabled; then
 fi
 echo "Log file: ${LOG_FILE}"
 echo "PID file: ${PID_FILE}"
-

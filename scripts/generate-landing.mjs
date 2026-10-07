@@ -1,15 +1,36 @@
 // ABOUTME: 第十二轮 SEO/GEO 基建——构建后静态落地页生成器
-// ABOUTME: 200 城 + 65 国 + 索引页 + 方法论页（zh/en）+ robots.txt + llms.txt + sitemap.xml
-// 运行时机：vite build 之后（产物写入 dist/，express.static 自动命中目录 index.html）
+// ABOUTME: 200 城 + 65 国 + 索引页 + 方法论页（zh/en）+ robots.txt + llms.txt + sitemap.xml + 404
+// 运行时机：vite build 之后（产物写入 dist/）。用 tsx 运行以便直接复用 src/i18n 的英译表。
 // 数据来源：src/data/cities/*.json 与 src/data/countries.json（null 不编造）
 import fs from 'node:fs';
 import path from 'node:path';
+// 复用主应用同一份英译表（TS 文件，经 tsx 运行时可加载），保证 EN 落地页与前端 EN 口径一致。
+// 注意：tsx 对静态 import 的 .ts 说明符不做命名导出链接，须用动态 import。
+const { ENTRY_NOTE_EN } = await import('../src/i18n/entryNotes.ts');
+const { VISA_OVERVIEW_EN, VISA_LABEL_EN, RENTAL_EN, CURRENCY_EN, LANGUAGE_EN } = await import('../src/i18n/countryGlossary.ts');
+
+// 数据层英译查表：命中输出英文，未命中回落原文（与 countryGlossary 的 pick 同策略）。
+const pick = (table, zh) => (zh == null ? '—' : table[zh] ?? zh);
+const visaOverviewLabel = (zh, lang) => (lang === 'en' ? pick(VISA_OVERVIEW_EN, zh) : zh ?? '—');
+const visaLabelText = (zh, lang) => (lang === 'en' ? pick(VISA_LABEL_EN, zh) : zh ?? '—');
+const rentalLabel = (zh, lang) => (lang === 'en' ? pick(RENTAL_EN, zh) : zh ?? '—');
+const currencyLabel = (zh, lang) => (lang === 'en' ? pick(CURRENCY_EN, zh) : zh ?? '—');
+const languageLabel = (zh, lang) => (lang === 'en' ? pick(LANGUAGE_EN, zh) : zh ?? '—');
+// 护照入境枚举（visaPassport.entry 为数据层英文枚举）与数字游民友好度枚举 → 英文措辞。
+const VISA_ENTRY_EN = {
+  visaFree: 'visa-free for China',
+  visaRequired: 'required to obtain a visa',
+  eVisa: 'eligible for an e-Visa',
+  visaOnArrival: 'eligible for a visa on arrival',
+};
+const DN_FRIENDLINESS_EN = { friendly: 'friendly', unknown: 'not documented' };
 
 const ROOT = process.cwd();
 const DIST = path.join(ROOT, 'dist');
 const DOMAIN = (() => {
-  // Cloudflare Pages/Workers 走 SITE_URL；Coze 走 COZE_PROJECT_DOMAIN_DEFAULT；本地兜底 demo 域名。
-  const raw = process.env.SITE_URL || process.env.CF_PAGES_URL || process.env.COZE_PROJECT_DOMAIN_DEFAULT || 'https://demo.dev.coze.site';
+  // 生产域名来源优先级：SITE_URL（Cloudflare 环境变量）> CF_PAGES_URL（自动注入）> 兜底线上域名。
+  // 绝不能再回退到任何 demo/占位域名，否则 canonical/sitemap/robots 会指向错误站点导致真实域名被判定重复。
+  const raw = process.env.SITE_URL || process.env.CF_PAGES_URL || 'https://gethabitatcompass.com';
   const withProto = raw.startsWith('http') ? raw : `https://${raw}`;
   return withProto.replace(/\/+$/, '');
 })();
@@ -63,6 +84,13 @@ const COUNTRY_BY_CODE = new Map(COUNTRIES.map((c) => [c.code, c]));
 // countries.json 无 region 字段——由库内城市反推国家级大洲
 const COUNTRY_REGION = new Map();
 for (const c of CITIES) if (c.continent && !COUNTRY_REGION.has(c.countryCode)) COUNTRY_REGION.set(c.countryCode, c.continent);
+// 城市实景图集（public/city-images/<id>.webp）；构建时先由 vite build 从 public/ 复制到 dist/。
+// 用文件名集合判断是否有对应 OG 图，缺失时回落品牌封面，避免生成死链。
+const IMAGE_IDS = new Set(
+  fs.existsSync(path.join(ROOT, 'public/city-images'))
+    ? fs.readdirSync(path.join(ROOT, 'public/city-images')).map((f) => f.replace(/\.webp$/, ''))
+    : [],
+);
 
 // ---------- 工具 ----------
 const esc = (s) =>
@@ -154,11 +182,24 @@ footer{border-top:1px solid var(--paper-deep);background:var(--card);padding:18p
 @media(max-width:560px){h1{font-size:24px}.card .v{font-size:19px}}
 `;
 
-function shell({ lang, title, desc, canonical, hreflang, jsonLd, body }) {
-  const alt = lang === 'zh' ? hreflang.en : hreflang.zh;
-  const langSwitch = lang === 'zh'
-    ? `<span class="lang"><a href="${esc(alt)}" hreflang="en" rel="alternate">English</a></span>`
-    : `<span class="lang"><a href="${esc(alt)}" hreflang="zh-Hans" rel="alternate">中文</a></span>`;
+function shell({ lang, title, desc, canonical, hreflang, jsonLd = [], body, image, imageAlt, imageW, imageH, robots }) {
+  const alt = hreflang ? (lang === 'zh' ? hreflang.en : hreflang.zh) : null;
+  const ogImage = image || page('/og-cover.jpg');
+  const ogAlt = imageAlt || (lang === 'zh' ? '栖居罗盘 · Habitat Compass' : 'Habitat Compass');
+  const ogW = imageW || (image ? 800 : 1200);
+  const ogH = imageH || (image ? 512 : 630);
+  const langSwitch = alt
+    ? (lang === 'zh'
+      ? `<span class="lang"><a href="${esc(alt)}" hreflang="en" rel="alternate">English</a></span>`
+      : `<span class="lang"><a href="${esc(alt)}" hreflang="zh-Hans" rel="alternate">中文</a></span>`)
+    : '';
+  const seoHead = canonical
+    ? `<link rel="canonical" href="${esc(canonical)}">
+${Object.entries(hreflang).map(([k, v]) => `<link rel="alternate" hreflang="${k === 'zh' ? 'zh-Hans' : 'en'}" href="${esc(v)}">`).join('\n')}
+<link rel="alternate" hreflang="x-default" href="${esc(hreflang.zh)}">
+<meta property="og:url" content="${esc(canonical)}">`
+    : '';
+  const robotsHead = robots ? `<meta name="robots" content="${esc(robots)}">` : '';
   return `<!doctype html>
 <html lang="${lang === 'zh' ? 'zh-Hans' : 'en'}">
 <head>
@@ -166,17 +207,21 @@ function shell({ lang, title, desc, canonical, hreflang, jsonLd, body }) {
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${esc(title)}</title>
 <meta name="description" content="${esc(desc)}">
-<link rel="canonical" href="${esc(canonical)}">
-${Object.entries(hreflang).map(([k, v]) => `<link rel="alternate" hreflang="${k === 'zh' ? 'zh-Hans' : 'en'}" href="${esc(v)}">`).join('\n')}
-<link rel="alternate" hreflang="x-default" href="${esc(hreflang.zh)}">
+${robotsHead}
+${seoHead}
 <meta property="og:title" content="${esc(title)}">
 <meta property="og:description" content="${esc(desc)}">
-<meta property="og:url" content="${esc(canonical)}">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="栖居罗盘 · Habitat Compass">
-<meta name="twitter:card" content="summary">
+<meta property="og:image" content="${esc(ogImage)}">
+<meta property="og:image:width" content="${ogW}">
+<meta property="og:image:height" content="${ogH}">
+<meta property="og:image:alt" content="${esc(ogAlt)}">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="${esc(title)}">
 <meta name="twitter:description" content="${esc(desc)}">
+<meta name="twitter:image" content="${esc(ogImage)}">
+<meta name="twitter:image:alt" content="${esc(ogAlt)}">
 <style>${CSS}</style>
 ${jsonLd.map((j) => `<script type="application/ld+json">\n${JSON.stringify(j, null, 1)}\n</script>`).join('\n')}
 </head>
@@ -209,27 +254,28 @@ function cityCards(city, lang) {
   const cards = [];
   const cost = city.monthlyCostUSD;
   cards.push(cost != null
-    ? { h: no('月生活成本', 'Monthly cost'), v: money(cost), small: no('含房租 · 估算区间', 'incl. rent · est. range'), detail: `${city.cost?.[0] != null ? money(city.cost[0]) : '?'} – ${city.cost?.[1] != null ? money(city.cost[1]) : '?'}`, src: `${S}公开统计测算（NYC=100 口径）线性拟合 + 页面快照，更新于 ${BUILD_DATE}` }
-    : { h: no('月生活成本', 'Monthly cost'), none: no('数据待核实', 'Data pending'), src: `${S}暂无该城公开测算明细（不编造数据）` });
+    ? { h: no('月生活成本', 'Monthly cost'), v: money(cost), small: no('含房租 · 估算区间', 'incl. rent · est. range'), detail: `${city.cost?.[0] != null ? money(city.cost[0]) : '?'} – ${city.cost?.[1] != null ? money(city.cost[1]) : '?'}`, src: `${S}${no(`公开统计测算（NYC=100 口径）线性拟合 + 页面快照，更新于 ${BUILD_DATE}`, `public statistical estimate (NYC=100 basis) linear fit + page snapshot, updated ${BUILD_DATE}`)}` }
+    : { h: no('月生活成本', 'Monthly cost'), none: no('数据待核实', 'Data pending'), src: `${S}${no('暂无该城公开测算明细（不编造数据）', 'no city-level public estimate available (we do not fabricate data)')}` });
   const safety = city.safety;
   cards.push(safety != null
-    ? { h: no('安全指数', 'Safety index'), v: `${safety}<small>/100</small>`, src: `${S}公开统计测算 · 安全指数` }
-    : { h: no('安全指数', 'Safety index'), none: no('数据待核实（国家级参考见下）', 'Data pending (see country-level)'), src: `${S}暂无该城安全测算数据` });
+    ? { h: no('安全指数', 'Safety index'), v: `${safety}<small>/100</small>`, src: `${S}${no('公开统计测算 · 安全指数', 'public statistical estimate · safety index')}` }
+    : { h: no('安全指数', 'Safety index'), none: no('数据待核实（国家级参考见下）', 'Data pending (see country-level)'), src: `${S}${no('暂无该城安全测算数据', 'no city-level safety estimate')}` });
   const cl = city.climateDetail;
   cards.push(cl
-    ? { h: no('气候（十年均值）', 'Climate (10-yr avg)'), v: `${cl.avgTempC}<small>°C 年均</small>`, detail: `${cl.annualPrecipMm}mm · ${cl.sunshineHours}h 日照/年`, src: `${S}Open-Meteo Historical（CC BY 4.0）2015–2024` }
+    ? { h: no('气候（十年均值）', 'Climate (10-yr avg)'), v: `${cl.avgTempC}<small>${no('°C 年均', '°C avg/yr')}</small>`, detail: `${cl.annualPrecipMm}mm · ${cl.sunshineHours}${no('h 日照/年', 'h sunshine/yr')}`, src: `${S}Open-Meteo Historical（CC BY 4.0）2015–2024` }
     : { h: no('气候', 'Climate'), none: no('数据待核实', 'Data pending'), src: `${S}Open-Meteo` });
   const mbps = city.internetMbps ?? COUNTRY_BY_CODE.get(city.countryCode)?.internetMbpsFixed ?? null;
   cards.push(mbps != null
-    ? { h: no('固定宽带', 'Fixed broadband'), v: `${mbps}<small>Mbps 下行中位</small>`, src: `${S}公开统计测算（固定宽带）${city.internetMbps == null ? '（国家级口径）' : ''}` }
-    : { h: no('固定宽带', 'Fixed broadband'), none: no('数据待核实', 'Data pending'), src: `${S}暂无公开网速测算` });
+    ? { h: no('固定宽带', 'Fixed broadband'), v: `${mbps}<small>${no('Mbps 下行中位', 'Mbps median down')}</small>`, src: `${S}${no('公开统计测算（固定宽带）', 'public statistical estimate (fixed broadband)')}${city.internetMbps == null ? no('（国家级口径）', ' (country-level)') : ''}` }
+    : { h: no('固定宽带', 'Fixed broadband'), none: no('数据待核实', 'Data pending'), src: `${S}${no('暂无公开网速测算', 'no public speed estimate')}` });
   const aq = city.airQuality;
   cards.push(aq
-    ? { h: no('空气质量', 'Air quality'), v: `${aq.pm25}<small>µg/m³ PM2.5 · ${AIR_BAND[lang][aq.band]}</small>`, src: `${S}Open-Meteo CAMS · WHO 2021 分档（${aq.period}）` }
+    ? { h: no('空气质量', 'Air quality'), v: `${aq.pm25}<small>µg/m³ PM2.5 · ${AIR_BAND[lang][aq.band]}</small>`, src: `${S}${no(`Open-Meteo CAMS · WHO 2021 分档（${aq.period}）`, `Open-Meteo CAMS · WHO 2021 band (${aq.period})`)}` }
     : { h: no('空气质量', 'Air quality'), none: no('数据待核实', 'Data pending'), src: `${S}Open-Meteo Air Quality` });
   const co = COUNTRY_BY_CODE.get(city.countryCode);
   const visaCity = city.visaStatus ? (VISA_STATUS[lang][city.visaStatus] ?? city.visaStatus) : null;
-  cards.push({ h: no('签证概览', 'Visa overview'), none: visaCity ?? (co?.visaOverview ?? no('以国家级信息为准 · 政策多变请核实官方渠道', 'See country-level info · verify with officials')), src: `${S}${co ? `${co.nameZh} 快照（${co.updatedAt}）` : '手工快照'} · 免责：签证政策多变，务必核实官方渠道` });
+  const visaFallback = co?.visaOverview ? visaOverviewLabel(co.visaOverview, lang) : no('以国家级信息为准 · 政策多变请核实官方渠道', 'See country-level info · verify with officials');
+  cards.push({ h: no('签证概览', 'Visa overview'), none: visaCity ?? visaFallback, src: `${S}${co ? no(`${co.nameZh} 快照（${co.updatedAt}）`, `${co.nameEn} snapshot (${co.updatedAt})`) : no('手工快照', 'hand snapshot')} · ${no('免责：签证政策多变，务必核实官方渠道', 'Disclaimer: visa policies change — always verify with official channels')}` });
   return cards.map((c) => `<div class="card${c.none ? ' none' : ''}">
 <h3>${c.h}</h3>
 <div class="v">${c.none ?? c.v}${c.none ? '' : c.small ? `<small>${c.small}</small>` : ''}</div>
@@ -384,7 +430,17 @@ ${faqs.map((f) => `<details><summary>${esc(f.q)}</summary><p>${esc(f.a)}</p></de
     : `${cN}: GDP per capita ~$${Math.round(co.gdpPerCapitaUSD ?? 0).toLocaleString('en-US')} (World Bank), HDI ${co.hdi ?? '—'}${co.gpi ? `, Global Peace Index rank #${co.gpi.rank} (IEP 2024)` : ''}.`) : ''} <a href="${esc(countryLink)}">${lang === 'zh' ? `查看${esc(city.countryZh)}国家页 →` : `Open ${esc(cN)} country page →`}</a></p>
 <a class="cta" href="${lang === 'zh' ? '/' : '/en/'}">${lang === 'zh' ? '免费开始我的定居匹配测评 →' : 'Start my free matching quiz →'}</a>
 <p class="cta-sub">${lang === 'zh' ? '32 题简易版永久免费 · 无需注册 · 测评后按 11 维权重输出 Top 5 城市' : 'Lite quiz free forever · no signup · Top 5 cities scored on 11 dimensions'}</p>`;
-  return shell({ lang, title, desc, canonical, hreflang, jsonLd: [faqJsonLd(faqs), breadcrumbJsonLd(crumbs)], body });
+  // 城市页 OG 图：优先用该城实景图（city-images 文件名 = 城市 id），否则回落品牌封面。
+  const cityImg = IMAGE_IDS.has(id) ? page(`/city-images/${id}.webp`) : undefined;
+  return shell({
+    lang, title, desc, canonical, hreflang,
+    jsonLd: [faqJsonLd(faqs), breadcrumbJsonLd(crumbs)],
+    body,
+    image: cityImg,
+    imageAlt: lang === 'zh' ? `${city.nameZh} · 数字游民定居指南` : `${city.nameEn} for digital nomads`,
+    imageW: 800,
+    imageH: 512,
+  });
 }
 
 function renderCountryPage(co, lang) {
@@ -411,29 +467,29 @@ function renderCountryPage(co, lang) {
     faqs.push({ q: `${co.nameZh}安全吗？`, a: `${co.safetyScore != null ? `公开统计测算国家安全参考 ${co.safetyScore}/100。` : ''}${co.gpi ? `全球和平指数（IEP 2024）排名 #${co.gpi.rank}（得分 ${co.gpi.score}）。` : ''}出行前请查看最新领事安全通报。` });
     faqs.push({ q: `${co.nameZh}长期居留与税务要注意什么？`, a: ls ? `税居门槛：${ls.taxResidencyDays ?? '—'} 天/年${ls.socialSecurityCn ? `；社保协定：${ls.socialSecurityCn === 'treaty' ? '与中国有社保协定' : ls.socialSecurityCn === 'negotiating' ? '协定协商中' : '暂无协定'}` : ''}${ls.rentalCustom ? `；租房惯例：${ls.rentalCustom}` : ''}。以上为快照参考，请以官方与专业税务意见为准。` : '暂无结构化快照。' });
   } else {
-    faqs.push({ q: `Do Chinese passport holders need a visa for ${co.nameEn}?`, a: vp ? `Snapshot as of ${co.updatedAt}: mainland Chinese passport holders are ${vp.entry}. Verify with official channels.` : 'No structured snapshot — check official channels.' });
-    faqs.push({ q: `Does ${co.nameEn} offer a digital nomad visa?`, a: `${co.visaOverview ?? 'No structured info'}${vp ? `; digital-nomad friendliness: ${vp.digitalNomad}` : ''}.` });
+    faqs.push({ q: `Do Chinese passport holders need a visa for ${co.nameEn}?`, a: vp ? `Snapshot as of ${co.updatedAt}: mainland Chinese passport holders are ${VISA_ENTRY_EN[vp.entry] ?? vp.entry}${vp.entryNote ? ` (${ENTRY_NOTE_EN[vp.entryNote] ?? vp.entryNote})` : ''}. Verify with official channels.` : 'No structured snapshot — check official channels.' });
+    faqs.push({ q: `Does ${co.nameEn} offer a digital nomad visa?`, a: `${co.visaOverview ? visaOverviewLabel(co.visaOverview, 'en') : 'No structured info'}${vp ? `; digital-nomad friendliness: ${DN_FRIENDLINESS_EN[vp.digitalNomad] ?? vp.digitalNomad}` : ''}.` });
     faqs.push({ q: `How fast is the internet in ${co.nameEn}?`, a: co.internetMbpsFixed != null ? `Median fixed broadband is ~${co.internetMbpsFixed} Mbps (public statistical estimate).` : 'No data yet.' });
     faqs.push({ q: `Is ${co.nameEn} safe?`, a: `${co.safetyScore != null ? `public-estimate safety ${co.safetyScore}/100. ` : ''}${co.gpi ? `Global Peace Index rank #${co.gpi.rank} (IEP 2024).` : ''}` });
   }
   const crumbs = lang === 'zh'
     ? [{ name: '首页', item: page('/') }, { name: '国家索引', item: page('/countries/') }, { name: co.nameZh, item: page(pathZh) }]
     : [{ name: 'Home', item: page('/en/') }, { name: 'Countries', item: page('/en/countries/') }, { name: co.nameEn, item: page(pathEn) }];
-  const cityList = cities.map((c) => `<li><a href="${lang === 'zh' ? `/city/${c.id}/` : `/en/city/${c.id}/`}">${esc(lang === 'zh' ? c.nameZh : c.nameEn)}</a><span class="meta">${c.monthlyCostUSD != null ? `$${Math.round(c.monthlyCostUSD)}/mo` : '—'}${c.safety != null ? ` · 安全 ${c.safety}` : ''}</span></li>`).join('\n');
+  const cityList = cities.map((c) => `<li><a href="${lang === 'zh' ? `/city/${c.id}/` : `/en/city/${c.id}/`}">${esc(lang === 'zh' ? c.nameZh : c.nameEn)}</a><span class="meta">${c.monthlyCostUSD != null ? `$${Math.round(c.monthlyCostUSD)}/mo` : '—'}${c.safety != null ? ` · ${lang === 'zh' ? '安全' : 'safety'} ${c.safety}` : ''}</span></li>`).join('\n');
   const body = `
 <p class="crumbs">${crumbs.map((c, i) => i === crumbs.length - 1 ? esc(c.name) : `<a href="${esc(c.item)}">${esc(c.name)}</a> ›`).join(' ')}</p>
-<h1>${esc(n)}<span class="badge">${esc(co.capital ?? '')} · ${esc((co.languages ?? []).join('、'))}</span></h1>
-<p class="sub">${lang === 'zh' ? `人口 ${co.population ? co.population.toLocaleString('en-US') : '—'} · 货币 ${esc(co.currency ?? '—')} · 人均 GDP $${Math.round(co.gdpPerCapitaUSD ?? 0).toLocaleString('en-US')}` : `Population ${co.population ? co.population.toLocaleString('en-US') : '—'} · Currency ${esc(co.currency ?? '—')} · GDP/cap $${Math.round(co.gdpPerCapitaUSD ?? 0).toLocaleString('en-US')}`}</p>
+<h1>${esc(n)}<span class="badge">${esc(co.capital ?? '')} · ${esc((co.languages ?? []).map((l) => (lang === 'zh' ? l : languageLabel(l, 'en'))).join(lang === 'zh' ? '、' : ' / '))}</span></h1>
+<p class="sub">${lang === 'zh' ? `人口 ${co.population ? co.population.toLocaleString('en-US') : '—'} · 货币 ${esc(co.currency ?? '—')} · 人均 GDP $${Math.round(co.gdpPerCapitaUSD ?? 0).toLocaleString('en-US')}` : `Population ${co.population ? co.population.toLocaleString('en-US') : '—'} · Currency ${esc(currencyLabel(co.currency, 'en'))} · GDP/cap $${Math.round(co.gdpPerCapitaUSD ?? 0).toLocaleString('en-US')}`}</p>
 <div class="answer"><p>${lang === 'zh'
     ? `${esc(co.nameZh)}是${co.cityCount ?? CITIES.length ? `本站收录 ${co.cityCount ?? cities.length} 座城市的` : ''}定居目的地。${co.internetMbpsFixed != null ? `固定宽带下行中位 ${co.internetMbpsFixed} Mbps，` : ''}${co.safetyScore != null ? `公开统计测算国家安全参考 ${co.safetyScore}/100，` : ''}${co.qolScore != null ? `公开统计测算生活质量指数 ${co.qolScore}。` : ''}${co.visaOverview ? `远程工作签证方面：${esc(co.visaOverview)}。` : ''}国家级数据逐项标注来源（World Bank/UNDP/官方开放数据与公开统计测算），更新于 ${esc(co.updatedAt)}。`
-    : `${esc(co.nameEn)} hosts ${co.cityCount ?? cities.length} covered cities. ${co.internetMbpsFixed != null ? `Median broadband ${co.internetMbpsFixed} Mbps; ` : ''}${co.qolScore != null ? `public-estimate QoL ${co.qolScore}; ` : ''}${co.visaOverview ? `remote-work visa: ${esc(co.visaOverview)}.` : ''} Sources per item (World Bank/UNDP/open data & public estimates), updated ${esc(co.updatedAt)}.`}</p></div>
+    : `${esc(co.nameEn)} hosts ${co.cityCount ?? cities.length} covered cities. ${co.internetMbpsFixed != null ? `Median broadband ${co.internetMbpsFixed} Mbps; ` : ''}${co.qolScore != null ? `public-estimate QoL ${co.qolScore}; ` : ''}${co.visaOverview ? `remote-work visa: ${esc(visaOverviewLabel(co.visaOverview, 'en'))}.` : ''} Sources per item (World Bank/UNDP/open data & public estimates), updated ${esc(co.updatedAt)}.`}</p></div>
 <div class="grid">
   <div class="card"><h3>${lang === 'zh' ? '和平指数' : 'Peace index'}</h3><div class="v">${co.gpi ? `#${co.gpi.rank}<small>IEP 2024 · ${co.gpi.score}</small>` : '—'}</div><div class="src">${lang === 'zh' ? '来源：IEP Global Peace Index（手工快照）' : 'Source: IEP Global Peace Index (hand snapshot)'}</div></div>
   <div class="card"><h3>${lang === 'zh' ? '人类发展指数' : 'HDI'}</h3><div class="v">${co.hdi ?? '—'}</div><div class="src">${lang === 'zh' ? '来源：UNDP HDR（手工快照）' : 'Source: UNDP HDR (hand snapshot)'}</div></div>
   <div class="card"><h3>${lang === 'zh' ? '腐败感知指数' : 'CPI'}</h3><div class="v">${co.cpi ?? '—'}<small>/100</small></div><div class="src">${lang === 'zh' ? '来源：Transparency International（手工快照）' : 'Source: Transparency International (hand snapshot)'}</div></div>
   <div class="card"><h3>${lang === 'zh' ? '生活质量' : 'Quality of life'}</h3><div class="v">${co.qolScore ?? '—'}</div><div class="src">${lang === 'zh' ? '来源：公开统计测算 · 生活质量指数' : 'Source: public statistical estimate · QoL index'}</div></div>
-  <div class="card"><h3>${lang === 'zh' ? '税负参考' : 'Top tax rate'}</h3><div class="v">${co.taxTopRatePct != null ? `${co.taxTopRatePct}<small>% 最高档</small>` : '—'}</div><div class="src">${lang === 'zh' ? '来源：手工快照 · 请以专业税务意见为准' : 'Source: hand snapshot · consult a tax professional'}</div></div>
-  <div class="card"><h3>${lang === 'zh' ? '数据快照日期' : 'Snapshot date'}</h3><div class="v" style="font-size:16px">${esc(co.updatedAt)}</div><div class="src">逐字段来源标注见方法论页</div></div>
+  <div class="card"><h3>${lang === 'zh' ? '税负参考' : 'Top tax rate'}</h3><div class="v">${co.taxTopRatePct != null ? `${co.taxTopRatePct}<small>${lang === 'zh' ? '% 最高档' : '% top rate'}</small>` : '—'}</div><div class="src">${lang === 'zh' ? '来源：手工快照 · 请以专业税务意见为准' : 'Source: hand snapshot · consult a tax professional'}</div></div>
+  <div class="card"><h3>${lang === 'zh' ? '数据快照日期' : 'Snapshot date'}</h3><div class="v" style="font-size:16px">${esc(co.updatedAt)}</div><div class="src">${lang === 'zh' ? '逐字段来源标注见方法论页' : 'Per-field sources on the methodology page'}</div></div>
 </div>
 <h2>${lang === 'zh' ? '常见问答' : 'FAQ'}</h2>
 ${faqs.map((f) => `<details><summary>${esc(f.q)}</summary><p>${esc(f.a)}</p></details>`).join('\n')}
@@ -469,7 +525,11 @@ function renderEnHome() {
     lang: 'en', title, desc,
     canonical: page('/en/'),
     hreflang: { zh: page('/'), en: page('/en/') },
-    jsonLd: [breadcrumbJsonLd([{ name: 'Home', item: page('/en/') }])],
+    jsonLd: [
+      { '@context': 'https://schema.org', '@type': 'Organization', '@id': page('/#organization'), name: '栖居罗盘 · Habitat Compass', url: page('/'), logo: page('/og-cover.jpg'), description: 'Decision-support tool for remote workers and digital nomads choosing where to settle abroad.' },
+      { '@context': 'https://schema.org', '@type': 'WebSite', '@id': page('/#website'), name: '栖居罗盘 · Habitat Compass', url: page('/'), inLanguage: ['zh-Hans', 'en'], publisher: { '@id': page('/#organization') } },
+      breadcrumbJsonLd([{ name: 'Home', item: page('/en/') }]),
+    ],
     body,
   });
 }
@@ -498,7 +558,7 @@ function renderCountriesIndex(lang) {
   const body = `
 <h1>${lang === 'zh' ? '国家资料库' : 'Country guides'}<span class="badge">${COUNTRIES.length} ${lang === 'zh' ? '国' : 'countries'}</span></h1>
 <p class="sub">${lang === 'zh' ? 'World Bank/UNDP 等官方开放数据与公开统计测算快照 + 中国护照入境口径 + 长期居留与税务注意，逐字段来源标注。' : 'World Bank/UNDP open data & public statistical estimate snapshots + CN-passport entry rules + long-stay notes, sources per field.'}</p>
-${CONTINENTS.map((r) => { const cs = COUNTRIES.filter((c) => COUNTRY_REGION.get(c.code) === r); if (!cs.length) return ''; return `<h2>${esc(REGION_LABEL[lang][r] ?? r)}（${cs.length}）</h2><ul class="list">${cs.map((c) => `<li><a href="${lang === 'zh' ? `/country/${c.code.toLowerCase()}/` : `/en/country/${c.code.toLowerCase()}/`}">${esc(lang === 'zh' ? c.nameZh : c.nameEn)}</a><span class="meta">${c.internetMbpsFixed != null ? `${c.internetMbpsFixed} Mbps` : ''}${c.gpi ? ` · 和平 #${c.gpi.rank}` : ''} · ${c.cityCount ?? 0} 城</span></li>`).join('\n')}</ul>`; }).join('\n')}
+${CONTINENTS.map((r) => { const cs = COUNTRIES.filter((c) => COUNTRY_REGION.get(c.code) === r); if (!cs.length) return ''; return `<h2>${esc(REGION_LABEL[lang][r] ?? r)}（${cs.length}）</h2><ul class="list">${cs.map((c) => `<li><a href="${lang === 'zh' ? `/country/${c.code.toLowerCase()}/` : `/en/country/${c.code.toLowerCase()}/`}">${esc(lang === 'zh' ? c.nameZh : c.nameEn)}</a><span class="meta">${c.internetMbpsFixed != null ? `${c.internetMbpsFixed} Mbps` : ''}${c.gpi ? ` · ${lang === 'zh' ? '和平' : 'peace'} #${c.gpi.rank}` : ''} · ${c.cityCount ?? 0} ${lang === 'zh' ? '城' : 'cities'}</span></li>`).join('\n')}</ul>`; }).join('\n')}
 <p style="font-size:12.5px;opacity:.72;margin-top:18px">Career interest framework: O*NET Interest Profiler Short Form — <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="license noopener">CC BY 4.0</a>, O*NET OnLine (sponsored by the U.S. Department of Labor).</p>
 <a class="cta" href="${lang === 'zh' ? '/' : '/en/'}">${lang === 'zh' ? '免费开始我的定居匹配测评 →' : 'Start my free matching quiz →'}</a>`;
   return shell({ lang, title, desc, canonical, hreflang, jsonLd: [breadcrumbJsonLd(lang === 'zh' ? [{ name: '首页', item: page('/') }, { name: '国家索引', item: page(pathZh) }] : [{ name: 'Home', item: page('/en/') }, { name: 'Countries', item: page(pathEn) }])], body });
@@ -519,29 +579,29 @@ function renderMethodology(lang) {
     : 'The matching score (0–99) is computed in three tiers: T1 hard constraints (budget/visa/safety, veto-only, never weighted); T2 core matching (preferences 42% + personality 30% + interests 18%, missing dimensions dropped without penalty); T3 boosters (RIASEC 5% + risk-link 3% + air quality 2%, ≤10% total). Raw score calibrated as 52 + raw × 0.46.'}</p></div>
 <h2>${lang === 'zh' ? '第 2 层：11 维偏好权重' : 'Tier 2: 11 preference dimensions'}</h2>
 <ul class="list">
-<li>预算 budget<span class="meta">0.18（占偏好 0.42 内）</span></li>
-<li>气候 climate<span class="meta">0.12</span></li>
-<li>节奏 pace / 社交 social<span class="meta">0.10 / 0.10</span></li>
-<li>规模 size / 语言 language / 签证 visa / 远程 remote<span class="meta">0.09 × 4</span></li>
-<li>气候舒适度 climateComfort<span class="meta">客观 0.05 · Open-Meteo 派生</span></li>
-<li>安全 safety<span class="meta">客观 0.05 · 公开统计测算</span></li>
-<li>英语深度 englishDepth<span class="meta">客观 0.04 · 公开英语排名分档</span></li>
+<li>${lang === 'zh' ? '预算 budget' : 'Budget'}<span class="meta">0.18${lang === 'zh' ? '（占偏好 0.42 内）' : ' (within 0.42 preferences)'}</span></li>
+<li>${lang === 'zh' ? '气候 climate' : 'Climate'}<span class="meta">0.12</span></li>
+<li>${lang === 'zh' ? '节奏 pace / 社交 social' : 'Pace / Social'}<span class="meta">0.10 / 0.10</span></li>
+<li>${lang === 'zh' ? '规模 size / 语言 language / 签证 visa / 远程 remote' : 'Size / Language / Visa / Remote'}<span class="meta">0.09 × 4</span></li>
+<li>${lang === 'zh' ? '气候舒适度 climateComfort' : 'Climate comfort'}<span class="meta">${lang === 'zh' ? '客观 0.05 · Open-Meteo 派生' : 'objective 0.05 · derived from Open-Meteo'}</span></li>
+<li>${lang === 'zh' ? '安全 safety' : 'Safety'}<span class="meta">${lang === 'zh' ? '客观 0.05 · 公开统计测算' : 'objective 0.05 · public statistical estimate'}</span></li>
+<li>${lang === 'zh' ? '英语深度 englishDepth' : 'English depth'}<span class="meta">${lang === 'zh' ? '客观 0.04 · 公开英语排名分档' : 'objective 0.04 · public English-proficiency band'}</span></li>
 </ul>
 <p class="note">${lang === 'zh' ? '偏好类内部：用户主观 8 维合计 0.86，客观数据 3 维合计 0.14。任何维度缺失时从分子与分母同时剔除（降权不惩罚）。' : 'Within preferences: user-reported 8 dims sum to 0.86, objective 3 dims sum to 0.14. Missing dims are dropped from numerator and denominator (down-weight, never penalised).'}</p>
 <h2>${lang === 'zh' ? '第 3 层：加分项（≤10%）' : 'Tier 3: boosters (≤10%)'}</h2>
 <ul class="list">
-<li>RIASEC 兴趣强化<span class="meta">0.05 · 公开职业兴趣框架</span></li>
-<li>风险画像联动<span class="meta">0.03 · 风险偏好画像 × 城市冒险友好度</span></li>
-<li>空气质量 airFit<span class="meta">0.02 · WHO 2021 分档（优 90/良 72/一般 48/差 25）</span></li>
+<li>${lang === 'zh' ? 'RIASEC 兴趣强化' : 'RIASEC interest boost'}<span class="meta">0.05 · ${lang === 'zh' ? '公开职业兴趣框架' : 'public career-interest framework'}</span></li>
+<li>${lang === 'zh' ? '风险画像联动' : 'Risk-profile link'}<span class="meta">0.03 · ${lang === 'zh' ? '风险偏好画像 × 城市冒险友好度' : 'risk-tolerance profile × city adventure-friendliness'}</span></li>
+<li>${lang === 'zh' ? '空气质量 airFit' : 'Air quality'}<span class="meta">0.02 · WHO 2021 ${lang === 'zh' ? '分档（优 90/良 72/一般 48/差 25）' : 'bands (good 90 / fair 72 / moderate 48 / poor 25)'}</span></li>
 </ul>
 <h2>${lang === 'zh' ? '数据来源与许可' : 'Data sources & licences'}</h2>
 <ul class="list">
-<li>GeoNames cities15000<span class="meta">城市底座 · <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="license noopener">CC BY 4.0</a> · <a href="https://www.geonames.org/" target="_blank" rel="noopener">geonames.org</a></span></li>
-<li>Open-Meteo Historical / Air Quality<span class="meta">气候十年均值 + PM2.5 · <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="license noopener">CC BY 4.0</a> · <a href="https://open-meteo.com/" target="_blank" rel="noopener">open-meteo.com</a> · CAMS 再分析</span></li>
-<li>公开英语熟练度排名 / World Bank / UNDP / Transparency International / IEP<span class="meta">国家级参考 · 官方开放数据与公开统计 · <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="license noopener">CC BY 4.0</a> / 手工快照</span></li>
-<li>OEJTS 1.2<span class="meta">简易版 16 型人格题库（Jungian 双极结构）· <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="license noopener">CC BY-NC-SA 4.0</a> · Open Psychometrics</span></li>
-<li>WHO Global Air Quality Guidelines 2021<span class="meta">PM2.5 年均分档口径（优 ≤10 / 良 ≤15 / 一般 ≤25 / 差 >25）</span></li>
-<li>字体 Noto Sans SC / IBM Plex Mono / Source Serif 4<span class="meta">SIL Open Font License 1.1 · 经 @fontsource 自托管打包，无外部 CDN</span></li>
+<li>GeoNames cities15000<span class="meta">${lang === 'zh' ? '城市底座' : 'city base'} · <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="license noopener">CC BY 4.0</a> · <a href="https://www.geonames.org/" target="_blank" rel="noopener">geonames.org</a></span></li>
+<li>Open-Meteo Historical / Air Quality<span class="meta">${lang === 'zh' ? '气候十年均值 + PM2.5' : '10-yr climate means + PM2.5'} · <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="license noopener">CC BY 4.0</a> · <a href="https://open-meteo.com/" target="_blank" rel="noopener">open-meteo.com</a> · CAMS ${lang === 'zh' ? '再分析' : 'reanalysis'}</span></li>
+<li>${lang === 'zh' ? '公开英语熟练度排名 / World Bank / UNDP / Transparency International / IEP' : 'Public English-proficiency ranking / World Bank / UNDP / Transparency International / IEP'}<span class="meta">${lang === 'zh' ? '国家级参考 · 官方开放数据与公开统计' : 'country-level reference · official open data & public statistics'} · <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="license noopener">CC BY 4.0</a> / ${lang === 'zh' ? '手工快照' : 'hand snapshot'}</span></li>
+<li>OEJTS 1.2<span class="meta">${lang === 'zh' ? '简易版 16 型人格题库（Jungian 双极结构）' : 'lite 16-type personality test (Jungian bipolar structure)'} · <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="license noopener">CC BY-NC-SA 4.0</a> · Open Psychometrics</span></li>
+<li>WHO Global Air Quality Guidelines 2021<span class="meta">${lang === 'zh' ? 'PM2.5 年均分档口径（优 ≤10 / 良 ≤15 / 一般 ≤25 / 差 >25）' : 'annual PM2.5 bands (good ≤10 / fair ≤15 / moderate ≤25 / poor >25)'}</span></li>
+<li>${lang === 'zh' ? '字体 Fraunces / Newsreader / Inter / JetBrains Mono / IBM Plex Mono / 系统中文' : 'Typefaces Fraunces / Newsreader / Inter / JetBrains Mono / IBM Plex Mono / system CJK'}<span class="meta">SIL Open Font License 1.1 · ${lang === 'zh' ? '经 @fontsource 自托管打包，无外部 CDN' : 'self-hosted via @fontsource, no external CDN'}</span></li>
 </ul>
 <h2>${lang === 'zh' ? '更新频率与免责声明' : 'Update cadence & disclaimer'}</h2>
 <p class="note">${lang === 'zh'
@@ -908,7 +968,27 @@ ${crossLink}`;
   return shell({ lang, title: d.title, desc: d.desc, canonical, hreflang: { zh: page(`/${kind}/`), en: page(`/en/${kind}/`) }, jsonLd, body });
 }
 
-export { write, addUrl, sitemapUrls, renderCityPage, renderCountryPage, renderCitiesIndex, renderCountriesIndex, renderMethodology, renderLegalPage, page };
+// ---------- 404 页 ----------
+// Cloudflare Workers 静态资源 not_found_handling 需为 "404-page"（见 wrangler.jsonc），
+// 未匹配路由返回本页并带 HTTP 404 状态；避免 SPA fallback 把不存在路径当 200 → 软 404。
+// 因主应用无 URL 路由（纯状态驱动），无需 SPA fallback。
+function renderNotFound() {
+  const title = '404 · 页面不存在 | 栖居罗盘';
+  const desc = '你要找的页面不存在或已移动。返回首页重新开始，或浏览 200 座城市与 65 国定居指南。';
+  const body = `
+<h1>404<span class="badge">页面不存在 / Page not found</span></h1>
+<p class="sub">你要找的页面不存在或已移动。The page you requested does not exist or has moved.</p>
+<div class="answer"><p>不妨从这些入口重新开始：<br>Start again from one of these:</p></div>
+<div class="grid">
+  <div class="card"><div class="v" style="font-size:18px"><a href="/" style="color:var(--pine);text-decoration:none">首页 / 测评 Home &amp; quiz →</a></div></div>
+  <div class="card"><div class="v" style="font-size:18px"><a href="/cities/" style="color:var(--pine);text-decoration:none">城市索引 200 Cities →</a></div></div>
+  <div class="card"><div class="v" style="font-size:18px"><a href="/countries/" style="color:var(--pine);text-decoration:none">国家索引 65 Countries →</a></div></div>
+  <div class="card"><div class="v" style="font-size:18px"><a href="/en/" style="color:var(--pine);text-decoration:none">English home →</a></div></div>
+</div>`;
+  return shell({ lang: 'zh', title, desc, canonical: null, hreflang: null, jsonLd: [], body, robots: 'noindex, follow' });
+}
+
+export { write, addUrl, sitemapUrls, renderCityPage, renderCountryPage, renderCitiesIndex, renderCountriesIndex, renderMethodology, renderLegalPage, renderNotFound, page };
 
 function main() {
   fs.mkdirSync(DIST, { recursive: true });
@@ -938,6 +1018,8 @@ function main() {
   addUrl('/disclaimer/', BUILD_DATE); addUrl('/en/disclaimer/', BUILD_DATE);
   addUrl('/', BUILD_DATE); addUrl('/en/', BUILD_DATE);
   write('en/index.html', renderEnHome()); count++;
+  // 404 页（Cloudflare 静态资源 not_found_handling: "404-page" 命中；不进 sitemap）
+  write('404.html', renderNotFound()); count++;
 
   // robots.txt
   const robots = ['User-agent: *', 'Allow: /',
