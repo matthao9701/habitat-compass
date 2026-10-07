@@ -61,7 +61,7 @@ export default function CompareDataCards({ rows }: { rows: CompareRow[] }) {
       label: t('cmp.data.visa'),
       valueOf: (r) =>
         r.city.digitalNomadVisa === true ? t('report.copy.visaYes') : r.city.digitalNomadVisa === false ? '—' : t('profile.visa.pending'),
-      toneOf: (r) => (r.city.digitalNomadVisa === true ? 'text-moss' : 'text-ink-soft'),
+      toneOf: (r) => (r.city.digitalNomadVisa === true ? 'text-moss-deep' : 'text-ink-soft'),
     },
   ];
 

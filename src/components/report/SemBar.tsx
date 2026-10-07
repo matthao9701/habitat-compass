@@ -17,8 +17,8 @@ export const TONE_BAR_COLOR: Record<'good' | 'mid' | 'low', string> = {
 };
 
 export const TONE_TEXT_COLOR: Record<'good' | 'mid' | 'low', string> = {
-  good: 'text-moss',
-  mid: 'text-sea',
+  good: 'text-moss-deep',
+  mid: 'text-sea-deep',
   low: 'text-clay-deep',
 };
 
@@ -75,7 +75,7 @@ export function SectionHeading({ eyebrow, title, desc }: SectionHeadingProps) {
   return (
     <div className="mb-8">
       <div className="mb-3 flex items-center gap-2">
-        <CompassMark size={18} className="text-ochre" />
+        <CompassMark size={18} className="text-ochre-deep" />
         <p className="eyebrow !mb-0">{eyebrow}</p>
       </div>
       <h2 className="font-display text-2xl font-bold tracking-tight md:text-3xl">{title}</h2>

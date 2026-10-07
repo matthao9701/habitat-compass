@@ -36,7 +36,7 @@ export default function ConstraintsNotice({
               <p className="text-[13.5px] font-medium leading-snug text-ink">
                 {t('cn.head1')} <span className="font-data text-clay">{excluded.length}</span> {t('cn.head2')}
                 {overBudgetCount > 0 ? (
-                  <>{t('cn.relaxed1')} <span className="font-data text-ochre">{overBudgetCount}</span> {t('cn.relaxed2')}</>
+                  <>{t('cn.relaxed1')} <span className="font-data text-ochre-deep">{overBudgetCount}</span> {t('cn.relaxed2')}</>
                 ) : null}
               </p>
               <p className="mt-1 font-mono text-[10px] leading-relaxed text-ink-soft">

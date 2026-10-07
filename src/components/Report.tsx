@@ -379,8 +379,8 @@ function CityCard({ match, rank }: CityCardProps) {
   const longStayRestricted = country?.visaPassport?.longTerm === 'restricted';
 
   const BADGE_STYLE: Record<BadgeLevel, string> = {
-    good: 'border-moss/55 bg-moss/10 text-moss',
-    mid: 'border-sea/55 bg-sea/10 text-sea',
+    good: 'border-moss-deep/55 bg-moss/10 text-moss-deep',
+    mid: 'border-sea-deep/55 bg-sea/10 text-sea-deep',
     low: 'border-ink/25 bg-ink/[0.04] text-ink-soft',
   };
 
@@ -396,7 +396,7 @@ function CityCard({ match, rank }: CityCardProps) {
         {/* 左侧：标题与关键数据 */}
         <div className="border-b hairline p-6 md:border-b-0 md:border-r md:p-7">
           <div className="flex items-start justify-between">
-            <p className="font-mono text-[11px] text-ochre">
+            <p className="font-mono text-[11px] text-ochre-deep">
               NO.{String(rank).padStart(2, '0')}
             </p>
             <CountUp value={match.match} />
@@ -410,7 +410,7 @@ function CityCard({ match, rank }: CityCardProps) {
           {match.overBudget ? (
             <span
               title={t('rep.overBudget.title')}
-              className="ml-2 inline-block rounded-full border border-ochre/60 bg-ochre/10 px-3 py-1 font-mono text-[10.5px] text-ochre"
+              className="ml-2 inline-block rounded-full border border-ochre-deep/60 bg-ochre/10 px-3 py-1 font-mono text-[10.5px] text-ochre-deep"
             >
               {t('rep.overBudget.chip')}
             </span>
@@ -489,7 +489,7 @@ function CityCard({ match, rank }: CityCardProps) {
             <p className="mt-1.5 text-[12.5px] leading-[1.7]">{visaLabelText(city.visaLabel)}</p>
             <div className="mt-2.5 flex flex-wrap gap-1.5">
               {(visaEntry === 'visaFree' || visaEntry === 'visaOnArrival') && (
-                <span className="rounded-full border border-moss/45 bg-moss/10 px-2.5 py-1 font-mono text-[10px] font-medium text-moss">
+                <span className="rounded-full border border-moss-deep/45 bg-moss/10 px-2.5 py-1 font-mono text-[10px] font-medium text-moss-deep">
                   {t('atlas.visa.difficultyEasy')}
                 </span>
               )}
@@ -509,7 +509,7 @@ function CityCard({ match, rank }: CityCardProps) {
                 </span>
               )}
               {dnFriendly === 'friendly' && (
-                <span className="rounded-full border border-sea/45 bg-sea/10 px-2.5 py-1 font-mono text-[10px] font-medium text-sea">
+                <span className="rounded-full border border-sea-deep/45 bg-sea/10 px-2.5 py-1 font-mono text-[10px] font-medium text-sea-deep">
                   {t('atlas.visa.difficultyDnEasy')}
                 </span>
               )}
@@ -530,13 +530,13 @@ function CityCard({ match, rank }: CityCardProps) {
           {/* 优势 / 注意事项：由城市库真实数据规则生成 */}
           <div className="mt-6 grid gap-x-8 gap-y-4 border-t hairline pt-5 sm:grid-cols-2">
             <div>
-              <p className="mb-2.5 font-mono text-[9.5px] uppercase tracking-eyebrow text-moss">
+              <p className="mb-2.5 font-mono text-[9.5px] uppercase tracking-eyebrow text-moss-deep">
                 {t('rep.pros.label')}
               </p>
               <ul className="space-y-2">
                 {pros.map((pro, i) => (
                   <li key={i} className="flex gap-2 text-[12px] leading-[1.7] text-ink">
-                    <span className="shrink-0 font-mono text-moss">+</span>
+                    <span className="shrink-0 font-mono text-moss-deep">+</span>
                     {pro}
                   </li>
                 ))}
@@ -629,9 +629,9 @@ function DimensionBar({ label, value }: { label: string; value: number | null })
   }
   const tone =
     value >= 75
-      ? { bar: 'bg-moss', text: 'text-moss' }
+      ? { bar: 'bg-moss', text: 'text-moss-deep' }
       : value >= 50
-        ? { bar: 'bg-sea', text: 'text-sea' }
+        ? { bar: 'bg-sea', text: 'text-sea-deep' }
         : { bar: 'bg-clay-deep', text: 'text-clay-deep' };
   return (
     <div>

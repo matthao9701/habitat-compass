@@ -79,7 +79,7 @@ export default function RiasecSection({
           className="flex flex-col gap-4"
         >
           <div className="rounded-[14px] border hairline bg-card p-6">
-            <p className="mb-2 font-mono text-[10px] tracking-[0.18em] text-ochre">
+            <p className="mb-2 font-mono text-[10px] tracking-[0.18em] text-ochre-deep">
               {t('riasec.combo.eyebrow', { combo: profile.combo })}
             </p>
             <h3 className="mb-3 font-heading text-lg font-bold">
@@ -92,7 +92,7 @@ export default function RiasecSection({
 
           {/* 标签联动 */}
           <div className="rounded-[14px] border hairline bg-card p-6">
-            <p className="mb-2 font-mono text-[10px] tracking-[0.18em] text-ochre">
+            <p className="mb-2 font-mono text-[10px] tracking-[0.18em] text-ochre-deep">
               {t('riasec.link.eyebrow')}
             </p>
             {boosted.length > 0 ? (
@@ -104,7 +104,7 @@ export default function RiasecSection({
                   {boosted.map((tag) => (
                     <span
                       key={tag}
-                      className="rounded-full border border-moss/50 bg-moss/10 px-3 py-1 text-[12px] font-medium text-moss"
+                      className="rounded-full border border-moss-deep/50 bg-moss/10 px-3 py-1 text-[12px] font-medium text-moss-deep"
                     >
                       {t(`tag.${tag}`)}
                     </span>
@@ -134,7 +134,7 @@ export default function RiasecSection({
         >
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
-              <p className="mb-1 font-mono text-[10px] tracking-[0.18em] text-ochre">
+              <p className="mb-1 font-mono text-[10px] tracking-[0.18em] text-ochre-deep">
                 {t('risk.card.eyebrow')}
               </p>
               <h3 className="font-heading text-lg font-bold">{t('risk.card.title')}</h3>
@@ -145,9 +145,9 @@ export default function RiasecSection({
               <span
                 className={`rounded-full px-3 py-1 text-[12px] font-medium ${
                   risk.band === 'high'
-                    ? 'bg-moss/10 text-moss'
+                    ? 'bg-moss/10 text-moss-deep'
                     : risk.band === 'mid'
-                      ? 'bg-sea/10 text-sea'
+                      ? 'bg-sea/10 text-sea-deep'
                       : 'bg-ink-soft/10 text-ink-soft'
                 }`}
               >

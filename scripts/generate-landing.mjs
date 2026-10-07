@@ -42,16 +42,16 @@ function readToken(name) {
   const patterns = {
     pine: /pine:\s*'(#[0-9A-Fa-f]{6})'/,
     pineDeep: /pine-deep:\s*'(#[0-9A-Fa-f]{6})'/,
-    teal: /teal:\s*'(#[0-9A-Fa-f]{6})'/,
+    teal: /teal:\s*\{[^}]*DEFAULT:\s*'(#[0-9A-Fa-f]{6})'/,
     paper: /paper:\s*'(#[0-9A-Fa-f]{6})'/,
     paperDeep: /'paper-deep':\s*'(#[0-9A-Fa-f]{6})'/,
     ink: /ink:\s*\{[^}]*DEFAULT:\s*'(#[0-9A-Fa-f]{6})'/,
     'ink-soft': /soft:\s*'(#[0-9A-Fa-f]{6})'/,
     clay: /clay:\s*\{[^}]*DEFAULT:\s*'(#[0-9A-Fa-f]{6})'/,
-    clayDeep: /deep:\s*'(#[0-9A-Fa-f]{6})'/,
-    ochre: /ochre:\s*'(#[0-9A-Fa-f]{6})'/,
-    moss: /moss:\s*'(#[0-9A-Fa-f]{6})'/,
-    sea: /sea:\s*'(#[0-9A-Fa-f]{6})'/,
+    clayDeep: /clay:\s*\{[^}]*deep:\s*'(#[0-9A-Fa-f]{6})'/,
+    ochre: /ochre:\s*\{[^}]*DEFAULT:\s*'(#[0-9A-Fa-f]{6})'/,
+    moss: /moss:\s*\{[^}]*DEFAULT:\s*'(#[0-9A-Fa-f]{6})'/,
+    sea: /sea:\s*\{[^}]*DEFAULT:\s*'(#[0-9A-Fa-f]{6})'/,
   };
   const m = src.match(patterns[name]);
   if (!m) throw new Error(`tailwind.config.js 中找不到 token: ${name}`);

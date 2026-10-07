@@ -900,7 +900,7 @@ function IPIPItem({ question, value, onSelect }: IPIPItemProps) {
   return (
     <div className="rounded-[8px] border hairline bg-card/70 px-4 py-5 md:px-6">
       <p className="mb-4 flex items-start gap-3 text-[14px] leading-[1.75]">
-        <span className="mt-0.5 shrink-0 font-mono text-[10px] text-ochre">
+        <span className="mt-0.5 shrink-0 font-mono text-[10px] text-ochre-deep">
           {question.domain}
         </span>
         <span className="text-ink">{stem}</span>
@@ -954,7 +954,7 @@ function RiasecItem({ question, value, onSelect }: RiasecItemProps) {
   return (
     <div className="rounded-[8px] border hairline bg-card/70 px-4 py-5 md:px-6">
       <p className="mb-4 flex items-start gap-3 text-[14px] leading-[1.75]">
-        <span className="mt-0.5 shrink-0 font-mono text-[10px] text-ochre">
+        <span className="mt-0.5 shrink-0 font-mono text-[10px] text-ochre-deep">
           {question.dim}
         </span>
         <span className="text-ink">{stem}</span>
@@ -1155,7 +1155,7 @@ function ProLifestyleItem({ question, value, onChange }: ProLifestyleItemProps) 
   return (
     <div className="rounded-[8px] border hairline bg-card/70 px-4 py-5 md:px-6">
       <div className="mb-3 flex items-center gap-2">
-        <span className="rounded border border-ochre/60 px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-wider text-ochre">
+        <span className="rounded border border-ochre-deep/60 px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-wider text-ochre-deep">
           {proKindLabel()[question.kind]}
         </span>
       </div>
@@ -1305,7 +1305,7 @@ function ProLifestyleBody({
             key={itemValue}
             className="flex items-center gap-3 rounded-[8px] border border-ink/15 px-4 py-3"
           >
-            <span className="font-data text-[12px] tabular-nums text-ochre">
+            <span className="font-data text-[12px] tabular-nums text-ochre-deep">
               {idx + 1}
             </span>
             <span className="flex-1">

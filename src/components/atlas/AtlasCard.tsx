@@ -27,9 +27,9 @@ type VisaTone = 'easy' | 'mid' | 'dn' | 'hard';
 
 function VisaPill({ tone, children }: { tone: VisaTone; children: React.ReactNode }) {
   const style: Record<VisaTone, string> = {
-    easy: 'border-moss/45 bg-moss/10 text-moss',
+    easy: 'border-moss-deep/45 bg-moss/10 text-moss-deep',
     mid: 'border-line bg-white/92 text-ink',
-    dn: 'border-sea/45 bg-sea/10 text-sea',
+    dn: 'border-sea-deep/45 bg-sea/10 text-sea-deep',
     hard: 'border-clay/45 bg-clay/10 text-clay-deep',
   };
   return (

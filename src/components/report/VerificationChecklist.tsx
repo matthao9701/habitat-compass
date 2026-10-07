@@ -73,7 +73,7 @@ function ChecklistCard({ match, index }: { match: CityMatch; index: number }) {
   return (
     <article className="card-paper p-6 md:p-7">
       <div className="flex items-baseline gap-3">
-        <span className="font-mono text-[11px] text-ochre">
+        <span className="font-mono text-[11px] text-ochre-deep">
           {String(index).padStart(2, '0')}
         </span>
         <h3 className="font-heading text-base font-bold text-ink">

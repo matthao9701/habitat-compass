@@ -68,7 +68,7 @@ export default function CityDetailModal({
 
         {/* 城市数据 */}
         <div className="px-5 py-4">
-          <p className="font-mono text-[9.5px] uppercase tracking-eyebrow text-ochre">{t('cmp.detail.cityData')}</p>
+          <p className="font-mono text-[9.5px] uppercase tracking-eyebrow text-ochre-deep">{t('cmp.detail.cityData')}</p>
           <dl className="mt-3 grid grid-cols-2 gap-x-6 gap-y-2.5 text-[12.5px]">
             <Stat label={t('rep.stat.match')} value={`${row.composite}`} accent />
             <Stat label={t('rep.stat.monthly')} value={formatCost(city)} />
@@ -131,7 +131,7 @@ export default function CityDetailModal({
         {/* 国家基本信息 */}
         {country ? (
           <div className="border-t hairline px-5 py-4">
-            <p className="font-mono text-[9.5px] uppercase tracking-eyebrow text-ochre">
+            <p className="font-mono text-[9.5px] uppercase tracking-eyebrow text-ochre-deep">
               {t('cdm.country.eyebrow', { name: countryName(country) })}
             </p>
             <dl className="mt-3 grid grid-cols-2 gap-x-6 gap-y-2.5 text-[12.5px]">

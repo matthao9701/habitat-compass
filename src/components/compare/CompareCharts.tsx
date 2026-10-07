@@ -159,7 +159,7 @@ export default function CompareCharts({ rows }: { rows: CompareRow[] }) {
                       <td className="py-1.5 pr-3 text-ink-soft">{dim.label}</td>
                       {rows.map((r) => {
                         const v = dim.valueOf(r);
-                        const tone = v == null ? 'text-ink-soft/60' : v >= 75 ? 'text-moss' : v >= 50 ? 'text-sea' : 'text-clay-deep';
+                        const tone = v == null ? 'text-ink-soft/60' : v >= 75 ? 'text-moss-deep' : v >= 50 ? 'text-sea-deep' : 'text-clay-deep';
                         return (
                           <td key={r.city.id} className={`py-1.5 pr-3 text-right ${tone}`}>
                             {v ?? '—'}

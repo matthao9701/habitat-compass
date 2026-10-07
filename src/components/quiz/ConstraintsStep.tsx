@@ -25,9 +25,9 @@ const BUDGET_PRESETS = {
 
 /** 签证底线的徽标色：免签最宽松、受限最严格 */
 const VISA_TONE: Record<(typeof VISA_LINE_ORDER)[number], string> = {
-  visaFree: 'border-moss bg-moss/15 text-moss',
-  official: 'border-sea bg-sea/15 text-sea',
-  alternative: 'border-ochre bg-ochre/15 text-ochre',
+  visaFree: 'border-moss-deep bg-moss/15 text-moss-deep',
+  official: 'border-sea-deep bg-sea/15 text-sea-deep',
+  alternative: 'border-ochre-deep bg-ochre/15 text-ochre-deep',
   none: 'border-ink/45 bg-ink/[0.06] text-ink',
 };
 

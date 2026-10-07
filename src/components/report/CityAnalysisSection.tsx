@@ -55,7 +55,7 @@ export default function CityAnalysisSection({ top, axisScores }: CityAnalysisSec
                 <div className="mb-3 flex items-baseline gap-2">
                   <span
                     aria-hidden="true"
-                    className={`font-mono text-[13px] ${isChallenge ? 'text-clay' : 'text-ochre'}`}
+                    className={`font-mono text-[13px] ${isChallenge ? 'text-clay' : 'text-ochre-deep'}`}
                   >
                     {panel.mark}
                   </span>

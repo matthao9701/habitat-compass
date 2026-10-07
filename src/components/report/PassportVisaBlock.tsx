@@ -12,16 +12,16 @@ import { rentalLabel } from '../../i18n/countryGlossary';
 
 /** 入境待遇徽标语义色（免签=绿 / 落地签=蓝 / eVisa=金 / 需签=珊瑚） */
 const ENTRY_STYLE: Record<string, string> = {
-  visaFree: 'bg-moss/10 text-moss',
-  visaOnArrival: 'bg-sea/10 text-sea',
-  eVisa: 'bg-ochre/15 text-ochre',
+  visaFree: 'bg-moss/10 text-moss-deep',
+  visaOnArrival: 'bg-sea/10 text-sea-deep',
+  eVisa: 'bg-ochre/15 text-ochre-deep',
   visaRequired: 'bg-clay/10 text-clay',
 };
 
 /** 签证适用性等级语义色（friendly=绿 / restricted=蓝 / unknown=灰） */
 const LEVEL_STYLE: Record<string, string> = {
-  friendly: 'bg-moss/10 text-moss',
-  restricted: 'bg-sea/10 text-sea',
+  friendly: 'bg-moss/10 text-moss-deep',
+  restricted: 'bg-sea/10 text-sea-deep',
   unknown: 'bg-ink-soft/10 text-ink-soft',
 };
 

@@ -127,7 +127,7 @@ function FacetBar({ label, pct }: { label: string; pct: number }) {
       {tag ? (
         <span
           className={`shrink-0 rounded-full px-1.5 py-0.5 font-data text-[9px] ${
-            tag === t('report.bigfive.high') ? 'bg-moss/15 text-moss' : 'bg-clay-deep/15 text-clay-deep'
+            tag === t('report.bigfive.high') ? 'bg-moss/15 text-moss-deep' : 'bg-clay-deep/15 text-clay-deep'
           }`}
         >
           {tag}
@@ -188,7 +188,7 @@ function LiteCompareCard({ result }: { result: AssessmentResult }) {
 
       <p
         className={`mb-3 inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[12px] font-medium ${
-          sameType ? 'bg-moss/15 text-moss' : 'bg-ochre/15 text-ochre'
+          sameType ? 'bg-moss/15 text-moss-deep' : 'bg-ochre/15 text-ochre-deep'
         }`}
       >
         {sameType ? t('report.bigfive.compare.same') : t('bf.compare.diff', { lite: lite.result.typeCode, pro: result.typeCode })}
@@ -290,7 +290,7 @@ export default function BigFiveSection({
                   <span className="font-heading text-[13.5px] font-bold text-ink">
                     {domainLabel(g.domain)}
                   </span>
-                  <span className="font-data text-[12px] tabular-nums text-ochre">
+                  <span className="font-data text-[12px] tabular-nums text-ochre-deep">
                     {Math.round(proProfile.domains[g.domain])}
                   </span>
                 </p>

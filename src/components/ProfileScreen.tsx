@@ -98,7 +98,7 @@ export default function ProfileScreen({
             <p className="mt-1 flex items-center gap-2 font-data text-[24px] font-semibold tracking-wide text-ink">
               {entry.result.typeCode}
               {version === 'pro' && (
-                <span className="rounded border border-ochre px-1 py-0.5 font-data text-[9px] tracking-[0.15em] text-ochre">
+                <span className="rounded border border-ochre-deep px-1 py-0.5 font-data text-[9px] tracking-[0.15em] text-ochre-deep">
                   PRO
                 </span>
               )}
@@ -181,7 +181,7 @@ export default function ProfileScreen({
                     {c.monthlyCostUSD != null ? t('cost.perMonth', { cost: formatMoney(c.monthlyCostUSD) }) : t('cost.naLong')} ·{' '}
                     {c.internetMbps != null ? `${c.internetMbps} Mbps` : '— Mbps'} ·{' '}
                     {c.digitalNomadVisa === true ? (
-                      <span className="text-moss">{t('profile.visa.yes')}</span>
+                      <span className="text-moss-deep">{t('profile.visa.yes')}</span>
                     ) : (
                       <span>{t('pf.visaPrefix', { v: c.digitalNomadVisa === false ? '—' : t('profile.visa.pending') })}</span>
                     )}

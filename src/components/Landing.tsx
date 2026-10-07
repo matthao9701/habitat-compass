@@ -226,7 +226,7 @@ export default function Landing({ onStart, onDemo }: LandingProps) {
                   </span>
                 </div>
                 <p className="font-heading text-lg font-bold text-ink">{t(`demo.${profile.id}.label`)}</p>
-                <p className="mt-1.5 font-mono text-[11px] text-ochre">{t(`demo.${profile.id}.tagline`)}</p>
+                <p className="mt-1.5 font-mono text-[11px] text-ochre-deep">{t(`demo.${profile.id}.tagline`)}</p>
                 <p className="mt-3 text-[13px] leading-relaxed text-ink-soft">{t(`demo.${profile.id}.desc`)}</p>
                 <div className="mt-4 flex items-center justify-between border-t hairline pt-3">
                   <span className="font-mono text-[10px] uppercase tracking-eyebrow text-ink-soft">
@@ -289,7 +289,7 @@ export default function Landing({ onStart, onDemo }: LandingProps) {
               transition={{ duration: 0.55, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
               className="relative border-t hairline pt-6"
             >
-              <p className="font-mono text-xs text-ochre">{s.no}</p>
+              <p className="font-mono text-xs text-ochre-deep">{s.no}</p>
               <h3 className="mt-3 font-heading text-xl font-bold">{s.title}</h3>
               <p className="mt-3 text-[13.5px] leading-[1.85] text-ink-soft">{s.desc}</p>
             </motion.div>

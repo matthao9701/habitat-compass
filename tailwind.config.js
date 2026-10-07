@@ -19,10 +19,24 @@ export default {
           deep: '#A94F38',
         },
         line: '#E5E7EB', // 极细浅线边框
-        ochre: '#B98A2F',
-        teal: '#3E7C8F',
-        moss: '#5F7A5A',
-        sea: '#7FA8B8',
+        // 亮色相仅用于「实心填充」（进度条/色点/图表块），白底上的文字不足以达到 WCAG AA 4.5:1，
+        // 故仿 clay / clay-deep 的先例，为文字单独提供同色相加深版（对比度见注释，均 ≥4.5:1）。
+        ochre: {
+          DEFAULT: '#B98A2F',
+          deep: '#8A5F0A', // 5.32:1 on paper
+        },
+        teal: {
+          DEFAULT: '#3E7C8F',
+          deep: '#336673', // 6.02:1 on paper
+        },
+        moss: {
+          DEFAULT: '#5F7A5A',
+          deep: '#51694B', // 5.70:1 on paper
+        },
+        sea: {
+          DEFAULT: '#7FA8B8',
+          deep: '#2F6A7D', // 5.69:1 on paper
+        },
       },
       fontFamily: {
         // 第十五轮字体改版（全部 OFL 自托管可变字体，仅打包 latin 子集）：

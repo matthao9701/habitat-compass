@@ -415,7 +415,7 @@ export default function CompareScreen({ result, answers, seedCities, onOpenQuiz 
                     <label htmlFor={`w-${d.key}`} className="text-[12px] text-ink">
                       {dimensionLabel(d.key)}
                       {d.objective && (
-                        <span className="ml-1.5 rounded-[3px] border border-teal/45 px-1 py-px font-mono text-[8.5px] text-teal">
+                        <span className="ml-1.5 rounded-[3px] border border-teal-deep/45 px-1 py-px font-mono text-[8.5px] text-teal-deep">
                           {t('cmp.weights.objective')}
                         </span>
                       )}
@@ -460,7 +460,7 @@ export default function CompareScreen({ result, answers, seedCities, onOpenQuiz 
                     <p className="truncate font-medium text-[15.5px]">
                       {cityName(r.city)}
                       {i === 0 && ranked.length > 1 && (
-                        <span className="ml-2 rounded-[4px] border border-moss/50 bg-moss/[0.08] px-1.5 py-0.5 font-mono text-[9px] text-moss">
+                        <span className="ml-2 rounded-[4px] border border-moss-deep/50 bg-moss/[0.08] px-1.5 py-0.5 font-mono text-[9px] text-moss-deep">
                           {t('cmp.weights.best')}
                         </span>
                       )}
@@ -586,7 +586,7 @@ export default function CompareScreen({ result, answers, seedCities, onOpenQuiz 
 
       {/* 保存成功提示 */}
       {savedToast && (
-        <div className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2 rounded-full border border-moss/50 bg-card px-5 py-2.5 font-mono text-[11px] text-moss shadow-[0_4px_18px_rgba(31,45,40,0.18)]">
+        <div className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2 rounded-full border border-moss-deep/50 bg-card px-5 py-2.5 font-mono text-[11px] text-moss-deep shadow-[0_4px_18px_rgba(31,45,40,0.18)]">
           {t('cmp.save.done')}
         </div>
       )}
