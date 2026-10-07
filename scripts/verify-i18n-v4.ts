@@ -30,7 +30,7 @@ import {
 } from '../src/data/interestsPro';
 import { cities } from '../src/data/index';
 import { COUNTRIES } from '../src/data/countries';
-import { mbtiProfiles } from '../src/data/mbtiProfiles';
+import { MBTI_TYPE_CODES } from '../src/data/mbtiProfiles';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..');
@@ -185,7 +185,7 @@ console.log('== [2] 题目双语完整性 ==');
   ok(`Big Five ${IPIP_FACETS.length} facets 双语`, IPIP_FACETS.length === 30 && facMiss.length === 0, facMiss.slice(0, 5).join(','));
 
   // 2.7 16 型人格
-  const typeCodes = Object.keys(mbtiProfiles);
+  const typeCodes = [...MBTI_TYPE_CODES];
   const typeMiss: string[] = [];
   for (const lang of ['zh', 'en'] as const) {
     for (const code of typeCodes) {

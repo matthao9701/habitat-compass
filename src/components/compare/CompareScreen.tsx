@@ -36,7 +36,7 @@ function FavButton({ active, onClick, label }: { active: boolean; onClick: () =>
       onClick={onClick}
       aria-label={label}
       aria-pressed={active}
-      title={active ? t('cmp.fav.remove') : t('profile.favorites')}
+      title={active ? label : t('profile.favorites')}
       className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-[6px] transition-colors ${
         active ? 'text-clay' : 'text-ink-soft hover:text-clay'
       }`}

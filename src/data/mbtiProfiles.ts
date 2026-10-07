@@ -1,141 +1,24 @@
-// 16 型 MBTI 的游民视角解读
+// 16 型 MBTI 代号与校验。
+//
+// 历史沿革：此文件原为 `Record<string, MBTIProfile>`，内含每型的 name / motto / desc /
+// nomadStyle / envTags。但这些字段在 `src/i18n/dict/mbti.ts`（mbtiDict）里都有等价且
+// 双语（zh/en）的版本，渲染一律走 `t('type.<CODE>.xxx')`，此文件的文本字段从未被读取——
+// 且曾出现两处副本漂移（如 ENFP desc 的「厌恶 routine」漏译）。故只保留代号与校验，
+// 文本唯一事实源为 mbtiDict。
 
-export interface MBTIProfile {
-  code: string;
-  name: string;
-  motto: string;
-  desc: string;
-  nomadStyle: string;
-  envTags: string[];
+/** 16 型代号（E/I × S/N × T/F × J/P 的全部组合） */
+export const MBTI_TYPE_CODES = [
+  'INTJ', 'INTP', 'ENTJ', 'ENTP',
+  'INFJ', 'INFP', 'ENFJ', 'ENFP',
+  'ISTJ', 'ISFJ', 'ESTJ', 'ESFJ',
+  'ISTP', 'ISFP', 'ESTP', 'ESFP',
+] as const;
+
+export type MbtiTypeCode = (typeof MBTI_TYPE_CODES)[number];
+
+const CODE_SET: ReadonlySet<string> = new Set(MBTI_TYPE_CODES);
+
+/** 是否为合法的 16 型代号（引擎产出的 typeCode 理论上恒为真，此处作渲染前的防御性校验） */
+export function isMbtiTypeCode(code: string): code is MbtiTypeCode {
+  return CODE_SET.has(code);
 }
-
-export const mbtiProfiles: Record<string, MBTIProfile> = {
-  INTJ: {
-    code: 'INTJ',
-    name: '建筑师',
-    motto: '把世界当成一张可以设计的蓝图',
-    desc: '你独立、长线思考，习惯先构建框架再行动。迁居对你不是逃离，而是一次有目标的系统升级：签证路径、税负、网络与时间成本，都要算得清楚。',
-    nomadStyle: '策略型长驻者——选定一座城市就深扎，把基础设施搭到最优。',
-    envTags: ['秩序感', '深度工作', '长期规划', '低干扰'],
-  },
-  INTP: {
-    code: 'INTP',
-    name: '逻辑学家',
-    motto: '世界是一个待拆解的巨大系统',
-    desc: '你为概念与可能性着迷，对物质舒适要求不高，却极在意精神自由度。你适合能容纳怪才、生活成本低、允许你长时间沉浸思考的城市。',
-    nomadStyle: '研究型漫游者——为了搞懂一个地方可以多住三个月。',
-    envTags: ['自由探索', '低生活成本', '思想密度', '灵活停留'],
-  },
-  ENTJ: {
-    code: 'ENTJ',
-    name: '指挥官',
-    motto: '去机会密度最高的地方',
-    desc: '你目标明确、行动迅速，把迁居视为资源重新配置。你看重商务连接、航班网络、法律确定性与能让团队高速运转的环境。',
-    nomadStyle: '扩张型枢纽玩家——以一座都会为基地辐射区域市场。',
-    envTags: ['商业枢纽', '航班网络', '高效率', '确定性'],
-  },
-  ENTP: {
-    code: 'ENTP',
-    name: '辩论家',
-    motto: '世界需要被重新发明',
-    desc: '你热爱新鲜刺激与思想碰撞，讨厌重复与官僚。你适合社区活跃、跨界人群密集、规则灵活、随时能发起一个新项目的城市。',
-    nomadStyle: '连续创业型游民——每座城市都是一个实验场。',
-    envTags: ['跨界社区', '宽松规则', '创意密度', '新刺激'],
-  },
-  INFJ: {
-    code: 'INFJ',
-    name: '提倡者',
-    motto: '寻找能安放理想的角落',
-    desc: '你安静而有使命感，需要独处空间，也在意所做之事的意义。你适合节奏舒缓、自然近便、有深度社群、能让你与少数灵魂相遇的地方。',
-    nomadStyle: '意义感导向的隐居者——在小城或海岛慢慢扎根。',
-    envTags: ['安静深度', '价值共鸣', '亲近自然', '小而深的圈子'],
-  },
-  INFP: {
-    code: 'INFP',
-    name: '调停者',
-    motto: '去一个允许你成为自己的地方',
-    desc: '你敏感、富想象力，忠于内心价值观。你需要一座温柔、包容、有艺术气息的城市，允许你按自己的节奏生活与创造。',
-    nomadStyle: '随兴的文艺游民——跟着感觉走，常常在意外的地方停下。',
-    envTags: ['包容氛围', '艺术气息', '慢节奏', '自我表达'],
-  },
-  ENFJ: {
-    code: 'ENFJ',
-    name: '主人公',
-    motto: '把对的人聚到一起',
-    desc: '你天生是连接者与组织者，在人群中获得能量。你适合社区成熟、人们开放、能让你发起活动、建立归属感的城市。',
-    nomadStyle: '社区型组织者——走到哪里就把圈子建到哪里。',
-    envTags: ['社区组织', '开放人群', '归属感', '发起活动'],
-  },
-  ENFP: {
-    code: 'ENFP',
-    name: '竞选者',
-    motto: '世界满是等着被点燃的可能',
-    desc: '你热情、好奇、厌恶 routine，靠灵感与连接生活。你适合多彩、友善、社交机会密集、允许你不断切换项目与身份的城市。',
-    nomadStyle: '社交蝴蝶型游民——一座城市要够热闹才留得住你。',
-    envTags: ['多元社交', '友善热情', '灵感场景', '自由度高'],
-  },
-  ISTJ: {
-    code: 'ISTJ',
-    name: '物流师',
-    motto: '确定性是最高级的舒适',
-    desc: '你务实、可靠，重视规则与承诺。你适合法律清晰、治安良好、公共服务可预期的城市，签证与租约都要白纸黑字。',
-    nomadStyle: '稳健型长驻者——资料研究到位，一次安顿妥当。',
-    envTags: ['法治清晰', '治安良好', '可预期', '配套成熟'],
-  },
-  ISFJ: {
-    code: 'ISFJ',
-    name: '守卫者',
-    motto: '安稳的日常就是幸福',
-    desc: '你温和、细致，重视生活的稳定与人际温度。你适合宜居、安全、邻里友善、医疗与日常配套完善的中型城市。',
-    nomadStyle: '居家型长驻者——把公寓变成家，再慢慢认识街区。',
-    envTags: ['宜居安全', '人情温度', '日常便利', '稳定日常'],
-  },
-  ESTJ: {
-    code: 'ESTJ',
-    name: '总经理',
-    motto: '高效运转，秩序井然',
-    desc: '你组织力强、重视效率与规则。你适合基础设施一流、政务透明、商务与生活都能高速运转的城市。',
-    nomadStyle: '运营型管理者——像管理项目一样管理迁居。',
-    envTags: ['基础设施', '政务透明', '高效运转', '秩序'],
-  },
-  ESFJ: {
-    code: 'ESFJ',
-    name: '执政官',
-    motto: '生活是和喜欢的人一起把日子过好',
-    desc: '你热心、注重关系与生活品质。你适合友善、安全、社群活动丰富、餐饮与市集充满烟火气的城市。',
-    nomadStyle: '融入型生活家——很快成为街区里人人认识的面孔。',
-    envTags: ['社群温暖', '烟火气', '安全友善', '生活仪式感'],
-  },
-  ISTP: {
-    code: 'ISTP',
-    name: '鉴赏家',
-    motto: '先上手，再说',
-    desc: '你冷静、动手能力强，喜欢具体的工具与真实的物理世界。你适合户外资源近便、管制宽松、能冲浪、修车、折腾硬件的城市。',
-    nomadStyle: '手作型游民——白天修摩托，周末去潜水。',
-    envTags: ['户外可达', '低管制', '动手场景', '实用主义'],
-  },
-  ISFP: {
-    code: 'ISFP',
-    name: '探险家',
-    motto: '用感官去理解一座城市',
-    desc: '你安静、审美敏锐，重视真实体验多于规划。你适合风景优美、节奏松弛、允许你慢慢生活、创作和感受的地方。',
-    nomadStyle: '感官型漫游者——为一道光、一片海决定停留。',
-    envTags: ['美感场景', '松弛节奏', '自然邻近', '审美生活'],
-  },
-  ESTP: {
-    code: 'ESTP',
-    name: '企业家',
-    motto: '活在当下，机会稍纵即逝',
-    desc: '你行动力极强、喜欢风险与现场感。你适合夜生活丰富、商业灵活、能即时谈成事情、不缺刺激与机会的城市。',
-    nomadStyle: '行动派玩家——边玩边把生意做了。',
-    envTags: ['现场机会', '夜生活', '灵活商业', '高刺激'],
-  },
-  ESFP: {
-    code: 'ESFP',
-    name: '表演者',
-    motto: '人生苦短，先热闹起来',
-    desc: '你热情、享受当下，是人群中的光源。你适合阳光、海滩、派对、美食与友善面孔密集的城市，生活本身就是一场庆典。',
-    nomadStyle: '派对型游民——跟着节庆和好天气移动。',
-    envTags: ['阳光海滩', '派对氛围', '美食场景', '即时快乐'],
-  },
-};

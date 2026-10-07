@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import CompassMark from './CompassMark';
 import RadarChart from './RadarChart';
-import { mbtiProfiles } from '../data/mbtiProfiles';
+import { isMbtiTypeCode } from '../data/mbtiProfiles';
 import { getCountry } from '../data/countries';
 import type { AssessmentResult, AxisName, CityMatch } from '../lib/engine';
 import { formatCost } from '../lib/engine';
@@ -42,7 +42,7 @@ const ease = [0.22, 1, 0.36, 1] as const;
 
 export default function Report({ result, onRestart, isDemo = false, onStartQuiz }: ReportProps) {
   const { t } = useI18n();
-  const profile = mbtiProfiles[result.typeCode];
+  const hasProfile = isMbtiTypeCode(result.typeCode);
   const [copied, setCopied] = useState(false);
   const top = result.matches[0];
 
@@ -125,13 +125,13 @@ export default function Report({ result, onRestart, isDemo = false, onStartQuiz 
                 {result.typeCode}
               </motion.h1>
               <p className="mt-4 font-heading text-xl font-bold text-paper/85">
-                {profile ? t(`type.${result.typeCode}.name`) : ''} · {profile ? t(`type.${result.typeCode}.motto`) : ''}
+                {hasProfile ? t(`type.${result.typeCode}.name`) : ''} · {hasProfile ? t(`type.${result.typeCode}.motto`) : ''}
               </p>
             </div>
             <div className="max-w-sm">
-              <p className="text-[14px] leading-[1.9] text-paper/75">{profile ? t(`type.${result.typeCode}.desc`) : ''}</p>
+              <p className="text-[14px] leading-[1.9] text-paper/75">{hasProfile ? t(`type.${result.typeCode}.desc`) : ''}</p>
               <p className="mt-4 border-l-2 border-clay pl-4 text-[15px] font-light leading-relaxed text-paper/85">
-                {profile ? t(`type.${result.typeCode}.style`) : ''}
+                {hasProfile ? t(`type.${result.typeCode}.style`) : ''}
               </p>
             </div>
           </div>
@@ -314,7 +314,7 @@ export default function Report({ result, onRestart, isDemo = false, onStartQuiz 
           </p>
           <p className="mt-3 max-w-3xl text-[12.5px] leading-[1.9] text-paper/60">
             {t('rep.disclaimer.1')}
-            {t('rep.disclaimer.mbti1', { base: MBTI_SOURCE.base, publisher: MBTI_SOURCE.publisher })}
+            {t('rep.disclaimer.mbti1', { base: MBTI_SOURCE.base, publisher: MBTI_SOURCE.publisher, license: MBTI_SOURCE.license })}
             {t('rep.disclaimer.2')}
           </p>
           <p className="mt-4 max-w-3xl text-[11px] font-light leading-relaxed text-paper/45">
@@ -687,7 +687,7 @@ function CountUp({ value }: { value: number }) {
 
 function buildSummaryText(result: AssessmentResult): string {
   const { t } = useI18n();
-  const profile = mbtiProfiles[result.typeCode];
+  const hasProfile = isMbtiTypeCode(result.typeCode);
   const axisText = AXIS_ROWS.map(
     (row) =>
       `${row.left} ${Math.round(result.axisScores[row.key])}% / ${row.right} ${Math.round(100 - result.axisScores[row.key])}%`,
@@ -696,11 +696,11 @@ function buildSummaryText(result: AssessmentResult): string {
     t('report.copy.header'),
     t('report.copy.persona', {
       code: result.typeCode,
-      name: profile ? t(`type.${result.typeCode}.name`) : '',
-      motto: profile ? t(`type.${result.typeCode}.motto`) : '',
+      name: hasProfile ? t(`type.${result.typeCode}.name`) : '',
+      motto: hasProfile ? t(`type.${result.typeCode}.motto`) : '',
     }),
     t('report.copy.axis', { axis: axisText }),
-    t('report.copy.style', { style: profile ? t(`type.${result.typeCode}.style`) : '' }),
+    t('report.copy.style', { style: hasProfile ? t(`type.${result.typeCode}.style`) : '' }),
     t('report.copy.tags', { tags: result.profileTags.map((g) => profileTagLabel(g)).join(' / ') }),
     '',
     t('report.copy.top5'),

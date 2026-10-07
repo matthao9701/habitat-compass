@@ -26,7 +26,7 @@ const zh: D = {
   'an.dim.social': '社交氛围',
   'an.dim.social.desc': '社交偏好 × 游民社区规模',
   'an.dim.language': '英语友好',
-  'an.dim.language.desc': '语言需求 × 城市英语度',
+  'an.dim.language.desc': '语言需求 × 城市英语友好度',
   'an.dim.englishDepth': '英语普及',
   'an.dim.englishDepth.desc': '公开英语排名分档与英语环境',
   'an.dim.visa': '签证便利',
