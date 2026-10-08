@@ -399,7 +399,7 @@ console.log('\n══ 十一、Ko-fi 打赏微件（仅 SPA 侧，静态页保�
   const appSrc = fs.readFileSync(path.join(ROOT, 'src/App.tsx'), 'utf8');
   check('KofiWidget 组件存在并挂载于 App 入口', appSrc.includes('<KofiWidget />') && appSrc.includes("from './components/KofiWidget'"));
   check('使用官方 Overlay Widget 脚本地址', kofiSrc.includes('https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'));
-  check('Ko-fi 用户名保留占位变量 YOUR_KOFI_ID（待替换）', kofiSrc.includes("const KOFI_ID = 'YOUR_KOFI_ID'"));
+  check('Ko-fi 用户名已配置为真实 ID（非占位符）', /const KOFI_ID(?::\s*string)?\s*=\s*'(?!YOUR_KOFI_ID')[^']+'/.test(kofiSrc));
   check('按钮文案为 Support / Buy me a coffee', /KOFI_BUTTON_TEXT = '(Support|Buy me a coffee)'/.test(kofiSrc));
   check('按钮背景取项目主色 pine #1D3557、文字 #ffffff', kofiSrc.includes("KOFI_BUTTON_BG = '#1D3557'") && kofiSrc.includes("KOFI_BUTTON_TEXT_COLOR = '#ffffff'"));
   check('异步加载：useEffect 挂载后注入 + async/defer', kofiSrc.includes('async = true') && kofiSrc.includes('defer = true'));

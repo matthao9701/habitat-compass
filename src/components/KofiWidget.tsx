@@ -15,8 +15,8 @@ import { useEffect } from 'react';
  */
 
 // ── 配置区（改这里即可）───────────────────────────────────────────────
-/** Ko-fi 用户名。⚠️ 占位值：上线前请替换为真实 ID（如 ko-fi.com/<ID> 中的 <ID>） */
-const KOFI_ID = 'YOUR_KOFI_ID';
+/** Ko-fi 用户名（ko-fi.com/<ID> 中的 <ID>）。显式标注 string：占位守卫在下方运行时校验 */
+const KOFI_ID: string = 'matthao9701';
 /** 按钮文案。备选：'Buy me a coffee'（Ko-fi 经典款）；此处取更克制的 'Support' */
 const KOFI_BUTTON_TEXT = 'Support';
 /** 按钮背景色 = 项目主色调 pine（tailwind.config.js → colors.pine） */
