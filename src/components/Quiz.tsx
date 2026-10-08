@@ -28,18 +28,25 @@ import {
 } from '../data/riasec';
 import { riskQuestions, type RiskQuestion } from '../data/riskTaking';
 import type { InterestTag } from '../data/interests';
-import type { UserAnswers, QuizVersion } from '../lib/engine';
+import type { UserAnswers } from '../lib/engine';
 import * as storage from '../lib/storage';
 import { useI18n, translate, getCurrentLang } from '../i18n';
 
+/** 草稿是否已进入深化段（含 IPIP 作答）：用于续答时判定是否展开深化段页面 */
+function isDraftDeep(draft: UserAnswers | null): boolean {
+  return !!draft?.ipip && Object.keys(draft.ipip).length > 0;
+}
+
 /** 草稿恢复：跳到第一个含未答题的数据页 */
-function firstIncompletePage(pages: Page[], draft: UserAnswers | null): number {
+function firstIncompletePage(pages: Page[], draft: UserAnswers | null, deep: boolean): number {
   if (!draft) return 0;
   const idx = pages.findIndex((p) => {
-    if (p.kind === 'transition') return false;
+    if (p.kind === 'transition' || p.kind === 'deepen') return false;
     return p.items.some((item) => {
-      if (item.kind === 'mbti' || item.kind === 'ipip')
+      if (item.kind === 'mbti')
         return typeof draft.mbti[item.question.id] !== 'number';
+      if (item.kind === 'ipip')
+        return typeof (draft.ipip ?? {})[item.question.id] !== 'number';
       if (item.kind === 'lifestyle' || item.kind === 'proLifestyle')
         return !draft.lifestyle[item.question.id];
       if (item.kind === 'riasec')
@@ -49,11 +56,19 @@ function firstIncompletePage(pages: Page[], draft: UserAnswers | null): number {
       return false;
     });
   });
-  return idx === -1 ? 0 : idx;
+  if (idx !== -1) return idx;
+  // 全部数据页已答完：深化序列 → 落在最后一页（可点「完成」）；核心序列 → 落在岔口页
+  return deep ? pages.length - 1 : pages.findIndex((p) => p.kind === 'deepen');
 }
 
 // ---------------------------------------------------------------------------
-// 页面模型：数据页 + 阶段过渡引导页
+// 页面模型：核心段数据页 + 深化选择页 + 阶段过渡引导页
+//
+// 融合题库（统一入口）：所有用户都先完成「核心段」（OEJTS 人格 + 8 情景偏好 +
+// 16 兴趣标签，即原简易版）；核心段结束后出现一个「是否继续深化」选择页：
+//   - 继续深化 → 追加 IPIP 人格 + 进阶偏好 + 风险自陈 + 28 标签细化 + RIASEC
+//   - 直接看报告 → 立即以核心段作答出报告
+// 两条路径产出同一份 200 城匹配报告，仅深度不同。
 // ---------------------------------------------------------------------------
 
 type ModuleId = 'mbti' | 'lifestyle' | 'interests';
@@ -77,9 +92,12 @@ type DataPage = {
   dataPageNo: number;
 };
 
-type TransitionPage = { kind: 'transition'; to: 'lifestyle' | 'interests' };
+type TransitionPage = { kind: 'transition'; to: 'lifestyle' | 'interests'; variant: 'core' | 'deep' };
 
-type Page = DataPage | TransitionPage;
+/** 深化选择页：核心段与深化段之间的岔口 */
+type DeepenPage = { kind: 'deepen' };
+
+type Page = DataPage | TransitionPage | DeepenPage;
 
 const MBTI_CHUNK = 4;
 const LIFESTYLE_CHUNK = 4;
@@ -90,128 +108,144 @@ const PRO_INTEREST_CHUNK = 10;
 const RIASEC_CHUNK = 6;
 const RISK_CHUNK = 5;
 
-function buildPages(version: QuizVersion): Page[] {
+/** 核心段页（所有人必答） */
+function buildCorePages(): Page[] {
   const L = (k: string): string => translate(getCurrentLang(), k);
   const pages: Page[] = [];
   let dataPageNo = 0;
-  const isPro = version === 'pro';
 
-  if (isPro) {
-    for (let i = 0; i < ipipQuestions.length; i += IPIP_CHUNK) {
-      pages.push({
-        kind: 'data',
-        module: 'mbti',
-        eyebrow: L('quiz.stage.ipip.eyebrow'),
-        dataPageNo: dataPageNo++,
-        items: ipipQuestions
-          .slice(i, i + IPIP_CHUNK)
-          .map((question) => ({ kind: 'ipip' as const, question })),
-      });
-    }
-  } else {
-    for (let i = 0; i < mbtiQuestions.length; i += MBTI_CHUNK) {
-      pages.push({
-        kind: 'data',
-        module: 'mbti',
-        eyebrow: L('quiz.stage.mbti.eyebrow'),
-        dataPageNo: dataPageNo++,
-        items: mbtiQuestions
-          .slice(i, i + MBTI_CHUNK)
-          .map((question) => ({ kind: 'mbti' as const, question })),
-      });
-    }
+  for (let i = 0; i < mbtiQuestions.length; i += MBTI_CHUNK) {
+    pages.push({
+      kind: 'data',
+      module: 'mbti',
+      eyebrow: L('quiz.stage.mbti.eyebrow'),
+      dataPageNo: dataPageNo++,
+      items: mbtiQuestions
+        .slice(i, i + MBTI_CHUNK)
+        .map((question) => ({ kind: 'mbti' as const, question })),
+    });
   }
 
-  pages.push({ kind: 'transition', to: 'lifestyle' });
+  pages.push({ kind: 'transition', to: 'lifestyle', variant: 'core' });
 
-  if (isPro) {
-    for (let i = 0; i < proLifestyleQuestions.length; i += PRO_LIFESTYLE_CHUNK) {
-      pages.push({
-        kind: 'data',
-        module: 'lifestyle',
-        eyebrow: L('quiz.stage.pro.eyebrow'),
-        dataPageNo: dataPageNo++,
-        items: proLifestyleQuestions
-          .slice(i, i + PRO_LIFESTYLE_CHUNK)
-          .map((question) => ({ kind: 'proLifestyle' as const, question })),
-      });
-    }
-    // 第八轮：IPIP Risk-Taking 10 题（偏好阶段末尾，2 页 × 5 题）
-    for (let i = 0; i < riskQuestions.length; i += RISK_CHUNK) {
-      pages.push({
-        kind: 'data',
-        module: 'lifestyle',
-        eyebrow: L('quiz.stage.risk.eyebrow'),
-        dataPageNo: dataPageNo++,
-        items: riskQuestions
-          .slice(i, i + RISK_CHUNK)
-          .map((question) => ({ kind: 'risk' as const, question })),
-      });
-    }
-  } else {
-    for (let i = 0; i < lifestyleQuestions.length; i += LIFESTYLE_CHUNK) {
-      pages.push({
-        kind: 'data',
-        module: 'lifestyle',
-        eyebrow: L('quiz.stage.ls.eyebrow'),
-        dataPageNo: dataPageNo++,
-        items: lifestyleQuestions
-          .slice(i, i + LIFESTYLE_CHUNK)
-          .map((question) => ({ kind: 'lifestyle' as const, question })),
-      });
-    }
+  for (let i = 0; i < lifestyleQuestions.length; i += LIFESTYLE_CHUNK) {
+    pages.push({
+      kind: 'data',
+      module: 'lifestyle',
+      eyebrow: L('quiz.stage.ls.eyebrow'),
+      dataPageNo: dataPageNo++,
+      items: lifestyleQuestions
+        .slice(i, i + LIFESTYLE_CHUNK)
+        .map((question) => ({ kind: 'lifestyle' as const, question })),
+    });
   }
 
-  pages.push({ kind: 'transition', to: 'interests' });
+  pages.push({ kind: 'transition', to: 'interests', variant: 'core' });
 
-  if (isPro) {
-    for (let i = 0; i < interestTagsPro.length; i += PRO_INTEREST_CHUNK) {
-      pages.push({
-        kind: 'data',
-        module: 'interests',
-        eyebrow: L('quiz.stage.interestsPro.eyebrow'),
-        dataPageNo: dataPageNo++,
-        items: [
-          {
-            kind: 'proInterests',
-            ids: interestTagsPro.slice(i, i + PRO_INTEREST_CHUNK).map((t) => t.id),
-          },
-        ],
-      });
-    }
-    // 第八轮：O*NET RIASEC 30 题（兴趣阶段第二小节，快答 Likert，5 页 × 6 题）
-    for (let i = 0; i < riasecQuestions.length; i += RIASEC_CHUNK) {
-      pages.push({
-        kind: 'data',
-        module: 'interests',
-        eyebrow: L('quiz.stage.riasec.eyebrow'),
-        dataPageNo: dataPageNo++,
-        items: riasecQuestions
-          .slice(i, i + RIASEC_CHUNK)
-          .map((question) => ({ kind: 'riasec' as const, question })),
-      });
-    }
-  } else {
-    for (let i = 0; i < interestTags.length; i += INTEREST_CHUNK) {
-      pages.push({
-        kind: 'data',
-        module: 'interests',
-        eyebrow: L('quiz.stage.interests.eyebrow'),
-        dataPageNo: dataPageNo++,
-        items: [
-          { kind: 'interests', ids: interestTags.slice(i, i + INTEREST_CHUNK).map((t) => t.id) },
-        ],
-      });
-    }
+  for (let i = 0; i < interestTags.length; i += INTEREST_CHUNK) {
+    pages.push({
+      kind: 'data',
+      module: 'interests',
+      eyebrow: L('quiz.stage.interests.eyebrow'),
+      dataPageNo: dataPageNo++,
+      items: [
+        { kind: 'interests', ids: interestTags.slice(i, i + INTEREST_CHUNK).map((t) => t.id) },
+      ],
+    });
   }
 
   return pages;
 }
 
-/** 阶段过渡页元信息（工厂：渲染期取当前语言） */
-function getTransitionMeta(isPro: boolean): TransitionMeta {
+/** 深化段页（用户选择继续后追加） */
+function buildDeepenPages(): Page[] {
   const L = (k: string): string => translate(getCurrentLang(), k);
-  if (isPro) {
+  const pages: Page[] = [];
+  let dataPageNo = 0;
+
+  for (let i = 0; i < ipipQuestions.length; i += IPIP_CHUNK) {
+    pages.push({
+      kind: 'data',
+      module: 'mbti',
+      eyebrow: L('quiz.stage.ipip.eyebrow'),
+      dataPageNo: dataPageNo++,
+      items: ipipQuestions
+        .slice(i, i + IPIP_CHUNK)
+        .map((question) => ({ kind: 'ipip' as const, question })),
+    });
+  }
+
+  pages.push({ kind: 'transition', to: 'lifestyle', variant: 'deep' });
+
+  for (let i = 0; i < proLifestyleQuestions.length; i += PRO_LIFESTYLE_CHUNK) {
+    pages.push({
+      kind: 'data',
+      module: 'lifestyle',
+      eyebrow: L('quiz.stage.pro.eyebrow'),
+      dataPageNo: dataPageNo++,
+      items: proLifestyleQuestions
+        .slice(i, i + PRO_LIFESTYLE_CHUNK)
+        .map((question) => ({ kind: 'proLifestyle' as const, question })),
+    });
+  }
+  for (let i = 0; i < riskQuestions.length; i += RISK_CHUNK) {
+    pages.push({
+      kind: 'data',
+      module: 'lifestyle',
+      eyebrow: L('quiz.stage.risk.eyebrow'),
+      dataPageNo: dataPageNo++,
+      items: riskQuestions
+        .slice(i, i + RISK_CHUNK)
+        .map((question) => ({ kind: 'risk' as const, question })),
+    });
+  }
+
+  pages.push({ kind: 'transition', to: 'interests', variant: 'deep' });
+
+  for (let i = 0; i < interestTagsPro.length; i += PRO_INTEREST_CHUNK) {
+    pages.push({
+      kind: 'data',
+      module: 'interests',
+      eyebrow: L('quiz.stage.interestsPro.eyebrow'),
+      dataPageNo: dataPageNo++,
+      items: [
+        {
+          kind: 'proInterests',
+          ids: interestTagsPro.slice(i, i + PRO_INTEREST_CHUNK).map((t) => t.id),
+        },
+      ],
+    });
+  }
+  for (let i = 0; i < riasecQuestions.length; i += RIASEC_CHUNK) {
+    pages.push({
+      kind: 'data',
+      module: 'interests',
+      eyebrow: L('quiz.stage.riasec.eyebrow'),
+      dataPageNo: dataPageNo++,
+      items: riasecQuestions
+        .slice(i, i + RIASEC_CHUNK)
+        .map((question) => ({ kind: 'riasec' as const, question })),
+    });
+  }
+
+  return pages;
+}
+
+/** 完整页面序列：核心段 → 深化岔口 → 深化段（数据页序号全局连续，避免分段进度串台） */
+function buildPages(deep: boolean): Page[] {
+  const pages: Page[] = [...buildCorePages(), { kind: 'deepen' }];
+  if (deep) pages.push(...buildDeepenPages());
+  let no = 0;
+  for (const p of pages) {
+    if (p.kind === 'data') p.dataPageNo = no++;
+  }
+  return pages;
+}
+
+/** 阶段过渡页元信息（工厂：渲染期取当前语言；variant 决定核心段 / 深化段文案） */
+function getTransitionMeta(variant: 'core' | 'deep'): TransitionMeta {
+  const L = (k: string): string => translate(getCurrentLang(), k);
+  if (variant === 'deep') {
     return {
       lifestyle: {
         no: '02',
@@ -290,29 +324,31 @@ export function proLifestyleAnswered(
 interface QuizProps {
   onComplete: (answers: UserAnswers) => void;
   onExit: () => void;
-  version?: QuizVersion;
+  /** 起始是否直接进入深化段（如从「我的」页发起标准版）；默认从核心段走完整流程 */
+  startDeep?: boolean;
 }
 
-export default function Quiz({ onComplete, onExit, version = 'lite' }: QuizProps) {
+export default function Quiz({ onComplete, onExit, startDeep = false }: QuizProps) {
   const { t } = useI18n();
-  const isPro = version === 'pro';
-  const pages = useMemo(() => buildPages(version), [version]);
+  // 草稿：融合题库统一使用同一 key（旧 proDraft 也纳入回退，尽量不丢历史进度）
   const [draft, setDraft] = useState<UserAnswers | null>(() =>
-    isPro ? storage.loadProDraft() : storage.loadDraft(),
+    storage.loadDraft() ?? storage.loadProDraft(),
   );
-  const [pageIndex, setPageIndex] = useState(() => firstIncompletePage(pages, draft));
+  // 是否已进入深化段：决定页面序列是否包含深化段数据页。
+  // 起始值：显式要求（从「我的」发起标准版）或草稿已含 IPIP 作答（续答深入到一半的会话）。
+  const [deep, setDeep] = useState<boolean>(() => startDeep || isDraftDeep(draft));
+  const pages = useMemo(() => buildPages(deep), [deep]);
+  const [pageIndex, setPageIndex] = useState(() => firstIncompletePage(pages, draft, deep));
   const [direction, setDirection] = useState<1 | -1>(1);
   const [answers, setAnswers] = useState<UserAnswers>(
     () =>
       draft
         ? { passport: storage.loadPassport(), ...draft }
         : {
-            version,
             mbti: {},
             lifestyle: {},
             interests: [],
             passport: storage.loadPassport(),
-            ...(isPro ? { interestSubs: {} } : {}),
           },
   );
   // 已应用的硬性条件（第六轮）：新会话默认先展示设置步骤；有草稿进度时直接续答
@@ -337,25 +373,31 @@ export default function Quiz({ onComplete, onExit, version = 'lite' }: QuizProps
 
   const answeredCount =
     Object.keys(answers.mbti).length +
+    Object.keys(answers.ipip ?? {}).length +
     Object.keys(answers.lifestyle).length +
     answers.interests.length +
     Object.keys(answers.riasec ?? {}).length +
     Object.keys(answers.risk ?? {}).length;
-  const totalAnswerable = isPro
-    ? ipipQuestions.length +
-      proLifestyleQuestions.length +
-      riskQuestions.length +
-      interestTagsPro.length +
-      riasecQuestions.length
-    : mbtiQuestions.length + lifestyleQuestions.length + interestTags.length;
-  const progress = Math.round((answeredCount / totalAnswerable) * 100);
+  // 分母随深化段开启而切换（兴趣标签按并集去重计一次，与 answeredCount 口径一致）：
+  // 核心段 = OEJTS + 8 情景 + 16 标签；深化段 = 上述 + IPIP/进阶偏好/风险/RIASEC + 28 标签
+  const interestCount = deep ? interestTagsPro.length : interestTags.length;
+  const deepAnswerable =
+    ipipQuestions.length +
+    proLifestyleQuestions.length +
+    riskQuestions.length +
+    riasecQuestions.length;
+  const totalAnswerable =
+    mbtiQuestions.length + lifestyleQuestions.length + interestCount + (deep ? deepAnswerable : 0);
+  const progress = Math.min(100, Math.round((answeredCount / totalAnswerable) * 100));
 
-  // 当前页是否全部作答（兴趣页允许 0 选择，因此始终可通过）
+  // 当前页是否全部作答（兴趣页允许 0 选择，因此始终可通过；深化岔口页始终可通过）
   const pageReady =
     page.kind === 'transition' ||
+    page.kind === 'deepen' ||
     page.items.every((item) => {
-      if (item.kind === 'mbti' || item.kind === 'ipip')
-        return typeof answers.mbti[item.question.id] === 'number';
+      if (item.kind === 'mbti') return typeof answers.mbti[item.question.id] === 'number';
+      if (item.kind === 'ipip')
+        return typeof (answers.ipip ?? {})[item.question.id] === 'number';
       if (item.kind === 'lifestyle') return Boolean(answers.lifestyle[item.question.id]);
       if (item.kind === 'proLifestyle')
         return proLifestyleAnswered(item.question, answers.lifestyle);
@@ -366,16 +408,15 @@ export default function Quiz({ onComplete, onExit, version = 'lite' }: QuizProps
       return true;
     });
 
-  // ---- 草稿自动保存（中途退出后可恢复；两版分开存储） ----
+  // ---- 草稿自动保存（中途退出后可恢复；融合题库统一 key） ----
   useEffect(() => {
     const hasAny =
       Object.keys(answers.mbti).length > 0 ||
       Object.keys(answers.lifestyle).length > 0 ||
       answers.interests.length > 0;
     if (!hasAny) return;
-    if (isPro) storage.saveProDraft(answers);
-    else storage.saveDraft(answers);
-  }, [answers, isPro]);
+    storage.saveDraft(answers);
+  }, [answers]);
 
   // ---- 续答场景（跳过硬性条件页直接恢复）：记录当前阶段开始埋点（仅一次） ----
   const stageStartedRef = useRef(false);
@@ -391,15 +432,12 @@ export default function Quiz({ onComplete, onExit, version = 'lite' }: QuizProps
   }, [stage, page, dataPages]);
 
   function resetDraft(): void {
-    if (isPro) storage.clearProDraft();
-    else storage.clearDraft();
+    storage.clearDraft();
     setDraft(null);
     setAnswers({
-      version,
       mbti: {},
       lifestyle: {},
       interests: [],
-      ...(isPro ? { interestSubs: {} } : {}),
     });
     setPageIndex(0);
     setDirection(1);
@@ -423,6 +461,10 @@ export default function Quiz({ onComplete, onExit, version = 'lite' }: QuizProps
 
   function setMBTIAnswer(id: string, value: number): void {
     setAnswers((prev) => ({ ...prev, mbti: { ...prev.mbti, [id]: value } }));
+  }
+
+  function setIPIPAnswer(id: string, value: number): void {
+    setAnswers((prev) => ({ ...prev, ipip: { ...(prev.ipip ?? {}), [id]: value } }));
   }
 
   function setLifestyleAnswer(id: string, value: string): void {
@@ -472,6 +514,11 @@ export default function Quiz({ onComplete, onExit, version = 'lite' }: QuizProps
 
   function goNext(): void {
     if (!pageReady) return;
+    // 深化岔口页：点「下一步」即视为跳过深化，直接以核心段作答出报告
+    if (page.kind === 'deepen') {
+      onComplete(answers);
+      return;
+    }
     if (isLast) {
       onComplete(answers);
       return;
@@ -491,6 +538,14 @@ export default function Quiz({ onComplete, onExit, version = 'lite' }: QuizProps
         trackStage('start', STAGE_INDEX[next.module], STAGE_NAME[next.module]);
       }
     }
+    setDirection(1);
+    setPageIndex((i) => i + 1);
+  }
+
+  /** 深化岔口：选择继续深化 → 展开深化段页面并前进到第一页 */
+  function chooseDeep(): void {
+    track('quiz_version_pro');
+    setDeep(true);
     setDirection(1);
     setPageIndex((i) => i + 1);
   }
@@ -534,9 +589,9 @@ export default function Quiz({ onComplete, onExit, version = 'lite' }: QuizProps
     center: { opacity: 1, x: 0 },
     exit: (dir: number) => ({ opacity: 0, x: dir * -28 }),
   };
-  const transitionMeta = getTransitionMeta(isPro);
+  const transitionMeta = page.kind === 'transition' ? getTransitionMeta(page.variant) : null;
   const pageMarker =
-    isPro && page.kind === 'data' && page.items[0]?.kind === 'ipip' ? 'RATE 1-5' : null;
+    page.kind === 'data' && page.items[0]?.kind === 'ipip' ? 'RATE 1-5' : null;
 
   return (
     <div className="flex min-h-screen flex-col bg-paper">
@@ -547,7 +602,7 @@ export default function Quiz({ onComplete, onExit, version = 'lite' }: QuizProps
             <div className="flex items-center gap-2.5">
               <CompassMark size={22} />
               <span className="font-mono text-[10px] uppercase tracking-eyebrow text-ink-soft">
-                {isPro ? 'STANDARD · PRO' : 'LITE'}
+                {deep ? 'STANDARD · PRO' : 'LITE'}
               </span>
             </div>
             {stage === 'constraints' ? (
@@ -621,14 +676,16 @@ export default function Quiz({ onComplete, onExit, version = 'lite' }: QuizProps
             className="flex-1"
           >
             {page.kind === 'transition' ? (
-              <TransitionStage to={page.to} meta={transitionMeta} />
+              <TransitionStage to={page.to} meta={transitionMeta!} />
+            ) : page.kind === 'deepen' ? (
+              <DeepenStage onContinue={chooseDeep} onSkip={() => onComplete(answers)} />
             ) : (
               <>
                 <p className="eyebrow mb-2">{page.eyebrow}</p>
                 <div className="mb-8 mt-3 flex items-center gap-4">
                   <div className="h-px flex-1 bg-ink/15" />
                   <p className="font-mono text-[10px] text-ink-soft">
-                    {page.items[0]?.kind === 'interests'
+                    {page.items[0]?.kind === 'interests' || page.items[0]?.kind === 'proInterests'
                       ? 'MULTI-SELECT'
                       : pageMarker ?? 'CHOOSE ONE'}
                   </p>
@@ -651,8 +708,8 @@ export default function Quiz({ onComplete, onExit, version = 'lite' }: QuizProps
                         <IPIPItem
                           key={item.question.id}
                           question={item.question}
-                          value={answers.mbti[item.question.id]}
-                          onSelect={(value) => setMBTIAnswer(item.question.id, value)}
+                          value={(answers.ipip ?? {})[item.question.id]}
+                          onSelect={(value) => setIPIPAnswer(item.question.id, value)}
                         />
                       );
                     }
@@ -719,21 +776,25 @@ export default function Quiz({ onComplete, onExit, version = 'lite' }: QuizProps
                   })}
                 </div>
 
-                {page.module === 'mbti' && page.dataPageNo === 0 && (
-                  <p className="mt-8 font-mono text-[9.5px] leading-relaxed text-ink-soft/80">
-                    {isPro
-                      ? t('quiz.ipip.source')
-                      : t('quiz.foot.source', { base: MBTI_SOURCE.base, publisher: MBTI_SOURCE.publisher, license: MBTI_SOURCE.license })}
-                  </p>
-                )}
+                {/* 量表来源脚注：仅在每种题型的第一页展示 */}
+                {page.dataPageNo === dataPages.find((p) => p.items[0]?.kind === page.items[0]?.kind)?.dataPageNo &&
+                  (page.items[0]?.kind === 'ipip' ? (
+                    <p className="mt-8 font-mono text-[9.5px] leading-relaxed text-ink-soft/80">
+                      {t('quiz.ipip.source')}
+                    </p>
+                  ) : page.items[0]?.kind === 'mbti' ? (
+                    <p className="mt-8 font-mono text-[9.5px] leading-relaxed text-ink-soft/80">
+                      {t('quiz.foot.source', { base: MBTI_SOURCE.base, publisher: MBTI_SOURCE.publisher, license: MBTI_SOURCE.license })}
+                    </p>
+                  ) : null)}
 
                 {/* 第八轮：RIASEC / 风险题首页来源脚注 */}
-                {page.items[0]?.kind === 'riasec' && (
+                {page.items[0]?.kind === 'riasec' && page.dataPageNo === dataPages.find((p) => p.items[0]?.kind === 'riasec')?.dataPageNo && (
                   <p className="mt-8 font-mono text-[9.5px] leading-relaxed text-ink-soft/80">
                     {t('quiz.riasec.source')}
                   </p>
                 )}
-                {page.items[0]?.kind === 'risk' && (
+                {page.items[0]?.kind === 'risk' && page.dataPageNo === dataPages.find((p) => p.items[0]?.kind === 'risk')?.dataPageNo && (
                   <p className="mt-8 font-mono text-[9.5px] leading-relaxed text-ink-soft/80">
                     {t('quiz.risk.source')}
                   </p>
@@ -754,7 +815,7 @@ export default function Quiz({ onComplete, onExit, version = 'lite' }: QuizProps
             {pageIndex === 0 ? t('common.backHome') : t('common.prev')}
           </button>
           <div className="hidden items-center gap-3 sm:flex">
-            {isPro && (
+            {deep && (
               <button
                 type="button"
                 onClick={resetDraft}
@@ -771,7 +832,7 @@ export default function Quiz({ onComplete, onExit, version = 'lite' }: QuizProps
             disabled={!pageReady}
             className="btn-clay !px-7 !py-3 text-sm disabled:opacity-40"
           >
-            {isLast ? t('common.finish') : t('common.next')}
+            {page.kind === 'deepen' ? t('common.finish') : isLast ? t('common.finish') : t('common.next')}
             <span className="font-mono text-xs opacity-80">→</span>
           </button>
         </div>
@@ -805,6 +866,47 @@ function TransitionStage({ to, meta }: { to: 'lifestyle' | 'interests'; meta: Tr
       <p className="mt-5 max-w-md text-[14px] leading-[1.9] text-ink-soft">{m.desc}</p>
       <p className="mt-6 rounded-full border hairline px-4 py-1.5 font-mono text-[10.5px] text-ink-soft">
         {t('quiz.transition.remaining', { count: m.remaining })}
+      </p>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// 深化岔口页：核心段结束后的选择——继续深化 or 直接看报告
+// ---------------------------------------------------------------------------
+
+function DeepenStage({
+  onContinue,
+  onSkip,
+}: {
+  onContinue: () => void;
+  onSkip: () => void;
+}) {
+  const { t } = useI18n();
+  return (
+    <div className="flex flex-1 flex-col items-center justify-center py-14 text-center md:py-20">
+      <div className="mb-6 flex items-center gap-3 text-ink-soft">
+        <span className="h-px w-10 bg-ink/20" />
+        <CompassMark size={30} />
+        <span className="h-px w-10 bg-ink/20" />
+      </div>
+      <p className="eyebrow">{t('quiz.deepen.eyebrow')}</p>
+      <h2 className="mt-4 font-display text-2xl font-bold tracking-tight md:text-3xl">
+        {t('quiz.deepen.title')}
+      </h2>
+      <p className="mt-5 max-w-md text-[14px] leading-[1.9] text-ink-soft">{t('quiz.deepen.desc')}</p>
+
+      <div className="mt-9 flex w-full max-w-sm flex-col gap-3">
+        <button type="button" onClick={onContinue} className="btn-clay w-full !py-3.5 text-sm">
+          {t('quiz.deepen.continue')}
+          <span className="font-mono text-xs opacity-80">→</span>
+        </button>
+        <button type="button" onClick={onSkip} className="btn-ghost w-full !py-3 text-[13px]">
+          {t('quiz.deepen.skip')}
+        </button>
+      </div>
+      <p className="mt-6 rounded-full border hairline px-4 py-1.5 font-mono text-[10.5px] text-ink-soft">
+        {t('quiz.deepen.meta')}
       </p>
     </div>
   );

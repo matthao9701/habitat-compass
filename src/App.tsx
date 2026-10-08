@@ -10,7 +10,9 @@ const Quiz = lazy(() => import('./components/Quiz'));
 const Report = lazy(() => import('./components/Report'));
 const CompareScreen = lazy(() => import('./components/compare/CompareScreen'));
 const ProfileScreen = lazy(() => import('./components/ProfileScreen'));
-import { assess, type UserAnswers, type AssessmentResult, type QuizVersion } from './lib/engine';
+const TaxPlanner = lazy(() => import('./components/TaxPlanner'));
+const CityBrowser = lazy(() => import('./components/CityBrowser'));
+import { assess, type UserAnswers, type AssessmentResult, type QuizVersion, isDeep } from './lib/engine';
 import { DEMO_PROFILES, buildDemoAnswers } from './data/demoProfiles';
 import * as storage from './lib/storage';
 import { applyHardConstraints, applyOverBudgetPenalty, hasAnyConstraint, type HardConstraints } from './lib/constraints';
@@ -19,7 +21,7 @@ import { track, trackStage } from './lib/telemetry';
 import { cities as CITIES } from './data';
 import { I18nProvider } from './i18n';
 
-type Screen = 'landing' | 'quiz' | 'report' | 'compare' | 'profile';
+type Screen = 'landing' | 'cities' | 'quiz' | 'report' | 'compare' | 'profile' | 'tax';
 
 /** 懒加载页面的占位：保持版式稳定，避免布局跳动 */
 function ScreenFallback() {
@@ -30,8 +32,8 @@ function ScreenFallback() {
   );
 }
 
-/** Tab 栏仅在三个常驻页面显示（quiz / report 为专注模式） */
-const TAB_SCREENS: Screen[] = ['landing', 'compare', 'profile'];
+/** Tab 栏仅在常驻页面显示（quiz / report 为专注模式） */
+const TAB_SCREENS: Screen[] = ['landing', 'cities', 'tax', 'compare', 'profile'];
 
 export default function App() {
   const [screen, setScreen] = useState<Screen>('landing');
@@ -40,10 +42,25 @@ export default function App() {
   const [isDemo, setIsDemo] = useState(false);
   const [quizVersion, setQuizVersion] = useState<QuizVersion>('lite');
   const [compareSeed, setCompareSeed] = useState<string[]>([]);
+  /** 税负测算页预置城市（来自报告卡片 CTA 或 URL ?city=） */
+  const [taxCityId, setTaxCityId] = useState<string | null>(null);
 
   // PWA：注册 Service Worker（仅支持原生安装事件的浏览器；见 lib/pwa.ts 说明）
   useEffect(() => {
     registerServiceWorker();
+  }, []);
+
+  /** 读取 URL 查询参数（静态子页面 /tax-calculator/ 直达时携带 ?city=<id> 预置城市） */
+  useEffect(() => {
+    try {
+      const c = new URLSearchParams(window.location.search).get('city');
+      if (c) {
+        setTaxCityId(c);
+        setScreen('tax');
+      }
+    } catch {
+      // 非浏览器/异常环境忽略
+    }
   }, []);
 
   function go(next: Screen): void {
@@ -52,13 +69,34 @@ export default function App() {
   }
 
   function openTab(tab: TabId): void {
+    if (tab === 'tax') {
+      openTax(null);
+      return;
+    }
     go(tab);
   }
 
-  /** 进入测评：两版全量免费开放 */
-  function startQuiz(version: QuizVersion = 'lite'): void {
-    track(version === 'pro' ? 'quiz_version_pro' : 'quiz_version_lite');
-    setQuizVersion(version);
+  /**
+   * 打开税负测算子页面：可在 URL 上同步 ?city=<id>（便于分享/刷新还原）。
+   * 应用内为状态切换（不整页跳转），静态 SEO 页 /tax-calculator/ 则回链到 /?city=<id>。
+   */
+  function openTax(cityId: string | null): void {
+    setTaxCityId(cityId);
+    try {
+      const url = new URL(window.location.href);
+      if (cityId) url.searchParams.set('city', cityId);
+      else url.searchParams.delete('city');
+      window.history.replaceState(null, '', url);
+    } catch {
+      // 非浏览器环境忽略
+    }
+    go('tax');
+  }
+
+  /** 进入测评：startDeep=true 时直接进入深化段（如从「我的」页发起标准版）；默认走完整流程 */
+  function startQuiz(startDeep = false): void {
+    track(startDeep ? 'quiz_version_pro' : 'quiz_version_lite');
+    setQuizVersion(startDeep ? 'pro' : 'lite');
     go('quiz');
   }
 
@@ -93,11 +131,12 @@ export default function App() {
     trackStage('complete', 4, 'quiz');
     const assessment = runAssessment(done, hc);
     track('report_generated');
-    if (done.version === 'pro') {
-      storage.clearProDraft(); // 完成后清除标准版草稿
+    // 融合题库统一使用同一草稿 key；旧 proDraft 一并清理，避免续答残留
+    storage.clearDraft();
+    storage.clearProDraft();
+    if (isDeep(done)) {
       storage.saveProHistory(done, assessment);
     } else {
-      storage.clearDraft(); // 完成后清除简易版草稿
       storage.saveHistory(done, assessment);
     }
     setAnswers(done);
@@ -107,11 +146,11 @@ export default function App() {
   }
 
   function restart(): void {
-    const version = result?.version === 'pro' ? 'pro' : 'lite';
+    const deep = result?.version === 'pro';
     setResult(null);
     setAnswers(null);
     setIsDemo(false);
-    setQuizVersion(version);
+    setQuizVersion(deep ? 'pro' : 'lite');
     go('quiz');
   }
 
@@ -159,11 +198,18 @@ export default function App() {
               {screen === 'landing' && (
                 <Landing onStart={startQuiz} onDemo={openDemo} />
               )}
+              {screen === 'cities' && <CityBrowser />}
               {screen === 'quiz' && (
-                <Quiz onComplete={completeQuiz} onExit={exitQuiz} version={quizVersion} />
+                <Quiz onComplete={completeQuiz} onExit={exitQuiz} startDeep={quizVersion === 'pro'} />
               )}
               {screen === 'report' && result && (
-                <Report result={result} onRestart={restart} isDemo={isDemo} onStartQuiz={startQuiz} />
+                <Report
+                  result={result}
+                  onRestart={restart}
+                  isDemo={isDemo}
+                  onStartQuiz={startQuiz}
+                  onOpenTax={(cityId) => openTax(cityId)}
+                />
               )}
               {screen === 'compare' && (
                 <CompareScreen
@@ -172,6 +218,9 @@ export default function App() {
                   seedCities={compareSeed}
                   onOpenQuiz={startQuiz}
                 />
+              )}
+              {screen === 'tax' && (
+                <TaxPlanner initialCityId={taxCityId} onOpenQuiz={startQuiz} />
               )}
               {screen === 'profile' && (
                 <ProfileScreen

@@ -1,0 +1,399 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#1D3557">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="栖居罗盘">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<title>Digital Nomad Tax Calculator · Tax-free, territorial &amp; concession cities | Habitat Compass</title>
+<meta name="description" content="A progressive-bracket estimate of after-tax income, band-by-band breakdown, tax regime and savings vs a high-tax EU/US region for Dubai, Chiang Mai, Tbilisi, Lisbon and more. Bracket data for 29 countries with nomad concessions, plus 65-country classification and disclaimers.">
+
+<link rel="canonical" href="https://gethabitatcompass.com/en/tax-calculator/">
+<link rel="alternate" hreflang="zh-Hans" href="https://gethabitatcompass.com/tax-calculator/">
+<link rel="alternate" hreflang="en" href="https://gethabitatcompass.com/en/tax-calculator/">
+<link rel="alternate" hreflang="x-default" href="https://gethabitatcompass.com/tax-calculator/">
+<meta property="og:url" content="https://gethabitatcompass.com/en/tax-calculator/">
+<meta property="og:title" content="Digital Nomad Tax Calculator · Tax-free, territorial &amp; concession cities | Habitat Compass">
+<meta property="og:description" content="A progressive-bracket estimate of after-tax income, band-by-band breakdown, tax regime and savings vs a high-tax EU/US region for Dubai, Chiang Mai, Tbilisi, Lisbon and more. Bracket data for 29 countries with nomad concessions, plus 65-country classification and disclaimers.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="栖居罗盘 · Habitat Compass">
+<meta property="og:image" content="https://gethabitatcompass.com/og-cover.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Habitat Compass">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Digital Nomad Tax Calculator · Tax-free, territorial &amp; concession cities | Habitat Compass">
+<meta name="twitter:description" content="A progressive-bracket estimate of after-tax income, band-by-band breakdown, tax regime and savings vs a high-tax EU/US region for Dubai, Chiang Mai, Tbilisi, Lisbon and more. Bracket data for 29 countries with nomad concessions, plus 65-country classification and disclaimers.">
+<meta name="twitter:image" content="https://gethabitatcompass.com/og-cover.jpg">
+<meta name="twitter:image:alt" content="Habitat Compass">
+<style>
+:root{--pine:#1D3557;--pine-deep:#075985;--teal:#3E7C8F;--paper:#F9F8F6;--paper-deep:#F1EFEA;--ink:#1F2421;--ink-soft:#6B6F6C;--clay:#C96A52;--clay-deep:#A94F38;--ochre:#B98A2F;--moss:#5F7A5A;--sea:#7FA8B8;--card:#FFFFFF}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Hiragino Sans GB','Microsoft YaHei','Noto Sans SC',system-ui,sans-serif;background:var(--paper);color:var(--ink);line-height:1.7;font-size:16px;overflow-wrap:break-word}
+.wrap{max-width:880px;margin:0 auto;padding:0 20px}
+header{background:var(--card);border-bottom:1px solid var(--paper-deep)}
+.hd{display:flex;align-items:center;justify-content:space-between;padding:14px 0;gap:12px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:8px;font-weight:800;font-size:18px;color:var(--ink);text-decoration:none}
+.brand .dot{width:26px;height:26px;border-radius:8px;background:var(--pine);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:14px}
+.hd nav{display:flex;gap:16px;font-size:14px;flex-wrap:wrap}
+.hd nav a{color:var(--pine);text-decoration:none}
+.hd nav a:hover{text-decoration:underline}
+main{padding:28px 0 40px}
+.crumbs{font-size:13px;color:var(--ink-soft);margin-bottom:14px}
+.crumbs a{color:var(--pine);text-decoration:none}
+.crumbs a:hover{text-decoration:underline}
+h1{font-size:30px;line-height:1.3;margin:4px 0 6px;letter-spacing:.5px}
+.sub{color:var(--ink-soft);font-size:14px;margin-bottom:18px}
+.answer{background:var(--card);border:1px solid var(--paper-deep);border-left:4px solid var(--pine);border-radius:12px;padding:18px 20px;margin-bottom:22px}
+.answer p{font-size:16.5px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px;margin-bottom:26px}
+.card{background:var(--card);border:1px solid var(--paper-deep);border-radius:14px;padding:16px 18px}
+.card h3{font-size:13px;color:var(--ink-soft);font-weight:600;letter-spacing:.4px;margin-bottom:6px}
+.card .v{font-size:22px;font-weight:800;color:var(--ink)}
+.card .v small{font-size:13px;font-weight:500;color:var(--ink-soft);margin-left:4px}
+.card .src{font-size:12px;color:var(--ink-soft);margin-top:6px}
+.card.none .v{font-size:15px;font-weight:600;color:var(--ink-soft)}
+h2{font-size:20px;margin:26px 0 12px;letter-spacing:.4px}
+details{background:var(--card);border:1px solid var(--paper-deep);border-radius:12px;padding:12px 18px;margin-bottom:10px}
+details summary{cursor:pointer;font-weight:700;font-size:15.5px}
+details p{margin-top:8px;color:var(--ink);font-size:15px}
+.cta{display:block;background:var(--pine);color:#fff;text-align:center;text-decoration:none;font-weight:800;font-size:17px;padding:15px 20px;border-radius:14px;margin:26px 0 10px}
+.cta:hover{background:var(--pine-deep)}
+.cta-sub{text-align:center;color:var(--ink-soft);font-size:13px;margin-bottom:24px}
+.list{background:var(--card);border:1px solid var(--paper-deep);border-radius:14px;padding:8px 18px;margin-bottom:22px}
+.list a{color:var(--pine);text-decoration:none}
+.list a:hover{text-decoration:underline}
+.list li{padding:7px 0;border-bottom:1px dashed var(--paper-deep);list-style:none;display:flex;justify-content:space-between;gap:10px;font-size:14.5px;flex-wrap:wrap}
+.list li:last-child{border-bottom:none}
+.list .meta{color:var(--ink-soft);font-size:12.5px}
+footer{border-top:1px solid var(--paper-deep);background:var(--card);padding:18px 0 26px;font-size:12.5px;color:var(--ink-soft)}
+.fresh{font-size:12px;color:var(--ink-soft);margin-top:8px}
+.badge{display:inline-block;background:var(--paper-deep);color:var(--pine-deep);font-size:12px;font-weight:700;padding:2px 10px;border-radius:999px;margin-left:8px;vertical-align:middle}
+.note{font-size:13px;color:var(--ink-soft);margin:8px 0 18px}
+.lang{font-size:13px}
+.lang a{color:var(--teal);text-decoration:none;font-weight:600}
+.legal-list{margin:6px 0 14px 20px}
+.legal-list li{list-style:disc;margin:6px 0;font-size:15px;color:var(--ink)}
+.notice{background:var(--paper-deep);border-left:4px solid var(--clay);border-radius:10px;padding:12px 14px;margin:14px 0 18px;font-size:15px;color:var(--ink);line-height:1.7}
+.toc{background:var(--card);border:1px solid var(--paper-deep);border-radius:14px;padding:16px 20px;margin:0 0 22px}
+.toc-h{font-size:13px;font-weight:700;letter-spacing:.4px;color:var(--ink-soft);margin-bottom:8px}
+.toc ol{margin:0;padding-left:20px;columns:2;column-gap:26px}
+.toc li{font-size:13.5px;margin:4px 0;break-inside:avoid}
+.toc a{color:var(--pine);text-decoration:none}
+.toc a:hover{text-decoration:underline}
+.attr{font-size:12.5px;color:var(--ink-soft);line-height:1.7;margin:0 0 18px;padding-top:14px;border-top:1px dashed var(--paper-deep)}
+.attr a{color:var(--pine);text-decoration:none}
+.attr a:hover{text-decoration:underline}
+h2[id]{scroll-margin-top:16px}
+@media(max-width:560px){
+  .toc ol{columns:1}
+  h1{font-size:25px}
+  .grid{grid-template-columns:1fr}
+  .wrap{padding:0 16px}
+}
+.legal p code{background:var(--paper-deep);border-radius:6px;padding:1px 7px;font-size:13.5px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+table.tbl{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--paper-deep);border-radius:12px;overflow:hidden;margin:0 0 20px;font-size:14px}
+table.tbl th,table.tbl td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--paper-deep);vertical-align:top}
+table.tbl th{font-size:12px;color:var(--ink-soft);font-weight:700;letter-spacing:.3px;background:var(--paper-deep)}
+table.tbl tr:last-child td{border-bottom:none}
+table.tbl a{color:var(--pine);text-decoration:none}
+table.tbl a:hover{text-decoration:underline}
+.tagpill{display:inline-block;border-radius:999px;padding:1px 9px;font-size:12px;font-weight:700;border:1px solid}
+.tagpill.t-exempt{border-color:#5F7A5A;background:rgba(95,122,90,.12);color:#51694B}
+.tagpill.t-territorial{border-color:#7FA8B8;background:rgba(127,168,184,.14);color:#2F6A7D}
+.tagpill.t-concession{border-color:#B98A2F;background:rgba(185,138,47,.12);color:#8A5F0A}
+.tagpill.t-standard{border-color:#1F2421;background:rgba(31,36,33,.05);color:#6B6F6C}
+.erase{margin:8px 0 26px;border-left:4px solid var(--clay)}
+.erase h2{margin-top:0}
+.btn-danger{display:inline-block;background:var(--clay);color:#fff;border:none;font-weight:800;font-size:15px;padding:12px 22px;border-radius:12px;cursor:pointer;font-family:inherit}
+.btn-danger:hover{background:var(--clay-deep)}
+.erase-done{margin-top:12px;color:var(--moss);font-weight:700}
+@media(max-width:560px){h1{font-size:24px}.card .v{font-size:19px}}
+</style>
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@type": "WebApplication",
+ "name": "Habitat Compass Tax Planner",
+ "url": "https://gethabitatcompass.com/en/tax-calculator/",
+ "applicationCategory": "FinanceApplication",
+ "operatingSystem": "Web",
+ "inLanguage": "en",
+ "offers": {
+  "@type": "Offer",
+  "price": "0",
+  "priceCurrency": "USD"
+ },
+ "description": "A progressive-bracket estimate of after-tax income, band-by-band breakdown, tax regime and savings vs a high-tax EU/US region for Dubai, Chiang Mai, Tbilisi, Lisbon and more. Bracket data for 29 countries with nomad concessions, plus 65-country classification and disclaimers."
+}
+</script>
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@type": "FAQPage",
+ "mainEntity": [
+  {
+   "@type": "Question",
+   "name": "Which countries and cities are cheapest tax-wise for digital nomads?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "By our rule-dictionary estimate, the friendliest destinations include: United Arab Emirates（Tax-free, foreign income exempt）, Georgia（Territorial, foreign income exempt）, Cambodia（Territorial, foreign income exempt）, Malaysia（Territorial, foreign income exempt）, Thailand（Territorial, foreign income exempt）, Singapore（Territorial, foreign income exempt）. \"Tax-free\" regimes levy essentially no personal income tax; \"territorial\" regimes tax only locally sourced income while foreign-source income is generally exempt. Your actual liability still depends on residency status and source of income."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "How is this tax estimate calculated — is it accurate?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "It uses a progressive bracket engine: for 29 countries with structured data, tax is accumulated band by band on annual taxable income in local currency (including thresholds/standard deductions and any concession), converted to USD at a snapshot FX rate (2025-10) to derive an effective rate; other countries fall back to a coarse rule-dictionary approximation. It models no deductions, tax treaties or remittance rules. It is for directional comparison only, not tax advice."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "What is a “territorial” tax regime?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "A territorial regime taxes only locally sourced income; foreign-source income is usually untaxed or exempt — as in Hong Kong, Singapore, Malaysia, Thailand (remittance basis) and Georgia. It suits remote workers and freelancers earning from overseas clients."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "What are the special concession rates in Portugal, Spain and Greece?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "These are “concession” regimes: flat or reduced rates for qualifying new tax residents, nomads or tech talent — e.g. Spain’s “Beckham law” 24%, Portugal’s IFICI 20%, Greece’s 50% relief for new residents. Eligibility depends on visa type, length of stay and income source; always verify the official conditions."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "How much more can I keep by moving from a high-tax EU/US region?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "This page uses a reference effective rate of 40% (a directional high-tax EU/US figure) as the baseline. At $50,000 gross income, a tax-free destination would keep roughly $20,000 more per year. This is a coarse upper-bound reference, not a promise."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Can I use this result directly for decisions?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "No — do not rely on it alone. This tool is a directional estimate and not tax advice; actual liability depends on residency, tax treaties, social security and filing duties. Consult a tax professional and verify official rules before major decisions."
+   }
+  }
+ ]
+}
+</script>
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@type": "BreadcrumbList",
+ "itemListElement": [
+  {
+   "@type": "ListItem",
+   "position": 1,
+   "name": "Home",
+   "item": "https://gethabitatcompass.com/en/"
+  },
+  {
+   "@type": "ListItem",
+   "position": 2,
+   "name": "Tax planner",
+   "item": "https://gethabitatcompass.com/en/tax-calculator/"
+  }
+ ]
+}
+</script>
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@type": "Organization",
+ "@id": "https://gethabitatcompass.com/#organization",
+ "name": "栖居罗盘 · Habitat Compass",
+ "url": "https://gethabitatcompass.com/",
+ "logo": "https://gethabitatcompass.com/og-cover.jpg"
+}
+</script>
+</head>
+<body>
+<header><div class="wrap hd">
+<a class="brand" href="/en/"><span class="dot">栖</span>栖居罗盘 · Habitat Compass</a>
+<nav>
+<a href="/en/cities/">Cities</a>
+<a href="/en/countries/">Countries</a>
+<a href="/en/tax-calculator/">Tax planner</a>
+<a href="/en/methodology/">Methodology</a>
+<span class="lang"><a href="https://gethabitatcompass.com/tax-calculator/" hreflang="zh-Hans" rel="alternate">中文</a></span>
+</nav>
+</div></header>
+<main class="wrap">
+<p class="crumbs"><a href="https://gethabitatcompass.com/en/">Home</a> › Tax planner</p>
+<h1>Digital nomad tax calculator<span class="badge">65 countries · 200 cities</span></h1>
+<p class="sub">Progressive bracket engine (V2): 29 countries computed band by band in local currency, others via a coarse rule-dictionary approximation — directional comparison only, not tax advice.</p>
+<div class="answer"><p>Tax is a core cost for nomads, remote workers and cross-border settlers, yet it varies enormously: the same gross income can mean tens of thousands of dollars difference in net income between a tax-free destination and a high-tax jurisdiction. This page runs a progressive bracket engine for 29 countries with structured data — accumulating tax band by band on annual taxable income in local currency and layering nomad/new-resident concessions (Thailand LTR 17%, Spain's Beckham law 24%, Georgia's 1% small-business status, Portugal IFICI 20%, Croatia's nomad exemption and more) — while the remaining of the 65 countries are approximated via four regime types (tax-free / territorial / concession / standard). All rate figures are public facts, with no reliance on any paid aggregation API.</p></div>
+
+<h2>Interactive tax planner</h2>
+<a class="cta" href="https://gethabitatcompass.com/?city=chiang-mai">Open the interactive tax planner →</a>
+<p class="cta-sub">Enter income, pick income type and target city, and see net income and savings live (jump to any city by appending ?city=<id>)</p>
+
+<h2>65-country tax regimes & comparison (example income $50,000)</h2>
+<p class="note">“Reference effective rate” is the rule-dictionary approximation; “net income” = gross × (1 − rate); “vs baseline” compares against the high-tax EU/US reference rate of 40%. All directional.</p>
+<div style="overflow-x:auto">
+<table class="tbl">
+<thead><tr>
+<th>Country</th>
+<th>Regime</th>
+<th>Top marginal</th>
+<th>Ref. effective</th>
+<th>Net ($50,000)</th>
+<th>vs baseline</th>
+<th>Cities</th>
+</tr></thead>
+<tbody>
+<tr><td><a href="/en/country/ae/">United Arab Emirates</a></td><td><span class="tagpill t-exempt">Tax-free</span></td><td>0%</td><td>0% (foreign-source)</td><td>$50,000</td><td>+$20,000</td><td>2</td></tr>
+<tr><td><a href="/en/country/ge/">Georgia</a></td><td><span class="tagpill t-territorial">Territorial</span></td><td>20%</td><td>0% (foreign-source)</td><td>$50,000</td><td>+$20,000</td><td>2</td></tr>
+<tr><td><a href="/en/country/kh/">Cambodia</a></td><td><span class="tagpill t-territorial">Territorial</span></td><td>20%</td><td>0% (foreign-source)</td><td>$50,000</td><td>+$20,000</td><td>2</td></tr>
+<tr><td><a href="/en/country/my/">Malaysia</a></td><td><span class="tagpill t-territorial">Territorial</span></td><td>30%</td><td>0% (foreign-source)</td><td>$50,000</td><td>+$20,000</td><td>4</td></tr>
+<tr><td><a href="/en/country/th/">Thailand</a></td><td><span class="tagpill t-territorial">Territorial</span></td><td>35%</td><td>0% (foreign-source)</td><td>$50,000</td><td>+$20,000</td><td>7</td></tr>
+<tr><td><a href="/en/country/sg/">Singapore</a></td><td><span class="tagpill t-territorial">Territorial</span></td><td>24%</td><td>0% (foreign-source)</td><td>$50,000</td><td>+$20,000</td><td>1</td></tr>
+<tr><td><a href="/en/country/hk/">Hong Kong SAR, China</a></td><td><span class="tagpill t-territorial">Territorial</span></td><td>15%</td><td>0% (foreign-source)</td><td>$50,000</td><td>+$20,000</td><td>1</td></tr>
+<tr><td><a href="/en/country/kz/">Kazakhstan</a></td><td><span class="tagpill t-standard">Progressive standard</span></td><td>10%</td><td>5%</td><td>$47,500</td><td>+$17,500</td><td>1</td></tr>
+<tr><td><a href="/en/country/ro/">Romania</a></td><td><span class="tagpill t-standard">Progressive standard</span></td><td>10%</td><td>5%</td><td>$47,500</td><td>+$17,500</td><td>2</td></tr>
+<tr><td><a href="/en/country/rs/">Serbia</a></td><td><span class="tagpill t-standard">Progressive standard</span></td><td>10%</td><td>5%</td><td>$47,500</td><td>+$17,500</td><td>2</td></tr>
+<tr><td><a href="/en/country/hu/">Hungary</a></td><td><span class="tagpill t-standard">Progressive standard</span></td><td>15%</td><td>8%</td><td>$46,000</td><td>+$16,000</td><td>2</td></tr>
+<tr><td><a href="/en/country/pr/">Puerto Rico (US)</a></td><td><span class="tagpill t-concession">Special concession</span></td><td>—</td><td>4%</td><td>$48,000</td><td>+$18,000</td><td>1</td></tr>
+<tr><td><a href="/en/country/hr/">Croatia</a></td><td><span class="tagpill t-concession">Special concession</span></td><td>30%</td><td>0% (foreign-source)</td><td>$50,000</td><td>+$20,000</td><td>4</td></tr>
+<tr><td><a href="/en/country/mt/">Malta</a></td><td><span class="tagpill t-concession">Special concession</span></td><td>35%</td><td>15%</td><td>$42,500</td><td>+$12,500</td><td>2</td></tr>
+<tr><td><a href="/en/country/pt/">Portugal</a></td><td><span class="tagpill t-concession">Special concession</span></td><td>48%</td><td>20%</td><td>$40,000</td><td>+$10,000</td><td>6</td></tr>
+<tr><td><a href="/en/country/es/">Spain</a></td><td><span class="tagpill t-concession">Special concession</span></td><td>47%</td><td>24%</td><td>$38,000</td><td>+$8,000</td><td>9</td></tr>
+<tr><td><a href="/en/country/gr/">Greece</a></td><td><span class="tagpill t-concession">Special concession</span></td><td>44%</td><td>22%</td><td>$39,000</td><td>+$9,000</td><td>2</td></tr>
+<tr><td><a href="/en/country/it/">Italy</a></td><td><span class="tagpill t-concession">Special concession</span></td><td>43%</td><td>15%</td><td>$42,500</td><td>+$12,500</td><td>6</td></tr>
+<tr><td><a href="/en/country/mu/">Mauritius</a></td><td><span class="tagpill t-standard">Progressive standard</span></td><td>20%</td><td>10%</td><td>$45,000</td><td>+$15,000</td><td>1</td></tr>
+<tr><td><a href="/en/country/ee/">Estonia</a></td><td><span class="tagpill t-standard">Progressive standard</span></td><td>22%</td><td>11%</td><td>$44,500</td><td>+$14,500</td><td>2</td></tr>
+<tr><td><a href="/en/country/am/">Armenia</a></td><td><span class="tagpill t-standard">Progressive standard</span></td><td>22%</td><td>11%</td><td>$44,500</td><td>+$14,500</td><td>1</td></tr>
+<tr><td><a href="/en/country/cz/">Czechia</a></td><td><span class="tagpill t-standard">Progressive standard</span></td><td>23%</td><td>12%</td><td>$44,000</td><td>+$14,000</td><td>2</td></tr>
+<tr><td><a href="/en/country/eg/">Egypt, Arab Rep.</a></td><td><span class="tagpill t-standard">Progressive standard</span></td><td>25%</td><td>13%</td><td>$43,500</td><td>+$13,500</td><td>3</td></tr>
+<tr><td><a href="/en/country/br/">Brazil</a></td><td><span class="tagpill t-standard">Progressive standard</span></td><td>28%</td><td>14%</td><td>$43,000</td><td>+$13,000</td><td>5</td></tr>
+<tr><td><a href="/en/country/ke/">Kenya</a></td><td><span class="tagpill t-standard">Progressive standard</span></td><td>30%</td><td>15%</td><td>$42,500</td><td>+$12,500</td><td>2</td></tr>
+<tr><td><a href="/en/country/rw/">Rwanda</a></td><td><span class="tagpill t-standard">Progressive standard</span></td><td>30%</td><td>15%</td><td>$42,500</td><td>+$12,500</td><td>1</td></tr>
+<tr><td><a href="/en/country/pe/">Peru</a></td><td><span class="tagpill t-standard">Progressive standard</span></td><td>30%</td><td>15%</td><td>$42,500</td><td>+$12,500</td><td>3</td></tr>
+<tr><td><a href="/en/country/in/">India</a></td><td><span class="tagpill t-standard">Progressive standard</span></td><td>30%</td><td>15%</td><td>$42,500</td><td>+$12,500</td><td>6</td></tr>
+<tr><td><a href="/en/country/jo/">Jordan</a></td><td><span class="tagpill t-standard">Progressive standard</span></td><td>30%</td><td>15%</td><td>$42,500</td><td>+$12,500</td><td>1</td></tr>
+<tr><td><a href="/en/country/lv/">Latvia</a></td><td><span class="tagpill t-standard">Progressive standard</span></td><td>31%</td><td>16%</td><td>$42,000</td><td>+$12,000</td><td>1</td></tr>
+<tr><td><a href="/en/country/pl/">Poland</a></td><td><span class="tagpill t-standard">Progressive standard</span></td><td>32%</td><td>16%</td><td>$42,000</td><td>+$12,000</td><td>2</td></tr>
+<tr><td><a href="/en/country/lt/">Lithuania</a></td><td><span class="tagpill t-standard">Progressive standard</span></td><td>32%</td><td>16%</td><td>$42,000</td><td>+$12,000</td><td>2</td></tr>
+<tr><td><a href="/en/country/ar/">Argentina</a></td><td><span class="tagpill t-standard">Progressive standard</span></td><td>35%</td><td>18%</td><td>$41,000</td><td>+$11,000</td><td>3</td></tr>
+<tr><td><a href="/en/country/et/">Ethiopia</a></td><td><span class="tagpill t-standard">Progressive standard</span></td><td>35%</td><td>18%</td><td>$41,000</td><td>+$11,000</td><td>1</td></tr>
+<tr><td><a href="/en/country/ph/">Philippines</a></td><td><span class="tagpill t-standard">Progressive standard</span></td><td>35%</td><td>18%</td><td>$41,000</td><td>+$11,000</td><td>3</td></tr>
+<tr><td><a href="/en/country/gh/">Ghana</a></td><td><span class="tagpill t-standard">Progressive standard</span></td><td>35%</td><td>18%</td><td>$41,000</td><td>+$11,000</td><td>2</td></tr>
+<tr><td><a href="/en/country/mx/">Mexico</a></td><td><span class="tagpill t-standard">Progressive standard</span></td><td>35%</td><td>18%</td><td>$41,000</td><td>+$11,000</td><td>8</td></tr>
+<tr><td><a href="/en/country/id/">Indonesia</a></td><td><span class="tagpill t-standard">Progressive standard</span></td><td>35%</td><td>18%</td><td>$41,000</td><td>+$11,000</td><td>3</td></tr>
+<tr><td><a href="/en/country/vn/">Viet Nam</a></td><td><span class="tagpill t-standard">Progressive standard</span></td><td>35%</td><td>18%</td><td>$41,000</td><td>+$11,000</td><td>5</td></tr>
+<tr><td><a href="/en/country/dk/">Denmark</a></td><td><span class="tagpill t-standard">Progressive standard</span></td><td>—</td><td>22%</td><td>$39,000</td><td>+$9,000</td><td>2</td></tr>
+<tr><td><a href="/en/country/fj/">Fiji</a></td><td><span class="tagpill t-standard">Progressive standard</span></td><td>—</td><td>22%</td><td>$39,000</td><td>+$9,000</td><td>2</td></tr>
+<tr><td><a href="/en/country/fi/">Finland</a></td><td><span class="tagpill t-standard">Progressive standard</span></td><td>—</td><td>22%</td><td>$39,000</td><td>+$9,000</td><td>2</td></tr>
+<tr><td><a href="/en/country/no/">Norway</a></td><td><span class="tagpill t-standard">Progressive standard</span></td><td>—</td><td>22%</td><td>$39,000</td><td>+$9,000</td><td>3</td></tr>
+<tr><td><a href="/en/country/se/">Sweden</a></td><td><span class="tagpill t-standard">Progressive standard</span></td><td>—</td><td>22%</td><td>$39,000</td><td>+$9,000</td><td>2</td></tr>
+<tr><td><a href="/en/country/ch/">Switzerland</a></td><td><span class="tagpill t-standard">Progressive standard</span></td><td>—</td><td>22%</td><td>$39,000</td><td>+$9,000</td><td>2</td></tr>
+<tr><td><a href="/en/country/sn/">Senegal</a></td><td><span class="tagpill t-standard">Progressive standard</span></td><td>—</td><td>22%</td><td>$39,000</td><td>+$9,000</td><td>1</td></tr>
+<tr><td><a href="/en/country/lk/">Sri Lanka</a></td><td><span class="tagpill t-standard">Progressive standard</span></td><td>36%</td><td>18%</td><td>$41,000</td><td>+$11,000</td><td>1</td></tr>
+<tr><td><a href="/en/country/uy/">Uruguay</a></td><td><span class="tagpill t-standard">Progressive standard</span></td><td>36%</td><td>18%</td><td>$41,000</td><td>+$11,000</td><td>1</td></tr>
+<tr><td><a href="/en/country/cl/">Chile</a></td><td><span class="tagpill t-standard">Progressive standard</span></td><td>—</td><td>22%</td><td>$39,000</td><td>+$9,000</td><td>2</td></tr>
+<tr><td><a href="/en/country/tw/">Taiwan, China</a></td><td><span class="tagpill t-standard">Progressive standard</span></td><td>—</td><td>22%</td><td>$39,000</td><td>+$9,000</td><td>2</td></tr>
+<tr><td><a href="/en/country/us/">United States</a></td><td><span class="tagpill t-standard">Progressive standard</span></td><td>37%</td><td>19%</td><td>$40,500</td><td>+$10,500</td><td>8</td></tr>
+<tr><td><a href="/en/country/ma/">Morocco</a></td><td><span class="tagpill t-standard">Progressive standard</span></td><td>37%</td><td>19%</td><td>$40,500</td><td>+$10,500</td><td>3</td></tr>
+<tr><td><a href="/en/country/co/">Colombia</a></td><td><span class="tagpill t-standard">Progressive standard</span></td><td>39%</td><td>20%</td><td>$40,000</td><td>+$10,000</td><td>4</td></tr>
+<tr><td><a href="/en/country/nz/">New Zealand</a></td><td><span class="tagpill t-standard">Progressive standard</span></td><td>39%</td><td>20%</td><td>$40,000</td><td>+$10,000</td><td>6</td></tr>
+<tr><td><a href="/en/country/tr/">Turkiye</a></td><td><span class="tagpill t-standard">Progressive standard</span></td><td>40%</td><td>20%</td><td>$40,000</td><td>+$10,000</td><td>3</td></tr>
+<tr><td><a href="/en/country/au/">Australia</a></td><td><span class="tagpill t-standard">Progressive standard</span></td><td>45%</td><td>23%</td><td>$38,500</td><td>+$8,500</td><td>9</td></tr>
+<tr><td><a href="/en/country/de/">Germany</a></td><td><span class="tagpill t-standard">Progressive standard</span></td><td>45%</td><td>23%</td><td>$38,500</td><td>+$8,500</td><td>4</td></tr>
+<tr><td><a href="/en/country/kr/">Korea, Rep.</a></td><td><span class="tagpill t-standard">Progressive standard</span></td><td>45%</td><td>23%</td><td>$38,500</td><td>+$8,500</td><td>3</td></tr>
+<tr><td><a href="/en/country/za/">South Africa</a></td><td><span class="tagpill t-standard">Progressive standard</span></td><td>45%</td><td>23%</td><td>$38,500</td><td>+$8,500</td><td>4</td></tr>
+<tr><td><a href="/en/country/jp/">Japan</a></td><td><span class="tagpill t-standard">Progressive standard</span></td><td>45%</td><td>23%</td><td>$38,500</td><td>+$8,500</td><td>5</td></tr>
+<tr><td><a href="/en/country/cn/">China</a></td><td><span class="tagpill t-standard">Progressive standard</span></td><td>45%</td><td>23%</td><td>$38,500</td><td>+$8,500</td><td>7</td></tr>
+<tr><td><a href="/en/country/nl/">Netherlands</a></td><td><span class="tagpill t-standard">Progressive standard</span></td><td>49%</td><td>25%</td><td>$37,500</td><td>+$7,500</td><td>2</td></tr>
+<tr><td><a href="/en/country/il/">Israel</a></td><td><span class="tagpill t-standard">Progressive standard</span></td><td>50%</td><td>25%</td><td>$37,500</td><td>+$7,500</td><td>2</td></tr>
+<tr><td><a href="/en/country/ca/">Canada</a></td><td><span class="tagpill t-standard">Progressive standard</span></td><td>53%</td><td>27%</td><td>$36,500</td><td>+$6,500</td><td>5</td></tr>
+<tr><td><a href="/en/country/at/">Austria</a></td><td><span class="tagpill t-standard">Progressive standard</span></td><td>55%</td><td>28%</td><td>$36,000</td><td>+$6,000</td><td>2</td></tr>
+</tbody>
+</table>
+</div>
+
+<h2>Progressive bracket engine: 29 countries (example income $50,000)</h2>
+<p class="note">These countries have structured bracket data: tax is accumulated band by band on the annual taxable income in local currency (Currency column), including the threshold/standard deduction (local column) and any nomad/new-resident concession. The effective rate = local tax converted at a snapshot FX rate (2025-10) ÷ gross income. Data is distilled from national tax authorities and PwC Worldwide Tax Summaries — rates are public facts, not paid aggregation data.</p>
+<div style="overflow-x:auto">
+<table class="tbl">
+<thead><tr>
+<th>Country</th>
+<th>Currency</th>
+<th>Bracket ladder (%)</th>
+<th>Threshold (local)</th>
+<th>Special regime</th>
+<th>Effective</th>
+<th>Net ($50,000)</th>
+<th>vs baseline</th>
+</tr></thead>
+<tbody>
+<tr><td><a href="/en/country/ae/">United Arab Emirates</a></td><td>AED</td><td>0%+</td><td>0</td><td>—</td><td>0%</td><td>$50,000</td><td>+$20,000</td></tr>
+<tr><td><a href="/en/country/hr/">Croatia</a></td><td>EUR</td><td>20% / 30%+</td><td>0</td><td><span class="tagpill t-concession">Croatia digital-nomad exemption · exempt</span></td><td>0%</td><td>$50,000</td><td>+$20,000</td></tr>
+<tr><td><a href="/en/country/my/">Malaysia</a></td><td>MYR</td><td>0% / 1% / 3% / 6% / 11% / 19% / 25% / 26% / 28% / 30%+</td><td>5,000</td><td><span class="tagpill t-concession">Malaysia DE Rantau foreign-income exemption · exempt</span></td><td>0%</td><td>$50,000</td><td>+$20,000</td></tr>
+<tr><td><a href="/en/country/sg/">Singapore</a></td><td>SGD</td><td>0% / 2% / 3.5% / 7% / 11.5% / 15% / 18% / 19% / 19.5% / 20% / 22% / 23% / 24%+</td><td>20,000</td><td><span class="tagpill t-concession">Singapore foreign-income exemption · exempt</span></td><td>0%</td><td>$50,000</td><td>+$20,000</td></tr>
+<tr><td><a href="/en/country/hk/">Hong Kong SAR, China</a></td><td>HKD</td><td>2% / 6% / 10% / 14% / 17%+</td><td>132,000</td><td><span class="tagpill t-concession">Hong Kong territorial basis · exempt</span></td><td>0%</td><td>$50,000</td><td>+$20,000</td></tr>
+<tr><td><a href="/en/country/rs/">Serbia</a></td><td>RSD</td><td>10% / 25%+</td><td>410,652</td><td>—</td><td>9.2%</td><td>$45,400</td><td>+$15,400</td></tr>
+<tr><td><a href="/en/country/ro/">Romania</a></td><td>RON</td><td>10%+</td><td>0</td><td>—</td><td>10%</td><td>$45,000</td><td>+$15,000</td></tr>
+<tr><td><a href="/en/country/tw/">Taiwan, China</a></td><td>TWD</td><td>5% / 12% / 20% / 30% / 40%+</td><td>0</td><td>—</td><td>10.8%</td><td>$44,600</td><td>+$14,600</td></tr>
+<tr><td><a href="/en/country/uy/">Uruguay</a></td><td>UYU</td><td>10% / 15% / 24% / 25% / 27% / 31% / 36%+</td><td>546,000</td><td>—</td><td>10.9%</td><td>$44,550</td><td>+$14,550</td></tr>
+<tr><td><a href="/en/country/kh/">Cambodia</a></td><td>KHR</td><td>0% / 5% / 10% / 15% / 20%+</td><td>18,000,000</td><td>—</td><td>11.1%</td><td>$44,450</td><td>+$14,450</td></tr>
+<tr><td><a href="/en/country/mt/">Malta</a></td><td>EUR</td><td>0% / 15% / 25% / 35%+</td><td>12,000</td><td>—</td><td>11.2%</td><td>$44,400</td><td>+$14,400</td></tr>
+<tr><td><a href="/en/country/cn/">China</a></td><td>CNY</td><td>3% / 10% / 20% / 25% / 30% / 35% / 45%+</td><td>60,000</td><td>—</td><td>12.1%</td><td>$43,950</td><td>+$13,950</td></tr>
+<tr><td><a href="/en/country/jp/">Japan</a></td><td>JPY</td><td>5% / 10% / 20% / 23% / 33% / 40% / 45%+</td><td>480,000</td><td>—</td><td>13%</td><td>$43,500</td><td>+$13,500</td></tr>
+<tr><td><a href="/en/country/gr/">Greece</a></td><td>EUR</td><td>9% / 22% / 28% / 36% / 44%+</td><td>0</td><td><span class="tagpill t-concession">Greece Art. 5C — 50% relief · 50%</span></td><td>13.3%</td><td>$43,350</td><td>+$13,350</td></tr>
+<tr><td><a href="/en/country/kr/">Korea, Rep.</a></td><td>KRW</td><td>6% / 15% / 24% / 35% / 38% / 40% / 42% / 45%+</td><td>1,500,000</td><td>—</td><td>14.9%</td><td>$42,550</td><td>+$12,550</td></tr>
+<tr><td><a href="/en/country/cz/">Czechia</a></td><td>CZK</td><td>15% / 23%+</td><td>0</td><td>—</td><td>15%</td><td>$42,500</td><td>+$12,500</td></tr>
+<tr><td><a href="/en/country/hu/">Hungary</a></td><td>HUF</td><td>15%+</td><td>0</td><td>—</td><td>15%</td><td>$42,500</td><td>+$12,500</td></tr>
+<tr><td><a href="/en/country/it/">Italy</a></td><td>EUR</td><td>23% / 35% / 43%+</td><td>0</td><td><span class="tagpill t-concession">Italy impatriate regime · 15%</span></td><td>15%</td><td>$42,500</td><td>+$12,500</td></tr>
+<tr><td><a href="/en/country/th/">Thailand</a></td><td>THB</td><td>0% / 5% / 10% / 15% / 20% / 25% / 30% / 35%+</td><td>150,000</td><td><span class="tagpill t-concession">Thailand LTR (highly-skilled) · 17%</span></td><td>15.6%</td><td>$42,200</td><td>+$12,200</td></tr>
+<tr><td><a href="/en/country/co/">Colombia</a></td><td>COP</td><td>19% / 28% / 33% / 35% / 37% / 39%+</td><td>54,280,910</td><td>—</td><td>16.9%</td><td>$41,550</td><td>+$11,550</td></tr>
+<tr><td><a href="/en/country/ee/">Estonia</a></td><td>EUR</td><td>22%+</td><td>7,848</td><td>—</td><td>18.3%</td><td>$40,850</td><td>+$10,850</td></tr>
+<tr><td><a href="/en/country/ge/">Georgia</a></td><td>GEL</td><td>20%+</td><td>0</td><td>—</td><td>20%</td><td>$40,000</td><td>+$10,000</td></tr>
+<tr><td><a href="/en/country/pt/">Portugal</a></td><td>EUR</td><td>13% / 16.5% / 22% / 25% / 32% / 35.5% / 43.5% / 45% / 48%+</td><td>0</td><td><span class="tagpill t-concession">Portugal IFICI (NHR 2.0) · 20%</span></td><td>20%</td><td>$40,000</td><td>+$10,000</td></tr>
+<tr><td><a href="/en/country/am/">Armenia</a></td><td>AMD</td><td>20%+</td><td>0</td><td>—</td><td>20%</td><td>$40,000</td><td>+$10,000</td></tr>
+<tr><td><a href="/en/country/id/">Indonesia</a></td><td>IDR</td><td>5% / 15% / 25% / 30% / 35%+</td><td>54,000,000</td><td>—</td><td>21%</td><td>$39,500</td><td>+$9,500</td></tr>
+<tr><td><a href="/en/country/vn/">Viet Nam</a></td><td>VND</td><td>5% / 10% / 15% / 20% / 25% / 30% / 35%+</td><td>132,000,000</td><td>—</td><td>22.1%</td><td>$38,950</td><td>+$8,950</td></tr>
+<tr><td><a href="/en/country/mx/">Mexico</a></td><td>MXN</td><td>1.92% / 6.4% / 10.88% / 16% / 17.92% / 21.36% / 23.52% / 30% / 32% / 34% / 35%+</td><td>0</td><td>—</td><td>22.8%</td><td>$38,600</td><td>+$8,600</td></tr>
+<tr><td><a href="/en/country/es/">Spain</a></td><td>EUR</td><td>19% / 24% / 30% / 37% / 45% / 47%+</td><td>0</td><td><span class="tagpill t-concession">Spain “Beckham law” · 24%</span></td><td>24%</td><td>$38,000</td><td>+$8,000</td></tr>
+<tr><td><a href="/en/country/tr/">Turkiye</a></td><td>TRY</td><td>15% / 20% / 27% / 35% / 40%+</td><td>0</td><td>—</td><td>30%</td><td>$35,000</td><td>+$5,000</td></tr>
+</tbody>
+</table>
+</div>
+
+<h2>The four regime types</h2><ul class="list">
+<li><span class="tagpill t-exempt">Tax-free</span><span class="meta">Personal income is essentially untaxed — domestic and foreign alike.</span></li>
+<li><span class="tagpill t-territorial">Territorial</span><span class="meta">Only locally sourced income is taxed; foreign-source income is generally exempt.</span></li>
+<li><span class="tagpill t-concession">Special concession</span><span class="meta">A dedicated concession for new residents and nomads yields a rate below the nominal scale.</span></li>
+<li><span class="tagpill t-standard">Progressive standard</span><span class="meta">Worldwide income is taxed progressively; liability depends on residency and deductions.</span></li>
+</ul>
+
+<h2>FAQ</h2>
+<details><summary>Which countries and cities are cheapest tax-wise for digital nomads?</summary><p>By our rule-dictionary estimate, the friendliest destinations include: United Arab Emirates（Tax-free, foreign income exempt）, Georgia（Territorial, foreign income exempt）, Cambodia（Territorial, foreign income exempt）, Malaysia（Territorial, foreign income exempt）, Thailand（Territorial, foreign income exempt）, Singapore（Territorial, foreign income exempt）. &quot;Tax-free&quot; regimes levy essentially no personal income tax; &quot;territorial&quot; regimes tax only locally sourced income while foreign-source income is generally exempt. Your actual liability still depends on residency status and source of income.</p></details>
+<details><summary>How is this tax estimate calculated — is it accurate?</summary><p>It uses a progressive bracket engine: for 29 countries with structured data, tax is accumulated band by band on annual taxable income in local currency (including thresholds/standard deductions and any concession), converted to USD at a snapshot FX rate (2025-10) to derive an effective rate; other countries fall back to a coarse rule-dictionary approximation. It models no deductions, tax treaties or remittance rules. It is for directional comparison only, not tax advice.</p></details>
+<details><summary>What is a “territorial” tax regime?</summary><p>A territorial regime taxes only locally sourced income; foreign-source income is usually untaxed or exempt — as in Hong Kong, Singapore, Malaysia, Thailand (remittance basis) and Georgia. It suits remote workers and freelancers earning from overseas clients.</p></details>
+<details><summary>What are the special concession rates in Portugal, Spain and Greece?</summary><p>These are “concession” regimes: flat or reduced rates for qualifying new tax residents, nomads or tech talent — e.g. Spain’s “Beckham law” 24%, Portugal’s IFICI 20%, Greece’s 50% relief for new residents. Eligibility depends on visa type, length of stay and income source; always verify the official conditions.</p></details>
+<details><summary>How much more can I keep by moving from a high-tax EU/US region?</summary><p>This page uses a reference effective rate of 40% (a directional high-tax EU/US figure) as the baseline. At $50,000 gross income, a tax-free destination would keep roughly $20,000 more per year. This is a coarse upper-bound reference, not a promise.</p></details>
+<details><summary>Can I use this result directly for decisions?</summary><p>No — do not rely on it alone. This tool is a directional estimate and not tax advice; actual liability depends on residency, tax treaties, social security and filing duties. Consult a tax professional and verify official rules before major decisions.</p></details>
+
+<h2>Disclaimer</h2>
+<div class="notice">This page is a coarse rule-dictionary estimate. It models no progressive brackets, deductions, tax treaties or remittance rules, and is not tax advice. Your actual liability depends on residency status, income source and bilateral treaties — consult a tax professional and verify official sources before major decisions.</div>
+<a class="cta" href="/en/">Start my free matching quiz →</a>
+<p class="cta-sub">Top 5 cities scored on 11 dimensions, then a per-city tax estimate</p></main>
+<footer><div class="wrap">
+<p>Data sources: official open data & public statistical estimates · Open-Meteo (CC BY 4.0) · GeoNames (CC BY 4.0) · WHO 2021 air quality guideline bands · snapshot dates on each card. Visa policies change frequently — always verify with official channels before travelling. This site is a decision-support tool and is not immigration, visa, legal, tax, medical, or financial advice.</p>
+<p style="margin-top:6px">Scoring methodology & data licences: <a href="/en/methodology/" style="color:var(--pine)">Methodology</a> · <a href="/en/privacy/" style="color:var(--pine)">Privacy</a> · <a href="/en/terms/" style="color:var(--pine)">Terms</a> · <a href="/en/disclaimer/" style="color:var(--pine)">Disclaimer</a> · © 栖居罗盘 Habitat Compass</p>
+<p class="fresh">Data updated for Q4 2026 · Spotted inaccurate rent or internet speed? Drop a note to <a href="mailto:hi@habitatcompass.com" style="color:var(--pine)">hi@habitatcompass.com</a> and help fellow nomads.</p>
+</div></footer>
+</body>
+</html>

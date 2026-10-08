@@ -78,7 +78,7 @@ const PRIV_ZH: Array<[string, string]> = [
   ['无同意横幅声明', '不设 Cookie 同意横幅'],
   ['无追踪 Cookie', '无追踪 Cookie'],
   ['无第三方分析', '无第三方分析与广告'],
-  ['无 AI 处理', '无 AI 模型处理'],
+  ['AEO 爬虫披露（非"无 AI"绝对声明）', 'GPTBot / ClaudeBot / PerplexityBot'],
   ['仅设备本地存储', '没有任何数据上传到服务器'],
   ['无国际传输', '不存在国际数据传输'],
   ['保存期至用户清除', '直到你自行清除'],
@@ -108,7 +108,7 @@ const PRIV_EN: Array<[string, string]> = [
   ['no consent banner', 'no consent banner'],
   ['no tracking cookies', 'No tracking cookies'],
   ['no analytics/ads', 'No third-party analytics'],
-  ['no AI processing', 'No AI processing'],
+  ['AEO crawler disclosure (non-absolute "no AI")', 'GPTBot / ClaudeBot / PerplexityBot'],
   ['local only', 'Nothing is uploaded to any server'],
   ['no international transfer', 'no international data transfer'],
   ['retention until erase', 'until you erase it'],
@@ -160,7 +160,7 @@ const TERMS_ZH: Array<[string, string]> = [
   ['Open-Meteo CC BY', 'Open-Meteo'],
   ['OEJTS 许可', 'CC BY-NC-SA 4.0'],
   ['字体 OFL 署名', 'SIL Open Font License'],
-  ['适用法域占位', '占位：待正式部署后补充法域与管辖条款'],
+  ['适用法域（运营者主要经营地）', '运营者主要经营地所在法域的法律'],
   ['无付费残留', '¥29.9|退款|撤回权|订单|计费|买断'],
 ];
 for (const [name, kw] of TERMS_ZH) {
@@ -186,7 +186,7 @@ const TERMS_EN: Array<[string, string]> = [
   ['GeoNames CC BY', 'GeoNames (CC BY 4.0)'],
   ['OEJTS licence', 'CC BY-NC-SA 4.0'],
   ['typeface OFL attribution', 'SIL Open Font License'],
-  ['governing law placeholder', 'placeholder: jurisdiction and venue to be added'],
+  ['governing law (operator principal place)', 'law of the jurisdiction where the operator is principally established'],
   ['no paid residue', '¥29\\.9|no refunds|withdrawal|orders|billing|one-time purchase'],
 ];
 for (const [name, kw] of TERMS_EN) {
@@ -227,6 +227,16 @@ check('Footer 按语言切换前缀（base = en ? /en）', footerSrc.includes("l
 check('Footer 挂载于三 Tab 屏幕（TAB_SCREENS 判断）', fs.readFileSync(path.join(ROOT, 'src/App.tsx'), 'utf8').includes('TAB_SCREENS.includes(screen) && <Footer />'));
 check('ui 词典 zh：footer 三键', footerSrc.includes("'footer.terms': '用户协议'") && footerSrc.includes("'footer.privacy': '隐私政策'") && footerSrc.includes("'footer.disclaimer': '免责声明'"));
 check('ui 词典 en：footer 三键', footerSrc.includes("'footer.terms': 'Terms of Service'") && footerSrc.includes("'footer.privacy': 'Privacy Policy'") && footerSrc.includes("'footer.disclaimer': 'Disclaimer'"));
+
+// 融合页脚：Landing 不再自绘 footer，全站仅一处 Footer 渲染，数据/字体许可收敛进法律区
+const landingSrc = fs.readFileSync(path.join(ROOT, 'src/components/Landing.tsx'), 'utf8');
+check('Landing 不再自绘内联 footer（消除重复堆叠）', !landingSrc.includes('landing.footer.'));
+check('Landing 不再引用已移除的 landing.footer.* 键', !landingSrc.includes('landing.footer.data') && !landingSrc.includes('landing.footer.fonts'));
+check('Footer 含方法论链接与数据许可归纳链接', footerSrc.includes('/methodology/') && footerSrc.includes('footer.attribution'));
+check('ui 词典 zh：footer.methodology/attribution 齐备', footerSrc.includes("'footer.methodology': '方法论'") && footerSrc.includes("'footer.attribution':"));
+check('ui 词典 en：footer.methodology/attribution 齐备', footerSrc.includes("'footer.methodology': 'Methodology'") && footerSrc.includes("'footer.attribution':"));
+check('landing.footer.* 死键已清除', !footerSrc.includes("'landing.footer.brand'") && !footerSrc.includes("'landing.footer.fonts'") && !footerSrc.includes("'landing.footer.data'"));
+check('Footer 单一渲染锚点（App 每次仅 <Footer /> 一处）', (fs.readFileSync(path.join(ROOT, 'src/App.tsx'), 'utf8').match(/<Footer\b/g) ?? []).length === 1);
 
 console.log('\n══ 六、sitemap 收录 ══');
 const sitemap = read('sitemap.xml') ?? '';
@@ -279,7 +289,7 @@ for (const [name, kw] of DISC_EN) check(`en 免责页：${name}`, htmls['en/disc
 console.log('\n══ 八、付费系统全量下线（第十四轮：功能全免费开放） ══');
 check('PayModal 组件已删除', !fs.existsSync(path.join(ROOT, 'src/components/billing/PayModal.tsx')));
 check('ProIntro 组件已删除', !fs.existsSync(path.join(ROOT, 'src/components/billing/ProIntro.tsx')));
-const spaSrc = ['src/App.tsx', 'src/components/Landing.tsx', 'src/components/ProfileScreen.tsx', 'src/components/VersionPicker.tsx', 'src/lib/storage.ts', 'src/lib/telemetry.ts']
+const spaSrc = ['src/App.tsx', 'src/components/Landing.tsx', 'src/components/ProfileScreen.tsx', 'src/components/Quiz.tsx', 'src/lib/storage.ts', 'src/lib/telemetry.ts']
   .map((f) => fs.readFileSync(path.join(ROOT, f), 'utf8'))
   .join('\n');
 for (const token of ['proUnlocked', 'createProOrder', 'resetBilling', 'PRO_PRICE_CNY', 'PayChannel', 'ProOrder', 'PayModal', 'ProIntro', 'pro_intro_view', 'pay_click', 'unlock_success']) {

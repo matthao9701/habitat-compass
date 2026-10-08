@@ -150,7 +150,7 @@ function LiteCompareCard({ result }: { result: AssessmentResult }) {
     return (
       <div className="rounded-xl border hairline bg-card/70 p-5">
         <p className="eyebrow mb-2">cross-version compare</p>
-        <h3 className="mb-2 font-heading text-base font-bold text-ink">{t('bill.pro.section.diff')}</h3>
+        <h3 className="mb-2 font-heading text-base font-bold text-ink">{t('report.bigfive.compare')}</h3>
         <p className="text-[13px] leading-relaxed text-ink-soft">
           {t('bf.compare.empty')}
         </p>
@@ -169,7 +169,7 @@ function LiteCompareCard({ result }: { result: AssessmentResult }) {
   return (
     <div className="rounded-xl border hairline bg-card/70 p-5">
       <p className="eyebrow mb-2">cross-version compare</p>
-      <h3 className="mb-4 font-heading text-base font-bold text-ink">{t('bill.pro.section.diff')}</h3>
+      <h3 className="mb-4 font-heading text-base font-bold text-ink">{t('report.bigfive.compare')}</h3>
 
       <div className="mb-4 grid gap-3 sm:grid-cols-2">
         <div className="rounded-lg border border-line bg-paper p-3.5">

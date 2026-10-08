@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import CompassMark from './CompassMark';
-import VersionPicker from './VersionPicker';
 import { AtlasCard, CityDrawer } from './atlas/AtlasCard';
 import SentenceFilter, { DEFAULT_FILTER, filterCities, type FilterState } from './atlas/SentenceFilter';
 import { cities } from '../data';
@@ -12,7 +11,7 @@ import type { City } from '../data/types';
 import { useI18n, translate, getCurrentLang } from '../i18n';
 
 interface LandingProps {
-  onStart: (version?: 'lite' | 'pro') => void;
+  onStart: () => void;
   onDemo: (profileId: string) => void;
 }
 
@@ -47,8 +46,6 @@ function steps(): { no: string; title: string; desc: string }[] {
 export default function Landing({ onStart, onDemo }: LandingProps) {
   const { t } = useI18n();
   const [atlasRegion, setAtlasRegion] = useState<string>('all');
-  /** 第十一轮入口收纳：主入口统一弹出版本选择 */
-  const [pickerOpen, setPickerOpen] = useState(false);
   /** 编辑部风改版：首屏句子过滤器 + 画册卡片 + 速览抽屉 */
   const [filter, setFilter] = useState<FilterState>(DEFAULT_FILTER);
   const [drawerCity, setDrawerCity] = useState<City | null>(null);
@@ -56,14 +53,6 @@ export default function Landing({ onStart, onDemo }: LandingProps) {
 
   return (
     <div className="grain min-h-screen bg-paper text-ink">
-      <VersionPicker
-        open={pickerOpen}
-        onClose={() => setPickerOpen(false)}
-        onPick={(v) => {
-          setPickerOpen(false);
-          onStart(v);
-        }}
-      />
       {/* 顶部导航 */}
       <header className="mx-auto flex max-w-almanac items-center justify-between gap-3 px-5 py-6 sm:px-6 md:px-10">
         <div className="flex min-w-0 items-center gap-3 text-ink">
@@ -75,7 +64,7 @@ export default function Landing({ onStart, onDemo }: LandingProps) {
             </p>
           </div>
         </div>
-        <button type="button" onClick={() => setPickerOpen(true)} className="btn-clay shrink-0 !px-4 !py-2.5 text-sm sm:!px-6">
+        <button type="button" onClick={onStart} className="btn-clay shrink-0 !px-4 !py-2.5 text-sm sm:!px-6">
           {t('nav.startQuiz')}
         </button>
       </header>
@@ -160,7 +149,7 @@ export default function Landing({ onStart, onDemo }: LandingProps) {
             ))}
           </div>
           <div className="flex flex-wrap items-center gap-3">
-            <button type="button" onClick={() => setPickerOpen(true)} className="btn-clay flex-1 sm:flex-none">
+            <button type="button" onClick={onStart} className="btn-clay flex-1 sm:flex-none">
               {t('landing.hero.cta')}
               <span className="font-data text-xs opacity-80">→</span>
             </button>
@@ -416,8 +405,8 @@ export default function Landing({ onStart, onDemo }: LandingProps) {
       {/* 速览抽屉（不跳页，右侧滑出） */}
       <CityDrawer city={drawerCity} onClose={() => setDrawerCity(null)} formatMoney={formatMoney} />
 
-      {/* 结尾 CTA：版本选择 */}
-      <section className="mx-auto max-w-almanac px-6 py-20 text-center md:px-10 md:py-28">
+      {/* 结尾 CTA：统一入口（底边留白收敛，与全站 Footer 自然衔接） */}
+      <section className="mx-auto max-w-almanac px-6 pb-14 pt-20 text-center md:px-10 md:pb-16 md:pt-28">
         <p className="eyebrow mb-5">04 / set sail</p>
         <h2 className="mx-auto max-w-2xl font-display text-3xl font-bold leading-snug tracking-tight md:text-[44px]">
           {t('landing.version.lead')}
@@ -427,29 +416,29 @@ export default function Landing({ onStart, onDemo }: LandingProps) {
         </p>
 
         <div className="mx-auto mt-12 grid max-w-3xl gap-5 text-left md:grid-cols-2">
-          {/* 简易版卡片 */}
+          {/* 核心段：人人先答 */}
           <div className="flex flex-col rounded-xl border border-line bg-card p-6 md:p-7">
-            <p className="eyebrow mb-2">lite edition · free</p>
-            <h3 className="font-heading text-xl font-bold text-ink">{t('landing.version.lite')}</h3>
+            <p className="eyebrow mb-2">core · free</p>
+            <h3 className="font-heading text-xl font-bold text-ink">{t('landing.version.core')}</h3>
             <p className="mt-2 text-sm leading-relaxed text-ink-soft">
-              {t('landing.version.liteDesc')}
+              {t('landing.version.coreDesc')}
             </p>
             <div className="mt-5 flex-1" />
             <p className="mb-4 font-data text-2xl font-semibold text-pine">{t('landing.version.litePrice')}</p>
-            <button type="button" onClick={() => onStart()} className="btn-clay w-full">
-              {t('landing.version.liteCta')}
+            <button type="button" onClick={onStart} className="btn-clay w-full">
+              {t('landing.version.coreCta')}
             </button>
           </div>
 
-          {/* 标准版卡片（PRO） */}
+          {/* 深化段：核心段结束后可选 */}
           <div className="relative flex flex-col rounded-xl border-2 border-ochre bg-card p-6 md:p-7">
             <span className="absolute -top-2.5 right-5 rounded-full bg-ochre px-2.5 py-0.5 font-data text-[10px] font-medium tracking-[0.2em] text-paper">
               PRO
             </span>
-            <p className="eyebrow mb-2">standard edition · free</p>
-            <h3 className="font-heading text-xl font-bold text-ink">{t('landing.version.pro')}</h3>
+            <p className="eyebrow mb-2">deepen · free</p>
+            <h3 className="font-heading text-xl font-bold text-ink">{t('landing.version.deepen')}</h3>
             <p className="mt-2 text-sm leading-relaxed text-ink-soft">
-              {t('landing.version.proDesc')}
+              {t('landing.version.deepenDesc')}
             </p>
             <div className="mt-5 flex-1" />
             <p className="mb-4 font-data text-2xl font-semibold text-clay">
@@ -457,44 +446,18 @@ export default function Landing({ onStart, onDemo }: LandingProps) {
             </p>
             <button
               type="button"
-              onClick={() => onStart('pro')}
+              onClick={onStart}
               className="w-full rounded-lg border border-clay px-4 py-2.5 text-sm font-medium text-clay transition-colors hover:bg-clay/10"
             >
-              {t('landing.version.proCta')}
+              {t('landing.version.deepenCta')}
             </button>
           </div>
         </div>
 
-        <button type="button" onClick={() => setPickerOpen(true)} className="mt-8 text-sm text-ink-soft underline-offset-4 transition-colors hover:text-clay hover:underline">
+        <p className="mt-8 text-sm text-ink-soft">
           {t('landing.version.freeCta')}
-        </button>
+        </p>
       </section>
-
-      <footer className="border-t hairline">
-        <div className="mx-auto flex max-w-almanac flex-col gap-3 px-6 py-8 text-[11px] text-ink-soft md:flex-row md:items-center md:justify-between md:px-10">
-          <div className="flex items-center gap-2">
-            <CompassMark size={18} />
-            <span className="font-mono uppercase tracking-eyebrow">{t('landing.footer.brand')}</span>
-          </div>
-          <div className="flex flex-col gap-1 md:items-end">
-            <p>{t('landing.footer.disclaimer')}</p>
-            <p className="font-light">{t('landing.footer.data')}</p>
-            <p className="font-light">{t('landing.footer.fonts')}</p>
-            {/* 信任锚点：数据时效 + 社群纠错邮箱 */}
-            <p className="font-mono text-[10px] uppercase tracking-eyebrow">{t('trust.dataUpdated')}</p>
-            <p className="font-light">
-              {t('trust.contactLead')}{' '}
-              <a
-                href="mailto:hi@habitatcompass.com"
-                className="text-pine underline decoration-pine/30 underline-offset-4 hover:decoration-pine"
-              >
-                hi@habitatcompass.com
-              </a>
-              {t('trust.contactTail')}
-            </p>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }

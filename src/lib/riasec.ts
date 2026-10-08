@@ -91,7 +91,8 @@ export function tagRepeats(
 ): Map<string, number> {
   const includeRiasec = options?.includeRiasec ?? true;
   const repeats = new Map<string, number>();
-  if (answers.version !== 'pro') return repeats;
+  // 深化段判定（与 engine.isDeep 一致）：有 IPIP 作答才算标准版/深化版
+  if (!answers.ipip || Object.keys(answers.ipip).length === 0) return repeats;
 
   const add = (tag: string): void => {
     if (!answers.interests.includes(tag)) return;

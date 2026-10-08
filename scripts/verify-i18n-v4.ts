@@ -64,10 +64,11 @@ console.log('== [1] 语言包键完整性（zh/en 键集合一致） ==');
     missingEn.length === 0 && missingZh.length === 0,
     missingEn.length ? `缺 en: ${missingEn.slice(0, 8).join(',')}` : missingZh.length ? `缺 zh: ${missingZh.slice(0, 8).join(',')}` : undefined,
   );
-  // 空值检查（landing.hero.l2b 为英文语序下合法空串：l2a 已含 "you"）
-  const EMPTY_OK = new Set(['landing.hero.l2b']);
+  // 空值检查（合法空串：landing.hero.l2b 在英文语序下由 l2a 承接 "you"；
+  // internet.band.0 为「无带宽分级」的占位标签，渲染层以三元表达式跳过，语义上应为空）
+  const EMPTY_OK = new Set(['landing.hero.l2b', 'internet.band.0']);
   const emptyEn = enKeys.filter((k) => !EMPTY_OK.has(k) && !DICTS.en[k].trim());
-  const emptyZh = zhKeys.filter((k) => !DICTS.zh[k].trim());
+  const emptyZh = zhKeys.filter((k) => !EMPTY_OK.has(k) && !DICTS.zh[k].trim());
   ok('无空词条', emptyEn.length === 0 && emptyZh.length === 0, `${emptyEn.length + emptyZh.length} 个空值`);
   // REVERSE_ZH 重复 zh 值（同值多键会覆盖反查）
   const seen = new Map<string, string>();

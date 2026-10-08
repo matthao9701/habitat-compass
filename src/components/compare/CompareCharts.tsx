@@ -135,7 +135,7 @@ export default function CompareCharts({ rows }: { rows: CompareRow[] }) {
               <table className="w-full min-w-[420px] border-collapse font-mono text-[11px]">
                 <thead>
                   <tr className="border-b border-ink/15 text-left">
-                    <th className="py-2 pr-3 font-medium text-ink-soft">{t('bill.pro.section.compareCol.dim')}</th>
+                    <th className="py-2 pr-3 font-medium text-ink-soft">{t('cmp.chart.dimCol')}</th>
                     {rows.map((r) => (
                       <th key={r.city.id} className="py-2 pr-3 text-right font-medium">
                         <span className="flex items-center justify-end gap-1.5">

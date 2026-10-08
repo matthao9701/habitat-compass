@@ -1,9 +1,9 @@
-// ABOUTME: 全站页脚——品牌 + 法律链接（用户协议 / 隐私政策 / 免责声明），编辑部风视觉强化
+// ABOUTME: 全站页脚——品牌 + 信任锚点 + 法律与合规（含数据/字体许可 → 方法论），单一规整区块
 import CompassMark from './CompassMark';
 import { useI18n } from '../i18n';
 
 /** 法律链接小图标（描边风格，随文字 currentColor） */
-function LegalIcon({ kind }: { kind: 'terms' | 'privacy' | 'disclaimer' }) {
+function LegalIcon({ kind }: { kind: 'terms' | 'privacy' | 'disclaimer' | 'methodology' }) {
   const common = {
     width: 15,
     height: 15,
@@ -29,6 +29,15 @@ function LegalIcon({ kind }: { kind: 'terms' | 'privacy' | 'disclaimer' }) {
       </svg>
     );
   }
+  if (kind === 'methodology') {
+    return (
+      <svg {...common}>
+        <path d="M4 16.5V5.5a2 2 0 0 1 2-2h3v13H6a2 2 0 0 0-2 2Z" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round" />
+        <path d="M16 16.5V5.5a2 2 0 0 0-2-2h-3v13h3a2 2 0 0 1 2 2Z" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round" />
+        <path d="M7.4 7.6h.9M7.4 10.2h.9M11.7 7.6h.9M11.7 10.2h.9" stroke="currentColor" strokeWidth="1.1" strokeLinecap="round" />
+      </svg>
+    );
+  }
   return (
     <svg {...common}>
       <circle cx="10" cy="10" r="7.5" stroke="currentColor" strokeWidth="1.3" />
@@ -41,18 +50,19 @@ function LegalIcon({ kind }: { kind: 'terms' | 'privacy' | 'disclaimer' }) {
 export default function Footer() {
   const { t, lang } = useI18n();
   const base = lang === 'en' ? '/en' : '';
-  const links: { kind: 'terms' | 'privacy' | 'disclaimer'; label: string; href: string }[] = [
+  const links: { kind: 'terms' | 'privacy' | 'disclaimer' | 'methodology'; label: string; href: string }[] = [
     { kind: 'terms', label: t('footer.terms'), href: `${base}/terms/` },
     { kind: 'privacy', label: t('footer.privacy'), href: `${base}/privacy/` },
     { kind: 'disclaimer', label: t('footer.disclaimer'), href: `${base}/disclaimer/` },
+    { kind: 'methodology', label: t('footer.methodology'), href: `${base}/methodology/` },
   ];
   const year = new Date().getFullYear();
 
   return (
-    <footer className="mt-16 border-t hairline bg-paper-deep/45">
+    <footer className="border-t hairline bg-paper-deep/50">
       <div className="mx-auto max-w-5xl px-6 py-11 md:px-10">
         <div className="flex flex-col gap-9 md:flex-row md:items-start md:justify-between">
-          {/* 品牌 */}
+          {/* 品牌 + 信任锚点 */}
           <div className="max-w-sm">
             <div className="flex items-center gap-3">
               <span className="text-clay">
@@ -68,11 +78,12 @@ export default function Footer() {
                 <p className="mt-1 text-[11.5px] text-ink-soft">{t('footer.tagline')}</p>
               </div>
             </div>
-            {/* 社群信任：数据时效 + 纠错邮箱 */}
+            {/* 数据时效胶囊 */}
             <p className="mt-5 inline-flex items-center gap-1.5 rounded-full border hairline bg-card px-3 py-1 font-mono text-[10px] uppercase tracking-eyebrow text-ink-soft">
               <span className="h-1.5 w-1.5 rounded-full bg-moss" aria-hidden="true" />
               {t('trust.dataUpdated')}
             </p>
+            {/* 社群纠错邮箱 */}
             <p className="mt-3 text-[12px] leading-[1.8] text-ink-soft">
               {t('trust.contactLead')}{' '}
               <a
@@ -85,7 +96,7 @@ export default function Footer() {
             </p>
           </div>
 
-          {/* 法律与合规 */}
+          {/* 法律与合规（协议 + 方法论，数据/字体许可归此） */}
           <nav aria-label={t('footer.legalHeading')} className="md:pt-0.5">
             <p className="font-mono text-[10px] uppercase tracking-eyebrow text-ink-soft">
               {t('footer.legalHeading')}
@@ -104,6 +115,16 @@ export default function Footer() {
                 </a>
               ))}
             </div>
+            {/* 数据 / 字体许可：收敛为一句，详见方法论页 */}
+            <p className="mt-3.5 max-w-md text-[11px] leading-[1.75] text-ink-soft">
+              {t('footer.attribution')}{' '}
+              <a
+                href={`${base}/methodology/`}
+                className="text-pine underline decoration-pine/30 underline-offset-4 transition-colors hover:decoration-pine"
+              >
+                {t('footer.methodology')}
+              </a>
+            </p>
           </nav>
         </div>
 

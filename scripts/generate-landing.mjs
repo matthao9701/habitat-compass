@@ -9,6 +9,10 @@ import { execFileSync } from 'node:child_process';
 // 注意：tsx 对静态 import 的 .ts 说明符不做命名导出链接，须用动态 import。
 const { ENTRY_NOTE_EN } = await import('../src/i18n/entryNotes.ts');
 const { VISA_OVERVIEW_EN, VISA_LABEL_EN, RENTAL_EN, CURRENCY_EN, LANGUAGE_EN } = await import('../src/i18n/countryGlossary.ts');
+// 税负规则字典（V1）：与前端同一事实源，静态页税率/税制与运行时展示口径一致。
+const { TAX_RULES, TAX_BASELINE_EFF_RATE } = await import('../src/data/taxRules.ts');
+// 分级税率数据集（V2 多国累进沙盒）：静态页的「分级引擎」区块与运行时 TaxPlanner 口径一致。
+const { TAX_BRACKETS, taxProfileForCountry, thresholdLocal, TAX_FX_ASOF } = await import('../src/data/taxBrackets.ts');
 
 // 数据层英译查表：命中输出英文，未命中回落原文（与 countryGlossary 的 pick 同策略）。
 const pick = (table, zh) => (zh == null ? '—' : table[zh] ?? zh);
@@ -223,6 +227,17 @@ h2[id]{scroll-margin-top:16px}
   .wrap{padding:0 16px}
 }
 .legal p code{background:var(--paper-deep);border-radius:6px;padding:1px 7px;font-size:13.5px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+table.tbl{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--paper-deep);border-radius:12px;overflow:hidden;margin:0 0 20px;font-size:14px}
+table.tbl th,table.tbl td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--paper-deep);vertical-align:top}
+table.tbl th{font-size:12px;color:var(--ink-soft);font-weight:700;letter-spacing:.3px;background:var(--paper-deep)}
+table.tbl tr:last-child td{border-bottom:none}
+table.tbl a{color:var(--pine);text-decoration:none}
+table.tbl a:hover{text-decoration:underline}
+.tagpill{display:inline-block;border-radius:999px;padding:1px 9px;font-size:12px;font-weight:700;border:1px solid}
+.tagpill.t-exempt{border-color:#5F7A5A;background:rgba(95,122,90,.12);color:#51694B}
+.tagpill.t-territorial{border-color:#7FA8B8;background:rgba(127,168,184,.14);color:#2F6A7D}
+.tagpill.t-concession{border-color:#B98A2F;background:rgba(185,138,47,.12);color:#8A5F0A}
+.tagpill.t-standard{border-color:#1F2421;background:rgba(31,36,33,.05);color:#6B6F6C}
 .erase{margin:8px 0 26px;border-left:4px solid var(--clay)}
 .erase h2{margin-top:0}
 .btn-danger{display:inline-block;background:var(--clay);color:#fff;border:none;font-weight:800;font-size:15px;padding:12px 22px;border-radius:12px;cursor:pointer;font-family:inherit}
@@ -287,6 +302,7 @@ ${jsonLd.map((j) => `<script type="application/ld+json">\n${JSON.stringify(j, nu
 <nav>
 <a href="${lang === 'zh' ? '/cities/' : '/en/cities/'}">${lang === 'zh' ? '城市索引' : 'Cities'}</a>
 <a href="${lang === 'zh' ? '/countries/' : '/en/countries/'}">${lang === 'zh' ? '国家索引' : 'Countries'}</a>
+<a href="${lang === 'zh' ? '/tax-calculator/' : '/en/tax-calculator/'}">${lang === 'zh' ? '税负测算' : 'Tax planner'}</a>
 <a href="${lang === 'zh' ? '/methodology/' : '/en/methodology/'}">${lang === 'zh' ? '方法论' : 'Methodology'}</a>
 ${langSwitch}
 </nav>
@@ -486,7 +502,7 @@ ${faqs.map((f) => `<details><summary>${esc(f.q)}</summary><p>${esc(f.a)}</p></de
     ? `${esc(city.countryZh)}：人均 GDP 约 $${Math.round(co.gdpPerCapitaUSD ?? 0).toLocaleString('en-US')}（World Bank），人类发展指数 ${co.hdi ?? '—'}${co.gpi ? `，和平指数排名 #${co.gpi.rank}（IEP 2024）` : ''}。`
     : `${cN}: GDP per capita ~$${Math.round(co.gdpPerCapitaUSD ?? 0).toLocaleString('en-US')} (World Bank), HDI ${co.hdi ?? '—'}${co.gpi ? `, Global Peace Index rank #${co.gpi.rank} (IEP 2024)` : ''}.`) : ''} <a href="${esc(countryLink)}">${lang === 'zh' ? `查看${esc(city.countryZh)}国家页 →` : `Open ${esc(cN)} country page →`}</a></p>
 <a class="cta" href="${lang === 'zh' ? '/' : '/en/'}">${lang === 'zh' ? '免费开始我的定居匹配测评 →' : 'Start my free matching quiz →'}</a>
-<p class="cta-sub">${lang === 'zh' ? '32 题简易版永久免费 · 无需注册 · 测评后按 11 维权重输出 Top 5 城市' : 'Lite quiz free forever · no signup · Top 5 cities scored on 11 dimensions'}</p>`;
+<p class="cta-sub">${lang === 'zh' ? '核心测评免费 · 无需注册 · 测评后按 11 维权重输出 Top 5 城市' : 'Free core quiz · no signup · Top 5 cities scored on 11 dimensions'}</p>`;
   // 城市页 OG 图：优先用该城实景图（city-images 文件名 = 城市 id），否则回落品牌封面。
   const cityImg = IMAGE_IDS.has(id) ? page(`/city-images/${id}.webp`) : undefined;
   return shell({
@@ -546,6 +562,7 @@ function renderCountryPage(co, lang) {
   <div class="card"><h3>${lang === 'zh' ? '腐败感知指数' : 'CPI'}</h3><div class="v">${co.cpi ?? '—'}<small>/100</small></div><div class="src">${lang === 'zh' ? '来源：Transparency International（手工快照）' : 'Source: Transparency International (hand snapshot)'}</div></div>
   <div class="card"><h3>${lang === 'zh' ? '生活质量' : 'Quality of life'}</h3><div class="v">${co.qolScore ?? '—'}</div><div class="src">${lang === 'zh' ? '来源：公开统计测算 · 生活质量指数' : 'Source: public statistical estimate · QoL index'}</div></div>
   <div class="card"><h3>${lang === 'zh' ? '税负参考' : 'Top tax rate'}</h3><div class="v">${co.taxTopRatePct != null ? `${co.taxTopRatePct}<small>${lang === 'zh' ? '% 最高档' : '% top rate'}</small>` : '—'}</div><div class="src">${lang === 'zh' ? '来源：手工快照 · 请以专业税务意见为准' : 'Source: hand snapshot · consult a tax professional'}</div></div>
+  <div class="card"><h3>${lang === 'zh' ? '税制类型' : 'Tax regime'}</h3><div class="v" style="font-size:16px">${(TAX_RULES[co.code] ? `<span class="tagpill t-${TAX_RULES[co.code].type}">${TAX_REGIME_LABEL[lang][TAX_RULES[co.code].type]}</span>` : '—')}</div><div class="src">${lang === 'zh' ? `详见 <a href="/tax-calculator/" style="color:var(--pine)">税负测算</a> · 方向性分类` : `See <a href="/en/tax-calculator/" style="color:var(--pine)">tax planner</a> · directional classification`}</div></div>
   <div class="card"><h3>${lang === 'zh' ? '数据快照日期' : 'Snapshot date'}</h3><div class="v" style="font-size:16px">${esc(co.updatedAt)}</div><div class="src">${lang === 'zh' ? '逐字段来源标注见方法论页' : 'Per-field sources on the methodology page'}</div></div>
 </div>
 <h2>${lang === 'zh' ? '常见问答' : 'FAQ'}</h2>
@@ -569,6 +586,7 @@ function renderEnHome() {
   <div class="card"><div class="k">City library</div><div class="v">200 cities</div><div class="meta"><a href="/en/cities/">Browse city guides</a> · cost, safety, climate, internet, air quality &amp; visa overview with sources</div></div>
   <div class="card"><div class="k">Country library</div><div class="v">65 countries</div><div class="meta"><a href="/en/countries/">Browse country pages</a> · GPI, HDI, connectivity &amp; long-stay notes</div></div>
   <div class="card"><div class="k">How scoring works</div><div class="v">3 tiers, 11 dimensions</div><div class="meta"><a href="/en/methodology/">Methodology</a> · weights, data licences &amp; update cadence</div></div>
+  <div class="card"><div class="k">Tax planner</div><div class="v">65 regimes · 29 brackets</div><div class="meta"><a href="/en/tax-calculator/">Tax calculator</a> · progressive bracket engine for 29 countries, 65-country regime classification, net income vs a high-tax baseline</div></div>
   <div class="card"><div class="k">Get started</div><div class="v">Free quiz</div><div class="meta"><a href="/">Start the matching quiz (Chinese UI)</a> · no account needed</div></div>
 </div>
 <h2>Legal</h2>
@@ -656,7 +674,7 @@ function renderMethodology(lang) {
 <li>GeoNames cities15000<span class="meta">${lang === 'zh' ? '城市底座' : 'city base'} · <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="license noopener">CC BY 4.0</a> · <a href="https://www.geonames.org/" target="_blank" rel="noopener">geonames.org</a></span></li>
 <li>Open-Meteo Historical / Air Quality<span class="meta">${lang === 'zh' ? '气候十年均值 + PM2.5' : '10-yr climate means + PM2.5'} · <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="license noopener">CC BY 4.0</a> · <a href="https://open-meteo.com/" target="_blank" rel="noopener">open-meteo.com</a> · CAMS ${lang === 'zh' ? '再分析' : 'reanalysis'}</span></li>
 <li>${lang === 'zh' ? '公开英语熟练度排名 / World Bank / UNDP / Transparency International / IEP' : 'Public English-proficiency ranking / World Bank / UNDP / Transparency International / IEP'}<span class="meta">${lang === 'zh' ? '国家级参考 · 官方开放数据与公开统计' : 'country-level reference · official open data & public statistics'} · <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="license noopener">CC BY 4.0</a> / ${lang === 'zh' ? '手工快照' : 'hand snapshot'}</span></li>
-<li>OEJTS 1.2<span class="meta">${lang === 'zh' ? '简易版 16 型人格题库（Jungian 双极结构）' : 'lite 16-type personality test (Jungian bipolar structure)'} · <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="license noopener">CC BY-NC-SA 4.0</a> · Open Psychometrics</span></li>
+<li>OEJTS 1.2<span class="meta">${lang === 'zh' ? '核心测评 16 型人格题库（Jungian 双极结构）' : 'core 16-type personality test (Jungian bipolar structure)'} · <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="license noopener">CC BY-NC-SA 4.0</a> · Open Psychometrics</span></li>
 <li>WHO Global Air Quality Guidelines 2021<span class="meta">${lang === 'zh' ? 'PM2.5 年均分档口径（优 ≤10 / 良 ≤15 / 一般 ≤25 / 差 >25）' : 'annual PM2.5 bands (good ≤10 / fair ≤15 / moderate ≤25 / poor >25)'}</span></li>
 <li>${lang === 'zh' ? '字体 Fraunces / Newsreader / Manrope / 系统中文黑体' : 'Typefaces Fraunces / Newsreader / Manrope / system CJK'}<span class="meta">SIL Open Font License 1.1 · ${lang === 'zh' ? '经 @fontsource 自托管打包，无外部 CDN' : 'self-hosted via @fontsource, no external CDN'}</span></li>
 </ul>
@@ -667,6 +685,259 @@ function renderMethodology(lang) {
 <p style="font-size:12.5px;opacity:.72;margin-top:18px">Career interest framework: O*NET Interest Profiler Short Form — <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="license noopener">CC BY 4.0</a>, O*NET OnLine (sponsored by the U.S. Department of Labor).</p>
 <a class="cta" href="${lang === 'zh' ? '/' : '/en/'}">${lang === 'zh' ? '免费开始我的定居匹配测评 →' : 'Start my free matching quiz →'}</a>`;
   return shell({ lang, title, desc, canonical, hreflang, jsonLd: [breadcrumbJsonLd(lang === 'zh' ? [{ name: '首页', item: page('/') }, { name: '方法论', item: page(pathZh) }] : [{ name: 'Home', item: page('/en/') }, { name: 'Methodology', item: page(pathEn) }])], body });
+}
+
+// ---------- 税负测算子页面（静态 SEO/AEO 入口，与运行时 /?city= 打通） ----------
+// 唯一事实源：src/data/taxRules.ts（import 得到，口径与前端一致）。
+const TAX_REGIME_LABEL = {
+  zh: { exempt: '免税型', territorial: '属地征税型', concession: '专项优惠型', standard: '常规税制型' },
+  en: { exempt: 'Tax-free', territorial: 'Territorial', concession: 'Special concession', standard: 'Progressive standard' },
+};
+const TAX_REGIME_NOTE = {
+  zh: {
+    exempt: '对个人所得基本不征个税，境内外收入通常均免税。',
+    territorial: '只对本地来源所得征税，境外来源收入通常不课税。',
+    concession: '有面向新居民与数字游民的专项优惠，实际税率低于名义累进税率。',
+    standard: '按全球所得累进征税，税负取决于居住身份与抵扣。',
+  },
+  en: {
+    exempt: 'Personal income is essentially untaxed — domestic and foreign alike.',
+    territorial: 'Only locally sourced income is taxed; foreign-source income is generally exempt.',
+    concession: 'A dedicated concession for new residents and nomads yields a rate below the nominal scale.',
+    standard: 'Worldwide income is taxed progressively; liability depends on residency and deductions.',
+  },
+};
+/** V1 粗颗粒有效税率（与 src/data/taxRules.ts 的 effectiveRatePct 同口径，示例收入口径） */
+function taxEffRateFor(rule, topRatePct) {
+  if (rule.type === 'exempt' || rule.type === 'territorial') return 0;
+  if (rule.type === 'concession') return rule.effRatePct ?? 15;
+  const base = topRatePct != null ? topRatePct * 0.5 : 22;
+  return Math.max(5, Math.min(38, Math.round(base)));
+}
+const TAX_EXAMPLE_INCOME = 50000;
+
+// ---------- 分级税率引擎（V2）静态镜像：与 src/lib/tax.ts 纯函数同口径 ----------
+function bracketProgressiveTax(taxable, brackets) {
+  let tax = 0;
+  let lower = 0;
+  for (const b of brackets) {
+    if (taxable <= lower) break;
+    const upper = b.upTo ?? Infinity;
+    const slice = Math.min(taxable, upper) - lower;
+    if (slice > 0) tax += (slice * b.ratePct) / 100;
+    lower = upper;
+  }
+  return tax;
+}
+function applicableRegimeOf(profile, nature) {
+  return profile.regimes.find((r) => !r.natures || r.natures.includes(nature)) ?? null;
+}
+function bracketSpecialTax(special, taxable, brackets) {
+  if (special.kind === 'exempt' || taxable <= 0) return 0;
+  if (special.kind === 'relief') return bracketProgressiveTax(taxable, brackets) * (1 - (special.ratePct ?? 0) / 100);
+  const flat = (special.ratePct ?? 0) / 100;
+  const cap = special.capLocal ?? taxable;
+  const within = Math.min(taxable, cap);
+  const excess = Math.max(0, taxable - cap);
+  const top = (brackets[brackets.length - 1]?.ratePct ?? 0) / 100;
+  return within * flat + excess * top;
+}
+/** 给定年收入（USD）在该国分级引擎下的有效税率（%，含特惠税制） */
+function bracketEffRateFor(profile, grossUSD) {
+  const rate = profile.usdRate || 1;
+  const taxable = Math.max(0, grossUSD / rate - thresholdLocal(profile));
+  const special = applicableRegimeOf(profile, 'employee');
+  const tax = special ? bracketSpecialTax(special, taxable, profile.brackets) : bracketProgressiveTax(taxable, profile.brackets);
+  return grossUSD > 0 ? Math.round((tax * rate * 1000) / grossUSD) / 10 : 0;
+}
+function bracketRows() {
+  const rows = [];
+  for (const [code, profile] of Object.entries(TAX_BRACKETS)) {
+    const co = COUNTRIES.find((c) => c.code === code);
+    if (!co) continue;
+    const cityCount = CITIES.filter((x) => x.countryCode === code).length;
+    if (!cityCount) continue;
+    const special = applicableRegimeOf(profile, 'employee');
+    const eff = bracketEffRateFor(profile, TAX_EXAMPLE_INCOME);
+    const net = Math.round(TAX_EXAMPLE_INCOME * (1 - eff / 100));
+    const baselineNet = Math.round(TAX_EXAMPLE_INCOME * (1 - TAX_BASELINE_EFF_RATE / 100));
+    rows.push({ co, profile, special, eff, net, saved: net - baselineNet, cityCount });
+  }
+  return rows.sort((a, b) => a.eff - b.eff || (a.co.nameZh || '').localeCompare(b.co.nameZh || '', 'zh'));
+}
+
+function taxRows(lang) {
+  // 按国家聚合：每国一行（税制是国家层级），附库内城市数与排名。
+  const byCountry = new Map();
+  for (const c of COUNTRIES) {
+    const rule = TAX_RULES[c.code];
+    if (!rule) continue;
+    const cities = CITIES.filter((x) => x.countryCode === c.code);
+    if (!cities.length) continue;
+    byCountry.set(c.code, { co: c, rule, cityCount: cities.length });
+  }
+  return [...byCountry.values()]
+    .map(({ co, rule, cityCount }) => {
+      const eff = taxEffRateFor(rule, co.taxTopRatePct);
+      const net = Math.round(TAX_EXAMPLE_INCOME * (1 - eff / 100));
+      const baselineNet = Math.round(TAX_EXAMPLE_INCOME * (1 - TAX_BASELINE_EFF_RATE / 100));
+      return { co, rule, cityCount, eff, net, saved: net - baselineNet };
+    })
+    .sort((a, b) => b.rule.score - a.rule.score || a.co.nameZh.localeCompare(b.co.nameZh, 'zh'));
+}
+
+function renderTaxPage(lang) {
+  const pathZh = '/tax-calculator/';
+  const pathEn = '/en/tax-calculator/';
+  const hreflang = { zh: page(pathZh), en: page(pathEn) };
+  const canonical = lang === 'zh' ? hreflang.zh : hreflang.en;
+  const rows = taxRows(lang);
+  const bRows = bracketRows();
+  const money = (v) => `$${Math.round(v).toLocaleString('en-US')}`;
+  const specialCell = (r) => {
+    if (!r.special) return lang === 'zh' ? '—' : '—';
+    const label = lang === 'zh' ? r.special.label : r.special.labelEn;
+    const val = r.special.kind === 'exempt' ? (lang === 'zh' ? '免税' : 'exempt') : `${r.special.ratePct}%`;
+    return `<span class="tagpill t-concession">${esc(label)} · ${val}</span>`;
+  };
+  const bracketRowHtml = bRows
+    .map((r) => {
+      const n = lang === 'zh' ? r.co.nameZh : r.co.nameEn;
+      const countryLink = lang === 'zh' ? `/country/${r.co.code.toLowerCase()}/` : `/en/country/${r.co.code.toLowerCase()}/`;
+      const th = Math.round(thresholdLocal(r.profile)).toLocaleString('en-US');
+      const effTxt = `${r.eff}%`;
+      const savedTxt = `${r.saved >= 0 ? '+' : '−'}${money(Math.abs(r.saved))}`;
+      const bands = r.profile.brackets
+        .map((b) => (b.upTo == null ? `${b.ratePct}%${lang === 'zh' ? '以上' : '+'}` : `${b.ratePct}%`))
+        .join(' / ');
+      return `<tr><td><a href="${esc(countryLink)}">${esc(n)}</a></td><td>${esc(r.profile.currency)}</td><td>${esc(bands)}</td><td>${th}</td><td>${specialCell(r)}</td><td>${effTxt}</td><td>${money(r.net)}</td><td>${esc(savedTxt)}</td></tr>`;
+    })
+    .join('\n');
+  const title = lang === 'zh'
+    ? `数字游民税负测算 · 免签地/属地征税/专项优惠城市对比 | 栖居罗盘`
+    : `Digital Nomad Tax Calculator · Tax-free, territorial & concession cities | Habitat Compass`;
+  const desc = lang === 'zh'
+    ? `按累进税率引擎测算：给定年收入在迪拜、清迈、第比利斯、里斯本等城市的税后净收入、累进级距明细、税制类型与相较欧美高税区多留存的金额。已录入 ${bRows.length} 国分级税率与特惠税制，含 65 国税制分类与免责声明。`
+    : `A progressive-bracket estimate of after-tax income, band-by-band breakdown, tax regime and savings vs a high-tax EU/US region for Dubai, Chiang Mai, Tbilisi, Lisbon and more. Bracket data for ${bRows.length} countries with nomad concessions, plus 65-country classification and disclaimers.`;
+  const rowHtml = rows.map((r) => {    const n = lang === 'zh' ? r.co.nameZh : r.co.nameEn;
+    const countryLink = lang === 'zh' ? `/country/${r.co.code.toLowerCase()}/` : `/en/country/${r.co.code.toLowerCase()}/`;
+    const effTxt = r.eff === 0 ? (lang === 'zh' ? '0%（境外来源）' : '0% (foreign-source)') : `${r.eff}%`;
+    const savedTxt = `${r.saved >= 0 ? '+' : '−'}${money(Math.abs(r.saved))}`;
+    return `<tr><td><a href="${esc(countryLink)}">${esc(n)}</a></td><td><span class="tagpill t-${esc(r.rule.type)}">${esc(TAX_REGIME_LABEL[lang][r.rule.type])}</span></td><td>${r.co.taxTopRatePct != null ? `${r.co.taxTopRatePct}%` : '—'}</td><td>${esc(effTxt)}</td><td>${money(r.net)}</td><td>${esc(savedTxt)}</td><td>${r.cityCount}</td></tr>`;
+  }).join('\n');
+
+  const topRows = rows.slice(0, 6).map((r) => {
+    const n = lang === 'zh' ? r.co.nameZh : r.co.nameEn;
+    return `${esc(n)}（${esc(TAX_REGIME_LABEL[lang][r.rule.type])}${r.eff === 0 ? (lang === 'zh' ? '、境外收入暂免' : ', foreign income exempt') : `、${r.eff}%`}）`;
+  }).join(lang === 'zh' ? '、' : ', ');
+
+  const faqs = lang === 'zh'
+    ? [
+        { q: '数字游民最省钱（税负最低）的国家和城市有哪些？', a: `按本站税负规则字典测算，税负最友好的目的地包括：${topRows}。其中「免税型」对个人所得基本不征税，「属地征税型」只对本地来源所得课税、境外来源收入通常免税。实际税负仍取决于你的居留身份与收入来源地。` },
+        { q: '这个税负测算是怎么算的？准确吗？', a: `采用「分级税率引擎」：对已录入数据的 ${bRows.length} 国，按其本币年应纳税所得额逐档累加（含起征点/标准扣除与特惠税制），本地税额按快照汇率 ${TAX_FX_ASOF} 折美元后得有效税率；其余国家回落「规则字典查表法」的粗颗粒近似。它不建模专项抵扣、税收协定与汇入规则，仅用于方向性对比，不构成税务建议。` },
+        { q: '什么是「属地征税型」税制？', a: '属地征税（territorial）指只对来源于本地的收入课税，境外来源收入通常不征税或可豁免，例如香港、新加坡、马来西亚、泰国（汇入制）、格鲁吉亚等。对以境外客户收入为主的远程工作者与自由职业者尤其友好。' },
+        { q: '葡萄牙、西班牙、希腊这些欧洲国家的优惠税率是怎么回事？', a: '这些国家属于「专项优惠型」：为符合条件的新税务居民、数字游民或科技人才提供统一低税率或减免，例如西班牙「贝克汉姆法案」24%、葡萄牙 IFICI 20%、希腊新居民 50% 减免。能否适用取决于签证类型、居留时长与收入来源，需逐一核实官方条件。' },
+        { q: '换城市能比在欧美高税区多留存多少钱？', a: `本页以参考有效税率 ${TAX_BASELINE_EFF_RATE}%（欧美高税区方向性口径）为基线对比。以年收入 ${money(TAX_EXAMPLE_INCOME)} 为例，免税型目的地每年可比该基线多留存约 ${money(Math.round(TAX_EXAMPLE_INCOME * TAX_BASELINE_EFF_RATE / 100))}。这是粗颗粒上限参考，非承诺。` },
+        { q: '税负测算结果可以直接用来做决策吗？', a: '不可以作为唯一依据。本工具是方向性估算，不构成税务建议；实际税负受居留身份、税收协定、社保与申报义务影响。重大决策前请咨询专业税务顾问并核实目标国官方口径。' },
+      ]
+    : [
+        { q: 'Which countries and cities are cheapest tax-wise for digital nomads?', a: `By our rule-dictionary estimate, the friendliest destinations include: ${topRows}. "Tax-free" regimes levy essentially no personal income tax; "territorial" regimes tax only locally sourced income while foreign-source income is generally exempt. Your actual liability still depends on residency status and source of income.` },
+        { q: 'How is this tax estimate calculated — is it accurate?', a: `It uses a progressive bracket engine: for ${bRows.length} countries with structured data, tax is accumulated band by band on annual taxable income in local currency (including thresholds/standard deductions and any concession), converted to USD at a snapshot FX rate (${TAX_FX_ASOF}) to derive an effective rate; other countries fall back to a coarse rule-dictionary approximation. It models no deductions, tax treaties or remittance rules. It is for directional comparison only, not tax advice.` },
+        { q: 'What is a “territorial” tax regime?', a: 'A territorial regime taxes only locally sourced income; foreign-source income is usually untaxed or exempt — as in Hong Kong, Singapore, Malaysia, Thailand (remittance basis) and Georgia. It suits remote workers and freelancers earning from overseas clients.' },
+        { q: 'What are the special concession rates in Portugal, Spain and Greece?', a: 'These are “concession” regimes: flat or reduced rates for qualifying new tax residents, nomads or tech talent — e.g. Spain’s “Beckham law” 24%, Portugal’s IFICI 20%, Greece’s 50% relief for new residents. Eligibility depends on visa type, length of stay and income source; always verify the official conditions.' },
+        { q: 'How much more can I keep by moving from a high-tax EU/US region?', a: `This page uses a reference effective rate of ${TAX_BASELINE_EFF_RATE}% (a directional high-tax EU/US figure) as the baseline. At ${money(TAX_EXAMPLE_INCOME)} gross income, a tax-free destination would keep roughly ${money(Math.round(TAX_EXAMPLE_INCOME * TAX_BASELINE_EFF_RATE / 100))} more per year. This is a coarse upper-bound reference, not a promise.` },
+        { q: 'Can I use this result directly for decisions?', a: 'No — do not rely on it alone. This tool is a directional estimate and not tax advice; actual liability depends on residency, tax treaties, social security and filing duties. Consult a tax professional and verify official rules before major decisions.' },
+      ];
+
+  const crumbs = lang === 'zh'
+    ? [{ name: '首页', item: page('/') }, { name: '税负测算', item: page(pathZh) }]
+    : [{ name: 'Home', item: page('/en/') }, { name: 'Tax planner', item: page(pathEn) }];
+
+  const body = `
+<p class="crumbs">${crumbs.map((c, i) => i === crumbs.length - 1 ? esc(c.name) : `<a href="${esc(c.item)}">${esc(c.name)}</a> ›`).join(' ')}</p>
+<h1>${lang === 'zh' ? '数字游民税负测算' : 'Digital nomad tax calculator'}<span class="badge">${rows.length} ${lang === 'zh' ? '国税制' : 'countries'} · 200 ${lang === 'zh' ? '城' : 'cities'}</span></h1>
+<p class="sub">${lang === 'zh' ? `分级税率引擎（V2）：${bRows.length} 国按本币累进级距逐档计算，其余国家按规则字典粗颗粒估算，仅作方向性对比，不构成税务建议。` : `Progressive bracket engine (V2): ${bRows.length} countries computed band by band in local currency, others via a coarse rule-dictionary approximation — directional comparison only, not tax advice.`}</p>
+<div class="answer"><p>${lang === 'zh'
+    ? `税负是数字游民、远程工作者与跨境定居者的核心成本之一，但不同场景差异巨大：同样的年收入，在免税型目的地与高税负辖区之间的税后净收入可能相差数万美元。本页用「分级税率引擎」处理已录入数据的 ${bRows.length} 国：按其本币年应纳税所得额逐档累加，叠加面向数字游民/新居民的特惠税制（如泰国 LTR 17%、西班牙贝克汉姆法案 24%、格鲁吉亚小企业 1%、葡萄牙 IFICI 20%、克罗地亚游民免税等），其余 65 国中的其他国家按四类税制（免税型 / 属地征税型 / 专项优惠型 / 常规税制型）粗颗粒近似。所有税率数字均为公开事实，不依赖任何第三方付费聚合 API。`
+    : `Tax is a core cost for nomads, remote workers and cross-border settlers, yet it varies enormously: the same gross income can mean tens of thousands of dollars difference in net income between a tax-free destination and a high-tax jurisdiction. This page runs a progressive bracket engine for ${bRows.length} countries with structured data — accumulating tax band by band on annual taxable income in local currency and layering nomad/new-resident concessions (Thailand LTR 17%, Spain's Beckham law 24%, Georgia's 1% small-business status, Portugal IFICI 20%, Croatia's nomad exemption and more) — while the remaining of the 65 countries are approximated via four regime types (tax-free / territorial / concession / standard). All rate figures are public facts, with no reliance on any paid aggregation API.`}</p></div>
+
+<h2>${lang === 'zh' ? '交互式税负测算' : 'Interactive tax planner'}</h2>
+<a class="cta" href="${esc(page('/?city=chiang-mai'))}">${lang === 'zh' ? '打开交互式税负测算工具 →' : 'Open the interactive tax planner →'}</a>
+<p class="cta-sub">${lang === 'zh' ? '填年收入、选收入性质与目标城市，实时看净收入与多留存对比（可直达任意城市：在链接后加 ?city=城市id）' : 'Enter income, pick income type and target city, and see net income and savings live (jump to any city by appending ?city=<id>)'}</p>
+
+<h2>${lang === 'zh' ? `65 国税制分类与税负对比（示例年收入 ${money(TAX_EXAMPLE_INCOME)}）` : `65-country tax regimes & comparison (example income ${money(TAX_EXAMPLE_INCOME)})`}</h2>
+<p class="note">${lang === 'zh' ? `「参考有效税率」为规则字典推导的近似综合值；「净收入」= 年收入 ×（1 − 参考有效税率）；「较基线」为相较欧美高税区参考有效税率 ${TAX_BASELINE_EFF_RATE}% 的差额。均为方向性口径。` : `“Reference effective rate” is the rule-dictionary approximation; “net income” = gross × (1 − rate); “vs baseline” compares against the high-tax EU/US reference rate of ${TAX_BASELINE_EFF_RATE}%. All directional.`}</p>
+<div style="overflow-x:auto">
+<table class="tbl">
+<thead><tr>
+<th>${lang === 'zh' ? '国家' : 'Country'}</th>
+<th>${lang === 'zh' ? '税制类型' : 'Regime'}</th>
+<th>${lang === 'zh' ? '最高边际税率' : 'Top marginal'}</th>
+<th>${lang === 'zh' ? '参考有效税率' : 'Ref. effective'}</th>
+<th>${lang === 'zh' ? `净收入（${money(TAX_EXAMPLE_INCOME)}）` : `Net (${money(TAX_EXAMPLE_INCOME)})`}</th>
+<th>${lang === 'zh' ? '较基线' : 'vs baseline'}</th>
+<th>${lang === 'zh' ? '库内城市' : 'Cities'}</th>
+</tr></thead>
+<tbody>
+${rowHtml}
+</tbody>
+</table>
+</div>
+
+<h2>${lang === 'zh' ? `分级税率引擎：${bRows.length} 国累进/统一税率明细（示例年收入 ${money(TAX_EXAMPLE_INCOME)}）` : `Progressive bracket engine: ${bRows.length} countries (example income ${money(TAX_EXAMPLE_INCOME)})`}</h2>
+<p class="note">${lang === 'zh' ? `以下国家已录入「分级税率」数据：按本币（币种列）年应纳税所得额逐档累加，含起征点/标准扣除（本币列）与该国面向数字游民/新居民的特惠税制。有效税率 = 本地税额按快照汇率（${TAX_FX_ASOF}）折美元 ÷ 年收入。数据提炼自各国税务机关与 PwC Worldwide Tax Summaries 等公开来源——税率为公开事实，非付费聚合数据。` : `These countries have structured bracket data: tax is accumulated band by band on the annual taxable income in local currency (Currency column), including the threshold/standard deduction (local column) and any nomad/new-resident concession. The effective rate = local tax converted at a snapshot FX rate (${TAX_FX_ASOF}) ÷ gross income. Data is distilled from national tax authorities and PwC Worldwide Tax Summaries — rates are public facts, not paid aggregation data.`}</p>
+<div style="overflow-x:auto">
+<table class="tbl">
+<thead><tr>
+<th>${lang === 'zh' ? '国家' : 'Country'}</th>
+<th>${lang === 'zh' ? '币种' : 'Currency'}</th>
+<th>${lang === 'zh' ? '累进税率阶梯（%）' : 'Bracket ladder (%)'}</th>
+<th>${lang === 'zh' ? '起征点（本币）' : 'Threshold (local)'}</th>
+<th>${lang === 'zh' ? '特惠税制' : 'Special regime'}</th>
+<th>${lang === 'zh' ? '有效税率' : 'Effective'}</th>
+<th>${lang === 'zh' ? `净收入（${money(TAX_EXAMPLE_INCOME)}）` : `Net (${money(TAX_EXAMPLE_INCOME)})`}</th>
+<th>${lang === 'zh' ? '较基线' : 'vs baseline'}</th>
+</tr></thead>
+<tbody>
+${bracketRowHtml}
+</tbody>
+</table>
+</div>
+
+<h2>${lang === 'zh' ? '四类税制说明' : 'The four regime types'}</h2><ul class="list">
+<li><span class="tagpill t-exempt">${esc(TAX_REGIME_LABEL[lang].exempt)}</span><span class="meta">${esc(TAX_REGIME_NOTE[lang].exempt)}</span></li>
+<li><span class="tagpill t-territorial">${esc(TAX_REGIME_LABEL[lang].territorial)}</span><span class="meta">${esc(TAX_REGIME_NOTE[lang].territorial)}</span></li>
+<li><span class="tagpill t-concession">${esc(TAX_REGIME_LABEL[lang].concession)}</span><span class="meta">${esc(TAX_REGIME_NOTE[lang].concession)}</span></li>
+<li><span class="tagpill t-standard">${esc(TAX_REGIME_LABEL[lang].standard)}</span><span class="meta">${esc(TAX_REGIME_NOTE[lang].standard)}</span></li>
+</ul>
+
+<h2>${lang === 'zh' ? '常见问答' : 'FAQ'}</h2>
+${faqs.map((f) => `<details><summary>${esc(f.q)}</summary><p>${esc(f.a)}</p></details>`).join('\n')}
+
+<h2>${lang === 'zh' ? '免责声明' : 'Disclaimer'}</h2>
+<div class="notice">${lang === 'zh'
+    ? '本页为规则字典粗颗粒估算，不建模累进级距、专项抵扣、税收协定与汇入规则，不构成税务建议。实际税负取决于你的居留身份、收入来源地与双边协定，重大决策前请咨询专业税务顾问并核实官方口径。'
+    : 'This page is a coarse rule-dictionary estimate. It models no progressive brackets, deductions, tax treaties or remittance rules, and is not tax advice. Your actual liability depends on residency status, income source and bilateral treaties — consult a tax professional and verify official sources before major decisions.'}</div>
+<a class="cta" href="${lang === 'zh' ? '/' : '/en/'}">${lang === 'zh' ? '免费开始我的定居匹配测评 →' : 'Start my free matching quiz →'}</a>
+<p class="cta-sub">${lang === 'zh' ? '测评后按 11 维权重输出 Top 5 城市，并可逐城推演税负' : 'Top 5 cities scored on 11 dimensions, then a per-city tax estimate'}</p>`;
+
+  const organization = { '@context': 'https://schema.org', '@type': 'Organization', '@id': page('/#organization'), name: '栖居罗盘 · Habitat Compass', url: page('/'), logo: page('/og-cover.jpg') };
+  const webApp = {
+    '@context': 'https://schema.org',
+    '@type': 'WebApplication',
+    name: lang === 'zh' ? '栖居罗盘税负测算' : 'Habitat Compass Tax Planner',
+    url: canonical,
+    applicationCategory: 'FinanceApplication',
+    operatingSystem: 'Web',
+    inLanguage: lang === 'zh' ? 'zh-Hans' : 'en',
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+    description: desc,
+  };
+  return shell({
+    lang, title, desc, canonical, hreflang,
+    jsonLd: [webApp, faqJsonLd(faqs), breadcrumbJsonLd(crumbs), organization],
+    body,
+  });
 }
 
 // ---------- main ----------
@@ -748,7 +1019,7 @@ function assertSitemapWellFormed(xml) {
 }
 
 // ---------- 第十三轮：法律页（隐私政策 / 用户协议，zh/en） ----------
-// ABOUTME: 内容如实披露 storage.ts 实际键清单（nomadmatch.v1 前缀）；联系邮箱 hi@habitatcompass.com；占位项：适用法域
+// ABOUTME: 内容如实披露 storage.ts 实际键清单（nomadmatch.v1 前缀）；联系邮箱 hi@habitatcompass.com；适用法域=运营者主要经营地
 const LEGAL_PRIVACY = {
   zh: {
     title: '隐私政策 | 栖居罗盘',
@@ -759,7 +1030,7 @@ const LEGAL_PRIVACY = {
     sections: [
       { h: '一、我们是谁，本政策覆盖什么', ps: [
         '栖居罗盘（Habitat Compass，下称"本站"）是一个<strong>完全运行于浏览器</strong>的海外城市定居决策辅助工具。它没有账号、没有登录、没有后台用户库——你把网页关掉，我们这边不会留下任何与你有关的记录。',
-        '<strong>数据控制者</strong>：Habitat Compass 运营者（主体信息待正式部署后补充）。任何与隐私有关的问题，都请写信至 <code>hi@habitatcompass.com</code>。',
+        '<strong>数据控制者</strong>：栖居罗盘（Habitat Compass）的运营者。本站为个人运营的免费工具，尚未设立公司实体；在适用法域正式确定前，本政策即我们对数据处理的完整说明。任何与隐私有关的问题，都请写信至 <code>hi@habitatcompass.com</code>（法域与管辖条款见<a href="/terms/#s12">《用户协议》第十三节</a>）。',
         '本政策说明：我们<strong>不</strong>收集什么、你输入的数据存在哪里、你有权做什么，以及如何一次性清除全部数据。',
       ] },
       { h: '二、我们的四条基本原则', ps: [
@@ -767,7 +1038,7 @@ const LEGAL_PRIVACY = {
       ], list: [
         '<strong>最小化</strong>：只在你主动输入时才产生数据，且只存在你的设备上；',
         '<strong>不索取身份</strong>：不要求姓名、邮箱、电话、精确位置等任何可直接识别你身份的信息；',
-        '<strong>不设保存期限的例外</strong>：数据不会过期删除，而是<strong>一直属于你</strong>，直至你亲自清除；',
+        '<strong>无固定保存期限</strong>：你的数据不会因“到期”而被删除，而是<strong>一直属于你</strong>，直至你亲自清除；',
         '<strong>可完全掌控</strong>：查看、导出、删除、限制处理，全部可以在你的浏览器里即时完成，无需向我们申请。',
       ] },
       { h: '三、我们处理哪些数据', ps: [
@@ -775,11 +1046,12 @@ const LEGAL_PRIVACY = {
       ], list: [
         '测评草稿与作答记录（draft / proDraft）——目的地偏好、预算、问卷答案',
         '测评结果与最近一次历史（history / proHistory）——匹配得分与报告数据',
-        '收藏城市（favorites）、对比现场与对比存档（compare / archives）',
+        '收藏城市（favorites）、对比工作区与对比存档（compare / archives）',
         '硬性条件与护照选择（hardConstraints / passport）——预算上限、签证底线、安全阈值',
-        '界面语言设置（lang）、匿名漏斗计数（funnel）——仅阶段计数，不含任何身份信息',
+        '界面语言设置（lang）与本地匿名计数（funnel）——阶段事件的次数与时间戳，键名不含身份信息',
+        'PWA 安装状态（pwaInstallDismissedAt / pwaInstalled）——是否已安装、安装提示的冷却时间',
       ], after: [
-        '以上数据均由你主动输入，或由你的输入直接计算产生；<strong>不包含</strong>姓名、邮箱、电话、精确位置等直接身份信息，也不包含任何可用于追踪你跨站行为的标识符。',
+        '以上数据均由你主动输入，或由你的输入直接计算产生；<strong>不包含</strong>姓名、邮箱、电话、精确位置等直接身份信息，也不包含任何可用于追踪你跨站行为的标识符。为在下次打开时记住你的选择，这些数据带有本机时间戳（如历史保存时间、安装提示冷却与阶段事件时间），但它们从不离开你的设备。',
       ] },
       { h: '四、我们如何获取数据（以及为什么没有"自动收集"）', ps: [
         '多数网站的隐私政策需要分列"你提供的信息""自动收集的信息""从第三方获得的信息"三类。本站只存在第一类：',
@@ -790,7 +1062,7 @@ const LEGAL_PRIVACY = {
       { h: '五、我们明确不做的四件事', ps: [
         '<strong>无追踪 Cookie</strong>——本站不设置任何 Cookie，也不读取第三方 Cookie。',
         '<strong>无第三方分析与广告</strong>——不加载 Google Analytics 或任何分析、广告、社交插件，不向任何第三方发送你的数据。',
-        '<strong>无 AI 模型处理</strong>——匹配计算完全在你的浏览器内完成，你的作答不会被发送给任何 AI 模型或服务器。',
+        '<strong>无云端 AI 处理</strong>——测评与匹配全部在你的浏览器内完成，不上传到任何 AI 服务。需说明的是，本站为便于被回答引擎收录，允许 AI 爬虫读取公开页面（见下节及 <a href="/robots.txt">robots.txt</a>）；它们只能看到公开内容，<strong>触不到你设备中未上传的作答</strong>。',
         '<strong>无账号与云端同步</strong>——本站没有登录，也没有云端备份；换一台设备就不会看到此前的数据，这是我们刻意的设计。',
       ] },
       { h: '六、处理目的与法律基础', ps: [
@@ -800,6 +1072,7 @@ const LEGAL_PRIVACY = {
       { h: '七、存储位置与国际传输', ps: [
         '全部数据仅存在于你的设备本地。<strong>没有任何数据上传到服务器，因此不存在国际数据传输</strong>，也不存在服务器端的泄露面。',
         '我们使用的字体等静态资源在构建时打包进站点，页面运行过程中不向第三方发起请求。',
+        '需说明的是：本站的<strong>公开页面</strong>（城市、国家、方法论、税负测算等）为便于被搜索与回答引擎收录，允许 AI 爬虫（GPTBot / ClaudeBot / PerplexityBot 等，见 robots.txt）抓取。它们只能看到任何访客都能看到的公开内容，<strong>无法接触你设备中未上传的作答数据</strong>。',
       ] },
       { h: '八、保存期限', ps: [
         '本地数据会一直保留，<strong>直到你自行清除</strong>——通过浏览器"清除站点数据"，或使用下方"清除我的所有数据"按钮。我们无法、也不会在后台替你删除或备份这些数据。',
@@ -846,7 +1119,7 @@ const LEGAL_PRIVACY = {
     sections: [
       { h: '1. Who we are and what this policy covers', ps: [
         'Habitat Compass ("the site") is a <strong>browser-only</strong> decision-support tool for settling abroad. There is no account, no login and no back-end user database — close the tab and nothing about you remains on our side.',
-        '<strong>Data controller</strong>: the Habitat Compass operator (entity details to be added before official launch). For any privacy question, write to <code>hi@habitatcompass.com</code>.',
+        '<strong>Data controller</strong>: the operator of Habitat Compass. The site is a free, individually operated tool with no corporate entity as yet; until a jurisdiction is formally established, this policy is our complete account of how data is handled. For any privacy question, write to <code>hi@habitatcompass.com</code> (jurisdiction and venue are set out in <a href="/en/terms/#s12">section 13 of the Terms of Service</a>).',
         'This policy explains what we do <strong>not</strong> collect, where the data you enter lives, what you may do with it, and how to erase it all in one click.',
       ] },
       { h: '2. Our four principles', ps: [
@@ -854,7 +1127,7 @@ const LEGAL_PRIVACY = {
       ], list: [
         '<strong>Minimal</strong>: data exists only when you type it, and only on your device;',
         '<strong>No identity</strong>: we never ask for a name, e-mail, phone number or precise location;',
-        '<strong>No expiry clause</strong>: your data does not "expire" — it stays <strong>yours</strong> until you erase it yourself;',
+        '<strong>No expiry clause</strong>: your data is never deleted on a "clock"; it stays <strong>yours</strong> until you erase it yourself;',
         '<strong>Fully yours to control</strong>: access, export, erasure and restriction all happen instantly in your browser, with no request to us.',
       ] },
       { h: '3. What data we process', ps: [
@@ -862,11 +1135,12 @@ const LEGAL_PRIVACY = {
       ], list: [
         'Quiz drafts & answers (draft / proDraft) — destination preferences, budget, questionnaire answers',
         'Results & latest history (history / proHistory) — match scores and report data',
-        'Favourite cities (favorites), compare session and archives (compare / archives)',
+        'Favourite cities (favorites), compare workspace and archives (compare / archives)',
         'Hard constraints & passport choice (hardConstraints / passport) — budget cap, visa floor, safety threshold',
-        'Interface language (lang), anonymous funnel counters (funnel) — stage counts only, no identity data',
+        'Interface language (lang) and local anonymous counters (funnel) — event counts and timestamps; key names carry no identity',
+        'PWA install state (pwaInstallDismissedAt / pwaInstalled) — whether installed and the install-prompt cooldown',
       ], after: [
-        'All of it is entered by you or derived from your input. It contains <strong>no</strong> name, e-mail, phone number or precise location, and no identifier that could track you across other sites.',
+        'All of it is entered by you or derived from your input. It contains <strong>no</strong> name, e-mail, phone number or precise location, and no identifier that could track you across other sites. To remember your choices for next time, this data carries local timestamps (history save time, install-prompt cooldown, stage-event times), but it never leaves your device.',
       ] },
       { h: '4. How we obtain data (and why there is no "automatic collection"', ps: [
         'Most privacy policies must split data into "information you provide", "information collected automatically" and "information from third parties". Here only the first category exists:',
@@ -877,7 +1151,7 @@ const LEGAL_PRIVACY = {
       { h: '5. Four things we explicitly do NOT do', ps: [
         '<strong>No tracking cookies</strong> — the site sets no cookies and reads no third-party cookies.',
         '<strong>No third-party analytics or ads</strong> — no Google Analytics, no ad networks, no social plugins; nothing is sent to anyone.',
-        '<strong>No AI processing</strong> — matching runs entirely in your browser; your answers never reach any AI model or server.',
+        '<strong>No cloud AI processing</strong> — matching runs entirely in your browser and is never sent to any AI service. Note that, to be discoverable by answer engines, the site allows AI crawlers to read its <strong>public</strong> pages (see robots.txt and the section below); they only see public content and <strong>cannot reach the un-uploaded answers on your device</strong>.',
         '<strong>No accounts and no cloud sync</strong> — there is no login and no cloud backup; switching device means starting fresh. That is deliberate.',
       ] },
       { h: '6. Purpose & legal basis', ps: [
@@ -887,6 +1161,7 @@ const LEGAL_PRIVACY = {
       { h: '7. Storage location & international transfers', ps: [
         'All data stays on your device. <strong>Nothing is uploaded to any server, so there is no international data transfer</strong> and no server-side breach surface.',
         'Static assets such as fonts are bundled at build time; the running page makes no third-party requests.',
+        'For clarity: this site\'s <strong>public pages</strong> (cities, countries, methodology, tax planner) are open to AI crawlers (GPTBot / ClaudeBot / PerplexityBot, etc., per robots.txt) so they can be indexed and cited by answer engines. Such crawlers only ever see the public content any visitor sees, and <strong>cannot reach the un-uploaded answers held on your device</strong>.',
       ] },
       { h: '8. Retention', ps: [
         'Local data is kept <strong>until you erase it</strong> — via your browser\'s "clear site data", or the "Erase all my data" button below. We cannot, and will not, delete or back it up for you behind the scenes.',
@@ -941,7 +1216,7 @@ const LEGAL_TERMS = {
       ] },
       { h: '二、服务描述', ps: [
         '栖居罗盘为数字游民、自由职业者与远程工作者提供海外城市定居的<strong>决策辅助</strong>：基于你的偏好作答与公开数据快照，对库内 200 座城市加权打分并生成报告。',
-        '本站的简易测评（32 题）、标准版深度测评与城市对比，全部功能<strong>无需付费</strong>，也<strong>无需注册账号</strong>；不提供付费订阅、虚拟商品或任何形式的交易。',
+        '本站的核心测评（32 项人格量表 + 8 道情景题，另含 16 个兴趣标签）、可选的深度测评与城市对比、以及税负测算等功能，全部<strong>无需付费</strong>，也<strong>无需注册账号</strong>；不提供付费订阅、虚拟商品或任何形式的交易。',
         '本站不提供账号体系，因此不存在"账户安全"义务；你的全部数据仅存于你自己的浏览器（详见<a href="/privacy/">《隐私政策》</a>）。',
       ] },
       { h: '三、使用资格与最低年龄', ps: [
@@ -998,8 +1273,9 @@ const LEGAL_TERMS = {
         '本协议如有实质变更，将在本页更新并标注日期。变更后你继续使用本站，即视为接受修订后的协议。',
       ] },
       { h: '十三、适用法律与争议解决', ps: [
-        '本协议适用运营者注册地法律（<strong>占位：待正式部署后补充法域与管辖条款</strong>）。',
-        '因本协议或本站产生的争议，双方应先本着诚信原则友好协商解决；协商不成的，提交运营者注册地有管辖权的法院解决。',
+        '本协议适用运营者主要经营地所在法域的法律。本站为个人运营的免费工具，尚未设立特定公司实体；待运营主体正式确定后，我们将在此明确写明适用的法域与有管辖权的法院，并以更新本页的方式生效。',
+        '居住于 EEA / 英国 / 瑞士的用户，本协议不排除或限制你依所在地强制性消费者保护法规享有的任何权利。',
+        '因本协议或本站产生的争议，双方应先本着诚信原则友好协商解决；协商不成的，提交运营者主要经营地有管辖权的法院解决。',
       ] },
       { h: '十四、可分割性与完整协议', ps: [
         '若本协议任何条款被认定为无效或不可执行，该条款将在最小必要范围内被限制或剔除，其余条款仍完全有效。',
@@ -1024,7 +1300,7 @@ const LEGAL_TERMS = {
       ] },
       { h: '2. Service description', ps: [
         'Habitat Compass provides <strong>decision support</strong> for digital nomads, freelancers and remote workers settling abroad: it scores the 200 cities in its library against your stated preferences and public data snapshots, and generates a report.',
-        'The lite assessment (32 questions), the in-depth Standard edition and city comparison are entirely <strong>free of charge</strong> and require <strong>no account</strong>. There are no subscriptions, virtual goods or transactions of any kind.',
+        'The core assessment (a 32-item personality scale plus 8 scenario questions, with 16 interest tags), the optional in-depth assessment, city comparison and the tax planner are entirely <strong>free of charge</strong> and require <strong>no account</strong>. There are no subscriptions, virtual goods or transactions of any kind.',
         'The site has no account system, so there is no "account security" duty; all your data stays in your own browser (see the <a href="/en/privacy/">Privacy Policy</a>).',
       ] },
       { h: '3. Eligibility and minimum age', ps: [
@@ -1081,8 +1357,9 @@ const LEGAL_TERMS = {
         'Material changes will be published on this page with an updated date. Your continued use of the site after a change constitutes acceptance of the revised Terms.',
       ] },
       { h: '13. Governing law & dispute resolution', ps: [
-        'These terms are governed by the law of the operator\'s place of registration (<strong>placeholder: jurisdiction and venue to be added before official launch</strong>).',
-        'Disputes arising from these Terms or the site shall first be resolved amicably and in good faith; failing that, they shall be submitted to the competent courts at the operator\'s place of registration.',
+        'These Terms are governed by the law of the jurisdiction where the operator is principally established. The site is a free, individually operated tool with no specific corporate entity as yet; once the operating entity is formally established we will state the governing jurisdiction and the competent courts here, effective on the date this page is updated.',
+        'If you are a consumer in the EEA, the UK or Switzerland, nothing in these Terms excludes or limits any rights you have under the mandatory consumer-protection law of your country of residence.',
+        'Disputes arising from these Terms or the site shall first be resolved amicably and in good faith; failing that, they shall be submitted to the competent courts of the operator\'s principal place of business.',
       ] },
       { h: '14. Severability & entire agreement', ps: [
         'If any provision of these Terms is held invalid or unenforceable, it will be limited or severed to the minimum extent necessary and the remaining provisions will stay in full force.',
@@ -1183,8 +1460,8 @@ function renderLegalPage(kind, lang) {
     ? `<section class="card erase" id="erase">
 <h2>${zh ? '清除我的所有数据' : 'Erase all my data'}</h2>
 <p>${zh
-        ? '以下按钮立即删除本浏览器中本站存储的全部数据（<code>nomadmatch.v1</code> 前缀所有键：测评草稿、历史、收藏、对比存档、硬性条件、语言设置、漏斗计数与演示性购买记录）。删除不可恢复。'
-        : 'The button below immediately deletes everything this site has stored in this browser (every key prefixed <code>nomadmatch.v1</code>: quiz drafts, history, favorites, compare archives, constraints, language, funnel counters and demo purchase records). Deletion is irreversible.'}</p>
+        ? '以下按钮立即删除本浏览器中本站存储的全部数据（<code>nomadmatch.v1</code> 前缀所有键：测评草稿与历史、收藏城市、对比工作区与存档、硬性条件、护照选择、语言设置、匿名漏斗计数与 PWA 安装状态）。删除不可恢复。'
+        : 'The button below immediately deletes everything this site has stored in this browser (every key prefixed <code>nomadmatch.v1</code>: quiz drafts and history, favourite cities, compare workspace and archives, hard constraints, passport choice, language, anonymous funnel counters and PWA install state). Deletion is irreversible.'}</p>
 <button class="btn-danger" onclick="eraseAll()">${zh ? '清除我的所有数据' : 'Erase all my data'}</button>
 <p id="erase-done" class="erase-done" hidden></p>
 <noscript><p>${zh ? '（需要启用 JavaScript 才能使用此按钮；你也可以直接在浏览器设置中清除本站数据。）' : '(JavaScript is required for this button; you can also clear this site\'s data in your browser settings.)'}</p></noscript>
@@ -1249,7 +1526,7 @@ function renderNotFound() {
   return shell({ lang: 'zh', title, desc, canonical: null, hreflang: null, jsonLd: [], body, robots: 'noindex, follow' });
 }
 
-export { write, addUrl, sitemapUrls, renderCityPage, renderCountryPage, renderCitiesIndex, renderCountriesIndex, renderMethodology, renderLegalPage, renderNotFound, page };
+export { write, addUrl, sitemapUrls, renderCityPage, renderCountryPage, renderCitiesIndex, renderCountriesIndex, renderMethodology, renderLegalPage, renderNotFound, renderTaxPage, page };
 
 function main() {
   fs.mkdirSync(DIST, { recursive: true });
@@ -1270,6 +1547,9 @@ function main() {
   addUrl('/countries/', COUNTRY_DATA_DATE); addUrl('/en/countries/', COUNTRY_DATA_DATE);
   write('methodology/index.html', renderMethodology('zh')); write('en/methodology/index.html', renderMethodology('en')); count += 2;
   addUrl('/methodology/', SCRIPT_DATE); addUrl('/en/methodology/', SCRIPT_DATE);
+  // 税负测算子页面（V1）：长尾 SEO/AEO 入口，双写 public/ 供 dev 直达
+  writeLegal('tax-calculator/index.html', renderTaxPage('zh')); writeLegal('en/tax-calculator/index.html', renderTaxPage('en')); count += 2;
+  addUrl('/tax-calculator/', SCRIPT_DATE); addUrl('/en/tax-calculator/', SCRIPT_DATE);
   // 第十三轮：法律页（隐私政策 / 用户协议 / 免责声明，zh/en；双写 public/ 供 dev 直达）
   writeLegal('privacy/index.html', renderLegalPage('privacy', 'zh')); writeLegal('en/privacy/index.html', renderLegalPage('privacy', 'en')); count += 2;
   addUrl('/privacy/', SCRIPT_DATE); addUrl('/en/privacy/', SCRIPT_DATE);
@@ -1300,13 +1580,16 @@ function main() {
   // llms.txt
   const llms = `# 栖居罗盘 · Habitat Compass
 
-> 面向数字游民、自由职业者与远程工作者的海外城市定居决策工具。200 座城市（六洲）+ 65 国参考数据；双版本测评（32 题简易免费 / IPIP-NEO 120 题标准版）；三层匹配引擎：硬约束过滤（预算/签证/安全）→ 核心匹配（偏好 42% + 人格 30% + 兴趣 18%，11 维）→ 加分项（RIASEC/风险联动/空气质量 ≤10%）。评分 0–99，缺失维度降权不惩罚，数据逐项标注来源。
+> 面向数字游民、自由职业者与远程工作者的海外城市定居决策工具。200 座城市（六洲）+ 65 国参考数据；三层匹配引擎：硬约束过滤（预算/签证/安全）→ 核心匹配（偏好 42% + 人格 30% + 兴趣 18%，11 维）→ 加分项（RIASEC/风险联动/空气质量 ≤10%）。评分 0–99，缺失维度降权不惩罚，数据逐项标注来源。
+> 核心测评（32 项人格量表 + 8 道情景题 + 16 个兴趣标签）免费、无需注册；可选的深度测评（IPIP-NEO 120 题 Big Five + RIASEC）与分级税负测算同样免费。
+> 分级税负引擎（V2）：29 国按本币累进级距逐档测算，另含面向数字游民的特惠税制（泰国 LTR 17%、西班牙贝克汉姆法案 24%、格鲁吉亚 1%、葡萄牙 IFICI 20%、阿联酋/马来西亚/克罗地亚免税等），税率均为公开事实，不依赖任何付费聚合 API。
 
 ## 主要页面
 - [首页 / 测评](${page('/')})
 - [匹配方法论](${page('/methodology/')})
 - [城市索引（200）](${page('/cities/')})
 - [国家索引（65）](${page('/countries/')})
+- [税负测算 / Tax planner（65 国税制分类 + 29 国分级税率引擎）](${page('/tax-calculator/')})
 
 ## 城市页示例
 - [成都](${page('/city/chengdu/')}) · [里斯本](${page('/city/lisbon/')}) · [清迈](${page('/city/chiang-mai/')}) · [Chengdu (EN)](${page('/en/city/chengdu/')})

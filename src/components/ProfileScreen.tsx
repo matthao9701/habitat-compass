@@ -20,7 +20,7 @@ function fmtDate(ts: number): string {
 }
 
 interface ProfileScreenProps {
-  onOpenQuiz: (version?: 'lite' | 'pro') => void;
+  onOpenQuiz: (startDeep?: boolean) => void;
   onOpenHistory: (version?: 'lite' | 'pro') => void;
   onOpenCompare: (seed?: string[]) => void;
 }
@@ -74,7 +74,7 @@ export default function ProfileScreen({
           </p>
           <button
             type="button"
-            onClick={() => onOpenQuiz(version === 'pro' ? 'pro' : undefined)}
+            onClick={() => onOpenQuiz(version === 'pro')}
             className="btn-ghost mt-3 font-mono text-[11px]"
           >
             {version === 'pro' ? t('profile.cta.quizPro') : t('profile.cta.quiz')}

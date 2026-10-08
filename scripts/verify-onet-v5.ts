@@ -123,8 +123,8 @@ check(
 section('5. 引擎联动（标签强化有界叠加）');
 {
   const base = {
-    version: 'pro' as const,
     mbti: {},
+    ipip: { q1: 3 },
     lifestyle: {},
     interests: ['outdoor', 'arts'],
     interestSubs: { outdoor: ['hike'] },

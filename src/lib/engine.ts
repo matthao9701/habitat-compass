@@ -31,22 +31,34 @@ export type QuizVersion = 'lite' | 'pro';
 export type AxisName = 'EI' | 'SN' | 'TF' | 'JP';
 
 export interface UserAnswers {
-  /** 作答版本；历史草稿无该字段时视为 lite */
+  /** 作答版本（派生字段，保留以兼容历史存档）：含深化段 = pro，仅核心段 = lite */
   version?: QuizVersion;
-  /** 阶段一：lite = OEJTS 七级双极量表（1-7）；pro = IPIP-NEO 五点量表（1-5） */
+  /** 核心段人格：OEJTS 七级双极量表（1-7） */
   mbti: Record<string, number>;
-  /** 阶段二：生活偏好作答。pro 的滑杆/排序/二选一按约定编码存入（见 questionsPro.ts） */
+  /** 深化段人格：IPIP-NEO 五点量表（1-5）。存在即视为「深化版」，人格以 IPIP 为准 */
+  ipip?: Record<string, number>;
+  /** 生活偏好作答：核心段 8 题单选；深化段另有滑杆/排序/二选一（见 questionsPro.ts） */
   lifestyle: Record<string, string>;
-  /** 阶段三：兴趣标签多选（pro 为 28 个一级标签 id） */
+  /** 兴趣标签多选（核心段 16 个；深化段可扩到 28 个一级标签 id） */
   interests: string[];
-  /** pro 专有：二级细化子项选择（key = 一级标签 id），选中子项强化该兴趣权重 */
+  /** 深化段专有：二级细化子项选择（key = 一级标签 id），选中子项强化该兴趣权重 */
   interestSubs?: Record<string, string[]>;
-  /** 第八轮 pro 专有：RIASEC 六维题作答（O*NET IP-SF 30 题，1-5 喜好量表） */
+  /** 深化段专有：RIASEC 六维题作答（O*NET IP-SF 30 题，1-5 喜好量表） */
   riasec?: Record<string, number>;
-  /** 第八轮 pro 专有：IPIP Risk-Taking 作答（10 题 1-5 量表） */
+  /** 深化段专有：IPIP Risk-Taking 作答（10 题 1-5 量表） */
   risk?: Record<string, number>;
   /** 第九轮：护照/国籍（硬约束步骤选择，默认中国大陆；免签快照目前仅覆盖 CN） */
   passport?: PassportCode;
+}
+
+/**
+ * 是否包含深化段（IPIP 人格已作答）。
+ * 融合题库后不再由入口选择版本，改由「是否答了深化段」派生：
+ * 有 IPIP 作答 → 深化版（BigFive / RIASEC / 风险 / 进阶偏好全部参与）；
+ * 无 IPIP 作答 → 基础版（OEJTS 人格 + 核心偏好 + 核心兴趣）。
+ */
+export function isDeep(answers: UserAnswers): boolean {
+  return !!answers.ipip && Object.keys(answers.ipip).length > 0;
 }
 
 export interface DimensionScores {
@@ -350,7 +362,7 @@ export function weightedUserTags(
   options?: { includeRiasec?: boolean },
 ): string[] {
   const base = answers.interests;
-  if (answers.version !== 'pro') return base;
+  if (!isDeep(answers)) return base;
   const repeats = tagRepeats(answers, options);
   if (repeats.size === 0) return base;
   const out = [...base];
@@ -566,15 +578,19 @@ export function derivePreferenceOrdinals(lifestyle: Record<string, string>): Pre
   };
 }
 
-/** 按版本分发人格计算：pro → IPIP-NEO 计分；lite → OEJTS 计分 */
+/**
+ * 人格计算（融合题库统一口径）：
+ * - 深化段已作答（answers.ipip）→ 以 IPIP-NEO 计分为准，附 Big Five 剖面；
+ * - 否则 → OEJTS 七级量表计分。
+ */
 export function getPersonality(answers: UserAnswers): {
   typeCode: string;
   traitVector: CityTraitVector;
   axisScores: Record<AxisName, number>;
   proProfile?: BigFiveProfile;
 } {
-  if (answers.version === 'pro') {
-    const profile = derivePersonalityPro(answers.mbti);
+  if (isDeep(answers)) {
+    const profile = derivePersonalityPro(answers.ipip ?? {});
     return {
       typeCode: profile.typeCode,
       traitVector: profile.traitVector,
@@ -720,7 +736,7 @@ export interface CityFits {
 export function computeCityFits(city: City, answers: UserAnswers): CityFits {
   const { traitVector } = getPersonality(answers);
   const preferenceInputs = answers.lifestyle;
-  const isPro = answers.version === 'pro';
+  const isPro = isDeep(answers);
 
   // 标准版：20 题聚合出 6 个序数维；budget/climate 仍走槽位题（P5/P6）
   const prefOrd = isPro ? derivePreferenceOrdinals(preferenceInputs) : null;
@@ -970,8 +986,10 @@ export function assess(answers: UserAnswers, cityPool?: City[]): AssessmentResul
     version: answers.version,
   });
 
+  const deep = isDeep(answers);
+
   return {
-    version: answers.version ?? 'lite',
+    version: deep ? 'pro' : 'lite',
     typeCode,
     traitVector,
     axisScores,
@@ -980,10 +998,10 @@ export function assess(answers: UserAnswers, cityPool?: City[]): AssessmentResul
     profileTags,
     matches: matches.slice(0, 5),
     proProfile: personality.proProfile,
-    ...(answers.version === 'pro' && answers.riasec
+    ...(deep && answers.riasec
       ? { riasecProfile: deriveRiasec(answers.riasec) }
       : {}),
-    ...(answers.version === 'pro' && answers.risk
+    ...(deep && answers.risk
       ? { riskProfile: deriveRisk(answers.risk) ?? undefined }
       : {}),
   };

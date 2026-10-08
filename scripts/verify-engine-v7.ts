@@ -23,6 +23,10 @@ import { NEUTRAL_ANSWERS } from '../src/lib/compare';
 import { tagRepeats, riasecBoostedTags, deriveRisk } from '../src/lib/riasec';
 import { riskQuestions } from '../src/data/riskTaking';
 import { riasecQuestions } from '../src/data/riasec';
+import { ipipQuestions } from '../src/data/questionsPro';
+
+// 融合题库后，深化段由「是否作答 IPIP」派生（不再看 version 字段）
+const IPIP_MID: Record<string, number> = Object.fromEntries(ipipQuestions.map((q) => [q.id, 3]));
 
 let pass = 0;
 let fail = 0;
@@ -130,7 +134,7 @@ ok(riskLinkFit({ safety: null, visaScore: null, digitalNomadVisa: null, tags: []
 // RIASEC 迁移：interestFit 与 riasec 答案解耦
 const proBase: UserAnswers = {
   ...(NEUTRAL_ANSWERS as unknown as UserAnswers),
-  version: 'pro',
+  ipip: IPIP_MID,
   interests: ['nature', 'food', 'coffee'],
   interestSubs: undefined,
 } as UserAnswers;

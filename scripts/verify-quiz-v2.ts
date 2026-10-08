@@ -14,7 +14,8 @@ import { ipipQuestions, IPIP_FACETS, proLifestyleQuestions, RANK_ORDINALS } from
 import { riasecQuestions, RIASEC_DIMS, RIASEC_PER_DIM } from '../src/data/riasec';
 import { riskQuestions } from '../src/data/riskTaking';
 import { interestTagsPro, interestSubs, reinforcedTags } from '../src/data/interestsPro';
-import { assess, derivePersonalityPro, type UserAnswers, type BigFiveDomain } from '../src/lib/engine';
+import { assess, isDeep, derivePersonalityPro, type UserAnswers, type BigFiveDomain } from '../src/lib/engine';
+import { mbtiQuestions } from '../src/data/questions';
 
 let pass = 0;
 let fail = 0;
@@ -131,8 +132,8 @@ check(
 );
 
 const proAnswers: UserAnswers = {
-  version: 'pro',
-  mbti: answersBy('best'),
+  mbti: {},
+  ipip: answersBy('best'),
   lifestyle: {
     pl_budget: '1500-2500',
     pl_climate: 'temperate',
@@ -256,6 +257,40 @@ check(
   new Set([...riasecQuestions, ...riskQuestions, ...ipipQuestions, ...proLifestyleQuestions].map((q) => q.id)).size ===
     30 + 10 + 120 + 20,
 );
+
+// ---------------------------------------------------------------------------
+// 6. 融合题库：统一入口 + 深度派生（isDeep 由 IPIP 作答决定）
+// ---------------------------------------------------------------------------
+section('6. 融合题库：统一入口 + 深度派生');
+{
+  // 6.1 lite 计分（无 IPIP）→ version=lite，无 proProfile
+  const liteAnswers: UserAnswers = {
+    mbti: Object.fromEntries(mbtiQuestions.map((q) => [q.id, 4])),
+    lifestyle: {
+      pl_budget: '1500-2500', pl_climate: 'temperate', pl_pace: '3', pl_size: '4',
+      pl_social: '4', pl_language: '3', pl_visa: '4', pl_remote: '5',
+    },
+    interests: ['outdoor', 'food'],
+  };
+  const liteResult = assess(liteAnswers);
+  check('核心段（无 IPIP）→ version = lite', liteResult.version === 'lite', liteResult.version);
+  check('核心段无 BigFive proProfile', liteResult.proProfile == null);
+  check('核心段 Top5 齐整', liteResult.matches.length === 5);
+
+  // 6.2 isDeep 派生：仅当 ipip 非空才视为深化
+  check('isDeep：空 ipip → false', !isDeep({ ...liteAnswers, ipip: {} }));
+  check('isDeep：有 ipip 作答 → true', isDeep({ ...liteAnswers, ipip: { q1: 3 } }));
+
+  // 6.3 深化段作答 → version=pro（核心 + 深化共用同一份 answers）
+  const deepAnswers: UserAnswers = { ...liteAnswers, ipip: answersBy('mid') };
+  const deepResult = assess(deepAnswers);
+  check('含 IPIP 作答 → version = pro', deepResult.version === 'pro', deepResult.version);
+  check('深化段附带 BigFive proProfile', deepResult.proProfile != null);
+
+  // 6.4 核心段人格沿用 OEJTS，深化段改用 IPIP（同一份题库两种口径）
+  check('核心段人格为合法 16 型码', /^[EI][SN][TF][JP]$/.test(liteResult.typeCode), liteResult.typeCode);
+  check('深化段人格来自 IPIP（全中位 → 与 derivePersonalityPro 一致）', deepResult.typeCode === derivePersonalityPro(answersBy('mid')).typeCode, deepResult.typeCode);
+}
 
 // ---------------------------------------------------------------------------
 // 汇总

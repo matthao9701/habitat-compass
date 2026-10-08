@@ -29,16 +29,13 @@ function section(title: string): void {
 
 const read = (p: string): string => fs.readFileSync(p, 'utf8');
 
-/* ============ 1. 首页入口收纳 ============ */
+/* ============ 1. 首页入口收纳（融合题库后统一入口） ============ */
 section('1. 首页入口收纳');
 const landingSrc = read('src/components/Landing.tsx');
-check('Landing 引入 VersionPicker 组件', landingSrc.includes("import VersionPicker from './VersionPicker'"));
-check('Landing 渲染 VersionPicker', /<VersionPicker\b/.test(landingSrc));
-check('主入口走弹层（setPickerOpen(true) ≥3 处）', (landingSrc.match(/setPickerOpen\(true\)/g) ?? []).length >= 3, String((landingSrc.match(/setPickerOpen\(true\)/g) ?? []).length));
-check('onStart() 直调仅剩版本卡 1 处', (landingSrc.match(/onClick=\{\(\) => onStart\(\)\}/g) ?? []).length === 1);
-const pickerSrc = read('src/components/VersionPicker.tsx');
-check('弹层含免费徽标键 picker.freeBadge', pickerSrc.includes('landing.picker.freeBadge'));
-check('弹层含 PRO 徽章（大写 PRO 徽标元素）', /PRO\b/.test(pickerSrc.replace(/proCta|onPick\('pro'\)|'pro'/g, 'PRO')) === false ? /PRO<\/span>|\bPRO\b/.test(pickerSrc) : true);
+check('Landing 不再引入 VersionPicker', !landingSrc.includes('VersionPicker'));
+check('Landing 不渲染版本选择弹层', !/<VersionPicker\b/.test(landingSrc) && !landingSrc.includes('pickerOpen'));
+check('主入口直调 onStart（无弹层中转）', (landingSrc.match(/onClick=\{onStart\}/g) ?? []).length >= 2, String((landingSrc.match(/onClick=\{onStart\}/g) ?? []).length));
+check('结局区含核心/深化两卡文案键', landingSrc.includes('landing.version.core') && landingSrc.includes('landing.version.deepen'));
 check('样例次入口指向演示档案首项', landingSrc.includes('onDemo(DEMO_PROFILES[0]?.id'));
 
 /* ============ 2. 报告样例（demo 数据完整性 + 同源渲染） ============ */
@@ -98,9 +95,13 @@ section('4. Tab 栏布局');
 const tabSrc = read('src/components/TabBar.tsx');
 check('LangSwitch 不再绝对定位（移除 absolute right-）', !tabSrc.includes('absolute right-'));
 check('LangSwitch 容器 shrink-0 防挤压', tabSrc.includes('shrink-0'));
-check('nav 窄屏左对齐、桌面居中（md:mx-auto）', tabSrc.includes('md:mx-auto'));
-check('容器 justify-between（窄屏两端分布）', tabSrc.includes('justify-between'));
-check('窄屏按钮间距收紧（gap-1.5）', tabSrc.includes('gap-1.5'));
+// 五 Tab 改版（城/税加入后）：nav 占满可用宽度并允许窄屏横向滚动，语言切换固定右侧不被遮挡；
+// 小屏仅图标（44px 触控热区 + aria-label/title 保留可读名），≥ sm 显示图标 + 文字。
+check('nav 占满剩余宽度（flex-1，避免与语言切换重叠）', tabSrc.includes('flex-1'));
+check('窄屏可横向滚动兜底（overflow-x-auto）', tabSrc.includes('overflow-x-auto'));
+check('小屏仅图标（sm:inline 才显示文字）', tabSrc.includes('hidden sm:inline'));
+check('触控热区 ≥44px（min-h-[44px]）', tabSrc.includes('min-h-[44px]'));
+check('图标按钮保留可访问名（aria-label）', tabSrc.includes('aria-label={label}'));
 
 /* ============ 5. 天空蓝白换肤（token 一致性） ============ */
 section('5. 天空蓝白换肤');
@@ -132,21 +133,21 @@ check('src/ 下旧色板 hex 清零（staleHits=0）', staleHits === 0, `staleHi
 section('6. i18n');
 const NEW_KEYS = [
   'landing.hero.sampleCta',
-  'landing.picker.title',
-  'landing.picker.subtitle',
-  'landing.picker.freeBadge',
-  'landing.picker.liteCta',
-  'landing.picker.proCta',
-  'landing.picker.note',
-  'landing.picker.close',
+  'landing.version.core',
+  'landing.version.coreDesc',
+  'landing.version.coreCta',
+  'landing.version.deepen',
+  'landing.version.deepenDesc',
+  'landing.version.deepenCta',
+  'landing.version.freeCta',
 ];
 for (const k of NEW_KEYS) {
   check(`${k} zh/en 齐备`, Boolean(DICTS.zh[k]) && Boolean(DICTS.en[k]));
 }
 check(
   'REVERSE_ZH 反查：中文值 → en',
-  translate('en', '选择测评版本') === DICTS.en['landing.picker.title'],
-  `got=${translate('en', '选择测评版本')}`,
+  translate('en', '核心测评') === DICTS.en['landing.version.core'],
+  `got=${translate('en', '核心测评')}`,
 );
 check(
   'REVERSE_ZH 反查：查看报告样例 → zh 原值',

@@ -21,6 +21,7 @@ import { useI18n, translate, getCurrentLang } from '../i18n';
 import { cityName, cityCountryName, profileTagLabel, tagLabel, climateSummary, formatMoneyShort } from '../lib/format';
 import { overlapHours } from '../lib/timezone';
 import { visaLabelText } from '../i18n/countryGlossary';
+import { taxChipSummary } from '../lib/tax';
 
 interface ReportProps {
   result: AssessmentResult;
@@ -28,6 +29,8 @@ interface ReportProps {
   /** 演示档案模式：顶部徽标 + 底部引导 CTA */
   isDemo?: boolean;
   onStartQuiz?: () => void;
+  /** 打开税负测算子页面（可携带目标城市 id） */
+  onOpenTax?: (cityId: string) => void;
 }
 
 /** 雷达六轴标签（工厂：渲染期取当前语言） */
@@ -40,7 +43,7 @@ const RADAR_COLORS = ['#EE6C4D', '#0369A1', '#D9A441'];
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
-export default function Report({ result, onRestart, isDemo = false, onStartQuiz }: ReportProps) {
+export default function Report({ result, onRestart, isDemo = false, onStartQuiz, onOpenTax }: ReportProps) {
   const { t } = useI18n();
   const hasProfile = isMbtiTypeCode(result.typeCode);
   const [copied, setCopied] = useState(false);
@@ -241,7 +244,7 @@ export default function Report({ result, onRestart, isDemo = false, onStartQuiz 
         <h2 className="mb-10 font-display text-2xl font-bold tracking-tight md:text-3xl">{t('report.top5')}</h2>
         <div className="space-y-5">
           {result.matches.map((m, i) => (
-            <CityCard key={m.city.id} match={m} rank={i + 1} />
+            <CityCard key={m.city.id} match={m} rank={i + 1} onOpenTax={onOpenTax} />
           ))}
         </div>
 
@@ -339,6 +342,7 @@ export default function Report({ result, onRestart, isDemo = false, onStartQuiz 
 interface CityCardProps {
   match: CityMatch;
   rank: number;
+  onOpenTax?: (cityId: string) => void;
 }
 
 /** 条形图维度标签（工厂：渲染期取当前语言） */
@@ -354,7 +358,7 @@ function barDims(): { key: keyof CityMatch['scores']; label: string }[] {
   ];
 }
 
-function CityCard({ match, rank }: CityCardProps) {
+function CityCard({ match, rank, onOpenTax }: CityCardProps) {
   const { t } = useI18n();
   const { city } = match;
   const cityInterests = city.tags
@@ -377,6 +381,20 @@ function CityCard({ match, rank }: CityCardProps) {
   const visaEntry = country?.visaPassport?.entry ?? null;
   const dnFriendly = country?.visaPassport?.digitalNomad ?? null;
   const longStayRestricted = country?.visaPassport?.longTerm === 'restricted';
+  /** 税负概览（V1）：规则字典查表 → 标签 + 微 CTA */
+  const tax = taxChipSummary(city);
+  const taxRegimeLabel = tax.rule
+    ? tax.foreignExempt
+      ? t('rep.tax.foreignExempt')
+      : tax.concession
+        ? t('rep.tax.concession')
+        : t('rep.tax.standard')
+    : t('rep.tax.standard');
+  const taxChipStyle = tax.foreignExempt
+    ? 'border-moss-deep/45 bg-moss/10 text-moss-deep'
+    : tax.concession
+      ? 'border-ochre-deep/45 bg-ochre/10 text-ochre-deep'
+      : 'border-ink/25 bg-ink/[0.04] text-ink-soft';
 
   const BADGE_STYLE: Record<BadgeLevel, string> = {
     good: 'border-moss-deep/55 bg-moss/10 text-moss-deep',
@@ -512,6 +530,31 @@ function CityCard({ match, rank }: CityCardProps) {
                 <span className="rounded-full border border-sea-deep/45 bg-sea/10 px-2.5 py-1 font-mono text-[10px] font-medium text-sea-deep">
                   {t('atlas.visa.difficultyDnEasy')}
                 </span>
+              )}
+            </div>
+
+            {/* 税负概览（V1）：四类税制标签 + 有效税率 + 微 CTA 直达独立算税子页面 */}
+            <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t hairline pt-3">
+              <div className="flex flex-wrap items-center gap-1.5">
+                <span className="font-mono text-[9.5px] uppercase tracking-eyebrow text-ink-soft">
+                  {t('rep.tax.chip')}
+                </span>
+                <span className={`rounded-full border px-2.5 py-1 font-mono text-[10px] font-medium ${taxChipStyle}`}>
+                  {taxRegimeLabel}
+                </span>
+                <span className="font-mono text-[10px] text-ink-soft">
+                  {t('rep.tax.effRate', { v: tax.effRate })}
+                </span>
+              </div>
+              {onOpenTax && (
+                <button
+                  type="button"
+                  title={t('rep.tax.ctaTitle')}
+                  onClick={() => onOpenTax(city.id)}
+                  className="rounded-full border border-pine/45 bg-pine/[0.06] px-3 py-1 font-mono text-[10px] font-medium text-pine transition-colors hover:bg-pine hover:text-paper"
+                >
+                  {t('rep.tax.cta')}
+                </button>
               )}
             </div>
           </div>
