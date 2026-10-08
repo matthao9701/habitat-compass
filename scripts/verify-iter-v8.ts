@@ -103,15 +103,18 @@ check('小屏仅图标（sm:inline 才显示文字）', tabSrc.includes('hidden 
 check('触控热区 ≥44px（min-h-[44px]）', tabSrc.includes('min-h-[44px]'));
 check('图标按钮保留可访问名（aria-label）', tabSrc.includes('aria-label={label}'));
 
-/* ============ 5. 天空蓝白换肤（token 一致性） ============ */
-section('5. 天空蓝白换肤');
+/* ============ 5. 编辑部风色板（token 一致性） ============ */
+// 第十一轮的「天空蓝白」已被后续「编辑部杂志风」取代（oat paper + ink + navy/terracotta）：
+// 本节断言对齐现行 tailwind token，并顺带清理已废弃的深天蓝/浅蓝白残留。
+section('5. 编辑部风色板');
 const twSrc = read('tailwind.config.js');
-check('pine 主操作 = 深天蓝 #0369A1', twSrc.includes("#0369A1"));
-check('旧深海蓝 #0A4D68 已清除', !twSrc.includes('#0A4D68'));
-check('paper = 极浅蓝白 #F0F9FF', twSrc.includes('#F0F9FF'));
-check('colors.ts deepSea 同步 #0369A1', CHART_COLORS.deepSea === '#0369A1');
-check('colors.ts coral 同步 #EE6C4D', CHART_COLORS.coral === '#EE6C4D');
-// 全源码旧色清零
+check('pine 主操作 = 深海航海蓝 #1D3557', twSrc.includes('#1D3557'));
+check('旧天空蓝 #0369A1 已清除', !twSrc.includes('#0369A1'));
+check('paper = 燕麦羊皮纸 #F9F8F6', twSrc.includes('#F9F8F6'));
+check('旧浅蓝白 #F0F9FF 已清除', !twSrc.includes('#F0F9FF'));
+check('colors.ts deepSea 同步 #1D3557', CHART_COLORS.deepSea === '#1D3557');
+check('colors.ts coral 同步 #C96A52', CHART_COLORS.coral === '#C96A52');
+// 全源码旧色清零（含第十一轮天空蓝白 + 更早海洋蓝白两代残留）
 let staleHits = 0;
 function walk(dir: string): void {
   for (const name of fs.readdirSync(dir)) {
@@ -122,7 +125,7 @@ function walk(dir: string): void {
       walk(p);
     } else if (/\.(tsx?|css|js)$/.test(name)) {
       const src = fs.readFileSync(p, 'utf8');
-      if (/#0A4D68|#E76F51|#0A2530|#5A7A8A|#F0F7FA|#3FA7BF|#4A8DB7|#C25438/.test(src)) staleHits += 1;
+      if (/#0A4D68|#E76F51|#0A2530|#5A7A8A|#F0F7FA|#3FA7BF|#4A8DB7|#C25438|#0369A1|#EE6C4D|#D9A441|#17A2C6|#082F49|#4E7A96|#F0F9FF|#57B4E0|#2E8B74/.test(src)) staleHits += 1;
     }
   }
 }

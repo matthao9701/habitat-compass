@@ -25,9 +25,9 @@ interface Segment {
 export default function WeightDonut({ personality, lifestyle, interest, total }: WeightDonutProps) {
   const { t } = useI18n();
   const segments: Segment[] = [
-    { key: 'personality', label: t('report.donut.personality'), weight: Math.round(WEIGHTS.personality * 100), score: personality, color: '#EE6C4D' },
-    { key: 'lifestyle', label: t('quiz.transition.ls'), weight: Math.round(WEIGHTS.preference * 100), score: lifestyle, color: '#0369A1' },
-    { key: 'interest', label: t('quiz.transition.interests'), weight: Math.round(WEIGHTS.interest * 100), score: interest, color: '#D9A441' },
+    { key: 'personality', label: t('report.donut.personality'), weight: Math.round(WEIGHTS.personality * 100), score: personality, color: '#C96A52' },
+    { key: 'lifestyle', label: t('quiz.transition.ls'), weight: Math.round(WEIGHTS.preference * 100), score: lifestyle, color: '#1D3557' },
+    { key: 'interest', label: t('quiz.transition.interests'), weight: Math.round(WEIGHTS.interest * 100), score: interest, color: '#B98A2F' },
   ];
 
   const r = 52;

@@ -52,7 +52,7 @@ export default function RadarChart({ axes, series, size = 340 }: RadarChartProps
               })
               .join(' ')}
             fill="none"
-            stroke="#082F49"
+            stroke="#1F2421"
             strokeWidth="0.7"
             opacity="0.16"
           />
@@ -68,7 +68,7 @@ export default function RadarChart({ axes, series, size = 340 }: RadarChartProps
               y1={cy}
               x2={x}
               y2={y}
-              stroke="#082F49"
+              stroke="#1F2421"
               strokeWidth="0.7"
               opacity="0.16"
             />

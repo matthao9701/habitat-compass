@@ -39,7 +39,7 @@ function radarAxes(): string[] {
   return [L('report.radar.cost'), L('report.radar.network'), L('report.radar.safety'), L('report.radar.community'), L('report.radar.english'), L('report.radar.visa')];
 }
 
-const RADAR_COLORS = ['#EE6C4D', '#0369A1', '#D9A441'];
+const RADAR_COLORS = ['#C96A52', '#1D3557', '#B98A2F'];
 
 const ease = [0.22, 1, 0.36, 1] as const;
 

@@ -153,7 +153,7 @@ export default function RouteChart({
             key={i}
             d={d}
             fill="none"
-            stroke={compact ? '#F0F9FF' : '#EE6C4D'}
+            stroke={compact ? '#F9F8F6' : '#C96A52'}
             strokeWidth="1.1"
             strokeDasharray="5 7"
             opacity="0.7"
@@ -168,13 +168,13 @@ export default function RouteChart({
         return (
           <g key={p.id}>
             {active && (
-              <circle cx={p.x} cy={p.y} r="7" stroke={compact ? '#F0F9FF' : '#EE6C4D'} strokeWidth="0.9" opacity="0.7" />
+              <circle cx={p.x} cy={p.y} r="7" stroke={compact ? '#F9F8F6' : '#C96A52'} strokeWidth="0.9" opacity="0.7" />
             )}
             <circle
               cx={p.x}
               cy={p.y}
               r={active ? 3.2 : 2}
-              fill={active ? '#EE6C4D' : compact ? '#F0F9FF' : '#082F49'}
+              fill={active ? '#C96A52' : compact ? '#F9F8F6' : '#1F2421'}
               opacity={active ? 1 : 0.62}
             />
           </g>

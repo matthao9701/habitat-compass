@@ -248,7 +248,7 @@ export default function ConstraintsStep({
                 aria-label={t('cons.safety')}
                 value={hc.safetyThreshold}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => setHc((s) => ({ ...s, safetyThreshold: Number(e.target.value) }))}
-                className="h-6 w-full accent-[#EE6C4D]"
+                className="h-6 w-full accent-[#C96A52]"
               />
               <div className="mt-1 flex justify-between font-data text-xs text-ink-soft">
                 <span>20</span>

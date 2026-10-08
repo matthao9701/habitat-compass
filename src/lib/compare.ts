@@ -13,8 +13,8 @@ import { mbtiQuestions } from '../data/questions';
 
 export const COMPARE_CITY_LIMIT = 4;
 
-/** 每城一色：航线墨绿 / 陶土 / 黄铜 / 海图青灰 */
-export const COMPARE_COLORS = ['#0369A1', '#EE6C4D', '#D9A441', '#17A2C6'];
+/** 每城一色：航海蓝 / 陶土 / 黄铜 / 海图青 */
+export const COMPARE_COLORS = ['#1D3557', '#C96A52', '#B98A2F', '#3E7C8F'];
 
 /** 滑杆值域 */
 export const WEIGHT_SLIDER_MAX = 5;

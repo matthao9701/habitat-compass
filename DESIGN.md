@@ -138,6 +138,8 @@
 
 ## 天空蓝白换肤与入口收纳（第十一轮增量）
 
+> **已被取代**：本节描述的「天空蓝白」色板随后由「编辑部杂志风」（oat paper + ink + navy/terracotta）取代，现行色板见下方「编辑部杂志风（现行色板）」一节。本段仅作历史留档。
+
 ### 主色调整记录：海洋蓝白 → 天空蓝白
 
 - **动机**：第七轮深海蓝 #0A4D68 偏沉、整体「蓝度不够」；第十一轮整体提亮提饱和，换为明亮的天空蓝白系。token 机制沿用第七轮（名不变只换值，组件零 diff）。
@@ -165,6 +167,16 @@
 - 次入口「查看报告样例」：Hero CTA 旁 ghost 样式，视觉层级低于主入口；与演示档案卡指向同一数据源（DEMO_PROFILES → buildDemoAnswers → assess）同一渲染（Report isDemo）。
 - 结尾版本介绍卡保留（lite 卡直连 lite / pro 卡进介绍页），属版本详情而非散落入口。
 - 样例模式规范：报告顶部「样例报告 · demo」徽标 + 底部引导 CTA「开始我的测评」；纯只读渲染，不写 draft/history/billing 任何键。
+
+## 编辑部杂志风（现行色板）
+
+> 本节目的是给「天空蓝白」画上句号：现行全站色板为编辑部杂志风，`tailwind.config.js` 仍为唯一事实源，token 名不变只换值。
+
+- **色板**：`paper` #F9F8F6（燕麦羊皮纸底）/ `paper-deep` #F1EFEA / `card` #FFFFFF / `ink` #1F2421（炭墨，soft #6B6F6C）/ `pine` #1D3557（深海航海蓝，主操作，白字对比 ≥10:1）/ `clay` #C96A52（暖赤陶强调，deep #A94F38）/ `line` #E5E7EB（1px 细线）/ `ochre` #B98A2F（deep #8A5F0A）/ `teal` #3E7C8F（deep #336673）/ `moss` #5F7A5A（deep #51694B）/ `sea` #7FA8B8（deep #2F6A7D）。
+- **语义色加深档**：亮色相仅用于实心填充；白底文字另给同色相加深档（对比度均 ≥4.5:1，见 tailwind.config.js 注释），`AIR_BAND_TONE` 映射到 `*-deep` 类。
+- **图表取色**：`src/lib/colors.ts` 的 `CHART_COLORS` 逐项对齐上述 token；`COMPARE_COLORS`（compare.ts）、`RADAR_COLORS`（Report.tsx）及散落于 RouteChart / CompassMark / RadarChart / WeightDonut / BigFiveSection / CompareScreen / ConstraintsStep 的 hex 均已同源替换，**全 src/ 两代旧 hex（海洋蓝白 + 天空蓝白）清零**，由 `verify-iter-v8` 第 5 节全源码扫描把关。
+- **字体**：显示/标题 Fraunces（soft serif）+ 衬线点缀 Newsreader + 正文/数据 Manrope（真等宽数字）；中文走系统黑体栈，不自托管 CJK。全部 OFL 自托管。
+- **禁忌**：不引入紫色调；深色区块用 `ink` 不用 `pine`；正文不用低于 4.5:1 的色。
 
 ## 第十二轮：SEO/GEO 落地页设计规范
 

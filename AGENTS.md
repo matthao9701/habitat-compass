@@ -109,7 +109,7 @@
 - 第八轮校验：`pnpm tsx scripts/verify-onet-v5.ts`（RIASEC 30 题完整性/计分与 top2 单测/六维→标签映射全在池/风险 10 题 keyed 方向与计分/tagRepeats 有界叠加封顶 ×3/双语键/Quiz 流程接入；注意 verify-data-v2 依赖 /tmp/pipeline/climate.json 管道中间产物，被清理后需按 DATA.md 第五节重跑管道）
 - 第九轮校验：`pnpm tsx scripts/verify-passport-v6.ts`（护照枚举与默认值/65 国快照覆盖与枚举/CN+visaFree 过滤联动与快照独立重算一致/非 CN 降级全保留/两阶段排除无重复/引擎集成冒烟/双语键完整/reason 串与词典一致）
 - 第十轮校验：`pnpm tsx scripts/verify-engine-v7.ts`（分层权重表完整性/值域/三类相对优先级/Tier 3 上限/airFit 分档/冒险友好度与风险联动算例/RIASEC 迁移解耦/双版本回归/200 城覆盖）
-- 第十一轮校验：`pnpm tsx scripts/verify-iter-v8.ts`（入口收纳结构/报告样例 demo 完整性与 expectedType/样例模式不污染/Tab 栏防重叠语义/天空蓝白 token 一致性与旧 hex 清零/新键双语与 REVERSE_ZH 反查）
+- 第十一轮校验：`pnpm tsx scripts/verify-iter-v8.ts`（入口收纳结构/报告样例 demo 完整性与 expectedType/样例模式不污染/Tab 栏防重叠语义/编辑部风色板 token 一致性与旧 hex 清零/新键双语与 REVERSE_ZH 反查）
 - 第十二轮校验：`pnpm tsx scripts/verify-seo-v9.ts`（536 落地页生成完整性与内容要素/null 不编造/JSON-LD 全量可解析/robots 8 爬虫/llms.txt/sitemap ≥536 URL/hreflang 互链/主站 @graph/方法论页权重与许可）
 - 第十三轮校验：`pnpm tsx scripts/verify-legal.ts`（212 项：3 类法律页存在与结构/GDPR 信息义务逐项关键词/清除数据按钮实现/协议免责与开源署名+O*NET CC BY 4.0/footer 三链接/不退款与 EU 撤回权确认/商标词与弃用命名清零/无第三方脚本外链/方法论字体 OFL 声明/sitemap 全量 URL→dist 文件存在/public 同步 dev 可达）
 
@@ -194,7 +194,7 @@
 ## 第十一轮：Tab 栏防重叠 + 天空蓝白换肤 + 入口收纳 + 报告样例
 
 - **Tab 栏防重叠**：`TabBar.tsx` LangSwitch 不再 `absolute right-*` 叠放（窄屏会盖住「我的」Tab）——改为 `justify-between` 流式布局：窄屏 nav 左对齐（gap-1.5 / px-2.5 收紧）+ LangSwitch `shrink-0` 靠右；桌面 `md:mx-auto` 居中。新增 header 元素必须走正常流并核对 375px 宽度预算。
-- **天空蓝白换肤**：token 名不变只换值（第七轮机制），`tailwind.config.js` 为唯一事实源——pine #0369A1（sky-700 主操作，白字 ≥5:1）/ teal #17A2C6 / paper #F0F9FF / paper-deep #E0F2FE / ink #082F49 / ink-soft #4E7A96 / sea #57B4E0 / clay #EE6C4D（deep #D14E2F）/ ochre·moss 不变；`src/lib/colors.ts` CHART_COLORS 逐项对齐；**全 src/ 旧 hex 清零**（散落色一律 import CHART_COLORS 或用 token 类，verify-iter-v8 全源码扫描把关）。禁紫色调；深色区块仍用 ink 不用 pine。
+- **天空蓝白换肤**：token 名不变只换值（第七轮机制），`tailwind.config.js` 为唯一事实源——pine #0369A1（sky-700 主操作，白字 ≥5:1）/ teal #17A2C6 / paper #F0F9FF / paper-deep #E0F2FE / ink #082F49 / ink-soft #4E7A96 / sea #57B4E0 / clay #EE6C4D（deep #D14E2F）/ ochre·moss 不变；`src/lib/colors.ts` CHART_COLORS 逐项对齐；**全 src/ 旧 hex 清零**（散落色一律 import CHART_COLORS 或用 token 类，verify-iter-v8 全源码扫描把关）。禁紫色调；深色区块仍用 ink 不用 pine。**（第十一轮的天空蓝白已被后续「编辑部杂志风」取代：现行 token 为 pine #1D3557 航海蓝 / paper #F9F8F6 燕麦羊皮纸 / ink #1F2421 炭墨 / clay #C96A52 暖赤陶 / ochre #B98A2F / teal #3E7C8F / sea #7FA8B8 / moss #5F7A5A；`CHART_COLORS` 与 `COMPARE_COLORS`/`RADAR_COLORS` 等散落色（RouteChart·CompassMark·RadarChart·WeightDonut·BigFiveSection·CompareScreen·ConstraintsStep）均已对齐，verify-iter-v8 第 5 节同时清零两代旧 hex）**
 - **入口收纳**：`VersionPicker.tsx` 新组件（版本选择弹层：lite「永久免费」徽章 + pro「PRO」徽章并列）；Landing 的 header 按钮 / Hero CTA / 底部 freeCta 统一弹层，`onStart()` 直调仅剩结尾 lite 介绍卡一处（直连 lite）；pro 介绍卡保持 onProIntro。
 - **报告样例**：Hero CTA 旁「查看报告样例」次入口（`onDemo(DEMO_PROFILES[0].id)`，ghost 层级）——与快速演示档案**同一数据源同一渲染**（buildDemoAnswers → assess → Report isDemo）；样例标注 = Report 顶部 `rep.demo.badge`（样例报告 · demo）+ 底部引导 CTA；**纯只读**：openDemo 不写 draft/history/billing 任何键（verify-iter-v8 源码断言 + node 守卫降级测试）。
 - **验证**：`pnpm tsx scripts/verify-iter-v8.ts`（51 项：入口收纳结构 / 样例 demo 数据完整性与 expectedType / 不污染断言 / Tab 布局语义 / 换肤 token 一致性与旧 hex 清零 / 新键双语 + REVERSE_ZH 反查）。注意 `verify-data-v2` 依赖 /tmp 管道中间产物，被清理后需按 DATA.md 第五节重跑管道。
