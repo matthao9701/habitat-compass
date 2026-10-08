@@ -4,6 +4,7 @@ import Landing from './components/Landing';
 import TabBar, { type TabId } from './components/TabBar';
 import Footer from './components/Footer';
 import PwaInstallCard from './components/PwaInstallCard';
+import KofiWidget from './components/KofiWidget';
 
 // 首页（Landing）同步加载，保证首屏最快；其余页面按需懒加载，拆出独立 chunk。
 const Quiz = lazy(() => import('./components/Quiz'));
@@ -236,6 +237,8 @@ export default function App() {
         {/* 常驻挂载以捕获 beforeinstallprompt（该事件每页只触发一次）；
             仅在常驻页面展示：测评/报告是专注模式，底部固定操作栏会被浮层遮挡 */}
         <PwaInstallCard enabled={TAB_SCREENS.includes(screen)} />
+        {/* Ko-fi 打赏悬浮胶囊：仅 SPA 侧注入（静态落地页保持自包含）；单例守卫防重复 */}
+        <KofiWidget />
       </div>
     </I18nProvider>
   );

@@ -392,6 +392,25 @@ for (const loc of locs) {
 }
 check(`sitemap 全量 ${locs.length} URL 对应 dist 文件存在（全部可 200）`, missing === 0, missingSample.join(', '));
 
+console.log('\n══ 十一、Ko-fi 打赏微件（仅 SPA 侧，静态页保持自包含） ══');
+{
+  const kofiSrc = fs.readFileSync(path.join(ROOT, 'src/components/KofiWidget.tsx'), 'utf8');
+  const cssSrc = fs.readFileSync(path.join(ROOT, 'src/index.css'), 'utf8');
+  const appSrc = fs.readFileSync(path.join(ROOT, 'src/App.tsx'), 'utf8');
+  check('KofiWidget 组件存在并挂载于 App 入口', appSrc.includes('<KofiWidget />') && appSrc.includes("from './components/KofiWidget'"));
+  check('使用官方 Overlay Widget 脚本地址', kofiSrc.includes('https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'));
+  check('Ko-fi 用户名保留占位变量 YOUR_KOFI_ID（待替换）', kofiSrc.includes("const KOFI_ID = 'YOUR_KOFI_ID'"));
+  check('按钮文案为 Support / Buy me a coffee', /KOFI_BUTTON_TEXT = '(Support|Buy me a coffee)'/.test(kofiSrc));
+  check('按钮背景取项目主色 pine #1D3557、文字 #ffffff', kofiSrc.includes("KOFI_BUTTON_BG = '#1D3557'") && kofiSrc.includes("KOFI_BUTTON_TEXT_COLOR = '#ffffff'"));
+  check('异步加载：useEffect 挂载后注入 + async/defer', kofiSrc.includes('async = true') && kofiSrc.includes('defer = true'));
+  check('重复加载防御：模块级单例哨兵', kofiSrc.includes('__hcKofiInjected'));
+  check('层级收口：按钮胶囊 z-index 低于 PWA 卡（45 < 50）', /html body \.floatingchat-container-wrap\b[\s\S]*?z-index: 45 !important/.test(cssSrc));
+  check('定位收口：改到右下角（left:auto + right:16px）', /floatingchat-container-wrap[\s\S]{0,200}left: auto !important[\s\S]{0,60}right: 16px !important/.test(cssSrc));
+  // 静态落地页必须保持「零外链脚本」：Ko-fi 只允许出现在 SPA bundle，不得进入 dist 静态 HTML
+  const kofiHtml = allHtml.filter((p) => /ko-fi|KofiWidget|overlay-widget/i.test(fs.readFileSync(p, 'utf8')));
+  check('dist 静态 HTML 无 Ko-fi 外链（落地页保持自包含自首屏）', kofiHtml.length === 0, kofiHtml.slice(0, 3).map((p) => path.relative(ROOT, p)).join(', '));
+}
+
 console.log(`\n════════ verify-legal: ${passed} passed, ${failed.length} failed ════════`);
 if (failed.length) {
   console.log('失败项：');
