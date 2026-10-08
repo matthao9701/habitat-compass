@@ -398,6 +398,7 @@ console.log('\n══ 十一、Ko-fi 打赏入口（原生按钮 + 页脚直链�
   const cssSrc = fs.readFileSync(path.join(ROOT, 'src/index.css'), 'utf8');
   const appSrc = fs.readFileSync(path.join(ROOT, 'src/App.tsx'), 'utf8');
   check('KofiWidget 组件存在并挂载于 App 入口', appSrc.includes('<KofiWidget />') && appSrc.includes("from './components/KofiWidget'"));
+  check('发版韧性：懒加载 chunk 失败自动刷新一次（防旧哈希 404 卡死）', appSrc.includes('lazyWithReload') && appSrc.includes('hc:chunk-reload') && appSrc.includes('window.location.reload()'));
   check('零第三方脚本：不再注入官方 overlay-widget.js', !kofiSrc.includes('overlay-widget.js') && !kofiSrc.includes('kofiWidgetOverlay') && !kofiSrc.includes('document.createElement'));
   check('Ko-fi 用户名已配置为真实 ID（非占位符）', /const KOFI_ID(?::\s*string)?\s*=\s*'(?!YOUR_KOFI_ID')[^']+'/.test(kofiSrc));
   check('直链在新标签打开（target=_blank + noopener/noreferrer）', /target="_blank"[\s\S]{0,60}rel="noopener noreferrer"/.test(kofiSrc));

@@ -7,12 +7,45 @@ import PwaInstallCard from './components/PwaInstallCard';
 import KofiWidget from './components/KofiWidget';
 
 // 首页（Landing）同步加载，保证首屏最快；其余页面按需懒加载，拆出独立 chunk。
-const Quiz = lazy(() => import('./components/Quiz'));
-const Report = lazy(() => import('./components/Report'));
-const CompareScreen = lazy(() => import('./components/compare/CompareScreen'));
-const ProfileScreen = lazy(() => import('./components/ProfileScreen'));
-const TaxPlanner = lazy(() => import('./components/TaxPlanner'));
-const CityBrowser = lazy(() => import('./components/CityBrowser'));
+//
+// 发版韧性：懒加载 chunk 文件名带内容哈希，每次部署旧文件即被删除。若用户停在
+// 旧页面（或 Service Worker 缓存了旧 HTML），部署后再点击 Tab 触发按需加载，会请求
+// 已不存在的旧 chunk → 404 → 页面卡死（表现为「白屏 / 一直 Loading」），同时向边缘
+// 产生 4xx。这里包装 import()：失败时自动整页刷新一次拉取新版本；用 sessionStorage
+// 标记防止在真正故障（如离线）时陷入刷新死循环。
+const RELOAD_FLAG = 'hc:chunk-reload';
+function lazyWithReload<P>(factory: () => Promise<{ default: React.ComponentType<P> }>) {
+  return lazy(() =>
+    factory()
+      .then((mod) => {
+        // 加载成功：清除标记，使后续（新的）发版仍能触发一次自动恢复
+        try {
+          sessionStorage.removeItem(RELOAD_FLAG);
+        } catch {
+          /* 忽略 */
+        }
+        return mod;
+      })
+      .catch((err: unknown) => {
+        try {
+          if (!sessionStorage.getItem(RELOAD_FLAG)) {
+            sessionStorage.setItem(RELOAD_FLAG, '1');
+            window.location.reload();
+          }
+        } catch {
+          // 隐私模式等禁用 sessionStorage 时忽略，直接抛出交由错误边界/上层处理
+        }
+        throw err;
+      }),
+  );
+}
+
+const Quiz = lazyWithReload(() => import('./components/Quiz'));
+const Report = lazyWithReload(() => import('./components/Report'));
+const CompareScreen = lazyWithReload(() => import('./components/compare/CompareScreen'));
+const ProfileScreen = lazyWithReload(() => import('./components/ProfileScreen'));
+const TaxPlanner = lazyWithReload(() => import('./components/TaxPlanner'));
+const CityBrowser = lazyWithReload(() => import('./components/CityBrowser'));
 import { assess, type UserAnswers, type AssessmentResult, type QuizVersion, isDeep } from './lib/engine';
 import { DEMO_PROFILES, buildDemoAnswers } from './data/demoProfiles';
 import * as storage from './lib/storage';
