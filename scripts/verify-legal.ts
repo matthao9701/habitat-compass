@@ -341,6 +341,15 @@ for (const [tag, html] of [['zh', methZh], ['en', methEn]] as const) {
 for (const rel of ['privacy/index.html', 'terms/index.html', 'disclaimer/index.html', 'en/privacy/index.html', 'en/terms/index.html', 'en/disclaimer/index.html']) {
   check(`public/${rel} 存在（dev 模式直达无 404）`, fs.existsSync(path.join(ROOT, 'public', rel)));
 }
+// 9.5b 缓存响应头：带哈希的构建产物强缓存，HTML/索引保持回源校验（子页提速）
+{
+  const hdrPath = fs.existsSync(path.join(ROOT, 'public/_headers')) ? path.join(ROOT, 'public/_headers') : path.join(DIST, '_headers');
+  const hdr = fs.existsSync(hdrPath) ? fs.readFileSync(hdrPath, 'utf8') : '';
+  check('dist/_headers 已随构建产物下发', fs.existsSync(path.join(DIST, '_headers')));
+  check('_headers：/assets/* 长期 immutable 强缓存', /\/assets\/\*[\s\S]{0,120}max-age=31536000, immutable/.test(hdr));
+  check('_headers：HTML 页面 max-age=0 must-revalidate（发布即可见）', /\/\*\.html[\s\S]{0,120}max-age=0, must-revalidate/.test(hdr));
+  check('_headers：城市实景图缓存 30 天', /\/city-images\/\*[\s\S]{0,120}max-age=2592000/.test(hdr));
+}
 // 9.6 全库零命中：源码/数据/词典无受限商业源命名与变量标记（第十三轮深化）
 {
   const BRANDED_WORD_RE = new RegExp(NB, 'i');

@@ -108,10 +108,11 @@ export default function TaxPlanner({ initialCityId, onOpenQuiz }: TaxPlannerProp
           <p className="mt-4 max-w-2xl text-[14.5px] leading-[1.9] text-ink-soft">{t('tax.lead')}</p>
         </motion.div>
 
-        {/* 两栏：左输入 / 右结果 */}
+        {/* 两栏：左输入 / 右结果。min-w-0 让栅格子项可收缩到视口内，
+            否则移动端单列时会被内容 min-content 撑宽而横向溢出。 */}
         <div className="mt-9 grid gap-6 md:mt-12 md:grid-cols-[minmax(0,420px)_1fr]">
           {/* 左：输入沙盘 */}
-          <section className="rounded-card border hairline bg-card p-6 md:p-7">
+          <section className="min-w-0 rounded-card border hairline bg-card p-6 md:p-7">
             {/* 年收入 */}
             <div>
               <div className="flex items-baseline justify-between gap-3">
@@ -221,7 +222,7 @@ export default function TaxPlanner({ initialCityId, onOpenQuiz }: TaxPlannerProp
           </section>
 
           {/* 右：结果 */}
-          <section className="flex flex-col gap-5">
+          <section className="flex min-w-0 flex-col gap-5">
             {/* 净收入主结果 */}
             <motion.div
               key={`${cityId}-${gross}-${nature}`}

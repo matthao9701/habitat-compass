@@ -1,0 +1,48 @@
+# Cloudflare Pages / Workers 静态资源响应头策略
+# 说明：本文件被原样复制到 dist/ 根目录，由 Cloudflare 静态资源托管读取。
+#
+# 分三类分别设定缓存，既让回访近乎零请求，又不至于让内容更新无法生效：
+#   1) 带内容哈希的构建产物（/assets/*、字体）——内容不变则文件名不变，可长期强缓存（1 年 + immutable）。
+#   2) 图片与图标——文件名稳定、改动低频，缓存 30 天并允许后台协商更新。
+#   3) HTML、robots、sitemap、manifest、Service Worker——始终回源校验（must-revalidate），
+#      保证发布即可见、SEO 抓取拿到最新内容。
+
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/city-images/*
+  Cache-Control: public, max-age=2592000
+
+/*.png
+  Cache-Control: public, max-age=2592000
+
+/*.jpg
+  Cache-Control: public, max-age=2592000
+
+/*.ico
+  Cache-Control: public, max-age=2592000
+
+/*.webp
+  Cache-Control: public, max-age=2592000
+
+# HTML 页面与索引文件：不缓存，交给浏览器/边缘做条件请求
+/*.html
+  Cache-Control: public, max-age=0, must-revalidate
+
+/
+  Cache-Control: public, max-age=0, must-revalidate
+
+/manifest.webmanifest
+  Cache-Control: public, max-age=0, must-revalidate
+
+/sw.js
+  Cache-Control: public, max-age=0, must-revalidate
+
+/robots.txt
+  Cache-Control: public, max-age=3600
+
+/llms.txt
+  Cache-Control: public, max-age=3600
+
+/sitemap.xml
+  Cache-Control: public, max-age=3600

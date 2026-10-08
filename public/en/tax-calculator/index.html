@@ -99,11 +99,14 @@ h2[id]{scroll-margin-top:16px}
 .legal p code{background:var(--paper-deep);border-radius:6px;padding:1px 7px;font-size:13.5px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
 table.tbl{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--paper-deep);border-radius:12px;overflow:hidden;margin:0 0 20px;font-size:14px}
 table.tbl th,table.tbl td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--paper-deep);vertical-align:top}
-table.tbl th{font-size:12px;color:var(--ink-soft);font-weight:700;letter-spacing:.3px;background:var(--paper-deep)}
+table.tbl th{font-size:12px;color:var(--ink-soft);font-weight:700;letter-spacing:.3px;background:var(--paper-deep);white-space:nowrap}
 table.tbl tr:last-child td{border-bottom:none}
 table.tbl a{color:var(--pine);text-decoration:none}
 table.tbl a:hover{text-decoration:underline}
-.tagpill{display:inline-block;border-radius:999px;padding:1px 9px;font-size:12px;font-weight:700;border:1px solid}
+/* 表格宽于容器时横向滚动，避免窄屏把标签挤成「一字一行」 */
+.tblwrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 0 20px;border-radius:12px}
+.tblwrap table.tbl{margin-bottom:0}
+.tagpill{display:inline-block;border-radius:999px;padding:1px 9px;font-size:12px;font-weight:700;border:1px solid;white-space:nowrap}
 .tagpill.t-exempt{border-color:#5F7A5A;background:rgba(95,122,90,.12);color:#51694B}
 .tagpill.t-territorial{border-color:#7FA8B8;background:rgba(127,168,184,.14);color:#2F6A7D}
 .tagpill.t-concession{border-color:#B98A2F;background:rgba(185,138,47,.12);color:#8A5F0A}
@@ -242,7 +245,7 @@ table.tbl a:hover{text-decoration:underline}
 
 <h2>65-country tax regimes & comparison (example income $50,000)</h2>
 <p class="note">“Reference effective rate” is the rule-dictionary approximation; “net income” = gross × (1 − rate); “vs baseline” compares against the high-tax EU/US reference rate of 40%. All directional.</p>
-<div style="overflow-x:auto">
+<div class="tblwrap">
 <table class="tbl">
 <thead><tr>
 <th>Country</th>
@@ -325,7 +328,7 @@ table.tbl a:hover{text-decoration:underline}
 
 <h2>Progressive bracket engine: 29 countries (example income $50,000)</h2>
 <p class="note">These countries have structured bracket data: tax is accumulated band by band on the annual taxable income in local currency (Currency column), including the threshold/standard deduction (local column) and any nomad/new-resident concession. The effective rate = local tax converted at a snapshot FX rate (2025-10) ÷ gross income. Data is distilled from national tax authorities and PwC Worldwide Tax Summaries — rates are public facts, not paid aggregation data.</p>
-<div style="overflow-x:auto">
+<div class="tblwrap">
 <table class="tbl">
 <thead><tr>
 <th>Country</th>
