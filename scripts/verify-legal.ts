@@ -406,9 +406,19 @@ console.log('\n══ 十一、Ko-fi 打赏微件（仅 SPA 侧，静态页保�
   check('重复加载防御：模块级单例哨兵', kofiSrc.includes('__hcKofiInjected'));
   check('层级收口：按钮胶囊 z-index 低于 PWA 卡（45 < 50）', /html body \.floatingchat-container-wrap\b[\s\S]*?z-index: 45 !important/.test(cssSrc));
   check('定位收口：改到右下角（left:auto + right:16px）', /floatingchat-container-wrap[\s\S]{0,200}left: auto !important[\s\S]{0,60}right: 16px !important/.test(cssSrc));
-  // 静态落地页必须保持「零外链脚本」：Ko-fi 只允许出现在 SPA bundle，不得进入 dist 静态 HTML
-  const kofiHtml = allHtml.filter((p) => /ko-fi|KofiWidget|overlay-widget/i.test(fs.readFileSync(p, 'utf8')));
-  check('dist 静态 HTML 无 Ko-fi 外链（落地页保持自包含自首屏）', kofiHtml.length === 0, kofiHtml.slice(0, 3).map((p) => path.relative(ROOT, p)).join(', '));
+  // 兜底入口：SPA 页脚 + 静态页脚均提供「纯 <a> 直链」，不依赖第三方脚本
+  const footerSrc = fs.readFileSync(path.join(ROOT, 'src/components/Footer.tsx'), 'utf8');
+  const uiSrc = fs.readFileSync(path.join(ROOT, 'src/i18n/dict/ui.ts'), 'utf8');
+  const genSrc = fs.readFileSync(path.join(ROOT, 'scripts/generate-landing.mjs'), 'utf8');
+  check('SPA 页脚含 Ko-fi 直链兜底入口（noopener/noreferrer）', /href="https:\/\/ko-fi\.com\/matthao9701"[\s\S]{0,80}rel="noopener noreferrer"/.test(footerSrc));
+  check('i18n 提供打赏入口文案（zh/en）', uiSrc.includes("'footer.support': '请我喝杯咖啡'") && uiSrc.includes("'footer.support': 'Buy me a coffee'"));
+  check('静态页脚注入 Ko-fi 直链（generator，纯 <a> 无脚本）', genSrc.includes('https://ko-fi.com/matthao9701') && genSrc.includes('class="support-link"'));
+  // 静态落地页必须保持「零外链脚本」：官方 overlay 脚本只允许出现在 SPA bundle；
+  // 静态页仅允许一个纯 <a> 直链兜底入口（无脚本、不破坏首屏自包含）。
+  const kofiScriptHtml = allHtml.filter((p) => /<script[^>]+src=["'][^"']*ko-fi/i.test(fs.readFileSync(p, 'utf8')));
+  check('dist 静态 HTML 无 Ko-fi 外链脚本（落地页保持自包含自首屏）', kofiScriptHtml.length === 0, kofiScriptHtml.slice(0, 3).map((p) => path.relative(ROOT, p)).join(', '));
+  const kofiLinkHtml = allHtml.filter((p) => /<a\b[^>]*href=["']https:\/\/ko-fi\.com\//i.test(fs.readFileSync(p, 'utf8')));
+  check('dist 静态 HTML 含纯 <a> 打赏兜底入口（无脚本）', kofiLinkHtml.length > 0, `命中 ${kofiLinkHtml.length} 页`);
 }
 
 console.log(`\n════════ verify-legal: ${passed} passed, ${failed.length} failed ════════`);

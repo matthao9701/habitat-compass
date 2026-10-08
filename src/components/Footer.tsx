@@ -47,6 +47,17 @@ function LegalIcon({ kind }: { kind: 'terms' | 'privacy' | 'disclaimer' | 'metho
   );
 }
 
+/** 咖啡图标（打赏入口，描边风格随 currentColor） */
+function CoffeeIcon() {
+  return (
+    <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true" className="shrink-0">
+      <path d="M3.5 5.5h10v5.2a4 4 0 0 1-4 4h-2a4 4 0 0 1-4-4V5.5Z" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round" />
+      <path d="M13.5 6.6h1.6a2 2 0 0 1 0 4h-1.6" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round" />
+      <path d="M5.8 2.6c-.4.5-.4 1 0 1.5M8.5 2.4c-.4.5-.4 1 0 1.5M11.2 2.6c-.4.5-.4 1 0 1.5" stroke="currentColor" strokeWidth="1.1" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 export default function Footer() {
   const { t, lang } = useI18n();
   const base = lang === 'en' ? '/en' : '';
@@ -94,6 +105,19 @@ export default function Footer() {
               </a>
               {t('trust.contactTail')}
             </p>
+            {/* 打赏入口：直链 Ko-fi（不加载第三方脚本；悬浮微件被拦截时的兜底入口） */}
+            <a
+              href="https://ko-fi.com/matthao9701"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={t('footer.supportAria')}
+              className="mt-3.5 inline-flex items-center gap-2 rounded-full border hairline bg-card px-4 py-2 text-[12.5px] font-medium text-ink
+                transition-all duration-300 ease-chart hover:-translate-y-0.5 hover:border-clay hover:bg-clay hover:text-paper
+                hover:shadow-[0_6px_18px_-8px_rgba(201,106,82,0.55)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-clay/40"
+            >
+              <CoffeeIcon />
+              {t('footer.support')}
+            </a>
           </div>
 
           {/* 法律与合规（协议 + 方法论，数据/字体许可归此） */}

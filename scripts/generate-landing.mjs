@@ -203,6 +203,8 @@ details p{margin-top:8px;color:var(--ink);font-size:15px}
 .list .meta{color:var(--ink-soft);font-size:12.5px}
 footer{border-top:1px solid var(--paper-deep);background:var(--card);padding:18px 0 26px;font-size:12.5px;color:var(--ink-soft)}
 .fresh{font-size:12px;color:var(--ink-soft);margin-top:8px}
+.support-link{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;color:var(--clay-deep);text-decoration:none;border:1px solid var(--paper-deep);background:var(--card);border-radius:999px;padding:6px 14px;transition:all .25s ease}
+.support-link:hover{background:var(--clay);color:#fff;border-color:var(--clay)}
 .badge{display:inline-block;background:var(--paper-deep);color:var(--pine-deep);font-size:12px;font-weight:700;padding:2px 10px;border-radius:999px;margin-left:8px;vertical-align:middle}
 .note{font-size:13px;color:var(--ink-soft);margin:8px 0 18px}
 .lang{font-size:13px}
@@ -317,6 +319,7 @@ ${langSwitch}
     : 'Data sources: official open data & public statistical estimates · Open-Meteo (CC BY 4.0) · GeoNames (CC BY 4.0) · WHO 2021 air quality guideline bands · snapshot dates on each card. Visa policies change frequently — always verify with official channels before travelling. This site is a decision-support tool and is not immigration, visa, legal, tax, medical, or financial advice.'}</p>
 <p style="margin-top:6px">${lang === 'zh' ? '匹配口径与数据许可详见' : 'Scoring methodology & data licences:'} <a href="${lang === 'zh' ? '/methodology/' : '/en/methodology/'}" style="color:var(--pine)">${lang === 'zh' ? '方法论页' : 'Methodology'}</a> · <a href="${lang === 'zh' ? '/privacy/' : '/en/privacy/'}" style="color:var(--pine)">${lang === 'zh' ? '隐私政策' : 'Privacy'}</a> · <a href="${lang === 'zh' ? '/terms/' : '/en/terms/'}" style="color:var(--pine)">${lang === 'zh' ? '用户协议' : 'Terms'}</a> · <a href="${lang === 'zh' ? '/disclaimer/' : '/en/disclaimer/'}" style="color:var(--pine)">${lang === 'zh' ? '免责声明' : 'Disclaimer'}</a> · © 栖居罗盘 Habitat Compass</p>
 <p class="fresh">${lang === 'zh' ? '数据更新至 2026 年 Q4' : 'Data updated for Q4 2026'} · ${lang === 'zh' ? '发现租金或网速数据有误？写信给' : 'Spotted inaccurate rent or internet speed? Drop a note to'} <a href="mailto:hi@habitatcompass.com" style="color:var(--pine)">hi@habitatcompass.com</a> ${lang === 'zh' ? '，帮助更多同路人。' : 'and help fellow nomads.'}</p>
+<p style="margin-top:10px"><a class="support-link" href="https://ko-fi.com/matthao9701" target="_blank" rel="noopener noreferrer" aria-label="${lang === 'zh' ? '通过 Ko-fi 支持栖居罗盘（在新窗口打开）' : 'Support Habitat Compass on Ko-fi (opens in a new tab)'}">☕ ${lang === 'zh' ? '请我喝杯咖啡' : 'Buy me a coffee'}</a></p>
 </div></footer>
 </body>
 </html>`;
