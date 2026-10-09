@@ -45,6 +45,7 @@ const zh: D = {
   'landing.atlas.closestHint': '但我们为你找到了 {count} 个最接近的选择。',
   'landing.atlas.closestBadge': '最接近',
   'landing.atlas.closestAction': '查看最接近的城市 ↓',
+  'landing.atlas.browseAll': '浏览全部 {count} 座城市（含筛选与对比）',
   // 信任锚点：数据时效 + 社群纠错
   'trust.dataUpdated': '数据更新至 2026 年 Q4',
   'trust.contactLead': '发现租金或网速数据有误？写信给',
@@ -76,6 +77,7 @@ const zh: D = {
   'landing.hero.desc2': '为数字游民、自由职业者与独立开发者，从全球 270 座城市中计算出你的 Top 5 定居之选。',
   'landing.hero.cta': '开始我的测评',
   'landing.hero.sampleCta': '查看报告样例',
+  'landing.hero.browseCta': '先逛逛城市库',
   // 行动区微标（第十四轮：由单行弱化文本改为按钮上方的三枚徽标）
   'landing.cta.badgeTime': '约 8 分钟',
   'landing.cta.badgeQuestions': '56 题',
@@ -763,6 +765,7 @@ const en: D = {
   'landing.hero.desc2': 'built for digital nomads, freelancers and indie developers; computed across 270 cities worldwide to surface your Top 5 picks.',
   'landing.hero.cta': 'Start my assessment',
   'landing.hero.sampleCta': 'View a sample report',
+  'landing.hero.browseCta': 'Browse the city library',
   // CTA micro-badges (14th round: single soft line → three badges above the button)
   'landing.cta.badgeTime': 'About 8 min',
   'landing.cta.badgeQuestions': '56 questions',
@@ -787,6 +790,7 @@ const en: D = {
   'footer.support': 'Buy me a coffee',
   'footer.supportAria': 'Support Habitat Compass on Ko-fi (opens in a new tab)',
   'landing.atlas.all': 'All',
+  'landing.atlas.browseAll': 'Browse all {count} cities (with filters & compare)',
   'landing.atlas.count': '{count} cities',
   'landing.atlas.footnote': 'Methodology & sources in the report footnotes · GeoNames / Open-Meteo / public statistical estimates',
   // Landing filter (14th round: one-liner → vertical grouped card; keys kept for existing refs)

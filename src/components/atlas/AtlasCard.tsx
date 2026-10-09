@@ -13,10 +13,14 @@ import { overlapHours } from '../../lib/timezone';
 import { useI18n } from '../../i18n';
 import type { City } from '../../data/types';
 
-/** 数据胶囊标签（右上角浮动） */
+/**
+ * 数据胶囊（实景图右上角浮动）。
+ * 图片底不可控，故一律用「不透明白底 + 深色文字 + 描边/投影」，保证任何照片上都可读；
+ * 签证色调改由左侧小圆点承载，避免浅色半透明底在大面积亮色照片上失效。
+ */
 function Pill({ children }: { children: React.ReactNode }) {
   return (
-    <span className="inline-flex items-center gap-1 rounded-[5px] border border-line bg-white/92 px-2 py-0.5 font-data text-[10.5px] leading-tight text-ink shadow-[0_1px_2px_rgba(31,36,33,0.05)] backdrop-blur-[2px]">
+    <span className="inline-flex items-center gap-1 rounded-[5px] border border-ink/10 bg-white px-2 py-0.5 font-data text-[11px] font-semibold leading-tight text-pine shadow-[0_1px_3px_rgba(31,36,33,0.22)]">
       {children}
     </span>
   );
@@ -26,14 +30,21 @@ function Pill({ children }: { children: React.ReactNode }) {
 type VisaTone = 'easy' | 'mid' | 'dn' | 'hard';
 
 function VisaPill({ tone, children }: { tone: VisaTone; children: React.ReactNode }) {
-  const style: Record<VisaTone, string> = {
-    easy: 'border-moss-deep/45 bg-moss/10 text-moss-deep',
-    mid: 'border-line bg-white/92 text-ink',
-    dn: 'border-sea-deep/45 bg-sea/10 text-sea-deep',
-    hard: 'border-clay/45 bg-clay/10 text-clay-deep',
+  const dot: Record<VisaTone, string> = {
+    easy: 'bg-moss-deep',
+    mid: 'bg-ink-soft',
+    dn: 'bg-sea-deep',
+    hard: 'bg-clay-deep',
+  };
+  const text: Record<VisaTone, string> = {
+    easy: 'text-moss-deep',
+    mid: 'text-ink',
+    dn: 'text-sea-deep',
+    hard: 'text-clay-deep',
   };
   return (
-    <span className={`inline-flex items-center gap-1 rounded-[5px] border px-2 py-0.5 font-data text-[10.5px] font-medium leading-tight backdrop-blur-[2px] ${style[tone]}`}>
+    <span className={`inline-flex items-center gap-1 rounded-[5px] border border-ink/10 bg-white px-2 py-0.5 font-data text-[10.5px] font-medium leading-tight shadow-[0_1px_3px_rgba(31,36,33,0.18)] ${text[tone]}`}>
+      <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${dot[tone]}`} aria-hidden="true" />
       {children}
     </span>
   );
@@ -74,8 +85,9 @@ export function AtlasCard({ city, index, onOpen, formatMoney, badge }: AtlasCard
       {/* 城市实景 + 数据胶囊 */}
       <div className="relative h-[150px] overflow-hidden border-b border-line">
         <CityPhoto cityId={city.id} hue="#1D3557" className="h-full w-full object-cover transition-transform duration-500 ease-chart group-hover:scale-[1.03]" />
-        {/* 顶部渐隐，保证胶囊可读 */}
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-ink/25 to-transparent" />
+        {/* 上下渐隐，保证浮层标签可读 */}
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-ink/35 to-transparent" />
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-ink/40 to-transparent" />
         <div className="absolute right-2.5 top-2.5 flex max-w-[75%] flex-wrap justify-end gap-1.5">
           {(visaEntry === 'visaFree' || visaEntry === 'visaOnArrival') && <VisaPill tone="easy">{t('atlas.visa.difficultyEasy')}</VisaPill>}
           {visaEntry === 'eVisa' && <VisaPill tone="mid">{t('atlas.visa.difficultyEVisa')}</VisaPill>}
@@ -87,12 +99,12 @@ export function AtlasCard({ city, index, onOpen, formatMoney, badge }: AtlasCard
         </div>
         {/* 空状态「最接近」角标（仅筛选无果时的兜底推荐显示） */}
         {badge && (
-          <span className="absolute left-3 top-2.5 rounded-[4px] bg-clay/85 px-1.5 py-0.5 font-data text-[10px] tracking-[0.14em] text-paper backdrop-blur-[2px]">
+          <span className="absolute left-3 top-2.5 rounded-[4px] bg-clay-deep px-1.5 py-0.5 font-data text-[10px] font-semibold tracking-[0.14em] text-white shadow-[0_1px_3px_rgba(31,36,33,0.22)]">
             {badge}
           </span>
         )}
         {/* 期号式角标 */}
-        <span className="absolute left-3 bottom-2.5 rounded-[4px] bg-ink/45 px-1 py-0.5 font-data text-[10px] tracking-[0.18em] text-white/85 backdrop-blur-[2px]">
+        <span className="absolute left-3 bottom-2.5 rounded-[4px] bg-ink/80 px-1.5 py-0.5 font-data text-[10px] font-semibold tracking-[0.18em] text-white shadow-[0_1px_3px_rgba(31,36,33,0.25)]">
           Nº {String(index + 1).padStart(3, '0')}
         </span>
         {/* 图片署名（合规） */}

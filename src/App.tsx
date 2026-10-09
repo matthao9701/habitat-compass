@@ -230,7 +230,7 @@ export default function App() {
           >
             <Suspense fallback={<ScreenFallback />}>
               {screen === 'landing' && (
-                <Landing onStart={startQuiz} onDemo={openDemo} />
+                <Landing onStart={startQuiz} onDemo={openDemo} onBrowse={() => go('cities')} />
               )}
               {screen === 'cities' && <CityBrowser />}
               {screen === 'quiz' && (

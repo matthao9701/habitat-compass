@@ -1,11 +1,9 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import CompassMark from './CompassMark';
 import { AtlasCard, CityDrawer } from './atlas/AtlasCard';
-import SentenceFilter, { DEFAULT_FILTER, filterCities, type FilterState } from './atlas/SentenceFilter';
+import { hasPhoto } from './atlas/CityPhoto';
 import { cities } from '../data';
 import { DEMO_PROFILES } from '../data/demoProfiles';
-import { REGION_ORDER } from '../data/regions';
 import { formatMoney } from '../lib/format';
 import type { City } from '../data/types';
 import { useI18n, translate, getCurrentLang } from '../i18n';
@@ -13,6 +11,8 @@ import { useI18n, translate, getCurrentLang } from '../i18n';
 interface LandingProps {
   onStart: () => void;
   onDemo: (profileId: string) => void;
+  /** 跳转到「城市库」Tab——首页只做精选展示，完整筛选与浏览归城市库 */
+  onBrowse: () => void;
 }
 
 const fadeUp = {
@@ -24,15 +24,8 @@ const fadeUp = {
   }),
 };
 
-/** 痛点 / 流程步骤（工厂：渲染期取当前语言） */
-function painPoints(): { no: string; title: string; desc: string }[] {
-  const L = (k: string): string => translate(getCurrentLang(), k);
-  return [
-    { no: '01', title: L('landing.pain1.title'), desc: L('landing.pain1.desc') },
-    { no: '02', title: L('landing.pain2.title'), desc: L('landing.pain2.desc') },
-    { no: '03', title: L('landing.pain3.title'), desc: L('landing.pain3.desc') },
-  ];
-}
+/** 首页城市精选：仅展示有实景图的城市（无图城市只出现在城市库），最多 12 座 */
+const SHOWCASE = cities.filter((c) => hasPhoto(c.id)).slice(0, 12);
 
 function steps(): { no: string; title: string; desc: string }[] {
   const L = (k: string): string => translate(getCurrentLang(), k);
@@ -43,34 +36,14 @@ function steps(): { no: string; title: string; desc: string }[] {
   ];
 }
 
-export default function Landing({ onStart, onDemo }: LandingProps) {
+export default function Landing({ onStart, onDemo, onBrowse }: LandingProps) {
   const { t } = useI18n();
-  const [atlasRegion, setAtlasRegion] = useState<string>('all');
-  /** 编辑部风改版：首屏句子过滤器 + 画册卡片 + 速览抽屉 */
-  const [filter, setFilter] = useState<FilterState>(DEFAULT_FILTER);
   const [drawerCity, setDrawerCity] = useState<City | null>(null);
-  const filteredCities = filterCities(cities, filter);
 
   return (
     <div className="grain min-h-screen bg-paper text-ink">
-      {/* 顶部导航 */}
-      <header className="mx-auto flex max-w-almanac items-center justify-between gap-3 px-5 py-6 sm:px-6 md:px-10">
-        <div className="flex min-w-0 items-center gap-3 text-ink">
-          <CompassMark size={32} />
-          <div className="min-w-0 leading-tight">
-            <p className="truncate font-display text-[15px] font-bold tracking-wide sm:text-[17px]">{t('landing.hero.title')}</p>
-            <p className="hidden font-mono text-[9px] uppercase tracking-eyebrow text-ink-soft sm:block">
-              overseas almanac
-            </p>
-          </div>
-        </div>
-        <button type="button" onClick={onStart} className="btn-clay shrink-0 !px-4 !py-2.5 text-sm sm:!px-6">
-          {t('nav.startQuiz')}
-        </button>
-      </header>
-
-      {/* Hero —— 编辑部风：衬线大标题 + 留白 + 一句话过滤器 */}
-      <section className="mx-auto max-w-almanac px-6 pb-10 pt-8 md:px-10 md:pb-14 md:pt-14">
+      {/* Hero —— 编辑部风：衬线大标题 + 留白 + 主行动点（品牌与导航由全站 TabBar 承载） */}
+      <section className="mx-auto max-w-almanac px-6 pb-10 pt-10 md:px-10 md:pb-14 md:pt-16">
         <motion.p
           variants={fadeUp}
           initial="hidden"
@@ -109,28 +82,12 @@ export default function Landing({ onStart, onDemo }: LandingProps) {
           {t('landing.hero.desc2')}
         </motion.p>
 
-        {/* 首屏轻量过滤器：一句话自然填空 + 微调滑块 */}
-        <motion.div
-          variants={fadeUp}
-          initial="hidden"
-          animate="visible"
-          custom={3}
-          className="mt-9"
-        >
-          <SentenceFilter
-            value={filter}
-            onChange={setFilter}
-            matchedCount={filteredCities.length}
-            totalCount={cities.length}
-          />
-        </motion.div>
-
         <motion.div
           variants={fadeUp}
           initial="hidden"
           animate="visible"
           custom={4}
-          className="mt-7"
+          className="mt-8"
         >
           {/* 微标置于主按钮上方：先降低心理门槛，再给出行动点 */}
           <div className="mb-4 flex flex-wrap items-center gap-x-2 gap-y-2">
@@ -153,12 +110,8 @@ export default function Landing({ onStart, onDemo }: LandingProps) {
               {t('landing.hero.cta')}
               <span className="font-data text-xs opacity-80">→</span>
             </button>
-            <button
-              type="button"
-              onClick={() => onDemo(DEMO_PROFILES[0]?.id ?? '')}
-              className="btn-ghost flex-1 !text-[13px] sm:flex-none"
-            >
-              {t('landing.hero.sampleCta')}
+            <button type="button" onClick={onBrowse} className="btn-ghost flex-1 !text-[13px] sm:flex-none">
+              {t('landing.hero.browseCta')}
             </button>
           </div>
         </motion.div>
@@ -229,44 +182,9 @@ export default function Landing({ onStart, onDemo }: LandingProps) {
         </div>
       </section>
 
-      {/* 痛点 */}
-      <section className="border-y hairline bg-paper-deep/60">
-        <div className="mx-auto max-w-almanac px-6 py-16 md:px-10 md:py-20">
-          <div className="mb-12 flex items-end justify-between gap-6">
-            <div>
-              <p className="eyebrow mb-3">01 / the problem</p>
-              <h2 className="font-display text-3xl font-bold tracking-tight md:text-4xl">
-                {t('landing.pain.lead1')}
-                <br className="md:hidden" />
-                {t('landing.pain.lead2')}
-              </h2>
-            </div>
-            <p className="hidden max-w-xs text-sm leading-relaxed text-ink-soft md:block">
-              {t('landing.pain.lead')}
-            </p>
-          </div>
-          <div className="grid gap-px overflow-hidden rounded-[10px] border hairline bg-ink/10 md:grid-cols-3">
-            {painPoints().map((p, i) => (
-              <motion.div
-                key={p.no}
-                initial={{ opacity: 0, y: 18 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: '-60px' }}
-                transition={{ duration: 0.55, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
-                className="bg-card p-7"
-              >
-                <p className="font-mono text-xs text-clay">{p.no}</p>
-                <h3 className="mt-4 font-heading text-xl font-bold">{p.title}</h3>
-                <p className="mt-3 text-[13.5px] leading-[1.85] text-ink-soft">{p.desc}</p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* 流程 */}
-      <section className="mx-auto max-w-almanac px-6 py-16 md:px-10 md:py-24">
-        <p className="eyebrow mb-3">02 / how it works</p>
+      <section className="mx-auto max-w-almanac px-6 py-16 md:px-10 md:py-20">
+        <p className="eyebrow mb-3">01 / how it works</p>
         <h2 className="mb-12 font-display text-3xl font-bold tracking-tight md:text-4xl">{t('landing.flow.title')}</h2>
         <div className="grid gap-10 md:grid-cols-3">
           {steps().map((s, i) => (
@@ -286,7 +204,7 @@ export default function Landing({ onStart, onDemo }: LandingProps) {
         </div>
       </section>
 
-      {/* 城市图集：画册式卡片 + 速览抽屉（编辑部风核心交互） */}
+      {/* 城市精选：仅展示有实景图的城市；完整筛选与浏览在城市库 Tab */}
       <section className="border-y border-line bg-paper-deep/40">
         <div className="mx-auto max-w-almanac px-6 py-16 md:px-10 md:py-20">
           <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
@@ -301,104 +219,27 @@ export default function Landing({ onStart, onDemo }: LandingProps) {
             </p>
           </div>
 
-          {/* 大洲筛选 */}
-          <div className="mb-7 flex flex-wrap gap-2">
-            <button
-              type="button"
-              onClick={() => setAtlasRegion('all')}
-              className={`inline-flex min-h-[44px] items-center rounded-[5px] border px-4 py-2.5 font-data text-[11px] transition-colors ${
-                atlasRegion === 'all'
-                  ? 'border-pine bg-pine text-paper'
-                  : 'border-line bg-card text-ink-soft hover:border-pine/50'
-              }`}
-            >
-              {t('landing.atlas.all')} · {filteredCities.length}
-            </button>
-            {REGION_ORDER.map((r) => {
-              const count = filteredCities.filter((c) => c.region === r).length;
-              if (count === 0) return null;
-              return (
-                <button
-                  key={r}
-                  type="button"
-                  onClick={() => setAtlasRegion(r)}
-                  className={`inline-flex min-h-[44px] items-center rounded-[5px] border px-4 py-2.5 font-data text-[11px] transition-colors ${
-                    atlasRegion === r
-                      ? 'border-pine bg-pine text-paper'
-                      : 'border-line bg-card text-ink-soft hover:border-pine/50'
-                  }`}
-                >
-                  {t(`region.${r}`)} · {count}
-                </button>
-              );
-            })}
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {SHOWCASE.map((c, i) => (
+              <AtlasCard
+                key={c.id}
+                city={c}
+                index={i}
+                onOpen={setDrawerCity}
+                formatMoney={(usd) => formatMoney(usd)}
+              />
+            ))}
           </div>
 
-          {/* 画册网格 */}
-          {(() => {
-            const shown = atlasRegion === 'all'
-              ? filteredCities
-              : filteredCities.filter((c) => c.region === atlasRegion);
-            if (shown.length === 0) {
-              // 空状态：不摆硬边界，改为「最接近」的 3 城 + 一键重置（人话提示）
-              const closest = filteredCities.slice(0, 3);
-              return (
-                <div>
-                  <div className="rounded-card border border-dashed border-line bg-card px-6 py-10 text-center">
-                    <p className="font-display text-xl text-ink">{t('landing.atlas.closestTitle')}</p>
-                    <p className="mt-2 text-sm text-ink-soft">
-                      {closest.length > 0
-                        ? t('landing.atlas.closestHint', { count: closest.length })
-                        : t('landing.atlas.emptyHint')}
-                    </p>
-                    <button
-                      type="button"
-                      onClick={() => setFilter(DEFAULT_FILTER)}
-                      className="mt-5 inline-flex min-h-[44px] items-center rounded-full border border-pine px-5 py-2.5 font-data text-[11px] uppercase tracking-[0.14em] text-pine transition-colors hover:bg-pine hover:text-paper"
-                    >
-                      {t('landing.atlas.resetFilter')}
-                    </button>
-                  </div>
-                  {closest.length > 0 && (
-                    <div className="mt-6">
-                      <p className="mb-3 font-data text-[10px] uppercase tracking-[0.18em] text-ink-soft">
-                        {t('landing.atlas.closestAction')}
-                      </p>
-                      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                        {closest.map((c, i) => (
-                          <AtlasCard
-                            key={c.id}
-                            city={c}
-                            index={i}
-                            onOpen={setDrawerCity}
-                            formatMoney={(usd) => formatMoney(usd)}
-                            badge={t('landing.atlas.closestBadge')}
-                          />
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              );
-            }
-            return (
-              <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                {shown.slice(0, 24).map((c, i) => (
-                  <AtlasCard
-                    key={c.id}
-                    city={c}
-                    index={i}
-                    onOpen={setDrawerCity}
-                    formatMoney={(usd) => formatMoney(usd)}
-                  />
-                ))}
-              </div>
-            );
-          })()}
-
-          <p className="mt-5 font-data text-[10px] text-ink-soft">
-            {t('landing.atlas.footnote')}
-          </p>
+          <div className="mt-9 flex flex-wrap items-center justify-between gap-4 border-t hairline pt-6">
+            <p className="font-data text-[10px] text-ink-soft">
+              {t('landing.atlas.footnote')}
+            </p>
+            <button type="button" onClick={onBrowse} className="btn-ghost !text-[13px]">
+              {t('landing.atlas.browseAll', { count: cities.length })}
+              <span className="font-data text-xs opacity-70">→</span>
+            </button>
+          </div>
         </div>
       </section>
 
@@ -407,7 +248,7 @@ export default function Landing({ onStart, onDemo }: LandingProps) {
 
       {/* 结尾 CTA：统一入口（底边留白收敛，与全站 Footer 自然衔接） */}
       <section className="mx-auto max-w-almanac px-6 pb-14 pt-20 text-center md:px-10 md:pb-16 md:pt-28">
-        <p className="eyebrow mb-5">04 / set sail</p>
+        <p className="eyebrow mb-5">02 / set sail</p>
         <h2 className="mx-auto max-w-2xl font-display text-3xl font-bold leading-snug tracking-tight md:text-[44px]">
           {t('landing.version.lead')}
         </h2>

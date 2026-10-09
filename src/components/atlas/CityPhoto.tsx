@@ -90,7 +90,7 @@ export function PhotoCredit({ cityId }: { cityId: string }) {
       href={credit.sourceUrl}
       target="_blank"
       rel="noopener noreferrer nofollow"
-      className="pointer-events-auto inline-flex items-center gap-1 rounded-[4px] bg-ink/55 px-1.5 py-0.5 font-data text-[8.5px] leading-tight text-white/90 backdrop-blur-[2px] transition-colors hover:bg-ink/70"
+      className="pointer-events-auto inline-flex items-center gap-1 rounded-[4px] bg-ink/75 px-1.5 py-0.5 font-data text-[8.5px] font-medium leading-tight text-white shadow-[0_1px_2px_rgba(31,36,33,0.3)] transition-colors hover:bg-ink/90"
       title={`${credit.source} · ${credit.license}`}
     >
       <span className="max-w-[150px] truncate">{credit.artist || credit.source}</span>

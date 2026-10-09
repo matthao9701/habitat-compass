@@ -36,7 +36,9 @@ check('Landing 不再引入 VersionPicker', !landingSrc.includes('VersionPicker'
 check('Landing 不渲染版本选择弹层', !/<VersionPicker\b/.test(landingSrc) && !landingSrc.includes('pickerOpen'));
 check('主入口直调 onStart（无弹层中转）', (landingSrc.match(/onClick=\{onStart\}/g) ?? []).length >= 2, String((landingSrc.match(/onClick=\{onStart\}/g) ?? []).length));
 check('结局区含核心/深化两卡文案键', landingSrc.includes('landing.version.core') && landingSrc.includes('landing.version.deepen'));
-check('样例次入口指向演示档案首项', landingSrc.includes('onDemo(DEMO_PROFILES[0]?.id'));
+// 第十六轮：hero 次入口改为「城市库」统一入口，演示档案由下方独立区块承载（onDemo 仍逐项绑定）
+check('hero 次入口指向城市库（onBrowse）', landingSrc.includes('onClick={onBrowse}') && landingSrc.includes('landing.hero.browseCta'));
+check('演示档案入口逐项绑定 onDemo', landingSrc.includes('onClick={() => onDemo(profile.id)}'));
 
 /* ============ 2. 报告样例（demo 数据完整性 + 同源渲染） ============ */
 section('2. 报告样例渲染');

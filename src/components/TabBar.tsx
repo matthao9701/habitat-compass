@@ -1,6 +1,7 @@
 import { useI18n } from '../i18n';
 import { CHART_COLORS } from '../lib/colors';
 import LangSwitch from './LangSwitch';
+import CompassMark from './CompassMark';
 
 export type TabId = 'landing' | 'cities' | 'tax' | 'compare' | 'profile';
 
@@ -69,15 +70,28 @@ function TabIcon({ id, active }: { id: TabId; active: boolean }) {
 }
 
 /**
- * 顶部导航：五 Tab + 语言切换（品牌名由首页 Hero 承载）。
- * 移动端为容纳五项并避免与语言切换重叠：小屏仅显示图标（aria-label/ title 保留可读名），
- * ≥ sm 显示图标 + 文字；nav 可横向滚动作为窄屏兜底，语言切换固定右侧不被遮挡。
+ * 全站顶部导航（唯一入口枢纽）：品牌标识 + 五个 Tab + 语言切换。
+ * 品牌点击即回首页；移动端小屏仅显示图标（aria-label/title 保留可读名），
+ * ≥ sm 显示图标 + 文字；nav 可横向滚动作为窄屏兜底。
  */
 export default function TabBar({ active, onChange }: { active: TabId; onChange: (t: TabId) => void }) {
   const { t } = useI18n();
   return (
     <header className="sticky top-0 z-40 border-b border-ink/10 bg-paper/95 backdrop-blur-sm">
       <div className="mx-auto flex h-16 max-w-almanac items-center gap-1 px-3 sm:gap-2 sm:px-4 md:px-10">
+        {/* 品牌标识：点击回首页（全站统一） */}
+        <button
+          type="button"
+          onClick={() => onChange('landing')}
+          className="mr-1 hidden shrink-0 items-center gap-2 text-ink transition-opacity hover:opacity-80 sm:flex"
+          aria-label={t('landing.hero.title')}
+        >
+          <CompassMark size={26} />
+          <span className="hidden leading-tight lg:block">
+            <span className="block font-display text-[14px] font-bold tracking-wide">{t('landing.hero.title')}</span>
+            <span className="block font-mono text-[8px] uppercase tracking-eyebrow text-ink-soft">overseas almanac</span>
+          </span>
+        </button>
         <nav
           className="flex min-w-0 flex-1 items-center gap-0.5 overflow-x-auto sm:justify-center sm:gap-1 md:gap-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
           aria-label={t('nav.ariaLabel')}
