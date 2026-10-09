@@ -413,6 +413,16 @@ console.log('\n══ 十一、Ko-fi 打赏入口（原生按钮 + 页脚直链�
   check('SPA 页脚含 Ko-fi 直链兜底入口（noopener/noreferrer）', /href="https:\/\/ko-fi\.com\/matthao9701"[\s\S]{0,80}rel="noopener noreferrer"/.test(footerSrc));
   check('i18n 提供打赏入口文案（zh/en）', uiSrc.includes("'footer.support': '请我喝杯咖啡'") && uiSrc.includes("'footer.support': 'Buy me a coffee'"));
   check('静态页脚注入 Ko-fi 直链（generator，纯 <a> 无脚本）', genSrc.includes('https://ko-fi.com/matthao9701') && genSrc.includes('class="support-link"'));
+  // 第十七轮页脚轻量化：移除页脚大胶囊赞助按钮，改为「一行轻量赞助引导 + 文字按钮」；
+  // 法律合规由大胶囊改为紧凑横向文字链；用户点过打赏入口后页脚引导自动收起。
+  check('页脚移除大胶囊赞助按钮（旧 footer.support 胶囊已删）', !/t\('footer\.support'\)/.test(footerSrc));
+  check('页脚赞助引导为轻量文案 + 文字按钮（indieLead + indieCta）', footerSrc.includes("t('footer.indieLead')") && footerSrc.includes("t('footer.indieCta')"));
+  check('页脚法律链接为紧凑文字排版（legal-links 语义类）', footerSrc.includes('hover:text-ink hover:underline') && !/rounded-full border hairline bg-card px-4 py-2/.test(footerSrc));
+  check('页脚赞助引导在点击打赏后收起（supportEngaged 门控）', footerSrc.includes('supportEngaged') && footerSrc.includes('markSupportEngaged') && footerSrc.includes('hasEngagedSupport'));
+  check('i18n 提供独立开发赞助文案（zh/en）', uiSrc.includes("'footer.indieLead':") && uiSrc.includes("'footer.indieCta': '赞助独立开发'") && uiSrc.includes("'footer.indieCta': 'Support indie development'"));
+  check('i18n 提供数据来源与说明词条（zh/en）', uiSrc.includes("'footer.dataSources': '数据来源与说明'") && uiSrc.includes("'footer.dataSources': 'Data sources & notes'"));
+  check('静态页脚同步轻量赞助文案（generator）', genSrc.includes('栖居罗盘由个人独立维护并保持纯净无广告') && genSrc.includes('赞助独立开发'));
+  check('静态页脚法律链接横向紧凑（legal-links 类）', genSrc.includes('class="legal-links"'));
   // 静态落地页必须保持「零外链脚本」：Ko-fi 相关脚本一律不得进入 dist 静态 HTML，
   // 静态页仅允许一个纯 <a> 直链兜底入口（无脚本、不破坏首屏自包含）。
   const kofiScriptHtml = allHtml.filter((p) => /<script[^>]+src=["'][^"']*ko-fi/i.test(fs.readFileSync(p, 'utf8')));

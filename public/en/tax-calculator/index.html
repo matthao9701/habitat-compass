@@ -73,8 +73,10 @@ details p{margin-top:8px;color:var(--ink);font-size:15px}
 .list .meta{color:var(--ink-soft);font-size:12.5px}
 footer{border-top:1px solid var(--paper-deep);background:var(--card);padding:18px 0 26px;font-size:12.5px;color:var(--ink-soft)}
 .fresh{font-size:12px;color:var(--ink-soft);margin-top:8px}
-.support-link{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;color:var(--clay-deep);text-decoration:none;border:1px solid var(--paper-deep);background:var(--card);border-radius:999px;padding:6px 14px;transition:all .25s ease}
-.support-link:hover{background:var(--clay);color:#fff;border-color:var(--clay)}
+.support-link{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;font-weight:500;color:var(--clay-deep);text-decoration:none;transition:color .2s ease}
+.support-link:hover{text-decoration:underline}
+.legal-links a{color:var(--ink-soft);text-decoration:none}
+.legal-links a:hover{color:var(--ink);text-decoration:underline}
 .badge{display:inline-block;background:var(--paper-deep);color:var(--pine-deep);font-size:12px;font-weight:700;padding:2px 10px;border-radius:999px;margin-left:8px;vertical-align:middle}
 .note{font-size:13px;color:var(--ink-soft);margin:8px 0 18px}
 .lang{font-size:13px}
@@ -397,9 +399,10 @@ table.tbl a:hover{text-decoration:underline}
 <p class="cta-sub">Top 5 cities scored on 11 dimensions, then a per-city tax estimate</p></main>
 <footer><div class="wrap">
 <p>Data sources: official open data & public statistical estimates · Open-Meteo (CC BY 4.0) · GeoNames (CC BY 4.0) · WHO 2021 air quality guideline bands · snapshot dates on each card. Visa policies change frequently — always verify with official channels before travelling. This site is a decision-support tool and is not immigration, visa, legal, tax, medical, or financial advice.</p>
-<p style="margin-top:6px">Scoring methodology & data licences: <a href="/en/methodology/" style="color:var(--pine)">Methodology</a> · <a href="/en/privacy/" style="color:var(--pine)">Privacy</a> · <a href="/en/terms/" style="color:var(--pine)">Terms</a> · <a href="/en/disclaimer/" style="color:var(--pine)">Disclaimer</a> · © 栖居罗盘 Habitat Compass</p>
+<p class="legal-links" style="margin-top:6px"><a href="/en/terms/">Terms</a> · <a href="/en/privacy/">Privacy</a> · <a href="/en/disclaimer/">Disclaimer</a> · <a href="/en/methodology/">Data sources & notes</a></p>
 <p class="fresh">Data updated for Q4 2026 · Spotted inaccurate rent or internet speed? Drop a note to <a href="mailto:hi@habitatcompass.com" style="color:var(--pine)">hi@habitatcompass.com</a> and help fellow nomads.</p>
-<p style="margin-top:10px"><a class="support-link" href="https://ko-fi.com/matthao9701" target="_blank" rel="noopener noreferrer" aria-label="Support Habitat Compass on Ko-fi (opens in a new tab)">☕ Buy me a coffee</a></p>
+<p style="margin-top:8px">Habitat Compass is independently maintained, with no ads. If it helped you, you are welcome to buy me a coffee and keep the data updates and servers running. <a class="support-link" href="https://ko-fi.com/matthao9701" target="_blank" rel="noopener noreferrer" aria-label="Support Habitat Compass on Ko-fi (opens in a new tab)">☕ [ Support indie development ]</a></p>
+<p style="margin-top:6px">© 栖居罗盘 Habitat Compass · Decision-support tool · not legal advice</p>
 </div></footer>
 </body>
 </html>

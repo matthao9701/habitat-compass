@@ -1,5 +1,6 @@
 // ABOUTME: 右下角原生打赏悬浮按钮——替代 Ko-fi 官方 iframe 浮窗（跨域无法改样式、体积大、移动端遮挡）
 import { useI18n } from '../i18n';
+import { markSupportEngaged } from '../lib/support';
 
 /**
  * KofiWidget — 原生右下角打赏悬浮按钮
@@ -45,6 +46,7 @@ export default function KofiWidget() {
       target="_blank"
       rel="noopener noreferrer"
       aria-label={t('footer.supportAria')}
+      onClick={markSupportEngaged}
       className="group fixed right-4 z-[45] inline-flex items-center
         [bottom:calc(56px_+_0.75rem_+_env(safe-area-inset-bottom))] md:[bottom:calc(1rem_+_env(safe-area-inset-bottom))]"
     >
