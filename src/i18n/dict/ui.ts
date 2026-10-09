@@ -15,6 +15,7 @@ const zh: D = {
   'common.saved': '已保存到本机',
   // ---------- 导航 ----------
   'nav.home': '首页',
+  'nav.explore': '探索',
   'nav.cities': '城市库',
   'nav.compare': '城市对比',
   'nav.profile': '我的',
@@ -650,6 +651,7 @@ const en: D = {
   'common.saved': 'Saved locally',
   // ---------- Nav ----------
   'nav.home': 'Home',
+  'nav.explore': 'Explore',
   'nav.cities': 'Cities',
   'nav.compare': 'Compare',
   'nav.profile': 'My Page',

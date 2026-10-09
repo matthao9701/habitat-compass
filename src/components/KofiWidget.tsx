@@ -46,7 +46,7 @@ export default function KofiWidget() {
       rel="noopener noreferrer"
       aria-label={t('footer.supportAria')}
       className="group fixed right-4 z-[45] inline-flex items-center
-        [bottom:calc(1rem+env(safe-area-inset-bottom))]"
+        [bottom:calc(56px_+_0.75rem_+_env(safe-area-inset-bottom))] md:[bottom:calc(1rem_+_env(safe-area-inset-bottom))]"
     >
       {/* 桌面端 hover 提示（移动端无 hover，隐藏；文案由 aria-label 承载无障碍） */}
       <span

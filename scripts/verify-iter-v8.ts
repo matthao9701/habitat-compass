@@ -92,18 +92,30 @@ try {
 }
 check('storage 写入 node 守卫安全降级', guardOk);
 
-/* ============ 4. Tab 栏布局（无重叠，响应式类语义断言） ============ */
-section('4. Tab 栏布局');
+/* ============ 4. 导航枢纽（响应式双形态：顶栏 + 移动端底部栏） ============ */
+section('4. 导航枢纽布局');
 const tabSrc = read('src/components/TabBar.tsx');
+// 移动端：顶栏精简为「Logo + 当前页标题 + 中英切换」，纯图标入口下沉到底部固定栏；
+// 桌面端：隐藏底栏、顶栏横向展开，每项图标 + 文字，激活项胶囊底色。
 check('LangSwitch 不再绝对定位（移除 absolute right-）', !tabSrc.includes('absolute right-'));
 check('LangSwitch 容器 shrink-0 防挤压', tabSrc.includes('shrink-0'));
-// 五 Tab 改版（城/税加入后）：nav 占满可用宽度并允许窄屏横向滚动，语言切换固定右侧不被遮挡；
-// 小屏仅图标（44px 触控热区 + aria-label/title 保留可读名），≥ sm 显示图标 + 文字。
-check('nav 占满剩余宽度（flex-1，避免与语言切换重叠）', tabSrc.includes('flex-1'));
-check('窄屏可横向滚动兜底（overflow-x-auto）', tabSrc.includes('overflow-x-auto'));
-check('小屏仅图标（sm:inline 才显示文字）', tabSrc.includes('hidden sm:inline'));
-check('触控热区 ≥44px（min-h-[44px]）', tabSrc.includes('min-h-[44px]'));
-check('图标按钮保留可访问名（aria-label）', tabSrc.includes('aria-label={label}'));
+check('移动端顶栏展示当前页标题（md:hidden）', tabSrc.includes('md:hidden') && tabSrc.includes('pageTitle'));
+// 底部导航栏：固定常驻、仅移动端（md 起隐藏）
+const bottomNavFixed = tabSrc.includes('fixed inset-x-0 bottom-0') && tabSrc.includes('md:hidden');
+check('底部导航栏固定常驻且仅移动端（fixed bottom-0 + md:hidden）', bottomNavFixed);
+check('底栏处理底部安全区（env(safe-area-inset-bottom)）', tabSrc.includes('env(safe-area-inset-bottom)'));
+check('底栏四项均分（flex-1）', tabSrc.includes('flex-1'));
+check('底栏为图标 + 文字纵向布局（flex-col）', tabSrc.includes('flex-col'));
+check('底栏触控热区 ≥44px（min-h-[56px]）', tabSrc.includes('min-h-[56px]'));
+// 桌面端横向导航：图标 + 文字，激活胶囊
+check('桌面横向导航 ≥md 展开（hidden ... md:flex）', tabSrc.includes('md:flex'));
+check('桌面导航项始终显示图标 + 文字（标签不再 sm:inline 隐藏）', tabSrc.includes('{label}') && !tabSrc.includes('hidden sm:inline'));
+check('激活项温和胶囊高亮（rounded-full + bg-clay/10）', tabSrc.includes('rounded-full') && tabSrc.includes('bg-clay/10'));
+check('导航项保留可访问名（aria-current / aria-label）', tabSrc.includes('aria-current') && tabSrc.includes('aria-label={t(\'nav.ariaLabel\')}'));
+// 四入口统一取自 TAB_ITEMS（首页由品牌标识承载，不单列）
+check('四个核心入口（探索/税负/对比/我的）', tabSrc.includes("key: 'nav.explore'") && tabSrc.includes("key: 'tax.nav'") && tabSrc.includes("key: 'nav.compare'") && tabSrc.includes("key: 'nav.profile'"));
+// App 侧预留防遮挡间距
+check('常驻页面预留底栏防遮挡间距', appSrc.includes('pb-[calc(56px+env(safe-area-inset-bottom))] md:pb-0'));
 
 /* ============ 5. 编辑部风色板（token 一致性） ============ */
 // 第十一轮的「天空蓝白」已被后续「编辑部杂志风」取代（oat paper + ink + navy/terracotta）：

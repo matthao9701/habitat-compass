@@ -216,7 +216,12 @@ export default function App() {
 
   return (
     <I18nProvider>
-      <div className="min-h-screen bg-paper">
+      {/* 移动端底部导航为固定层，故在常驻页面为内容预留等高防遮挡间距（含安全区） */}
+      <div
+        className={`min-h-screen bg-paper ${
+          TAB_SCREENS.includes(screen) ? 'pb-[calc(56px+env(safe-area-inset-bottom))] md:pb-0' : ''
+        }`}
+      >
         {TAB_SCREENS.includes(screen) && (
           <TabBar active={screen as TabId} onChange={openTab} />
         )}
