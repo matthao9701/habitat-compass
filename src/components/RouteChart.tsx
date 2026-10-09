@@ -174,7 +174,7 @@ export default function RouteChart({
               cx={p.x}
               cy={p.y}
               r={active ? 3.2 : 2}
-              fill={active ? '#C96A52' : compact ? '#F9F8F6' : '#1F2421'}
+              fill={active ? '#C96A52' : compact ? '#F9F8F6' : '#272B33'}
               opacity={active ? 1 : 0.62}
             />
           </g>

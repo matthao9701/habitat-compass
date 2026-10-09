@@ -40,7 +40,7 @@ export default function BreakdownSection({ top, userInterests }: BreakdownSectio
           className="card-paper p-6 md:p-7"
         >
           <div className="mb-5 flex items-baseline justify-between">
-            <p className="font-heading text-lg font-bold">{t('report.breakdown.interests')}</p>
+            <p className="font-heading text-lg font-semibold">{t('report.breakdown.interests')}</p>
             <p className="font-mono text-[9.5px] uppercase tracking-eyebrow text-ink-soft">
               {t('an.breakdown.interestFormula')}
             </p>
@@ -70,7 +70,7 @@ export default function BreakdownSection({ top, userInterests }: BreakdownSectio
           className="card-paper p-6 md:p-7"
         >
           <div className="mb-5 flex items-baseline justify-between">
-            <p className="font-heading text-lg font-bold">{t('report.breakdown.lifestyle')}</p>
+            <p className="font-heading text-lg font-semibold">{t('report.breakdown.lifestyle')}</p>
             <p className="font-mono text-[9.5px] uppercase tracking-eyebrow text-ink-soft">
               {t('an.breakdown.prefEyebrow')}
             </p>

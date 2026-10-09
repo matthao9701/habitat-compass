@@ -335,7 +335,7 @@ for (const [tag, html] of [['zh', methZh], ['en', methEn]] as const) {
     check(`方法论页(${tag})：无受限商业源品牌`, !BRANDED_RE.test(html));
   check(`方法论页(${tag})：GeoNames/Open-Meteo/World Bank 带 CC BY 4.0 许可链接`, (html.match(/creativecommons\.org\/licenses\/by\/4\.0/g) ?? []).length >= 3);
   check(`方法论页(${tag})：源站链接（geonames/open-meteo，去品牌化）`, html.includes('geonames.org') && html.includes('open-meteo.com') && !html.includes(NB + '.com'));
-  check(`方法论页(${tag})：字体 OFL 声明`, html.includes('SIL Open Font License 1.1') && html.includes('Manrope'));
+  check(`方法论页(${tag})：字体 OFL 声明`, html.includes('SIL Open Font License 1.1') && html.includes('Noto Sans SC'));
 }
 // 9.5 法律页 dev 可达（public 同步）
 for (const rel of ['privacy/index.html', 'terms/index.html', 'disclaimer/index.html', 'en/privacy/index.html', 'en/terms/index.html', 'en/disclaimer/index.html']) {

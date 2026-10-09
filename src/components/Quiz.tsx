@@ -860,7 +860,7 @@ function TransitionStage({ to, meta }: { to: 'lifestyle' | 'interests'; meta: Tr
         <span className="h-px w-10 bg-ink/20" />
       </div>
       <p className="eyebrow">{t('quiz.transition.eyebrow', { no: m.no })}</p>
-      <h2 className="mt-4 font-display text-3xl font-bold tracking-tight md:text-4xl">
+      <h2 className="mt-4 font-display text-3xl font-semibold tracking-tight md:text-4xl">
         {m.title}
       </h2>
       <p className="mt-5 max-w-md text-[14px] leading-[1.9] text-ink-soft">{m.desc}</p>
@@ -891,7 +891,7 @@ function DeepenStage({
         <span className="h-px w-10 bg-ink/20" />
       </div>
       <p className="eyebrow">{t('quiz.deepen.eyebrow')}</p>
-      <h2 className="mt-4 font-display text-2xl font-bold tracking-tight md:text-3xl">
+      <h2 className="mt-4 font-display text-2xl font-semibold tracking-tight md:text-3xl">
         {t('quiz.deepen.title')}
       </h2>
       <p className="mt-5 max-w-md text-[14px] leading-[1.9] text-ink-soft">{t('quiz.deepen.desc')}</p>
@@ -1154,7 +1154,7 @@ function LifestyleItem({ question, value, onSelect }: LifestyleItemProps) {
   const { t } = useI18n();
   return (
     <div>
-      <p className="mb-1 font-heading text-[17px] font-bold leading-relaxed md:text-lg">
+      <p className="mb-1 font-heading text-[17px] font-semibold leading-relaxed md:text-lg">
         {t(question.title)}
       </p>
       {question.hint && (
@@ -1261,7 +1261,7 @@ function ProLifestyleItem({ question, value, onChange }: ProLifestyleItemProps) 
           {proKindLabel()[question.kind]}
         </span>
       </div>
-      <p className="mb-1 font-heading text-[16px] font-bold leading-relaxed md:text-[17px]">
+      <p className="mb-1 font-heading text-[16px] font-semibold leading-relaxed md:text-[17px]">
         {question.title}
       </p>
       {question.hint && (

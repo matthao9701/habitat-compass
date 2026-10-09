@@ -138,7 +138,7 @@ export default function ProfileScreen({
   return (
     <div className="mx-auto max-w-almanac px-6 pb-20 pt-10 md:px-10">
       <p className="eyebrow">my · 01</p>
-      <h1 className="mt-2 font-display text-[26px] font-bold tracking-tight md:text-[32px]">{t('profile.title')}</h1>
+      <h1 className="mt-2 font-display text-[26px] font-semibold tracking-tight md:text-[32px]">{t('profile.title')}</h1>
       <p className="mt-3 max-w-lg text-[13.5px] leading-[1.8] text-ink-soft">
         {t('pf.desc')}
       </p>
@@ -148,7 +148,7 @@ export default function ProfileScreen({
         <section>
           <div className="flex items-center gap-2.5">
             <CompassMark size={18} />
-            <h2 className="font-heading text-[17px] font-bold">{t('profile.history.lite')}</h2>
+            <h2 className="font-heading text-[17px] font-semibold">{t('profile.history.lite')}</h2>
           </div>
           <HistoryCard version="lite" />
         </section>
@@ -157,7 +157,7 @@ export default function ProfileScreen({
         <section>
           <div className="flex items-center gap-2.5">
             <CompassMark size={18} />
-            <h2 className="font-heading text-[17px] font-bold">{t('profile.history.pro')}</h2>
+            <h2 className="font-heading text-[17px] font-semibold">{t('profile.history.pro')}</h2>
           </div>
           <HistoryCard version="pro" />
         </section>
@@ -166,7 +166,7 @@ export default function ProfileScreen({
         <section>
           <div className="flex items-center gap-2.5">
             <CompassMark size={18} />
-            <h2 className="font-heading text-[17px] font-bold">{t('profile.favorites')}</h2>
+            <h2 className="font-heading text-[17px] font-semibold">{t('profile.favorites')}</h2>
             <span className="font-mono text-[10px] text-ink-soft">{favCities.length}</span>
           </div>
           {favCities.length > 0 ? (
@@ -222,7 +222,7 @@ export default function ProfileScreen({
       <section className="mt-12">
         <div className="flex items-center gap-2.5">
           <CompassMark size={18} />
-          <h2 className="font-heading text-[17px] font-bold">{t('profile.archives')}</h2>
+          <h2 className="font-heading text-[17px] font-semibold">{t('profile.archives')}</h2>
           <span className="font-mono text-[10px] text-ink-soft">{archives.length}</span>
         </div>
         {archives.length > 0 ? (
@@ -315,7 +315,7 @@ function FunnelSection() {
         aria-expanded={open}
       >
         <CompassMark size={18} />
-        <h2 className="font-heading text-[17px] font-bold">{t('profile.funnel.title')}</h2>
+        <h2 className="font-heading text-[17px] font-semibold">{t('profile.funnel.title')}</h2>
         <span className="font-mono text-[9.5px] text-ink-soft">{t('profile.funnel.note')}</span>
         <span className="ml-auto font-mono text-[11px] text-ink-soft">{open ? '−' : '+'}</span>
       </button>

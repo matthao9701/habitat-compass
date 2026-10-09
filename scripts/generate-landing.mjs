@@ -192,14 +192,39 @@ const TAG_LABEL = {
 };
 
 // ---------- 共享模板 ----------
+/**
+ * 自托管 Noto Sans SC 的 @font-face 前置块（静态页专用）。
+ * Vite 构建时已把 @fontsource-variable/noto-sans-sc 的 woff2 切片解析进 dist/assets/*.css
+ * （大切片以内容哈希落盘、极小切片内联为 data URL）。静态页保持「零外链 JS/CSS」自包含，
+ * 故直接从构建产物的 CSS 中提取 Noto Sans SC 的 @font-face 规则内联进 <style>。
+ * 未构建（dev 直跑生成脚本）时优雅降级：返回空串，退回系统黑体栈。
+ */
+function notoSansScFaces() {
+  try {
+    const assetsDir = path.join(DIST, 'assets');
+    const found = [];
+    for (const f of fs.readdirSync(assetsDir)) {
+      if (!f.endsWith('.css')) continue;
+      const css = fs.readFileSync(path.join(assetsDir, f), 'utf8');
+      for (const block of css.match(/@font-face\{[^}]*\}/g) || []) {
+        if (block.includes('Noto Sans SC')) found.push(block);
+      }
+    }
+    return found.join('\n');
+  } catch {
+    return '';
+  }
+}
+
 const CSS = `
+${notoSansScFaces()}
 :root{--pine:${T.pine};--pine-deep:${T.pineDeep};--teal:${T.teal};--paper:${T.paper};--paper-deep:${T.paperDeep};--ink:${T.ink};--ink-soft:${T.inkSoft};--clay:${T.clay};--clay-deep:${T.clayDeep};--ochre:${T.ochre};--moss:${T.moss};--sea:${T.sea};--card:${T.card}}
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Hiragino Sans GB','Microsoft YaHei','Noto Sans SC',system-ui,sans-serif;background:var(--paper);color:var(--ink);line-height:1.7;font-size:16px;overflow-wrap:break-word}
+body{font-family:'Noto Sans SC Variable','Noto Sans SC',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'PingFang SC','Microsoft YaHei',sans-serif;font-weight:450;background:var(--paper);color:var(--ink);line-height:1.7;font-size:16px;overflow-wrap:break-word}
 .wrap{max-width:880px;margin:0 auto;padding:0 20px}
 header{background:var(--card);border-bottom:1px solid var(--paper-deep)}
 .hd{display:flex;align-items:center;justify-content:space-between;padding:14px 0;gap:12px;flex-wrap:wrap}
-.brand{display:flex;align-items:center;gap:8px;font-weight:800;font-size:18px;color:var(--ink);text-decoration:none}
+.brand{display:flex;align-items:center;gap:8px;font-weight:600;font-size:18px;color:var(--ink);text-decoration:none}
 .brand .dot{width:26px;height:26px;border-radius:8px;background:var(--pine);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:14px}
 .hd nav{display:flex;gap:16px;font-size:14px;flex-wrap:wrap}
 .hd nav a{color:var(--pine);text-decoration:none}
@@ -215,15 +240,15 @@ h1{font-size:30px;line-height:1.3;margin:4px 0 6px;letter-spacing:.5px}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px;margin-bottom:26px}
 .card{background:var(--card);border:1px solid var(--paper-deep);border-radius:14px;padding:16px 18px}
 .card h3{font-size:13px;color:var(--ink-soft);font-weight:600;letter-spacing:.4px;margin-bottom:6px}
-.card .v{font-size:22px;font-weight:800;color:var(--ink)}
+.card .v{font-size:22px;font-weight:600;color:var(--ink)}
 .card .v small{font-size:13px;font-weight:500;color:var(--ink-soft);margin-left:4px}
 .card .src{font-size:12px;color:var(--ink-soft);margin-top:6px}
 .card.none .v{font-size:15px;font-weight:600;color:var(--ink-soft)}
 h2{font-size:20px;margin:26px 0 12px;letter-spacing:.4px}
 details{background:var(--card);border:1px solid var(--paper-deep);border-radius:12px;padding:12px 18px;margin-bottom:10px}
-details summary{cursor:pointer;font-weight:700;font-size:15.5px}
+details summary{cursor:pointer;font-weight:600;font-size:15.5px}
 details p{margin-top:8px;color:var(--ink);font-size:15px}
-.cta{display:block;background:var(--pine);color:#fff;text-align:center;text-decoration:none;font-weight:800;font-size:17px;padding:15px 20px;border-radius:14px;margin:26px 0 10px}
+.cta{display:block;background:var(--pine);color:#fff;text-align:center;text-decoration:none;font-weight:600;font-size:17px;padding:15px 20px;border-radius:14px;margin:26px 0 10px}
 .cta:hover{background:var(--pine-deep)}
 .cta-sub{text-align:center;color:var(--ink-soft);font-size:13px;margin-bottom:24px}
 .list{background:var(--card);border:1px solid var(--paper-deep);border-radius:14px;padding:8px 18px;margin-bottom:22px}
@@ -238,7 +263,7 @@ footer{border-top:1px solid var(--paper-deep);background:var(--card);padding:18p
 .support-link:hover{text-decoration:underline}
 .legal-links a{color:var(--ink-soft);text-decoration:none}
 .legal-links a:hover{color:var(--ink);text-decoration:underline}
-.badge{display:inline-block;background:var(--paper-deep);color:var(--pine-deep);font-size:12px;font-weight:700;padding:2px 10px;border-radius:999px;margin-left:8px;vertical-align:middle}
+.badge{display:inline-block;background:var(--paper-deep);color:var(--pine-deep);font-size:12px;font-weight:600;padding:2px 10px;border-radius:999px;margin-left:8px;vertical-align:middle}
 .note{font-size:13px;color:var(--ink-soft);margin:8px 0 18px}
 .lang{font-size:13px}
 .lang a{color:var(--teal);text-decoration:none;font-weight:600}
@@ -246,7 +271,7 @@ footer{border-top:1px solid var(--paper-deep);background:var(--card);padding:18p
 .legal-list li{list-style:disc;margin:6px 0;font-size:15px;color:var(--ink)}
 .notice{background:var(--paper-deep);border-left:4px solid var(--clay);border-radius:10px;padding:12px 14px;margin:14px 0 18px;font-size:15px;color:var(--ink);line-height:1.7}
 .toc{background:var(--card);border:1px solid var(--paper-deep);border-radius:14px;padding:16px 20px;margin:0 0 22px}
-.toc-h{font-size:13px;font-weight:700;letter-spacing:.4px;color:var(--ink-soft);margin-bottom:8px}
+.toc-h{font-size:13px;font-weight:600;letter-spacing:.4px;color:var(--ink-soft);margin-bottom:8px}
 .toc ol{margin:0;padding-left:20px;columns:2;column-gap:26px}
 .toc li{font-size:13.5px;margin:4px 0;break-inside:avoid}
 .toc a{color:var(--pine);text-decoration:none}
@@ -264,23 +289,23 @@ h2[id]{scroll-margin-top:16px}
 .legal p code{background:var(--paper-deep);border-radius:6px;padding:1px 7px;font-size:13.5px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
 table.tbl{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--paper-deep);border-radius:12px;overflow:hidden;margin:0 0 20px;font-size:14px}
 table.tbl th,table.tbl td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--paper-deep);vertical-align:top}
-table.tbl th{font-size:12px;color:var(--ink-soft);font-weight:700;letter-spacing:.3px;background:var(--paper-deep);white-space:nowrap}
+table.tbl th{font-size:12px;color:var(--ink-soft);font-weight:600;letter-spacing:.3px;background:var(--paper-deep);white-space:nowrap}
 table.tbl tr:last-child td{border-bottom:none}
 table.tbl a{color:var(--pine);text-decoration:none}
 table.tbl a:hover{text-decoration:underline}
 /* 表格宽于容器时横向滚动，避免窄屏把标签挤成「一字一行」 */
 .tblwrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 0 20px;border-radius:12px}
 .tblwrap table.tbl{margin-bottom:0}
-.tagpill{display:inline-block;border-radius:999px;padding:1px 9px;font-size:12px;font-weight:700;border:1px solid;white-space:nowrap}
+.tagpill{display:inline-block;border-radius:999px;padding:1px 9px;font-size:12px;font-weight:600;border:1px solid;white-space:nowrap}
 .tagpill.t-exempt{border-color:#5F7A5A;background:rgba(95,122,90,.12);color:#51694B}
 .tagpill.t-territorial{border-color:#7FA8B8;background:rgba(127,168,184,.14);color:#2F6A7D}
 .tagpill.t-concession{border-color:#B98A2F;background:rgba(185,138,47,.12);color:#8A5F0A}
-.tagpill.t-standard{border-color:#1F2421;background:rgba(31,36,33,.05);color:#6B6F6C}
+.tagpill.t-standard{border-color:#272B33;background:rgba(39,43,51,.05);color:#525866}
 .erase{margin:8px 0 26px;border-left:4px solid var(--clay)}
 .erase h2{margin-top:0}
-.btn-danger{display:inline-block;background:var(--clay);color:#fff;border:none;font-weight:800;font-size:15px;padding:12px 22px;border-radius:12px;cursor:pointer;font-family:inherit}
+.btn-danger{display:inline-block;background:var(--clay);color:#fff;border:none;font-weight:600;font-size:15px;padding:12px 22px;border-radius:12px;cursor:pointer;font-family:inherit}
 .btn-danger:hover{background:var(--clay-deep)}
-.erase-done{margin-top:12px;color:var(--moss);font-weight:700}
+.erase-done{margin-top:12px;color:var(--moss);font-weight:600}
 @media(max-width:560px){h1{font-size:24px}.card .v{font-size:19px}}
 `;
 
@@ -717,7 +742,7 @@ function renderMethodology(lang) {
 <li>${lang === 'zh' ? '公开英语熟练度排名 / World Bank / UNDP / Transparency International / IEP' : 'Public English-proficiency ranking / World Bank / UNDP / Transparency International / IEP'}<span class="meta">${lang === 'zh' ? '国家级参考 · 官方开放数据与公开统计' : 'country-level reference · official open data & public statistics'} · <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="license noopener">CC BY 4.0</a> / ${lang === 'zh' ? '手工快照' : 'hand snapshot'}</span></li>
 <li>OEJTS 1.2<span class="meta">${lang === 'zh' ? '核心测评 16 型人格题库（Jungian 双极结构）' : 'core 16-type personality test (Jungian bipolar structure)'} · <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="license noopener">CC BY-NC-SA 4.0</a> · Open Psychometrics</span></li>
 <li>WHO Global Air Quality Guidelines 2021<span class="meta">${lang === 'zh' ? 'PM2.5 年均分档口径（优 ≤10 / 良 ≤15 / 一般 ≤25 / 差 >25）' : 'annual PM2.5 bands (good ≤10 / fair ≤15 / moderate ≤25 / poor >25)'}</span></li>
-<li>${lang === 'zh' ? '字体 Fraunces / Newsreader / Manrope / 系统中文黑体' : 'Typefaces Fraunces / Newsreader / Manrope / system CJK'}<span class="meta">SIL Open Font License 1.1 · ${lang === 'zh' ? '经 @fontsource 自托管打包，无外部 CDN' : 'self-hosted via @fontsource, no external CDN'}</span></li>
+<li>${lang === 'zh' ? '字体 Noto Sans SC（SIL OFL 开源黑体）' : 'Typefaces Noto Sans SC (SIL OFL)'}<span class="meta">SIL Open Font License 1.1 · ${lang === 'zh' ? '经 @fontsource 自托管打包，无外部 CDN' : 'self-hosted via @fontsource, no external CDN'}</span></li>
 </ul>
 <h2>${lang === 'zh' ? '更新频率与免责声明' : 'Update cadence & disclaimer'}</h2>
 <p class="note">${lang === 'zh'
@@ -1235,7 +1260,7 @@ const LEGAL_TERMS = {
         'GeoNames（CC BY 4.0）、Open-Meteo Historical 与 Air Quality（CC BY 4.0）',
         'World Bank / UNDP / Transparency International / IEP 国家指标（开放数据与公开引用排名）',
         'OEJTS 1.2 人格题库（CC BY-NC-SA 4.0，Open Psychometrics）',
-        '字体 Fraunces / Newsreader / Manrope（SIL Open Font License 1.1）',
+        '字体 Noto Sans SC（SIL Open Font License 1.1）',
       ], after: [
         '本站法律文本自身的结构与措辞，部分参考了 Automattic 以 CC BY-SA 4.0 开放的法律文档（Legalmattic）。',
       ] },
@@ -1311,7 +1336,7 @@ const LEGAL_TERMS = {
         'GeoNames (CC BY 4.0), Open-Meteo Historical & Air Quality (CC BY 4.0)',
         'World Bank / UNDP / Transparency International / IEP country indicators (open data & publicly cited rankings)',
         'OEJTS 1.2 personality questionnaire (CC BY-NC-SA 4.0, Open Psychometrics)',
-        'Typefaces Fraunces / Newsreader / Manrope (SIL Open Font License 1.1)',
+        'Typefaces Noto Sans SC (SIL Open Font License 1.1)',
       ], after: [
         'The structure and wording of the site\'s own legal documents draw in part on Automattic\'s CC BY-SA 4.0 licensed legal texts (Legalmattic).',
       ] },

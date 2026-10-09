@@ -45,7 +45,7 @@ function FavButton({ active, onClick, label }: { active: boolean; onClick: () =>
         <path
           d="M10 1.5 L12.1 7.9 L18.5 10 L12.1 12.1 L10 18.5 L7.9 12.1 L1.5 10 L7.9 7.9 Z"
           fill={active ? '#C96A52' : 'none'}
-          stroke={active ? '#C96A52' : '#6B6F6C'}
+          stroke={active ? '#C96A52' : '#525866'}
           strokeWidth="1.4"
           strokeLinejoin="round"
         />
@@ -192,7 +192,7 @@ export default function CompareScreen({ result, answers, seedCities, onOpenQuiz 
       <section className="border-b hairline bg-paper-deep/50">
         <div className="mx-auto max-w-almanac px-6 py-10 md:px-10">
           <p className="eyebrow">{t('cmp.sec.select.eyebrow')}</p>
-          <h1 className="mt-2 font-display text-[26px] font-bold tracking-tight md:text-[32px]">{t('cmp.sec.select.title')}</h1>
+          <h1 className="mt-2 font-display text-[26px] font-semibold tracking-tight md:text-[32px]">{t('cmp.sec.select.title')}</h1>
           <p className="mt-3 max-w-xl text-[13.5px] leading-[1.8] text-ink-soft">
             {t('cmp.note.limit', { limit: COMPARE_CITY_LIMIT })}
           </p>
@@ -219,7 +219,7 @@ export default function CompareScreen({ result, answers, seedCities, onOpenQuiz 
           {/* 搜索自选 */}
           <div>
             <div className="flex items-center justify-between">
-              <h2 className="font-heading text-[17px] font-bold">{t('cmp.search')}</h2>
+              <h2 className="font-heading text-[17px] font-semibold">{t('cmp.search')}</h2>
               <span className="font-mono text-[10px] text-ink-soft">{t('cmp.selectedCount', { sel: selected.length, limit: COMPARE_CITY_LIMIT })}</span>
             </div>
             <input
@@ -333,7 +333,7 @@ export default function CompareScreen({ result, answers, seedCities, onOpenQuiz 
           {/* 推荐（仅个性化模式） */}
           {result && (
             <div>
-              <h2 className="font-heading text-[17px] font-bold">{t('cmp.recommend')}</h2>
+              <h2 className="font-heading text-[17px] font-semibold">{t('cmp.recommend')}</h2>
               <p className="mt-1 font-mono text-[10px] text-ink-soft">{t('cmp.recommend.note')}</p>
               <div className="mt-3 flex flex-col gap-2.5">
                 {result.matches.map((m) => {
@@ -389,7 +389,7 @@ export default function CompareScreen({ result, answers, seedCities, onOpenQuiz 
           <div className="flex flex-wrap items-end justify-between gap-3">
             <div>
               <p className="eyebrow">{t('cmp.sec.weights.eyebrow')}</p>
-              <h2 className="mt-2 font-display text-[22px] font-bold tracking-tight md:text-[26px]">{t('cmp.sec.weights.title')}</h2>
+              <h2 className="mt-2 font-display text-[22px] font-semibold tracking-tight md:text-[26px]">{t('cmp.sec.weights.title')}</h2>
             </div>
             <div className="flex items-center gap-3">
               {!isDefaultWeights(weights, personalized) && (
@@ -444,7 +444,7 @@ export default function CompareScreen({ result, answers, seedCities, onOpenQuiz 
       {ranked.length > 0 && (
         <section className="mx-auto max-w-almanac px-6 py-10 md:px-10">
           <p className="eyebrow">{t('cmp.sec.rank.eyebrow')}</p>
-          <h2 className="mt-2 font-display text-[22px] font-bold tracking-tight md:text-[26px]">{t('cmp.sec.rank.title')}</h2>
+          <h2 className="mt-2 font-display text-[22px] font-semibold tracking-tight md:text-[26px]">{t('cmp.sec.rank.title')}</h2>
           <div className="mt-6 flex flex-col gap-3">
             {ranked.map((r, i) => (
               <motion.div
@@ -498,7 +498,7 @@ export default function CompareScreen({ result, answers, seedCities, onOpenQuiz 
             <div className="flex flex-wrap items-end justify-between gap-3">
               <div>
                 <p className="eyebrow">{t('cmp.sec.notes.eyebrow')}</p>
-                <h2 className="mt-2 font-display text-[22px] font-bold tracking-tight md:text-[26px]">{t('cmp.sec.notes.title')}</h2>
+                <h2 className="mt-2 font-display text-[22px] font-semibold tracking-tight md:text-[26px]">{t('cmp.sec.notes.title')}</h2>
               </div>
               <button type="button" onClick={saveArchive} className="btn-clay font-mono text-[11.5px]">
                 {t('cmp.save.cta')}
@@ -548,7 +548,7 @@ export default function CompareScreen({ result, answers, seedCities, onOpenQuiz 
           >
             <div className="flex items-center gap-2.5">
               <CompassMark size={22} />
-              <h3 className="font-heading text-[17px] font-bold">{t('cmp.replace.title', { limit: COMPARE_CITY_LIMIT })}</h3>
+              <h3 className="font-heading text-[17px] font-semibold">{t('cmp.replace.title', { limit: COMPARE_CITY_LIMIT })}</h3>
             </div>
             <p className="mt-2 text-[13px] leading-[1.7] text-ink-soft">
               {t('cmp.replace.desc1')} <span className="text-ink">{cityName(pending)}</span> {t('cmp.replace.desc2')}

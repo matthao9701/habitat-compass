@@ -17,7 +17,7 @@ export default function VerificationChecklist({ matches }: { matches: CityMatch[
     <section className="border-y hairline bg-paper-deep/50">
       <div className="mx-auto max-w-almanac px-6 py-14 md:px-10 md:py-20">
         <p className="eyebrow mb-3">before you move</p>
-        <h2 className="mb-2 font-display text-2xl font-bold tracking-tight md:text-3xl">
+        <h2 className="mb-2 font-display text-2xl font-semibold tracking-tight md:text-3xl">
           {t('vc.title')}
         </h2>
         <p className="mb-10 max-w-2xl text-[13px] leading-relaxed text-ink-soft">
@@ -76,7 +76,7 @@ function ChecklistCard({ match, index }: { match: CityMatch; index: number }) {
         <span className="font-mono text-[11px] text-ochre-deep">
           {String(index).padStart(2, '0')}
         </span>
-        <h3 className="font-heading text-base font-bold text-ink">
+        <h3 className="font-heading text-base font-semibold text-ink">
           {cityName(city)}
           <span className="ml-2 font-mono text-[10px] font-normal text-ink-soft">
             {cityCountryName(city)}

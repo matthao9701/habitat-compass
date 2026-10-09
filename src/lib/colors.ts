@@ -6,8 +6,8 @@ export const CHART_COLORS = {
   coral: '#C96A52', // clay token：暖赤陶强调/序列 2
   sand: '#B98A2F', // ochre token：黄铜评分/序列 3
   teal: '#3E7C8F', // teal token：海图青/序列 4
-  ink: '#1F2421',
-  inkSoft: '#6B6F6C',
+  ink: '#272B33',
+  inkSoft: '#525866',
   paper: '#F9F8F6',
   sea: '#7FA8B8',
   moss: '#5F7A5A',

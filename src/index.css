@@ -1,6 +1,6 @@
 /* 字体策略（构建期自托管，不依赖外部 CDN）：
-   - Fraunces / Newsreader / Manrope（SIL OFL）：西文可变字体，仅打包 latin 子集
-   - 中文字体不自托管（Noto Sans SC 会切出 101 个 CJK 切片，拖慢移动端首屏），走系统黑体栈 */
+   - Noto Sans SC（SIL OFL）现代黑体 —— 中英统一主字体；Manrope 备用
+   - 运行时零第三方请求：字体切片随构建打包，unicode-range 按需加载 */
 
 @tailwind base;
 @tailwind components;
@@ -8,9 +8,9 @@
 
 @layer base {
   :root {
-    /* 编辑部风：燕麦羊皮纸 + 炭墨 */
+    /* 现代工具风：燕麦羊皮纸 + 深炭灰 */
     --background: #f9f8f6;
-    --foreground: #1f2421;
+    --foreground: #272b33;
   }
 
   html {
@@ -20,16 +20,16 @@
   body {
     background-color: var(--background);
     color: var(--foreground);
-    font-family: "Manrope Variable", -apple-system, BlinkMacSystemFont, "PingFang SC",
-      "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", system-ui, sans-serif;
-    font-weight: 400;
+    font-family: "Noto Sans SC Variable", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+      "PingFang SC", "Microsoft YaHei", sans-serif;
+    font-weight: 450;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
   }
 
   ::selection {
     background: rgba(201, 106, 82, 0.2);
-    color: #1f2421;
+    color: #272b33;
   }
 
   button {

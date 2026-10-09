@@ -24,7 +24,7 @@ export default function CountryCards({ matches }: { matches: CityMatch[] }) {
   return (
     <section className="mx-auto max-w-almanac px-6 py-14 md:px-10 md:py-20">
       <p className="eyebrow mb-3">country context</p>
-      <h2 className="mb-2 font-display text-2xl font-bold tracking-tight md:text-3xl">{t('report.country.title')}</h2>
+      <h2 className="mb-2 font-display text-2xl font-semibold tracking-tight md:text-3xl">{t('report.country.title')}</h2>
       <p className="mb-10 text-[13px] leading-relaxed text-ink-soft">
         {t('cty.sectionNote')}
       </p>
@@ -47,7 +47,7 @@ function CountryCard({ match }: { match: CityMatch }) {
     <article className="card-paper p-6 md:p-7">
       <div className="flex items-baseline justify-between gap-3">
         <div>
-          <h3 className="font-heading text-lg font-bold tracking-tight text-ink">
+          <h3 className="font-heading text-lg font-semibold tracking-tight text-ink">
             {countryName(country)}
           </h3>
           <p className="mt-0.5 font-mono text-[10px] uppercase tracking-wide text-ink-soft">

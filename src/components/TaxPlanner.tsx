@@ -116,7 +116,7 @@ export default function TaxPlanner({ initialCityId, onOpenQuiz }: TaxPlannerProp
             {/* 年收入 */}
             <div>
               <div className="flex items-baseline justify-between gap-3">
-                <label htmlFor="tax-income" className="font-heading text-[15px] font-bold">
+                <label htmlFor="tax-income" className="font-heading text-[15px] font-semibold">
                   {t('tax.field.income')}
                 </label>
                 <span className="font-data text-[10px] uppercase tracking-eyebrow text-ink-soft">{t('tax.income.unit')}</span>
@@ -143,7 +143,7 @@ export default function TaxPlanner({ initialCityId, onOpenQuiz }: TaxPlannerProp
 
             {/* 收入性质 */}
             <div className="mt-7">
-              <p className="font-heading text-[15px] font-bold">{t('tax.field.nature')}</p>
+              <p className="font-heading text-[15px] font-semibold">{t('tax.field.nature')}</p>
               <div className="mt-3 space-y-2">
                 {NATURES.map((n) => {
                   const active = n === nature;
@@ -157,7 +157,7 @@ export default function TaxPlanner({ initialCityId, onOpenQuiz }: TaxPlannerProp
                         active ? 'border-pine bg-pine/[0.04]' : 'border-line bg-card hover:border-pine/40'
                       }`}
                     >
-                      <span className={`block font-heading text-[14px] font-bold ${active ? 'text-pine' : 'text-ink'}`}>
+                      <span className={`block font-heading text-[14px] font-semibold ${active ? 'text-pine' : 'text-ink'}`}>
                         {t(`tax.nature.${n}`)}
                       </span>
                       <span className="mt-0.5 block text-[12px] leading-relaxed text-ink-soft">
@@ -171,7 +171,7 @@ export default function TaxPlanner({ initialCityId, onOpenQuiz }: TaxPlannerProp
 
             {/* 目标城市 */}
             <div className="mt-7">
-              <label htmlFor="tax-city" className="font-heading text-[15px] font-bold">
+              <label htmlFor="tax-city" className="font-heading text-[15px] font-semibold">
                 {t('tax.field.city')}
               </label>
               <select
@@ -197,7 +197,7 @@ export default function TaxPlanner({ initialCityId, onOpenQuiz }: TaxPlannerProp
               <div className="mt-7 rounded-[6px] border border-ochre-deep/30 bg-ochre/[0.06] px-4 py-3.5">
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0">
-                    <p className="font-heading text-[13.5px] font-bold text-ink">
+                    <p className="font-heading text-[13.5px] font-semibold text-ink">
                       {t('tax.out.special')} · {lang === 'zh' ? specialAvailable.label : specialAvailable.labelEn}
                     </p>
                     <p className="mt-1 text-[12px] leading-relaxed text-ink-soft">
@@ -242,7 +242,7 @@ export default function TaxPlanner({ initialCityId, onOpenQuiz }: TaxPlannerProp
               <div className="mt-5 border-t border-paper/15 pt-4">
                 <p className="text-[13.5px] leading-relaxed text-paper/85">
                   {savedPositive ? t('tax.out.saved', { rate: TAX_BASELINE_EFF_RATE }) : t('tax.out.savedNeg', { rate: TAX_BASELINE_EFF_RATE })}{' '}
-                  <span className={`font-data font-bold ${savedPositive ? 'text-[#9CC79A]' : 'text-[#E8A08C]'}`}>
+                  <span className={`font-data font-semibold ${savedPositive ? 'text-[#9CC79A]' : 'text-[#E8A08C]'}`}>
                     {savedPositive ? '+' : '−'}
                     {usd(Math.abs(saved))}
                   </span>
@@ -303,7 +303,7 @@ export default function TaxPlanner({ initialCityId, onOpenQuiz }: TaxPlannerProp
 
                 {result.breakdown.length > 0 && (
                   <>
-                    <p className="mt-5 font-heading text-[12.5px] font-bold text-ink">{t('tax.out.bracketTitle')}</p>
+                    <p className="mt-5 font-heading text-[12.5px] font-semibold text-ink">{t('tax.out.bracketTitle')}</p>
                     <div className="mt-2 overflow-x-auto">
                       <table className="w-full min-w-[420px] border-collapse font-data text-[11.5px] tabular-nums">
                         <thead>
@@ -350,7 +350,7 @@ export default function TaxPlanner({ initialCityId, onOpenQuiz }: TaxPlannerProp
 
             {/* 免责 */}
             <div className="rounded-card border-l-4 border-clay bg-card px-5 py-4">
-              <p className="font-heading text-[13.5px] font-bold text-ink">{t('tax.disclaimer.title')}</p>
+              <p className="font-heading text-[13.5px] font-semibold text-ink">{t('tax.disclaimer.title')}</p>
               <p className="mt-1.5 text-[12.5px] leading-[1.8] text-ink-soft">{t('tax.disclaimer.body')}</p>
             </div>
 
@@ -364,7 +364,7 @@ export default function TaxPlanner({ initialCityId, onOpenQuiz }: TaxPlannerProp
 
         {/* 用法三步（AEO 直答段） */}
         <section className="mt-12 border-t hairline pt-8">
-          <h2 className="font-heading text-lg font-bold">{t('tax.section.howTitle')}</h2>
+          <h2 className="font-heading text-lg font-semibold">{t('tax.section.howTitle')}</h2>
           <ol className="mt-5 grid gap-6 md:grid-cols-3">
             {(['tax.step1', 'tax.step2', 'tax.step3'] as const).map((k, i) => (
               <li key={k} className="border-t hairline pt-4">

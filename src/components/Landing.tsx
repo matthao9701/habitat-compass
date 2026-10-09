@@ -62,7 +62,7 @@ export default function Landing({ onStart, onDemo, onBrowse }: LandingProps) {
         >
           {t('landing.hero.l1')}
           <br />
-          {t('landing.hero.l2a')}<span className="italic text-clay">{t('landing.hero.lead')}</span>{t('landing.hero.l2b')}
+          {t('landing.hero.l2a')}<span className="text-clay">{t('landing.hero.lead')}</span>{t('landing.hero.l2b')}
           <br />
           {t('landing.hero.l3')}
         </motion.h1>
@@ -142,7 +142,7 @@ export default function Landing({ onStart, onDemo, onBrowse }: LandingProps) {
           <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
             <div>
               <p className="eyebrow mb-3">quick preview · 10 seconds</p>
-              <h2 className="font-display text-2xl font-bold leading-snug tracking-tight md:text-3xl">
+              <h2 className="font-display text-2xl font-semibold leading-snug tracking-tight md:text-3xl">
                 {t('landing.demo.title')}
               </h2>
             </div>
@@ -167,7 +167,7 @@ export default function Landing({ onStart, onDemo, onBrowse }: LandingProps) {
                     {t('landing.demo.cta')}
                   </span>
                 </div>
-                <p className="font-heading text-lg font-bold text-ink">{t(`demo.${profile.id}.label`)}</p>
+                <p className="font-heading text-lg font-semibold text-ink">{t(`demo.${profile.id}.label`)}</p>
                 <p className="mt-1.5 font-mono text-[11px] text-ochre-deep">{t(`demo.${profile.id}.tagline`)}</p>
                 <p className="mt-3 text-[13px] leading-relaxed text-ink-soft">{t(`demo.${profile.id}.desc`)}</p>
                 <div className="mt-4 flex items-center justify-between border-t hairline pt-3">
@@ -185,7 +185,7 @@ export default function Landing({ onStart, onDemo, onBrowse }: LandingProps) {
       {/* 流程 */}
       <section className="mx-auto max-w-almanac px-6 py-16 md:px-10 md:py-20">
         <p className="eyebrow mb-3">01 / how it works</p>
-        <h2 className="mb-12 font-display text-3xl font-bold tracking-tight md:text-4xl">{t('landing.flow.title')}</h2>
+        <h2 className="mb-12 font-display text-3xl font-semibold tracking-tight md:text-4xl">{t('landing.flow.title')}</h2>
         <div className="grid gap-10 md:grid-cols-3">
           {steps().map((s, i) => (
             <motion.div
@@ -197,7 +197,7 @@ export default function Landing({ onStart, onDemo, onBrowse }: LandingProps) {
               className="relative border-t hairline pt-6"
             >
               <p className="font-mono text-xs text-ochre-deep">{s.no}</p>
-              <h3 className="mt-3 font-heading text-xl font-bold">{s.title}</h3>
+              <h3 className="mt-3 font-heading text-xl font-semibold">{s.title}</h3>
               <p className="mt-3 text-[13.5px] leading-[1.85] text-ink-soft">{s.desc}</p>
             </motion.div>
           ))}
@@ -249,7 +249,7 @@ export default function Landing({ onStart, onDemo, onBrowse }: LandingProps) {
       {/* 结尾 CTA：统一入口（底边留白收敛，与全站 Footer 自然衔接） */}
       <section className="mx-auto max-w-almanac px-6 pb-14 pt-20 text-center md:px-10 md:pb-16 md:pt-28">
         <p className="eyebrow mb-5">02 / set sail</p>
-        <h2 className="mx-auto max-w-2xl font-display text-3xl font-bold leading-snug tracking-tight md:text-[44px]">
+        <h2 className="mx-auto max-w-2xl font-display text-3xl font-semibold leading-snug tracking-tight md:text-[44px]">
           {t('landing.version.lead')}
         </h2>
         <p className="mx-auto mt-5 max-w-md text-[15px] leading-[1.9] text-ink-soft">
@@ -260,7 +260,7 @@ export default function Landing({ onStart, onDemo, onBrowse }: LandingProps) {
           {/* 核心段：人人先答 */}
           <div className="flex flex-col rounded-xl border border-line bg-card p-6 md:p-7">
             <p className="eyebrow mb-2">core · free</p>
-            <h3 className="font-heading text-xl font-bold text-ink">{t('landing.version.core')}</h3>
+            <h3 className="font-heading text-xl font-semibold text-ink">{t('landing.version.core')}</h3>
             <p className="mt-2 text-sm leading-relaxed text-ink-soft">
               {t('landing.version.coreDesc')}
             </p>
@@ -277,7 +277,7 @@ export default function Landing({ onStart, onDemo, onBrowse }: LandingProps) {
               PRO
             </span>
             <p className="eyebrow mb-2">deepen · free</p>
-            <h3 className="font-heading text-xl font-bold text-ink">{t('landing.version.deepen')}</h3>
+            <h3 className="font-heading text-xl font-semibold text-ink">{t('landing.version.deepen')}</h3>
             <p className="mt-2 text-sm leading-relaxed text-ink-soft">
               {t('landing.version.deepenDesc')}
             </p>

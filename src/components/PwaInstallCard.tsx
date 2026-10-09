@@ -37,7 +37,7 @@ export default function PwaInstallCard({ enabled = true }: { enabled?: boolean }
                 <CompassMark size={26} />
               </span>
               <div className="min-w-0 flex-1">
-                <p className="font-heading text-[15px] font-bold leading-snug text-ink">
+                <p className="font-heading text-[15px] font-semibold leading-snug text-ink">
                   {isIosGuide ? t('pwa.ios.title') : t('pwa.title')}
                 </p>
                 <p className="mt-1 text-[12.5px] leading-[1.7] text-ink-soft">

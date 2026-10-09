@@ -91,7 +91,7 @@ function PentagonRadar({ values }: { values: { label: string; pct: number }[] })
             textAnchor={anchor}
             className="fill-ink-soft"
             fontSize="9"
-            fontFamily="'Manrope Variable', system-ui, sans-serif"
+            fontFamily="'Noto Sans SC Variable', system-ui, sans-serif"
           >
             {v.label} {Math.round(v.pct)}
           </text>
@@ -150,7 +150,7 @@ function LiteCompareCard({ result }: { result: AssessmentResult }) {
     return (
       <div className="rounded-xl border hairline bg-card/70 p-5">
         <p className="eyebrow mb-2">cross-version compare</p>
-        <h3 className="mb-2 font-heading text-base font-bold text-ink">{t('report.bigfive.compare')}</h3>
+        <h3 className="mb-2 font-heading text-base font-semibold text-ink">{t('report.bigfive.compare')}</h3>
         <p className="text-[13px] leading-relaxed text-ink-soft">
           {t('bf.compare.empty')}
         </p>
@@ -169,7 +169,7 @@ function LiteCompareCard({ result }: { result: AssessmentResult }) {
   return (
     <div className="rounded-xl border hairline bg-card/70 p-5">
       <p className="eyebrow mb-2">cross-version compare</p>
-      <h3 className="mb-4 font-heading text-base font-bold text-ink">{t('report.bigfive.compare')}</h3>
+      <h3 className="mb-4 font-heading text-base font-semibold text-ink">{t('report.bigfive.compare')}</h3>
 
       <div className="mb-4 grid gap-3 sm:grid-cols-2">
         <div className="rounded-lg border border-line bg-paper p-3.5">
@@ -246,7 +246,7 @@ export default function BigFiveSection({
   return (
     <section className="mx-auto max-w-almanac px-6 py-14 md:px-10 md:py-20">
       <p className="eyebrow mb-3">big five profile · standard</p>
-      <h2 className="mb-2 font-display text-2xl font-bold tracking-tight md:text-3xl">
+      <h2 className="mb-2 font-display text-2xl font-semibold tracking-tight md:text-3xl">
         {t('bf.title')}
       </h2>
       <p className="mb-10 max-w-xl text-[13px] leading-relaxed text-ink-soft">
@@ -287,7 +287,7 @@ export default function BigFiveSection({
             {groups.map((g) => (
               <div key={g.domain}>
                 <p className="mb-1.5 flex items-baseline justify-between">
-                  <span className="font-heading text-[13.5px] font-bold text-ink">
+                  <span className="font-heading text-[13.5px] font-semibold text-ink">
                     {domainLabel(g.domain)}
                   </span>
                   <span className="font-data text-[12px] tabular-nums text-ochre-deep">

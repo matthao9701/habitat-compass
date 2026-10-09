@@ -128,7 +128,7 @@ export default function SentenceFilter({ value, onChange, matchedCount, totalCou
       <div className="flex items-start justify-between gap-4 px-5 pb-4 pt-5 md:px-6">
         <div className="min-w-0">
           <p className="eyebrow mb-2">{t('landing.filter.eyebrow')}</p>
-          <p className="font-heading text-[15px] font-bold leading-snug text-ink md:text-base">
+          <p className="font-heading text-[15px] font-semibold leading-snug text-ink md:text-base">
             {t('landing.filter.lead')}
           </p>
         </div>

@@ -48,7 +48,7 @@ export default function RiasecSection({
   return (
     <section className="mx-auto max-w-almanac px-6 py-14 md:px-10 md:py-20">
       <p className="eyebrow mb-3">{t('riasec.section.eyebrow')}</p>
-      <h2 className="mb-3 font-display text-2xl font-bold tracking-tight md:text-3xl">
+      <h2 className="mb-3 font-display text-2xl font-semibold tracking-tight md:text-3xl">
         {t('riasec.section.title')}
       </h2>
       <p className="mb-10 max-w-[640px] text-[13.5px] leading-[1.9] text-ink-soft">
@@ -82,7 +82,7 @@ export default function RiasecSection({
             <p className="mb-2 font-mono text-[10px] tracking-[0.18em] text-ochre-deep">
               {t('riasec.combo.eyebrow', { combo: profile.combo })}
             </p>
-            <h3 className="mb-3 font-heading text-lg font-bold">
+            <h3 className="mb-3 font-heading text-lg font-semibold">
               {t(`riasec.combo.${profile.combo}.name`)}
             </h3>
             <p className="text-[13.5px] leading-[1.9] text-ink-soft">
@@ -137,7 +137,7 @@ export default function RiasecSection({
               <p className="mb-1 font-mono text-[10px] tracking-[0.18em] text-ochre-deep">
                 {t('risk.card.eyebrow')}
               </p>
-              <h3 className="font-heading text-lg font-bold">{t('risk.card.title')}</h3>
+              <h3 className="font-heading text-lg font-semibold">{t('risk.card.title')}</h3>
             </div>
             <div className="flex items-center gap-3">
               <span className="font-mono text-[9.5px] text-ink-soft">{t('risk.card.score')}</span>

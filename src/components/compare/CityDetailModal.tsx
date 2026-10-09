@@ -51,7 +51,7 @@ export default function CityDetailModal({
         {/* 头部 */}
         <div className="sticky top-0 flex items-start justify-between gap-3 border-b hairline bg-card px-5 py-4">
           <div>
-            <h3 className="font-display text-xl font-bold tracking-tight text-ink">{cityName(city)}</h3>
+            <h3 className="font-display text-xl font-semibold tracking-tight text-ink">{cityName(city)}</h3>
             <p className="mt-0.5 font-mono text-[10px] uppercase tracking-wide text-ink-soft">
               {city.nameEn} · {cityCountryName(city)}
             </p>

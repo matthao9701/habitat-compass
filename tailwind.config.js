@@ -10,8 +10,10 @@ export default {
         'paper-deep': '#F1EFEA',
         card: '#FFFFFF',
         ink: {
-          DEFAULT: '#1F2421',
-          soft: '#6B6F6C',
+          // 深炭灰：一级正文/核心描述（在 #F9F8F6 上对比度 ≈12:1，消除暖底发灰）
+          DEFAULT: '#272B33',
+          // 中深灰：次级辅助说明、小标签、法律条款链接（≈7:1，手机强光下仍清晰）
+          soft: '#525866',
         },
         pine: '#1D3557', // 主操作 · 深海航海蓝（白字对比 ≥10:1）
         clay: {
@@ -39,66 +41,71 @@ export default {
         },
       },
       fontFamily: {
-        // 第十五轮字体改版（全部 OFL 自托管可变字体，仅打包 latin 子集）：
-        //   标题  Fraunces（soft serif，带光学尺寸，旅程探索感）
-        //   点缀  Newsreader（衬线引用/副标）
-        //   正文 / 数据  Manrope（几何人文黑体；数字为真等宽数字，替代原 JetBrains/IBM Plex Mono 的「代码感」等宽字体）
-        // 中文走系统黑体栈（PingFang SC / 微软雅黑 / 思源黑体），不自托管 CJK 字体：
-        // @fontsource/noto-sans-sc 会切出 101 个切片文件，移动端首屏代价过高。
+        // 现代无衬线工具风（SIL OFL 开源可变字体，构建期自托管、仅按需加载 unicode 切片）：
+        //   Noto Sans SC Variable —— 中英统一主字体（现代黑体，笔画均匀不发虚）
+        // 系统黑体栈作为兜底；原先的衬线标题字体与西文备用字体已按「现代工具质感」诉求移除。
         display: [
-          '"Fraunces Variable"',
-          'Georgia',
-          '"Songti SC"',
-          '"Noto Serif CJK SC"',
-          'serif',
-        ], // 大标题/城市名（旅程探索感）
+          '"Noto Sans SC Variable"',
+          '-apple-system',
+          'BlinkMacSystemFont',
+          '"Segoe UI"',
+          'Roboto',
+          '"PingFang SC"',
+          '"Microsoft YaHei"',
+          'sans-serif',
+        ], // 大标题/城市名
         heading: [
-          '"Fraunces Variable"',
-          'Georgia',
-          '"Songti SC"',
-          '"Noto Serif CJK SC"',
-          'serif',
+          '"Noto Sans SC Variable"',
+          '-apple-system',
+          'BlinkMacSystemFont',
+          '"Segoe UI"',
+          'Roboto',
+          '"PingFang SC"',
+          '"Microsoft YaHei"',
+          'sans-serif',
         ], // 区块标题
         body: [
-          '"Manrope Variable"',
+          '"Noto Sans SC Variable"',
           '-apple-system',
           'BlinkMacSystemFont',
+          '"Segoe UI"',
+          'Roboto',
           '"PingFang SC"',
-          '"Hiragino Sans GB"',
           '"Microsoft YaHei"',
-          '"Noto Sans CJK SC"',
-          'system-ui',
           'sans-serif',
-        ], // 正文（font-normal，行高放宽）
+        ], // 正文
         data: [
-          '"Manrope Variable"',
+          '"Noto Sans SC Variable"',
           '-apple-system',
+          'BlinkMacSystemFont',
+          '"Segoe UI"',
+          'Roboto',
           '"PingFang SC"',
           '"Microsoft YaHei"',
-          'system-ui',
           'sans-serif',
-        ], // 指标/数值（font-variant-numeric: tabular-nums 保证纵向对齐）
-        'serif-accent': ['"Newsreader Variable"', 'Georgia', 'serif'], // 英文副标/引用衬线点缀
+        ], // 指标/数值（font-variant-numeric: tabular-nums）
         // 兼容映射
         sans: [
-          '"Manrope Variable"',
+          '"Noto Sans SC Variable"',
           '-apple-system',
           'BlinkMacSystemFont',
+          '"Segoe UI"',
+          'Roboto',
           '"PingFang SC"',
           '"Microsoft YaHei"',
-          '"Noto Sans CJK SC"',
-          'system-ui',
           'sans-serif',
         ],
-        serif: ['"Fraunces Variable"', '"Newsreader Variable"', 'Georgia', 'serif'],
-        // 旧 `font-mono` 类名保留但改指 Manrope：全站等宽小字（eyebrow 标签、脚注、数值）
-        // 多为排版用途而非代码，改用几何黑体后观感更整洁。
+        serif: ['"Noto Sans SC Variable"', '-apple-system', 'Georgia', 'serif'],
+        // 旧 `font-mono` 类名保留但改指无衬线：全站等宽小字（eyebrow 标签、脚注、数值）
+        // 多为排版用途而非代码，改用黑体后观感更整洁。
         mono: [
-          '"Manrope Variable"',
+          '"Noto Sans SC Variable"',
           '-apple-system',
+          'BlinkMacSystemFont',
+          '"Segoe UI"',
+          'Roboto',
           '"PingFang SC"',
           '"Microsoft YaHei"',
-          'system-ui',
           'sans-serif',
         ],
       },

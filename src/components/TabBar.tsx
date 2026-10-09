@@ -13,9 +13,8 @@ const TAB_ITEMS: { id: TabId; key: string }[] = [
   { id: 'profile', key: 'nav.profile' },
 ];
 
-/** 当前页标题（移动端顶栏展示；桌面端由横向导航承载） */
-const PAGE_TITLE_KEY: Record<TabId, string> = {
-  landing: 'landing.hero.title',
+/** 当前页标题（移动端顶栏展示；landing 为空，避免与左侧品牌名重复） */
+const PAGE_TITLE_KEY: Partial<Record<TabId, string>> = {
   cities: 'nav.explore',
   tax: 'tax.nav',
   compare: 'nav.compare',
@@ -92,7 +91,8 @@ export function TabIcon({ id, active, size = 18 }: { id: TabId; active: boolean;
 export default function TabBar({ active, onChange }: { active: TabId; onChange: (t: TabId) => void }) {
   const { t } = useI18n();
   const siteName = t('landing.hero.title');
-  const pageTitle = t(PAGE_TITLE_KEY[active]);
+  const pageTitleKey = PAGE_TITLE_KEY[active];
+  const pageTitle = pageTitleKey ? t(pageTitleKey) : '';
 
   return (
     <>
@@ -107,14 +107,14 @@ export default function TabBar({ active, onChange }: { active: TabId; onChange: 
           >
             <CompassMark size={24} />
             <span className="block leading-tight md:hidden lg:block">
-              <span className="block font-display text-[14px] font-bold tracking-wide">{siteName}</span>
+              <span className="block font-display text-[14px] font-semibold tracking-wide">{siteName}</span>
               <span className="block font-mono text-[8px] uppercase tracking-eyebrow text-ink-soft">
                 overseas almanac
               </span>
             </span>
           </button>
 
-          {/* 当前页标题（移动端） */}
+          {/* 当前页标题（移动端，占位保持右侧语言切换贴边；landing 时留空避免与品牌名重复） */}
           <span className="min-w-0 flex-1 truncate font-heading text-[13.5px] font-medium tracking-wide text-ink-soft md:hidden">
             {pageTitle}
           </span>

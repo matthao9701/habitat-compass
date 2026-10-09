@@ -59,7 +59,7 @@ export default function CityAnalysisSection({ top, axisScores }: CityAnalysisSec
                   >
                     {panel.mark}
                   </span>
-                  <p className="font-heading text-[15px] font-bold text-ink">{panel.title}</p>
+                  <p className="font-heading text-[15px] font-semibold text-ink">{panel.title}</p>
                 </div>
                 <p className="mb-3 font-mono text-[9px] uppercase tracking-eyebrow text-ink-soft/80">
                   {panel.note}

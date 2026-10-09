@@ -91,7 +91,7 @@ export default function ConstraintsStep({
     <div className="mx-auto max-w-almanac px-6 pb-20 pt-10 md:px-10">
       <div className="mx-auto max-w-2xl">
         <p className="eyebrow mb-3">00 / hard constraints</p>
-        <h2 className="font-display text-3xl font-bold tracking-tight md:text-4xl">{t('cons.title')}</h2>
+        <h2 className="font-display text-3xl font-semibold tracking-tight md:text-4xl">{t('cons.title')}</h2>
         <p className="mt-3 text-sm leading-relaxed text-ink-soft md:text-base">{t('cons.subtitle')}</p>
 
         {/* 摘要条：一屏交代「当前筛选了什么 / 预计还剩多少城」 */}
@@ -118,7 +118,7 @@ export default function ConstraintsStep({
         {/* 1 · 月预算上限 */}
         <section className="mt-4 rounded-xl border border-line bg-card p-5 md:p-6">
           <div className="flex items-baseline justify-between gap-3">
-            <h3 className="font-heading text-base font-bold md:text-lg">{t('cons.budget')}</h3>
+            <h3 className="font-heading text-base font-semibold md:text-lg">{t('cons.budget')}</h3>
             <span className="font-data text-xs text-ink-soft">{t('cons.optional')}</span>
           </div>
 
@@ -186,7 +186,7 @@ export default function ConstraintsStep({
         {/* 2 · 签证底线（原四张说明卡 → 四枚可选徽标） */}
         <section className="mt-4 rounded-xl border border-line bg-card p-5 md:p-6">
           <div className="flex items-baseline justify-between gap-3">
-            <h3 className="font-heading text-base font-bold md:text-lg">{t('cons.visa')}</h3>
+            <h3 className="font-heading text-base font-semibold md:text-lg">{t('cons.visa')}</h3>
             <span className="font-data text-xs text-ink-soft">{t('cons.visa.pill')}</span>
           </div>
           <div className="mt-4 flex flex-wrap gap-2" role="group" aria-label={t('cons.visa')}>
@@ -220,7 +220,7 @@ export default function ConstraintsStep({
         {/* 3 · 安全底线 */}
         <section className="mt-4 rounded-xl border border-line bg-card p-5 md:p-6">
           <div className="flex items-center justify-between gap-3">
-            <h3 className="font-heading text-base font-bold md:text-lg">{t('cons.safety')}</h3>
+            <h3 className="font-heading text-base font-semibold md:text-lg">{t('cons.safety')}</h3>
             <button
               type="button"
               role="switch"
@@ -269,7 +269,7 @@ export default function ConstraintsStep({
             className="flex w-full items-center justify-between gap-3 px-5 py-4 text-left md:px-6"
           >
             <span className="flex flex-wrap items-center gap-x-2 gap-y-1">
-              <span className="font-heading text-sm font-bold text-ink md:text-base">
+              <span className="font-heading text-sm font-semibold text-ink md:text-base">
                 {t('cons.advanced.toggle')}
               </span>
               <span className="inline-flex items-center rounded-full border border-line bg-paper px-2.5 py-0.5 font-data text-[11px] text-ink-soft">
@@ -286,7 +286,7 @@ export default function ConstraintsStep({
 
           {advancedOpen && (
             <div id={`${budgetInputId}-advanced`} className="border-t hairline px-5 py-5 md:px-6">
-              <label htmlFor={`${budgetInputId}-passport`} className="font-heading text-sm font-bold text-ink">
+              <label htmlFor={`${budgetInputId}-passport`} className="font-heading text-sm font-semibold text-ink">
                 {t('passport.label')}
               </label>
               <select
@@ -305,7 +305,7 @@ export default function ConstraintsStep({
                 {hc.passport === 'CN' ? t('passport.hintCn') : t('passport.hintOther')}
               </p>
 
-              <p className="mt-5 font-heading text-sm font-bold text-ink">{t('cons.rule.title')}</p>
+              <p className="mt-5 font-heading text-sm font-semibold text-ink">{t('cons.rule.title')}</p>
               <ul className="mt-2 space-y-1.5 text-xs leading-relaxed text-ink-soft">
                 <li>{t('cons.rule.budget')}</li>
                 <li>{t('cons.rule.visa')}</li>

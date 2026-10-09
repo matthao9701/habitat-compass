@@ -52,7 +52,7 @@ export default function RadarChart({ axes, series, size = 340 }: RadarChartProps
               })
               .join(' ')}
             fill="none"
-            stroke="#1F2421"
+            stroke="#272B33"
             strokeWidth="0.7"
             opacity="0.16"
           />
@@ -68,7 +68,7 @@ export default function RadarChart({ axes, series, size = 340 }: RadarChartProps
               y1={cy}
               x2={x}
               y2={y}
-              stroke="#1F2421"
+              stroke="#272B33"
               strokeWidth="0.7"
               opacity="0.16"
             />
@@ -106,7 +106,7 @@ export default function RadarChart({ axes, series, size = 340 }: RadarChartProps
               textAnchor="middle"
               dominantBaseline="middle"
               className="fill-ink"
-              style={{ fontSize: 12, fontFamily: '"Manrope Variable", system-ui, sans-serif' }}
+              style={{ fontSize: 12, fontFamily: '"Noto Sans SC Variable", system-ui, sans-serif' }}
             >
               {label}
             </text>

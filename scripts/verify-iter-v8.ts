@@ -114,6 +114,8 @@ check('激活项温和胶囊高亮（rounded-full + bg-clay/10）', tabSrc.inclu
 check('导航项保留可访问名（aria-current / aria-label）', tabSrc.includes('aria-current') && tabSrc.includes('aria-label={t(\'nav.ariaLabel\')}'));
 // 四入口统一取自 TAB_ITEMS（首页由品牌标识承载，不单列）
 check('四个核心入口（探索/税负/对比/我的）', tabSrc.includes("key: 'nav.explore'") && tabSrc.includes("key: 'tax.nav'") && tabSrc.includes("key: 'nav.compare'") && tabSrc.includes("key: 'nav.profile'"));
+// 首页/默认态中间不重复显示标题：仅具体功能页有 pageTitle，landing 不在 PAGE_TITLE_KEY 中
+check('首页不重复显示中间标题（PAGE_TITLE_KEY 无 landing）', !/PAGE_TITLE_KEY[\s\S]{0,120}landing:/.test(tabSrc) && tabSrc.includes('PAGE_TITLE_KEY'));
 // App 侧预留防遮挡间距
 check('常驻页面预留底栏防遮挡间距', appSrc.includes('pb-[calc(56px+env(safe-area-inset-bottom))] md:pb-0'));
 
@@ -128,6 +130,19 @@ check('paper = 燕麦羊皮纸 #F9F8F6', twSrc.includes('#F9F8F6'));
 check('旧浅蓝白 #F0F9FF 已清除', !twSrc.includes('#F0F9FF'));
 check('colors.ts deepSea 同步 #1D3557', CHART_COLORS.deepSea === '#1D3557');
 check('colors.ts coral 同步 #C96A52', CHART_COLORS.coral === '#C96A52');
+// 第十七轮：现代无衬线 + 加深文字色阶
+check('ink = 深炭灰 #272B33（一级正文）', twSrc.includes("DEFAULT: '#272B33'") && twSrc.includes('#272B33'));
+check('ink-soft = 中深灰 #525866（次级/法律链接）', twSrc.includes("soft: '#525866'"));
+check('旧发灰 ink #1F2421 已清除', !twSrc.includes('#1F2421') && !twSrc.includes('#1f2421'));
+check('旧发灰 ink-soft #6B6F6C 已清除', !twSrc.includes('#6B6F6C') && !twSrc.includes('#6b6f6c'));
+check('colors.ts ink 同步 #272B33', CHART_COLORS.ink === '#272B33');
+check('colors.ts inkSoft 同步 #525866', CHART_COLORS.inkSoft === '#525866');
+const cssSrc17 = read('src/index.css');
+check('正文主字体为 Noto Sans SC（index.css）', cssSrc17.includes('"Noto Sans SC Variable"'));
+check('正文默认字重 medium（450）', /font-weight:\s*450/.test(cssSrc17));
+check('tailwind display/heading 改用 Noto Sans SC', /display:\s*\[[\s\S]{0,80}Noto Sans SC Variable/.test(twSrc) && /heading:\s*\[[\s\S]{0,80}Noto Sans SC Variable/.test(twSrc));
+check('衬线字体 Fraunces/Newsreader 已移除', !twSrc.includes('Fraunces') && !twSrc.includes('Newsreader'));
+check('自托管 Noto Sans SC 已接入（index.tsx）', read('src/index.tsx').includes("@fontsource-variable/noto-sans-sc"));
 // 全源码旧色清零（含第十一轮天空蓝白 + 更早海洋蓝白两代残留）
 let staleHits = 0;
 function walk(dir: string): void {

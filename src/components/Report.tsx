@@ -93,7 +93,7 @@ export default function Report({ result, onRestart, isDemo = false, onStartQuiz,
         <div className="mx-auto flex max-w-almanac items-center justify-between px-6 py-5 md:px-10">
           <div className="flex items-center gap-2.5">
             <CompassMark size={26} />
-            <span className="font-display text-[15px] font-bold tracking-wide">{t('landing.hero.title')}</span>
+            <span className="font-display text-[15px] font-semibold tracking-wide">{t('landing.hero.title')}</span>
           </div>
           <p className="font-mono text-[10px] uppercase tracking-eyebrow text-ink-soft">
             your report
@@ -127,7 +127,7 @@ export default function Report({ result, onRestart, isDemo = false, onStartQuiz,
               >
                 {result.typeCode}
               </motion.h1>
-              <p className="mt-4 font-heading text-xl font-bold text-paper/85">
+              <p className="mt-4 font-heading text-xl font-semibold text-paper/85">
                 {hasProfile ? t(`type.${result.typeCode}.name`) : ''} · {hasProfile ? t(`type.${result.typeCode}.motto`) : ''}
               </p>
             </div>
@@ -208,7 +208,7 @@ export default function Report({ result, onRestart, isDemo = false, onStartQuiz,
       {/* 雷达图 */}
       <section className="mx-auto max-w-almanac px-6 py-14 md:px-10 md:py-20">
         <p className="eyebrow mb-3">dimension compare</p>
-        <h2 className="mb-2 font-display text-2xl font-bold tracking-tight md:text-3xl">
+        <h2 className="mb-2 font-display text-2xl font-semibold tracking-tight md:text-3xl">
           {t('rep.radar.title')}
         </h2>
         <p className="mb-10 text-[13px] text-ink-soft">
@@ -241,7 +241,7 @@ export default function Report({ result, onRestart, isDemo = false, onStartQuiz,
       {/* Top 5 卡片 */}
       <section className="mx-auto max-w-almanac px-6 pb-16 md:px-10 md:pb-24">
         <p className="eyebrow mb-3">your top 5</p>
-        <h2 className="mb-10 font-display text-2xl font-bold tracking-tight md:text-3xl">{t('report.top5')}</h2>
+        <h2 className="mb-10 font-display text-2xl font-semibold tracking-tight md:text-3xl">{t('report.top5')}</h2>
         <div className="space-y-5">
           {result.matches.map((m, i) => (
             <CityCard key={m.city.id} match={m} rank={i + 1} onOpenTax={onOpenTax} />
@@ -270,7 +270,7 @@ export default function Report({ result, onRestart, isDemo = false, onStartQuiz,
         <section className="border-y border-clay/40 bg-clay/[0.07]">
           <div className="mx-auto flex max-w-almanac flex-col items-center justify-between gap-5 px-6 py-9 text-center md:flex-row md:px-10 md:text-left">
             <div>
-              <p className="font-heading text-lg font-bold text-ink">
+              <p className="font-heading text-lg font-semibold text-ink">
                 {t('rep.demo.cta1')}
               </p>
               <p className="mt-1 text-[13px] text-ink-soft">
@@ -288,7 +288,7 @@ export default function Report({ result, onRestart, isDemo = false, onStartQuiz,
       {/* 操作区 */}
       <section className="border-t hairline bg-paper-deep/60">
         <div className="mx-auto flex max-w-almanac flex-col items-center gap-5 px-6 py-14 text-center md:px-10">
-          <h2 className="font-display text-2xl font-bold tracking-tight md:text-3xl">{t('report.copy.title')}</h2>
+          <h2 className="font-display text-2xl font-semibold tracking-tight md:text-3xl">{t('report.copy.title')}</h2>
           <p className="max-w-md text-[13.5px] leading-relaxed text-ink-soft">
             {t('rep.cta.copyHint')}
           </p>
@@ -433,7 +433,7 @@ function CityCard({ match, rank, onOpenTax }: CityCardProps) {
               {t('rep.overBudget.chip')}
             </span>
           ) : null}
-          <h3 className="mt-4 font-display text-[26px] font-bold leading-tight tracking-tight">
+          <h3 className="mt-4 font-display text-[26px] font-semibold leading-tight tracking-tight">
             {cityName(city)}
           </h3>
           <p className="mt-1 font-mono text-[10.5px] uppercase tracking-wide text-ink-soft">

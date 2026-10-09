@@ -103,8 +103,8 @@ export default function CompassRadar({
             textAnchor={anchor}
             dominantBaseline="middle"
             fontSize={size >= 150 ? 9.5 : 8.5}
-            fill={d.value == null ? '#9CA3AF' : '#6B6F6C'}
-            fontFamily="'Manrope Variable', system-ui, sans-serif"
+            fill={d.value == null ? '#9CA3AF' : '#525866'}
+            fontFamily="'Noto Sans SC Variable', system-ui, sans-serif"
           >
             {d.value == null ? `${t(d.label)} —` : t(d.label)}
           </text>

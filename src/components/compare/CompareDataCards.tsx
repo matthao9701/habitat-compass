@@ -69,13 +69,13 @@ export default function CompareDataCards({ rows }: { rows: CompareRow[] }) {
     <section className="border-t hairline">
       <div className="mx-auto max-w-almanac px-6 py-12 md:px-10">
         <p className="eyebrow">{t('cd.section.eyebrow')}</p>
-        <h2 className="mt-2 font-display text-[22px] font-bold tracking-tight md:text-[26px]">{t('cd.section.title')}</h2>
+        <h2 className="mt-2 font-display text-[22px] font-semibold tracking-tight md:text-[26px]">{t('cd.section.title')}</h2>
 
         <div className="mt-8 grid gap-8 lg:grid-cols-2">
           {/* 生活成本对比卡 */}
           <div className="card-paper min-w-0 p-5 md:p-7">
             <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
-              <h3 className="font-heading text-[16px] font-bold">{t('cd.cost.title')}</h3>
+              <h3 className="font-heading text-[16px] font-semibold">{t('cd.cost.title')}</h3>
               <div className="flex min-w-0 flex-wrap gap-2">
                 {([0, 1] as const).map((slot) => (
                   <select
@@ -126,7 +126,7 @@ export default function CompareDataCards({ rows }: { rows: CompareRow[] }) {
 
           {/* 公开数据对比表 */}
           <div className="card-paper min-w-0 p-5 md:p-7">
-            <h3 className="font-heading text-[16px] font-bold">{t('cd.table.title')}</h3>
+            <h3 className="font-heading text-[16px] font-semibold">{t('cd.table.title')}</h3>
             <div className="mt-4 overflow-x-auto">
               <table className="w-full min-w-[360px] border-collapse">
                 <thead>
@@ -210,7 +210,7 @@ function CountryCompareTable({ rows }: { rows: CompareRow[] }) {
 
   return (
     <div className="card-paper mt-8 min-w-0 p-5 md:p-7">
-      <h3 className="font-heading text-[16px] font-bold">{t('cty.section')}</h3>
+      <h3 className="font-heading text-[16px] font-semibold">{t('cty.section')}</h3>
       <p className="mt-1 text-[12px] text-ink-soft">
         {t('cty.sectionNote')}
       </p>
