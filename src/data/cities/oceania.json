@@ -682,8 +682,11 @@
     "region": "oceania",
     "population": 153075,
     "timezone": "Australia/Brisbane",
-    "cost": null,
-    "monthlyCostUSD": null,
+    "cost": [
+      2451,
+      3460
+    ],
+    "monthlyCostUSD": 2883,
     "livingScore": 75.7,
     "housingLevel": 1440.67,
     "mealUSD": 17.36,
@@ -975,8 +978,11 @@
     "region": "oceania",
     "population": 77366,
     "timezone": "Pacific/Fiji",
-    "cost": null,
-    "monthlyCostUSD": null,
+    "cost": [
+      1098,
+      1550
+    ],
+    "monthlyCostUSD": 1292,
     "livingScore": 35.8,
     "housingLevel": 886.42,
     "mealUSD": 5.78,

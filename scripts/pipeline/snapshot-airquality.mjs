@@ -68,8 +68,12 @@ function main() {
     marrakech: [31.6295, -7.9811], // Marrakesh
   };
   const coord = new Map();
-  const sel = JSON.parse(fs.readFileSync('/tmp/pipeline/selection2.json', 'utf8'));
-  for (const s of sel.cities ?? sel) coord.set(s.id, [s.lat, s.lng]);
+  for (const f of ['selection2.json', 'selection3.json']) {
+    const p = `/tmp/pipeline/${f}`;
+    if (!fs.existsSync(p)) continue;
+    const sel = JSON.parse(fs.readFileSync(p, 'utf8'));
+    for (const s of sel.cities ?? sel) coord.set(s.id, [s.lat, s.lng]);
+  }
   const fold = (s) =>
     s
       .toLowerCase()
@@ -118,7 +122,13 @@ function main() {
         city.airQuality = { pm25, band: bandOf(pm25), period: PERIOD };
         n++;
         if (n % 20 === 0) {
-          for (const r of REGIONS) fs.writeFileSync(path.join(ROOT, `${r}.json`), JSON.stringify(files[r], null, 1));
+          for (const r of REGIONS) {
+            const file = path.join(ROOT, `${r}.json`);
+            const orig = fs.readFileSync(file, 'utf8');
+            const indent = (orig.match(/\[\n( +)\{/) || [])[1]?.length ?? 1;
+            const nl = orig.endsWith('\n') ? '\n' : '';
+            fs.writeFileSync(file, JSON.stringify(files[r], null, indent) + nl);
+          }
           console.log(`  progress ${n}/${queue.length}`);
         }
       } catch (e) {
@@ -126,7 +136,13 @@ function main() {
       }
       await sleep(400); // Open-Meteo 免费档 600 req/min，400ms 足够保守
     }
-    for (const r of REGIONS) fs.writeFileSync(path.join(ROOT, `${r}.json`), JSON.stringify(files[r], null, 1));
+    for (const r of REGIONS) {
+      const file = path.join(ROOT, `${r}.json`);
+      const orig = fs.readFileSync(file, 'utf8');
+      const indent = (orig.match(/\[\n( +)\{/) || [])[1]?.length ?? 1;
+      const nl = orig.endsWith('\n') ? '\n' : '';
+      fs.writeFileSync(file, JSON.stringify(files[r], null, indent) + nl);
+    }
     console.log(`空气管道完成：本轮新增 ${n}/${queue.length}`);
   })();
 }

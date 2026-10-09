@@ -3,7 +3,7 @@
 > 本文档仅描述数据字段含义、聚合与派生方法、更新频率与免责声明。
 > 所有城市级与国家级统计指标均来自「官方开放数据（Open Data）与公开统计测算」，快照日期见各数据卡与字段来源标注；本站不转载任何来源的原始数据库文件。
 
-## 一、城市级字段口径（`src/data/cities/*.json`，200 城 / 六洲）
+## 一、城市级字段口径（`src/data/cities/*.json`，240 城 / 六洲）
 
 | 字段 | 含义 | 口径与聚合方法 |
 | --- | --- | --- |
@@ -57,7 +57,27 @@
 - 取数优先级：`livingScore` ← 成本榜 col 列 → 生活质量榜 col 列 → 详情页「较纽约低 X%」反推；`safety` ← 生活质量榜 → `100 − 犯罪指数`；六指数 ← 生活质量榜对应列（`healthcareIndex`/`pollutionIndex` 退而取医疗/污染榜首列）；`housingLevel`/`mealUSD` ← 城市详情页一居室租金 / 一餐价（USD）。
 - 结果：196 个字段由 null 补为数值（`housingLevel` 51 / `mealUSD` 52 / `purchasingPowerIndex` 44 / `safety` 20 / `pollutionIndex` 12 / `healthcareIndex` 9 / `livingScore` 6 / `trafficIndex` 1 / `climateIndex` 1）；仍为 null 的字段是因源站榜单/详情页确无该城条目（如部分亚洲、南美中小城）。
 
-## 六、候选补充数据源（已调研，未接入）
+## 六、第十一轮扩容（方案A·质量优先，200 → 240 城）
+
+在主库扩 40 座新城，全部满足「质量优先」双重准入：
+
+- **国家库内**：40 城全部落在既有 65 国范围内（`CountryCard` 可关联，无需新增国家）。
+- **双榜在列**：全部同时出现在公开统计「生活成本榜 ∩ 生活质量榜」，六指数 + `livingScore` 可取，无「孤城缺维」。
+- **大洲分布**：欧洲 +19 / 亚洲 +11 / 北美 +6 / 南美 +4。
+
+流程（与既有 selection→assemble 同口径，只增不改）：
+
+- 选城：`scripts/pipeline/selection3.mjs`（GeoNames cities15000 匹配坐标/人口/时区，输出 `/tmp/pipeline/selection3.json`）。
+- 气候：`node scripts/pipeline/fetch-climate.mjs /tmp/pipeline/selection3.json`（Open-Meteo，增量）。
+- 成本明细：`node scripts/pipeline/fetch-stat-jina.mjs details <新 40 城 id>`（读取代理，USD 币种校验，拒绝 `Mex$`/`R$` 等本地币种页）。
+- 结构装配：`node scripts/pipeline/assemble-v3.mjs`（追加结构字段，指数/价格留空）。
+- 指数与价格：`node scripts/pipeline/backfill-indices.mjs --write`（与既有 200 城同优先级规则统一填充）。
+- 成本区间：`node scripts/pipeline/fill-cost.mjs`（沿用 39 旧城最小二乘 `≈39.9x−135.5` 拟合 `monthlyCostUSD` 与 `cost`）。
+- 空气质量：`node scripts/pipeline/snapshot-airquality.mjs`（增量，坐标源自 selection2/3）。
+
+> 说明：`monthlyCostUSD`/`cost` 的值随拟合样本扩充重算，仅作用于**原先为 null 的城**（旧城已存值不动）；`-` 表示该城详情页非 USD 币种或无独立页，`housingLevel`/`mealUSD` 保持 null。
+
+## 七、候选补充数据源（已调研，未接入）
 
 为未来扩城或补维做过一轮公开数据源调研；下列源许可友好（CC BY / 开放），但或口径与现有 NYC=100 体系不兼容、或需人工映射，**本轮未接入**，仅备录：
 
@@ -68,12 +88,13 @@
 
 > 上述源的名称仅出现于本文档，未进入 `src/`、构建产物或站内任何页面。
 
-## 七、再生成流程（全量重跑）
+## 八、再生成流程（全量重跑）
 
 ```bash
 # 1. 选城底座（GeoNames 匹配）
 node scripts/pipeline/selection.mjs
 node scripts/pipeline/selection2.mjs
+node scripts/pipeline/selection3.mjs
 # 2. 公开统计指数 + 成本明细（限速友好，支持增量）
 node scripts/pipeline/fetch-cost.mjs
 node scripts/pipeline/fetch-cost.mjs --details
@@ -83,11 +104,14 @@ node scripts/pipeline/fetch-stat-jina.mjs details <cityId...>
 node scripts/pipeline/backfill-indices.mjs --write
 # 3. Open-Meteo 气候（增量）
 node scripts/pipeline/fetch-climate.mjs
+node scripts/pipeline/fetch-climate.mjs /tmp/pipeline/selection3.json
 # 4. 公开英语能力排名
 node scripts/pipeline/fetch-efepi.mjs
 # 5. 装配 6 大洲 JSON（拟合 / region 拆分 / 旧城富化）
 node scripts/pipeline/assemble.mjs
 node scripts/pipeline/assemble-v2.mjs
+node scripts/pipeline/assemble-v3.mjs
+node scripts/pipeline/fill-cost.mjs
 # 6. 国家级与快照回填
 node scripts/pipeline/fetch-country.mjs
 node scripts/pipeline/snapshot-gpispeed.mjs
@@ -100,13 +124,13 @@ pnpm tsx scripts/verify-country-v3.ts
 
 > 注：`verify-data-v2.ts` 强制比对的两份中间产物 `climate.json` / `selection2.json` 位于 `/tmp/pipeline/`（会话级，不在版本库）；如缺失需先跑第 1、3 步再生成。
 
-## 八、题库出处（仅保留许可要求的低调署名）
+## 九、题库出处（仅保留许可要求的低调署名）
 
 - 简易版人格问卷：OEJTS 1.2 结构，CC BY-NC-SA 4.0（署名保留于站内方法论页）。
 - 标准版人格题库：IPIP（International Personality Item Pool，Goldberg, 1999）公有领域，可自由复制、编辑、翻译与商用。
 - 职业兴趣框架：O*NET Interest Profiler Short Form，CC BY 4.0（署名保留于站内方法论页页底一行）。
 
-## 九、免责声明
+## 十、免责声明
 
 - 全站数据为公开来源快照，可能过时；仅供参考，不构成移民、签证、居留、法律、税务、医疗、保险、财务或投资建议。
 - 重大决策前请咨询当地专业机构并核实官方渠道。

@@ -1,5 +1,5 @@
 // ABOUTME: 第十二轮 SEO/GEO 基建——构建后静态落地页生成器
-// ABOUTME: 200 城 + 65 国 + 索引页 + 方法论页（zh/en）+ robots.txt + llms.txt + sitemap.xml + 404
+// ABOUTME: 240 城 + 65 国 + 索引页 + 方法论页（zh/en）+ robots.txt + llms.txt + sitemap.xml + 404
 // 运行时机：vite build 之后（产物写入 dist/）。用 tsx 运行以便直接复用 src/i18n 的英译表。
 // 数据来源：src/data/cities/*.json 与 src/data/countries.json（null 不编造）
 import fs from 'node:fs';
@@ -583,13 +583,13 @@ ${faqs.map((f) => `<details><summary>${esc(f.q)}</summary><p>${esc(f.a)}</p></de
 // ---------- 索引页 ----------
 // 英文本地化首页（sitemap 一直声明 /en/，此前缺文件 → 404；现补齐精简英文版）
 function renderEnHome() {
-  const title = 'Habitat Compass — Where should you live next? 200 city guides for remote workers';
-  const desc = 'Free personality & lifestyle quiz that scores 200 cities across cost, safety, climate, internet and visa friendliness — with per-item sources and dates.';
+  const title = `Habitat Compass — Where should you live next? ${CITIES.length} city guides for remote workers`;
+  const desc = `Free personality & lifestyle quiz that scores ${CITIES.length} cities across cost, safety, climate, internet and visa friendliness — with per-item sources and dates.`;
   const body = `
 <h1>Habitat Compass</h1>
 <p class="sub">A decision-support tool for remote workers, freelancers and digital nomads. Take a free personality &amp; lifestyle quiz, get a weighted score for every city in the library, and compare your shortlist.</p>
 <div class="grid">
-  <div class="card"><div class="k">City library</div><div class="v">200 cities</div><div class="meta"><a href="/en/cities/">Browse city guides</a> · cost, safety, climate, internet, air quality &amp; visa overview with sources</div></div>
+  <div class="card"><div class="k">City library</div><div class="v">${CITIES.length} cities</div><div class="meta"><a href="/en/cities/">Browse city guides</a> · cost, safety, climate, internet, air quality &amp; visa overview with sources</div></div>
   <div class="card"><div class="k">Country library</div><div class="v">65 countries</div><div class="meta"><a href="/en/countries/">Browse country pages</a> · GPI, HDI, connectivity &amp; long-stay notes</div></div>
   <div class="card"><div class="k">How scoring works</div><div class="v">3 tiers, 11 dimensions</div><div class="meta"><a href="/en/methodology/">Methodology</a> · weights, data licences &amp; update cadence</div></div>
   <div class="card"><div class="k">Tax planner</div><div class="v">65 regimes · 29 brackets</div><div class="meta"><a href="/en/tax-calculator/">Tax calculator</a> · progressive bracket engine for 29 countries, 65-country regime classification, net income vs a high-tax baseline</div></div>
@@ -619,8 +619,8 @@ function renderCitiesIndex(lang) {  const pathZh = '/cities/', pathEn = '/en/cit
   const hreflang = { zh: page(pathZh), en: page(pathEn) };
   const canonical = lang === 'zh' ? hreflang.zh : hreflang.en;
   const byRegion = CONTINENTS.map((r) => ({ r, cities: CITIES.filter((c) => c.continent === r) }));
-  const title = lang === 'zh' ? `200 座城市定居资料库（六洲覆盖）| 栖居罗盘` : `200 City Guides for Digital Nomads (6 continents) | Habitat Compass`;
-  const desc = lang === 'zh' ? '按大洲浏览 200 座城市的数字游民定居数据：生活成本、安全、气候、网速、空气质量与签证概览，逐项标注来源。' : 'Browse 200 city guides across 6 continents: cost, safety, climate, internet, air quality and visa overview with per-item sources.';
+  const title = lang === 'zh' ? `${CITIES.length} 座城市定居资料库（六洲覆盖）| 栖居罗盘` : `${CITIES.length} City Guides for Digital Nomads (6 continents) | Habitat Compass`;
+  const desc = lang === 'zh' ? `按大洲浏览 ${CITIES.length} 座城市的数字游民定居数据：生活成本、安全、气候、网速、空气质量与签证概览，逐项标注来源。` : `Browse ${CITIES.length} city guides across 6 continents: cost, safety, climate, internet, air quality and visa overview with per-item sources.`;
   const body = `
 <h1>${lang === 'zh' ? '城市资料库' : 'City guides'}<span class="badge">${CITIES.length} ${lang === 'zh' ? '座城市' : 'cities'} · 6 ${lang === 'zh' ? '大洲' : 'continents'}</span></h1>
 <p class="sub">${lang === 'zh' ? '每城一页：直答摘要 + 成本/安全/气候/网速/空气/签证数据卡（来源与日期逐项标注）+ FAQ。' : 'One page per city: answer-first summary + data cards (sources & dates) + FAQ.'}</p>
@@ -861,7 +861,7 @@ function renderTaxPage(lang) {
 
   const body = `
 <p class="crumbs">${crumbs.map((c, i) => i === crumbs.length - 1 ? esc(c.name) : `<a href="${esc(c.item)}">${esc(c.name)}</a> ›`).join(' ')}</p>
-<h1>${lang === 'zh' ? '数字游民税负测算' : 'Digital nomad tax calculator'}<span class="badge">${rows.length} ${lang === 'zh' ? '国税制' : 'countries'} · 200 ${lang === 'zh' ? '城' : 'cities'}</span></h1>
+<h1>${lang === 'zh' ? '数字游民税负测算' : 'Digital nomad tax calculator'}<span class="badge">${rows.length} ${lang === 'zh' ? '国税制' : 'countries'} · ${CITIES.length} ${lang === 'zh' ? '城' : 'cities'}</span></h1>
 <p class="sub">${lang === 'zh' ? `分级税率引擎（V2）：${bRows.length} 国按本币累进级距逐档计算，其余国家按规则字典粗颗粒估算，仅作方向性对比，不构成税务建议。` : `Progressive bracket engine (V2): ${bRows.length} countries computed band by band in local currency, others via a coarse rule-dictionary approximation — directional comparison only, not tax advice.`}</p>
 <div class="answer"><p>${lang === 'zh'
     ? `税负是数字游民、远程工作者与跨境定居者的核心成本之一，但不同场景差异巨大：同样的年收入，在免税型目的地与高税负辖区之间的税后净收入可能相差数万美元。本页用「分级税率引擎」处理已录入数据的 ${bRows.length} 国：按其本币年应纳税所得额逐档累加，叠加面向数字游民/新居民的特惠税制（如泰国 LTR 17%、西班牙贝克汉姆法案 24%、格鲁吉亚小企业 1%、葡萄牙 IFICI 20%、克罗地亚游民免税等），其余 65 国中的其他国家按四类税制（免税型 / 属地征税型 / 专项优惠型 / 常规税制型）粗颗粒近似。所有税率数字均为公开事实，不依赖任何第三方付费聚合 API。`
@@ -1175,7 +1175,7 @@ const LEGAL_TERMS = {
         '"你"指任何使用本站的个人或主体；若你代表某一主体使用本站，你声明并保证已获授权代表其接受本协议。',
       ] },
       { h: '二、服务描述', ps: [
-        '栖居罗盘为数字游民、自由职业者与远程工作者提供海外城市定居的<strong>决策辅助</strong>：基于你的偏好作答与公开数据快照，对库内 200 座城市加权打分并生成报告。',
+        '栖居罗盘为数字游民、自由职业者与远程工作者提供海外城市定居的<strong>决策辅助</strong>：基于你的偏好作答与公开数据快照，对库内 ${CITIES.length} 座城市加权打分并生成报告。',
         '本站的核心测评（32 项人格量表 + 8 道情景题，另含 16 个兴趣标签）、可选的深度测评、城市对比与税负测算等功能，全部<strong>无需付费</strong>，也<strong>无需注册账号</strong>；不提供订阅、虚拟商品或任何形式的交易。',
         '本站无账号体系，因此不存在"账户安全"义务；你的全部数据仅存于你自己的浏览器（详见<a href="/privacy/">《隐私政策》</a>）。',
       ] },
@@ -1251,7 +1251,7 @@ const LEGAL_TERMS = {
         '"You" means any individual or entity using the site; if you use the site on behalf of an entity, you represent and warrant that you are authorised to accept these Terms on its behalf.',
       ] },
       { h: '2. Service description', ps: [
-        'Habitat Compass provides <strong>decision support</strong> for digital nomads, freelancers and remote workers settling abroad: it scores the 200 cities in its library against your stated preferences and public data snapshots, and generates a report.',
+        'Habitat Compass provides <strong>decision support</strong> for digital nomads, freelancers and remote workers settling abroad: it scores the ${CITIES.length} cities in its library against your stated preferences and public data snapshots, and generates a report.',
         'The core assessment (a 32-item personality scale plus 8 scenario questions, with 16 interest tags), the optional in-depth assessment, city comparison and the tax planner are entirely <strong>free of charge</strong> and require <strong>no account</strong>. There are no subscriptions, virtual goods or transactions of any kind.',
         'The site has no account system, so there is no "account security" duty; all your data stays in your own browser (see the <a href="/en/privacy/">Privacy Policy</a>).',
       ] },
@@ -1452,14 +1452,14 @@ ${crossLink}`;
 // 因主应用无 URL 路由（纯状态驱动），无需 SPA fallback。
 function renderNotFound() {
   const title = '404 · 页面不存在 | 栖居罗盘';
-  const desc = '你要找的页面不存在或已移动。返回首页重新开始，或浏览 200 座城市与 65 国定居指南。';
+  const desc = '你要找的页面不存在或已移动。返回首页重新开始，或浏览 ${CITIES.length} 座城市与 65 国定居指南。';
   const body = `
 <h1>404<span class="badge">页面不存在 / Page not found</span></h1>
 <p class="sub">你要找的页面不存在或已移动。The page you requested does not exist or has moved.</p>
 <div class="answer"><p>不妨从这些入口重新开始：<br>Start again from one of these:</p></div>
 <div class="grid">
   <div class="card"><div class="v" style="font-size:18px"><a href="/" style="color:var(--pine);text-decoration:none">首页 / 测评 Home &amp; quiz →</a></div></div>
-  <div class="card"><div class="v" style="font-size:18px"><a href="/cities/" style="color:var(--pine);text-decoration:none">城市索引 200 Cities →</a></div></div>
+  <div class="card"><div class="v" style="font-size:18px"><a href="/cities/" style="color:var(--pine);text-decoration:none">城市索引 ${CITIES.length} Cities →</a></div></div>
   <div class="card"><div class="v" style="font-size:18px"><a href="/countries/" style="color:var(--pine);text-decoration:none">国家索引 65 Countries →</a></div></div>
   <div class="card"><div class="v" style="font-size:18px"><a href="/en/" style="color:var(--pine);text-decoration:none">English home →</a></div></div>
 </div>`;
@@ -1520,14 +1520,14 @@ function main() {
   // llms.txt
   const llms = `# 栖居罗盘 · Habitat Compass
 
-> 面向数字游民、自由职业者与远程工作者的海外城市定居决策工具。200 座城市（六洲）+ 65 国参考数据；三层匹配引擎：硬约束过滤（预算/签证/安全）→ 核心匹配（偏好 42% + 人格 30% + 兴趣 18%，11 维）→ 加分项（RIASEC/风险联动/空气质量 ≤10%）。评分 0–99，缺失维度降权不惩罚，数据逐项标注来源。
+> 面向数字游民、自由职业者与远程工作者的海外城市定居决策工具。${CITIES.length} 座城市（六洲）+ 65 国参考数据；三层匹配引擎：硬约束过滤（预算/签证/安全）→ 核心匹配（偏好 42% + 人格 30% + 兴趣 18%，11 维）→ 加分项（RIASEC/风险联动/空气质量 ≤10%）。评分 0–99，缺失维度降权不惩罚，数据逐项标注来源。
 > 核心测评（32 项人格量表 + 8 道情景题 + 16 个兴趣标签）免费、无需注册；可选的深度测评（IPIP-NEO 120 题 Big Five + RIASEC）与分级税负测算同样免费。
 > 分级税负引擎（V2）：29 国按本币累进级距逐档测算，另含面向数字游民的特惠税制（泰国 LTR 17%、西班牙贝克汉姆法案 24%、格鲁吉亚 1%、葡萄牙 IFICI 20%、阿联酋/马来西亚/克罗地亚免税等），税率均为公开事实，不依赖任何付费聚合 API。
 
 ## 主要页面
 - [首页 / 测评](${page('/')})
 - [匹配方法论](${page('/methodology/')})
-- [城市索引（200）](${page('/cities/')})
+- [城市索引（${CITIES.length}）](${page('/cities/')})
 - [国家索引（65）](${page('/countries/')})
 - [税负测算 / Tax planner（65 国税制分类 + 29 国分级税率引擎）](${page('/tax-calculator/')})
 

@@ -324,8 +324,11 @@
   "region": "africa",
   "population": 155226,
   "timezone": "Indian/Mauritius",
-  "cost": null,
-  "monthlyCostUSD": null,
+  "cost": [
+   1129,
+   1594
+  ],
+  "monthlyCostUSD": 1328,
   "livingScore": 36.7,
   "housingLevel": 476.29,
   "mealUSD": 5.79,

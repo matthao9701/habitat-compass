@@ -168,7 +168,7 @@ export default function Landing({ onStart, onDemo }: LandingProps) {
       <section className="border-y border-line">
         <div className="mx-auto grid max-w-almanac grid-cols-2 divide-x divide-line px-0 md:grid-cols-4">
           {[
-            ['200', t('landing.stat.cities')],
+            [String(cities.length), t('landing.stat.cities')],
             ['6', t('landing.stat.continents')],
             ['65', t('landing.stat.dataFiles')],
             ['0', t('landing.stat.threshold')],

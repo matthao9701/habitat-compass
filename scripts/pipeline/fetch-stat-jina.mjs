@@ -113,12 +113,13 @@ function slugCandidates(id, countryCode) {
   return [...new Set(list)];
 }
 
-/** 从详情页抽取「一餐/一居租金」的美元值；非 $ 视为非 USD（源站存在忽略币种的陈旧页） */
+/** 从详情页抽取「一餐/一居租金」的美元值；仅接受裸 `$`（拒绝 Mex$/R$/HK$ 等本地币种前缀） */
 function pickUSD(txt, label) {
   const i = txt.indexOf(label);
   if (i === -1) return null;
   const seg = txt.slice(i, i + 160);
-  const m = seg.match(/\$\s*([\d,]+(?:\.\d+)?)/);
+  // 前置字符为字母/其他货币符号的 `$`（如 Mex$、R$）视为非 USD
+  const m = seg.match(/(?:^|[^\w$])\$\s*([\d,]+(?:\.\d+)?)/);
   return m ? Number(m[1].replace(/,/g, '')) : null;
 }
 
@@ -130,6 +131,12 @@ async function details(ids) {
   const cc = {};
   for (const r of regions) {
     for (const c of JSON.parse(fs.readFileSync(`src/data/cities/${r}.json`, 'utf8'))) cc[c.id] = c.countryCode;
+  }
+  // 扩容城尚未入库：从选城底座补 countryCode（消歧 slug 兜底用）
+  for (const f of ['selection2.json', 'selection3.json']) {
+    const p = path.join(OUT, f);
+    if (!fs.existsSync(p)) continue;
+    for (const s of JSON.parse(fs.readFileSync(p, 'utf8'))) cc[s.id] = s.iso2;
   }
   for (const id of ids) {
     if (cache[id] && cache[id].mealUSD != null) continue;

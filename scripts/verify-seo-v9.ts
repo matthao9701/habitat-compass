@@ -49,19 +49,19 @@ function jsonLdBlocks(html: string): unknown[] {
   return out;
 }
 
-console.log('\n=== 1. 生成完整性（265+ 页 ×2 语言）===');
+console.log('\n=== 1. 生成完整性（每城 ×2 语言 + 国家页 + 索引）===');
 const cityDirs = fs.existsSync(path.join(DIST, 'city')) ? fs.readdirSync(path.join(DIST, 'city')) : [];
 const enCityDirs = fs.existsSync(path.join(DIST, 'en/city')) ? fs.readdirSync(path.join(DIST, 'en/city')) : [];
 const countryDirs = fs.existsSync(path.join(DIST, 'country')) ? fs.readdirSync(path.join(DIST, 'country')) : [];
 const enCountryDirs = fs.existsSync(path.join(DIST, 'en/country')) ? fs.readdirSync(path.join(DIST, 'en/country')) : [];
-check(`城市页 200（实 ${cityDirs.length}）`, cityDirs.length === 200);
-check(`城市页 EN 200（实 ${enCityDirs.length}）`, enCityDirs.length === 200);
+check(`城市页 ${CITIES.length}（实 ${cityDirs.length}）`, cityDirs.length === CITIES.length);
+check(`城市页 EN ${CITIES.length}（实 ${enCityDirs.length}）`, enCityDirs.length === CITIES.length);
 check(`国家页 65（实 ${countryDirs.length}）`, countryDirs.length === 65);
 check(`国家页 EN 65（实 ${enCountryDirs.length}）`, enCountryDirs.length === 65);
 check('索引页 ×4（cities/countries zh+en）', ['cities/index.html', 'en/cities/index.html', 'countries/index.html', 'en/countries/index.html'].every((p) => read(p) !== null));
 check('方法论页 ×2', read('methodology/index.html') !== null && read('en/methodology/index.html') !== null);
 
-console.log('\n=== 2. 城市页内容要素（全量 200）===');
+console.log(`\n=== 2. 城市页内容要素（全量 ${CITIES.length}）===`);
 let cityOk = 0;
 const cityMiss: string[] = [];
 for (const c of CITIES) {
@@ -81,7 +81,7 @@ for (const c of CITIES) {
   if (ok) cityOk++;
   else cityMiss.push(c.id);
 }
-check(`200 城页要素齐全（通过 ${cityOk}/200）`, cityOk === 200, cityMiss.slice(0, 5).join(','));
+check(`${CITIES.length} 城页要素齐全（通过 ${cityOk}/${CITIES.length}）`, cityOk === CITIES.length, cityMiss.slice(0, 5).join(','));
 
 let enCityOk = 0;
 const enCityMiss: string[] = [];
@@ -95,7 +95,7 @@ for (const c of CITIES) {
   if (ok) enCityOk++;
   else enCityMiss.push(c.id);
 }
-check(`200 城页 EN meta+直答（通过 ${enCityOk}/200）`, enCityOk === 200, enCityMiss.slice(0, 5).join(','));
+check(`${CITIES.length} 城页 EN meta+直答（通过 ${enCityOk}/${CITIES.length}）`, enCityOk === CITIES.length, enCityMiss.slice(0, 5).join(','));
 
 console.log('\n=== 3. null 不编造 ===');
 const nullCostCities = CITIES.filter((c) => c.monthlyCostUSD == null);
@@ -127,7 +127,7 @@ check(`65 国页要素齐全（通过 ${coOk}/65）`, coOk === 65, coMiss.slice(
 
 console.log('\n=== 5. 索引页与方法论页 ===');
 const citiesIdx = read('cities/index.html') ?? '';
-check('城市索引含全部 200 城 zh 链接', CITIES.every((c) => citiesIdx.includes(`/city/${c.id}/`)));
+check(`城市索引含全部 ${CITIES.length} 城 zh 链接`, CITIES.every((c) => citiesIdx.includes(`/city/${c.id}/`)));
 check('城市索引按大洲分组', CONTINENTS.every(() => citiesIdx.includes('<h2>')));
 const countriesIdx = read('countries/index.html') ?? '';
 check('国家索引含全部 65 国 zh 链接', COUNTRIES.every((c) => countriesIdx.includes(`/country/${c.code.toLowerCase()}/`)));
@@ -169,11 +169,12 @@ check('robots.txt 含 Sitemap 指引', /Sitemap: https?:\/\//.test(robots));
 const llms = read('llms.txt') ?? '';
 check('llms.txt 以 H1 开头', llms.startsWith('# '));
 check('llms.txt 含方法论/索引链接', llms.includes('/methodology/') && llms.includes('/cities/') && llms.includes('/countries/'));
-check('llms.txt 含规模数据（200 城/65 国）', llms.includes('200') && llms.includes('65'));
+check(`llms.txt 含规模数据（${CITIES.length} 城/65 国）`, llms.includes(String(CITIES.length)) && llms.includes('65'));
 check('llms.txt 含引擎口径（三层权重）', llms.includes('42%') && llms.includes('30%') && llms.includes('18%'));
 const sitemap = read('sitemap.xml') ?? '';
 const urlCount = (sitemap.match(/<url>/g) ?? []).length;
-check(`sitemap URL ≥ 536（实 ${urlCount}）`, urlCount >= 536);
+const expectedMin = CITIES.length * 2 + COUNTRIES.length * 2 + 6;
+check(`sitemap URL ≥ ${expectedMin}（实 ${urlCount}）`, urlCount >= expectedMin);
 check('sitemap XML 声明与命名空间', sitemap.includes('<?xml version="1.0"') && sitemap.includes('xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"'));
 check('sitemap 含 zh 与 en 分区', sitemap.includes('/city/') && sitemap.includes('/en/city/') && sitemap.includes('/methodology/'));
 check('sitemap 全量城市覆盖', CITIES.every((c) => sitemap.includes(`/city/${c.id}/`) && sitemap.includes(`/en/city/${c.id}/`)));

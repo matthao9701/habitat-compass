@@ -1,5 +1,5 @@
 /**
- * 第十轮验证：引擎 v3 分层评分 + 空气质量 + 200 城扩容（verify-engine-v7）
+ * 第十一轮验证：引擎 v3 分层评分 + 空气质量 + 240 城扩容（verify-engine-v7）
  * 运行：pnpm tsx scripts/verify-engine-v7.ts
  */
 import fs from 'node:fs';
@@ -47,8 +47,8 @@ const all: City[] = REGIONS.flatMap((r) => JSON.parse(fs.readFileSync(`src/data/
 const byId = new Map(all.map((c) => [c.id, c]));
 
 // =========================================================================
-console.log('--- 第 1 节：200 城扩容 ---');
-ok(all.length === 200, `城市库总数 200（实际 ${all.length}）`);
+console.log('--- 第 1 节：240 城扩容 ---');
+ok(all.length === 240, `城市库总数 240（实际 ${all.length}）`);
 const byRegion: Record<string, number> = {};
 for (const c of all) byRegion[c.region] = (byRegion[c.region] ?? 0) + 1;
 console.log('   分布:', JSON.stringify(byRegion));
@@ -64,7 +64,7 @@ ok(noCountry.length === 0, `城市引用国家全部在 65 国库内（缺失 ${
 const oldCities = all.filter((c) => c.visaStatus != null);
 ok(oldCities.length === 39, `39 旧城 visaStatus 快照保留（实际 ${oldCities.length}）`);
 ok(oldCities.every((c) => c.traits != null), '39 旧城 traits 保留');
-// 新城 schema 完整性：全部 200 城关键字段存在（值允许 null）
+// 新城 schema 完整性：全部 240 城关键字段存在（值允许 null）
 const schemaOk = all.every(
   (c) =>
     typeof c.id === 'string' &&
@@ -74,9 +74,9 @@ const schemaOk = all.every(
     'climateDetail' in c &&
     Array.isArray(c.tags),
 );
-ok(schemaOk, '200 城 schema 完整（id/nameZh/countryCode/airQuality/climateDetail/tags）');
+ok(schemaOk, '240 城 schema 完整（id/nameZh/countryCode/airQuality/climateDetail/tags）');
 const ids = new Set(all.map((c) => c.id));
-ok(ids.size === 200, '城市 id 无重复');
+ok(ids.size === 240, '城市 id 无重复');
 
 // =========================================================================
 console.log('--- 第 2 节：引擎 v3 权重表 ---');
@@ -163,7 +163,7 @@ const withR = tagRepeats(withRiasecAnswers, { includeRiasec: true });
 ok(withR.size >= base.size, 'tagRepeats 全信号 ≥ 基线（参数化兼容）');
 
 // =========================================================================
-console.log('--- 第 4 节：双版本 assess 回归（200 城） ---');
+console.log('--- 第 4 节：双版本 assess 回归（240 城） ---');
 // lite：tier3 无信号
 const liteResult = assess(NEUTRAL_ANSWERS as unknown as UserAnswers, all);
 ok(liteResult.matches.every((m) => m.match >= 0 && m.match <= 99), `lite 匹配分值域 0-99（Top1 ${liteResult.matches[0]?.match}）`);

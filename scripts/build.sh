@@ -10,7 +10,7 @@ pnpm install --frozen-lockfile --prefer-offline
 echo "Building frontend with Vite..."
 pnpm vite build
 
-echo "Generating SEO landing pages (200 cities + 65 countries + indexes + methodology + robots/llms/sitemap + 404)..."
+echo "Generating SEO landing pages (240 cities + 65 countries + indexes + methodology + robots/llms/sitemap + 404)..."
 pnpm tsx scripts/generate-landing.mjs
 
 echo "Bundling server with tsup..."
