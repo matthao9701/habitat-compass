@@ -49,7 +49,26 @@
 - 空气质量：约两年半滚动窗口均值。
 - 护照/签证/长居快照：手工维护，快照日期见字段 sources；政策多变以官方为准。
 
-## 五、再生成流程（全量重跑）
+## 五、缺失值补全（只增不改）
+
+第十一轮对既有 200 城的 `null` 字段做**只增不改**补全：已存在值一律保留（旧城/中间代口径不动），仅在能从公开统计榜单或城市详情页取到同口径数值时填充，取不到的**保持 null**（界面显示「—」，不编造）。
+
+- 脚本：`scripts/pipeline/fetch-stat-jina.mjs`（榜单 + 城市详情抓取，走 r.jina.ai 读取代理绕过数据中心 IP 封锁）→ `scripts/pipeline/backfill-indices.mjs [--write]`（解析榜单/详情，写回 6 个 `src/data/cities/*.json`）。
+- 取数优先级：`livingScore` ← 成本榜 col 列 → 生活质量榜 col 列 → 详情页「较纽约低 X%」反推；`safety` ← 生活质量榜 → `100 − 犯罪指数`；六指数 ← 生活质量榜对应列（`healthcareIndex`/`pollutionIndex` 退而取医疗/污染榜首列）；`housingLevel`/`mealUSD` ← 城市详情页一居室租金 / 一餐价（USD）。
+- 结果：196 个字段由 null 补为数值（`housingLevel` 51 / `mealUSD` 52 / `purchasingPowerIndex` 44 / `safety` 20 / `pollutionIndex` 12 / `healthcareIndex` 9 / `livingScore` 6 / `trafficIndex` 1 / `climateIndex` 1）；仍为 null 的字段是因源站榜单/详情页确无该城条目（如部分亚洲、南美中小城）。
+
+## 六、候选补充数据源（已调研，未接入）
+
+为未来扩城或补维做过一轮公开数据源调研；下列源许可友好（CC BY / 开放），但或口径与现有 NYC=100 体系不兼容、或需人工映射，**本轮未接入**，仅备录：
+
+- **WhereNext**（CC BY 4.0，约 380 城 / 95 国，基于 World Bank ICP 2021 价格水平）——可作成本维的独立交叉校验源。
+- **OECD Regional Well-Being**（约 467 个大区）——区域级（非城市级）福祉指标，映射颗粒度较粗。
+- **UN-Habitat Urban Indicators**（城市环境与生活质量数据集）——偏城市级环境/宜居指标，可补污染/绿色维度。
+- **TomTom Traffic Index**（免费城市拥堵指数）——可作 `trafficIndex` 的补充或校验。
+
+> 上述源的名称仅出现于本文档，未进入 `src/`、构建产物或站内任何页面。
+
+## 七、再生成流程（全量重跑）
 
 ```bash
 # 1. 选城底座（GeoNames 匹配）
@@ -58,6 +77,10 @@ node scripts/pipeline/selection2.mjs
 # 2. 公开统计指数 + 成本明细（限速友好，支持增量）
 node scripts/pipeline/fetch-cost.mjs
 node scripts/pipeline/fetch-cost.mjs --details
+# 2b. 缺失字段补全（走读取代理；dry-run 去掉 --write）
+node scripts/pipeline/fetch-stat-jina.mjs rankings
+node scripts/pipeline/fetch-stat-jina.mjs details <cityId...>
+node scripts/pipeline/backfill-indices.mjs --write
 # 3. Open-Meteo 气候（增量）
 node scripts/pipeline/fetch-climate.mjs
 # 4. 公开英语能力排名
@@ -75,13 +98,15 @@ pnpm tsx scripts/verify-data-v2.ts
 pnpm tsx scripts/verify-country-v3.ts
 ```
 
-## 六、题库出处（仅保留许可要求的低调署名）
+> 注：`verify-data-v2.ts` 强制比对的两份中间产物 `climate.json` / `selection2.json` 位于 `/tmp/pipeline/`（会话级，不在版本库）；如缺失需先跑第 1、3 步再生成。
+
+## 八、题库出处（仅保留许可要求的低调署名）
 
 - 简易版人格问卷：OEJTS 1.2 结构，CC BY-NC-SA 4.0（署名保留于站内方法论页）。
 - 标准版人格题库：IPIP（International Personality Item Pool，Goldberg, 1999）公有领域，可自由复制、编辑、翻译与商用。
 - 职业兴趣框架：O*NET Interest Profiler Short Form，CC BY 4.0（署名保留于站内方法论页页底一行）。
 
-## 七、免责声明
+## 九、免责声明
 
 - 全站数据为公开来源快照，可能过时；仅供参考，不构成移民、签证、居留、法律、税务、医疗、保险、财务或投资建议。
 - 重大决策前请咨询当地专业机构并核实官方渠道。
