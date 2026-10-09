@@ -1,8 +1,8 @@
 /**
  * 数据校验脚本（pnpm tsx scripts/verify-data-v2.ts）
- * 第十一轮扩容口径：校验 240 城 = 39 旧城 + 61 中间代 + 100 第十轮新城 + 40 第十一轮新城（方案A）
+ * 第十一轮扩容口径：校验 270 城 = 39 旧城 + 61 中间代 + 100 第十轮新城 + 40 第十一轮新城（方案A）+ 30 第十二轮新城（WhereNext）
  * 总数 / 六大洲覆盖 / 必填非空 / 可空 null 合法 / 签证结构化 /
- * 气候与管道产物一致（本轮 140 新城强制比对；管道唯一来源 = Open-Meteo archive API）/
+ * 气候与管道产物一致（本轮 170 新城强制比对；管道唯一来源 = Open-Meteo archive API）/
  * 引擎 v3 冒烟（演示档案全量打分不抛错、null 维降权不惩罚）
  */
 import { readFileSync } from 'node:fs';
@@ -30,8 +30,8 @@ const ok = (msg: string): void => {
 };
 
 console.log('=== 1. 总数与大洲分布 ===');
-if (cities.length !== 240) fail(`城市总数 ${cities.length} ≠ 240`);
-else ok('总数 = 240');
+if (cities.length !== 270) fail(`城市总数 ${cities.length} ≠ 270`);
+else ok('总数 = 270');
 
 const REGION_ORDER = ['europe', 'asia', 'africa', 'north-america', 'south-america', 'oceania'] as const;
 const dist: Record<string, number> = {};
@@ -43,7 +43,7 @@ else ok(`六大洲全覆盖：${REGION_ORDER.map((r) => `${r}=${dist[r] ?? 0}`).
 const badRegion = cities.filter((c) => !REGION_ORDER.includes(c.region as (typeof REGION_ORDER)[number]));
 if (badRegion.length) fail(`region 非法值: ${badRegion.map((c) => c.id).join(',')}`);
 
-console.log('=== 2. 必填字段（全部 240 城） ===');
+console.log('=== 2. 必填字段（全部 270 城） ===');
 const REQUIRED_STR: Array<keyof City> = ['id', 'nameZh', 'nameEn', 'countryZh', 'subregion', 'timezone'];
 const idRe = /^[a-z0-9-]+$/;
 for (const c of cities) {
@@ -55,7 +55,7 @@ for (const c of cities) {
   if (!Number.isFinite(c.population) || (c.population as number) <= 0) fail(`${c.id}.population 非法`);
   if (c.countryZh.trim() === '') fail(`${c.id}.countryZh 为空`);
 }
-ok(`必填字符串 / 人口 / 时区：240 城通过（failures=${failures}）`);
+ok(`必填字符串 / 人口 / 时区：270 城通过（failures=${failures}）`);
 
 console.log('=== 3. 可空字段：null 合法、有值则类型/范围合法 ===');
 const numRange = (c: City, key: keyof City, lo: number, hi: number): void => {
@@ -78,8 +78,9 @@ for (const c of cities) {
   if (c.englishBand != null && !['very high', 'high', 'moderate', 'low', 'very low'].includes(c.englishBand))
     fail(`${c.id}.englishBand=${String(c.englishBand)} 非法`);
   if (c.englishBand == null && c.englishScore != null) fail(`${c.id}: 英语分级有分无级`);
-  // cost 与 livingScore 必须同进退（指数缺失 → 成本 null 合法）
-  if (c.livingScore == null && c.cost != null) fail(`${c.id}: livingScore 缺但 cost 有值`);
+  // cost 与 livingScore/cost 三者至少其一（第十轮起 cost 可由拟合或 WhereNext 独立得出）
+  if (c.livingScore == null && c.cost != null && c.monthlyCostUSD == null)
+    fail(`${c.id}: livingScore 缺但 cost 有值（且无独立成本口径）`);
   if (c.cost != null && (c.cost.length !== 2 || c.cost[0] > c.cost[1])) fail(`${c.id}.cost 区间非法`);
 }
 const n = <T,>(arr: T[], pred: (x: T) => boolean): number => arr.filter(pred).length;
@@ -118,8 +119,12 @@ const NEW_ROUND_IDS = new Set(
         | Array<{ id: string }>;
       return Array.isArray(sel) ? sel.map((s) => s.id) : (sel.cities ?? []).map((s) => s.id);
     };
-    // 第十轮 100 新城 + 第十一轮 40 新城（方案A）
-    return [...load('/tmp/pipeline/selection2.json'), ...load('/tmp/pipeline/selection3.json')];
+    // 第十轮 100 + 第十一轮 40（方案A）+ 第十二轮 30（WhereNext）
+    return [
+      ...load('/tmp/pipeline/selection2.json'),
+      ...load('/tmp/pipeline/selection3.json'),
+      ...load('/tmp/pipeline/selection4.json'),
+    ];
   })(),
 );
 for (const c of cities) {
@@ -160,14 +165,14 @@ for (const [id, expect, tol] of SPOT) {
   else ok(`抽查 ${id}: ${c.climateDetail.avgTempC}°C ≈ ${expect}°C`);
 }
 
-console.log('=== 6. 三代城市口径：39 旧城全指数 / 本轮 140 新城 climate 齐 + traits null ===');
+console.log('=== 6. 三代城市口径：39 旧城全指数 / 本轮 170 新城 climate 齐 + traits null ===');
 const NEW_IDS = NEW_ROUND_IDS;
 const oldCities = cities.filter((c) => c.visaStatus != null);
 const newCities = cities.filter((c) => NEW_IDS.has(c.id));
 const midCities = cities.filter((c) => c.visaStatus == null && !NEW_IDS.has(c.id));
 if (oldCities.length !== 39) fail(`旧城数 ${oldCities.length} ≠ 39`);
-if (newCities.length !== 140) fail(`本轮新城数 ${newCities.length} ≠ 140`);
-else ok(`39 旧城 + 61 中间代 + 140 本轮新城 = 240（中间代 ${midCities.length}）`);
+if (newCities.length !== 170) fail(`本轮新城数 ${newCities.length} ≠ 170`);
+else ok(`39 旧城 + 61 中间代 + 170 本轮新城 = 270（中间代 ${midCities.length}）`);
 const oldMissing = oldCities.filter((c) => c.livingScore == null || c.safety == null);
 if (oldMissing.length) fail(`旧城缺失指数: ${oldMissing.map((c) => c.id).join(',')}`);
 else ok('39 旧城 livingScore/safety 全部有值');
@@ -175,7 +180,7 @@ const noTraits = newCities.filter((c) => c.traits != null).length;
 if (noTraits > 0) fail(`本轮新城 ${noTraits} 个带有 traits（应 null）`);
 const newNoClimate = newCities.filter((c) => c.climateDetail == null).length;
 if (newNoClimate > 0) fail(`本轮新城 ${newNoClimate} 个缺 climateDetail`);
-else ok('本轮 140 新城 climateDetail 全齐、traits 保持 null');
+else ok('本轮 170 新城 climateDetail 全齐、traits 保持 null');
 
 console.log('=== 7. 引擎 v3 冒烟：演示档案全量打分 ===');
 for (const p of DEMO_PROFILES) {

@@ -257,8 +257,11 @@
     "region": "oceania",
     "population": 42284,
     "timezone": "Pacific/Fiji",
-    "cost": null,
-    "monthlyCostUSD": null,
+    "cost": [
+      1445,
+      2040
+    ],
+    "monthlyCostUSD": 1700,
     "livingScore": null,
     "housingLevel": 1110.96,
     "mealUSD": 8.89,
@@ -804,8 +807,11 @@
     "region": "oceania",
     "population": 192100,
     "timezone": "Pacific/Auckland",
-    "cost": null,
-    "monthlyCostUSD": null,
+    "cost": [
+      2508,
+      3540
+    ],
+    "monthlyCostUSD": 2950,
     "livingScore": null,
     "housingLevel": 1071.57,
     "mealUSD": 12.05,
@@ -1023,6 +1029,67 @@
     "traits": null,
     "airQuality": {
       "pm25": 5.4,
+      "band": "good",
+      "period": "2022-08 ~ 2024-12"
+    }
+  },
+  {
+    "id": "lautoka",
+    "nameZh": "劳托卡",
+    "nameEn": "Lautoka",
+    "countryZh": "斐济",
+    "countryEn": "Fiji",
+    "countryCode": "FJ",
+    "continent": "oceania",
+    "subregion": "melanesia",
+    "region": "oceania",
+    "population": 52500,
+    "timezone": "Pacific/Fiji",
+    "cost": [
+      1445,
+      2040
+    ],
+    "monthlyCostUSD": 1700,
+    "livingScore": null,
+    "housingLevel": null,
+    "mealUSD": null,
+    "visaScore": null,
+    "visaLabel": null,
+    "visaStatus": null,
+    "visaDetail": null,
+    "internet": null,
+    "internetMbps": null,
+    "safety": null,
+    "healthcareIndex": null,
+    "pollutionIndex": null,
+    "trafficIndex": null,
+    "purchasingPowerIndex": null,
+    "climateIndex": null,
+    "climate": null,
+    "climateType": null,
+    "climateDetail": {
+      "avgTempC": 25,
+      "annualPrecipMm": 2317,
+      "precipDays": 191,
+      "sunshineHours": 3673,
+      "summary": "夏季偏热，降水充沛，日照充足"
+    },
+    "community": null,
+    "english": null,
+    "englishBand": null,
+    "englishScore": null,
+    "pace": null,
+    "size": 1,
+    "digitalNomadVisa": null,
+    "tags": [
+      "beach",
+      "nature",
+      "fruit",
+      "outdoor"
+    ],
+    "traits": null,
+    "airQuality": {
+      "pm25": 4.2,
       "band": "good",
       "period": "2022-08 ~ 2024-12"
     }

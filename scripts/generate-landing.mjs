@@ -1,5 +1,5 @@
 // ABOUTME: 第十二轮 SEO/GEO 基建——构建后静态落地页生成器
-// ABOUTME: 240 城 + 65 国 + 索引页 + 方法论页（zh/en）+ robots.txt + llms.txt + sitemap.xml + 404
+// ABOUTME: 270 城 + 65 国 + 索引页 + 方法论页（zh/en）+ robots.txt + llms.txt + sitemap.xml + 404
 // 运行时机：vite build 之后（产物写入 dist/）。用 tsx 运行以便直接复用 src/i18n 的英译表。
 // 数据来源：src/data/cities/*.json 与 src/data/countries.json（null 不编造）
 import fs from 'node:fs';

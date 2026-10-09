@@ -243,7 +243,7 @@ const sitemap = read('sitemap.xml') ?? '';
 for (const u of ['/privacy/', '/terms/', '/disclaimer/', '/en/privacy/', '/en/terms/', '/en/disclaimer/']) {
   check(`sitemap 收录 ${u}`, new RegExp(`<loc>[^<]*${u}</loc>`).test(sitemap));
 }
-check('sitemap URL 总数 ≥618（240×2 城 + 65×2 国 + 索引/方法论/首页×2）', (sitemap.match(/<url>/g) ?? []).length >= 618);
+check('sitemap URL 总数 ≥678（270×2 城 + 65×2 国 + 索引/方法论/首页×2）', (sitemap.match(/<url>/g) ?? []).length >= 678);
 check('扩容后城市页抽样仍在', (() => {
   let n = 0;
   for (const rel of ['city/chengdu/index.html', 'en/city/chengdu/index.html', 'city/lisbon/index.html', 'en/city/lisbon/index.html']) {

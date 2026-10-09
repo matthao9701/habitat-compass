@@ -1741,5 +1741,127 @@
    "band": "good",
    "period": "2022-08 ~ 2024-12"
   }
+ },
+ {
+  "id": "san-francisco",
+  "nameZh": "旧金山",
+  "nameEn": "San Francisco",
+  "countryZh": "美国",
+  "countryEn": "United States",
+  "countryCode": "US",
+  "continent": "north-america",
+  "subregion": "northern-america",
+  "region": "north-america",
+  "population": 827526,
+  "timezone": "America/Los_Angeles",
+  "cost": [
+   2975,
+   4200
+  ],
+  "monthlyCostUSD": 3500,
+  "livingScore": 89,
+  "housingLevel": 3735,
+  "mealUSD": 27.15,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": null,
+  "healthcareIndex": null,
+  "pollutionIndex": null,
+  "trafficIndex": null,
+  "purchasingPowerIndex": 159.5,
+  "climateIndex": null,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 13.7,
+   "annualPrecipMm": 581,
+   "precipDays": 56,
+   "sunshineHours": 3794,
+   "summary": "冬季偏凉，降水偏少，日照充足"
+  },
+  "community": null,
+  "english": null,
+  "englishBand": null,
+  "englishScore": null,
+  "pace": null,
+  "size": 2,
+  "digitalNomadVisa": null,
+  "tags": [
+   "startup",
+   "food",
+   "arts",
+   "outdoor"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 11,
+   "band": "fair",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "denver",
+  "nameZh": "丹佛",
+  "nameEn": "Denver",
+  "countryZh": "美国",
+  "countryEn": "United States",
+  "countryCode": "US",
+  "continent": "north-america",
+  "subregion": "northern-america",
+  "region": "north-america",
+  "population": 729019,
+  "timezone": "America/Denver",
+  "cost": [
+   2550,
+   3600
+  ],
+  "monthlyCostUSD": 3000,
+  "livingScore": 76.3,
+  "housingLevel": 2011.15,
+  "mealUSD": 20,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": null,
+  "healthcareIndex": null,
+  "pollutionIndex": null,
+  "trafficIndex": null,
+  "purchasingPowerIndex": 141.1,
+  "climateIndex": null,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 9.8,
+   "annualPrecipMm": 444,
+   "precipDays": 78,
+   "sunshineHours": 3753,
+   "summary": "冬季偏凉，降水偏少，日照充足"
+  },
+  "community": null,
+  "english": null,
+  "englishBand": null,
+  "englishScore": null,
+  "pace": null,
+  "size": 2,
+  "digitalNomadVisa": null,
+  "tags": [
+   "outdoor",
+   "beer-culture",
+   "fitness",
+   "startup"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 9.3,
+   "band": "good",
+   "period": "2022-08 ~ 2024-12"
+  }
  }
 ]

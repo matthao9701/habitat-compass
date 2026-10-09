@@ -113,14 +113,25 @@ function slugCandidates(id, countryCode) {
   return [...new Set(list)];
 }
 
-/** 从详情页抽取「一餐/一居租金」的美元值；仅接受裸 `$`（拒绝 Mex$/R$/HK$ 等本地币种前缀） */
+/**
+ * 从详情页抽取「一餐/一居租金」的美元值；仅接受裸 `$`（拒绝 Mex$/R$/HK$ 等本地币种前缀）。
+ * 行级作用域：只在标签所在行内取第一个 $ 值，防止 160 字符窗口溢出到下一行目标（如 Meal for Two）。
+ */
 function pickUSD(txt, label) {
   const i = txt.indexOf(label);
   if (i === -1) return null;
-  const seg = txt.slice(i, i + 160);
-  // 前置字符为字母/其他货币符号的 `$`（如 Mex$、R$）视为非 USD
-  const m = seg.match(/(?:^|[^\w$])\$\s*([\d,]+(?:\.\d+)?)/);
-  return m ? Number(m[1].replace(/,/g, '')) : null;
+  const rest = txt.slice(i);
+  const nl = rest.indexOf('\n');
+  const line = nl === -1 ? rest : rest.slice(0, nl);
+  // 逐个扫描行内 $ 值：$ 前缀为本地币种缩写（Mex/R/HK/kr/Rs…）则跳过，否则采纳
+  for (const mm of line.matchAll(/\$\s*([\d,]+(?:\.\d+)?)/g)) {
+    const p0 = line.slice(0, mm.index);
+    const prefix = p0.match(/([A-Za-z]{1,4})$/);
+    const LOCAL = new Set(['Mex', 'R', 'HK', 'NT', 'A', 'C', 'NZ', 'S', 'CA', 'AU', 'SG', 'kr', 'Kr', 'Rs', 'lei', 'Lei', 'zł']);
+    if (prefix && LOCAL.has(prefix[1])) continue;
+    return Number(mm[1].replace(/,/g, ''));
+  }
+  return null;
 }
 
 /** 抓城市详情页（X% less/more than New York + 一餐/一居租金 USD） */

@@ -3,7 +3,7 @@
 > 本文档仅描述数据字段含义、聚合与派生方法、更新频率与免责声明。
 > 所有城市级与国家级统计指标均来自「官方开放数据（Open Data）与公开统计测算」，快照日期见各数据卡与字段来源标注；本站不转载任何来源的原始数据库文件。
 
-## 一、城市级字段口径（`src/data/cities/*.json`，240 城 / 六洲）
+## 一、城市级字段口径（`src/data/cities/*.json`，270 城 / 六洲）
 
 | 字段 | 含义 | 口径与聚合方法 |
 | --- | --- | --- |
@@ -77,24 +77,46 @@
 
 > 说明：`monthlyCostUSD`/`cost` 的值随拟合样本扩充重算，仅作用于**原先为 null 的城**（旧城已存值不动）；`-` 表示该城详情页非 USD 币种或无独立页，`housingLevel`/`mealUSD` 保持 null。
 
-## 七、候选补充数据源（已调研，未接入）
+## 七、第十二轮扩容（接入 WhereNext 数据源，240 → 270 城）
+
+主库再扩 30 座新城，本轮首次接入候选补充数据源 **WhereNext**（getwherenext.com，CC BY 4.0）：
+
+- **WhereNext Best Value Cities 2026**（374 城）：World Bank ICP 2021 购买力平价（PLI）锚定的城级月成本估计（monthlyCostEstimate，USD）与质量分（qualityScore，0-100）。选城全部取自该数据集且落在既有 65 国库内（免钥公开 API，/api/data/best-value-cities-2026，限 100 req/h）。
+- **大洲分布**：欧洲 +13 / 亚洲 +8 / 南美 +4 / 非洲 +2 / 北美 +2 / 大洋 +1；优先补足城市数 ≤3 的国家（韩国、台湾、印尼、菲律宾、斯里兰卡、摩洛哥、毛里求斯、乌拉圭、智利、爱沙尼亚、立陶宛等）。
+- **成本口径**：本轮新城 monthlyCostUSD/cost 直接采用 WhereNext 城级月成本估计（真实 USD，不走拟合），区间仍为 ±15/20%；榜单 livingScore（NYC=100）与六指数仍由公开统计榜单口径填充（双口径并存，来源互不混淆）。
+- **双榜缺项**：其中多城（仁川、大田、台南、泗水、康提、居尔皮普、拉塞雷纳、马尔多纳多、罗萨里奥、劳托卡等）不在公开统计生活质量榜内，六指数按可得性部分填充（trafficIndex/climateIndex 多为 null），显示「—」不编造。
+
+流程（在第十一轮管道上新增）：
+
+- 选城：`scripts/pipeline/selection4.mjs`（GeoNames 匹配 30 城坐标/人口/时区，输出 `/tmp/pipeline/selection4.json`）。
+- 成本源：`curl https://getwherenext.com/api/data/best-value-cities-2026`（快照存 `/tmp/pipeline/wn-cities.json`，CC BY 4.0）。
+- 气候/成本明细/指数/空气：复用 `fetch-climate.mjs`、`fetch-stat-jina.mjs details`、`backfill-indices.mjs --write`、`snapshot-airquality.mjs`（坐标源已扩展至 selection2/3/4）。
+- 成本填充：`node scripts/pipeline/fill-cost-wn.mjs`（WhereNext 月成本 → `monthlyCostUSD`/`cost`，仅填 null 城）。
+
+> 说明：`fill-cost-wn.mjs` 同时为 13 座既有缺成本城（福冈/釜山/芽庄/新山/亚庇/札幌/蒙巴萨/库马西/库斯科/瓦尔帕莱索/阿雷基帕/楠迪/汉密尔顿-新西兰）补齐了 `monthlyCostUSD`/`cost`（null → WhereNext 估计值），旧值一律未动。
+
+## 八、候选补充数据源（已调研，部分接入）
+
 
 为未来扩城或补维做过一轮公开数据源调研；下列源许可友好（CC BY / 开放），但或口径与现有 NYC=100 体系不兼容、或需人工映射，**本轮未接入**，仅备录：
 
-- **WhereNext**（CC BY 4.0，约 380 城 / 95 国，基于 World Bank ICP 2021 价格水平）——可作成本维的独立交叉校验源。
+- **WhereNext**（CC BY 4.0，约 380 城 / 95 国，基于 World Bank ICP 2021 价格水平）——**已于第十二轮接入**（见第七节）：城级月成本估计直接作为新城 `monthlyCostUSD` 口径。
 - **OECD Regional Well-Being**（约 467 个大区）——区域级（非城市级）福祉指标，映射颗粒度较粗。
 - **UN-Habitat Urban Indicators**（城市环境与生活质量数据集）——偏城市级环境/宜居指标，可补污染/绿色维度。
 - **TomTom Traffic Index**（免费城市拥堵指数）——可作 `trafficIndex` 的补充或校验。
 
 > 上述源的名称仅出现于本文档，未进入 `src/`、构建产物或站内任何页面。
 
-## 八、再生成流程（全量重跑）
+## 九、再生成流程（全量重跑）
 
 ```bash
 # 1. 选城底座（GeoNames 匹配）
 node scripts/pipeline/selection.mjs
 node scripts/pipeline/selection2.mjs
 node scripts/pipeline/selection3.mjs
+node scripts/pipeline/selection4.mjs
+# 1b. WhereNext 快照（第十二轮成本口径，CC BY 4.0，无密钥）
+curl -s https://getwherenext.com/api/data/best-value-cities-2026 > /tmp/pipeline/wn-cities.json
 # 2. 公开统计指数 + 成本明细（限速友好，支持增量）
 node scripts/pipeline/fetch-cost.mjs
 node scripts/pipeline/fetch-cost.mjs --details
@@ -111,7 +133,9 @@ node scripts/pipeline/fetch-efepi.mjs
 node scripts/pipeline/assemble.mjs
 node scripts/pipeline/assemble-v2.mjs
 node scripts/pipeline/assemble-v3.mjs
+node scripts/pipeline/assemble-v4.mjs
 node scripts/pipeline/fill-cost.mjs
+node scripts/pipeline/fill-cost-wn.mjs
 # 6. 国家级与快照回填
 node scripts/pipeline/fetch-country.mjs
 node scripts/pipeline/snapshot-gpispeed.mjs
@@ -122,15 +146,15 @@ pnpm tsx scripts/verify-data-v2.ts
 pnpm tsx scripts/verify-country-v3.ts
 ```
 
-> 注：`verify-data-v2.ts` 强制比对的两份中间产物 `climate.json` / `selection2.json` 位于 `/tmp/pipeline/`（会话级，不在版本库）；如缺失需先跑第 1、3 步再生成。
+> 注：`verify-data-v2.ts` 强制比对的两份中间产物 `climate.json` / `selection2.json` 位于 `/tmp/pipeline/`（会话级，不在版本库）；如缺失需先跑第 1、3 步再生成。`snapshot-airquality.mjs` 的城市坐标来自 `selection2.json` / `selection3.json` / `selection4.json` 三个选城底座。
 
-## 九、题库出处（仅保留许可要求的低调署名）
+## 十、题库出处（仅保留许可要求的低调署名）
 
 - 简易版人格问卷：OEJTS 1.2 结构，CC BY-NC-SA 4.0（署名保留于站内方法论页）。
 - 标准版人格题库：IPIP（International Personality Item Pool，Goldberg, 1999）公有领域，可自由复制、编辑、翻译与商用。
 - 职业兴趣框架：O*NET Interest Profiler Short Form，CC BY 4.0（署名保留于站内方法论页页底一行）。
 
-## 十、免责声明
+## 十一、免责声明
 
 - 全站数据为公开来源快照，可能过时；仅供参考，不构成移民、签证、居留、法律、税务、医疗、保险、财务或投资建议。
 - 重大决策前请咨询当地专业机构并核实官方渠道。

@@ -68,7 +68,7 @@ function main() {
     marrakech: [31.6295, -7.9811], // Marrakesh
   };
   const coord = new Map();
-  for (const f of ['selection2.json', 'selection3.json']) {
+  for (const f of ['selection2.json', 'selection3.json', 'selection4.json']) {
     const p = `/tmp/pipeline/${f}`;
     if (!fs.existsSync(p)) continue;
     const sel = JSON.parse(fs.readFileSync(p, 'utf8'));

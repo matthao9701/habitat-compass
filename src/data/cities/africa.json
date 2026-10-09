@@ -1002,8 +1002,11 @@
   "region": "africa",
   "population": 1208333,
   "timezone": "Africa/Nairobi",
-  "cost": null,
-  "monthlyCostUSD": null,
+  "cost": [
+   765,
+   1080
+  ],
+  "monthlyCostUSD": 900,
   "livingScore": null,
   "housingLevel": 233.86,
   "mealUSD": 2.34,
@@ -1060,8 +1063,11 @@
   "region": "africa",
   "population": 2544530,
   "timezone": "Africa/Accra",
-  "cost": null,
-  "monthlyCostUSD": null,
+  "cost": [
+   978,
+   1380
+  ],
+  "monthlyCostUSD": 1150,
   "livingScore": null,
   "housingLevel": null,
   "mealUSD": 3.48,
@@ -1103,6 +1109,128 @@
   "airQuality": {
    "pm25": 22.2,
    "band": "moderate",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "rabat",
+  "nameZh": "拉巴特",
+  "nameEn": "Rabat",
+  "countryZh": "摩洛哥",
+  "countryEn": "Morocco",
+  "countryCode": "MA",
+  "continent": "africa",
+  "subregion": "northern-africa",
+  "region": "africa",
+  "population": 1655753,
+  "timezone": "Africa/Casablanca",
+  "cost": [
+   1105,
+   1560
+  ],
+  "monthlyCostUSD": 1300,
+  "livingScore": 31.8,
+  "housingLevel": 511.45,
+  "mealUSD": 4.02,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": 66,
+  "healthcareIndex": 48.1,
+  "pollutionIndex": null,
+  "trafficIndex": null,
+  "purchasingPowerIndex": 61.6,
+  "climateIndex": null,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 18.3,
+   "annualPrecipMm": 414,
+   "precipDays": 58,
+   "sunshineHours": 3835,
+   "summary": "四季温和，降水偏少，日照充足"
+  },
+  "community": null,
+  "english": 2,
+  "englishBand": "low",
+  "englishScore": 492,
+  "pace": null,
+  "size": 3,
+  "digitalNomadVisa": null,
+  "tags": [
+   "history",
+   "beach",
+   "culture",
+   "food"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 10.7,
+   "band": "fair",
+   "period": "2022-08 ~ 2024-12"
+  }
+ },
+ {
+  "id": "curepipe",
+  "nameZh": "居尔皮普",
+  "nameEn": "Curepipe",
+  "countryZh": "毛里求斯",
+  "countryEn": "Mauritius",
+  "countryCode": "MU",
+  "continent": "africa",
+  "subregion": "eastern-africa",
+  "region": "africa",
+  "population": 78618,
+  "timezone": "Indian/Mauritius",
+  "cost": [
+   1020,
+   1440
+  ],
+  "monthlyCostUSD": 1200,
+  "livingScore": null,
+  "housingLevel": 578.7,
+  "mealUSD": 3.16,
+  "visaScore": null,
+  "visaLabel": null,
+  "visaStatus": null,
+  "visaDetail": null,
+  "internet": null,
+  "internetMbps": null,
+  "safety": null,
+  "healthcareIndex": null,
+  "pollutionIndex": null,
+  "trafficIndex": null,
+  "purchasingPowerIndex": null,
+  "climateIndex": null,
+  "climate": null,
+  "climateType": null,
+  "climateDetail": {
+   "avgTempC": 20.6,
+   "annualPrecipMm": 1661,
+   "precipDays": 253,
+   "sunshineHours": 3855,
+   "summary": "四季温和，降水充沛，日照充足"
+  },
+  "community": null,
+  "english": null,
+  "englishBand": null,
+  "englishScore": null,
+  "pace": null,
+  "size": 1,
+  "digitalNomadVisa": null,
+  "tags": [
+   "nature",
+   "outdoor",
+   "food",
+   "family"
+  ],
+  "traits": null,
+  "airQuality": {
+   "pm25": 9.3,
+   "band": "good",
    "period": "2022-08 ~ 2024-12"
   }
  }
