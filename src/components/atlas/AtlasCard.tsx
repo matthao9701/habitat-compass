@@ -6,7 +6,7 @@
 import { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import CompassRadar, { buildCompassData } from './CompassRadar';
-import CityPhoto, { PhotoCredit } from './CityPhoto';
+import CityPhoto from './CityPhoto';
 import { getCountry } from '../../data/countries';
 import { cityName, countryName, climateSummary, tagLabel, englishBandLabel, entryNote, formatMoneyShort } from '../../lib/format';
 import { overlapHours } from '../../lib/timezone';
@@ -107,10 +107,6 @@ export function AtlasCard({ city, index, onOpen, formatMoney, badge }: AtlasCard
         <span className="absolute left-3 bottom-2.5 rounded-[4px] bg-ink/80 px-1.5 py-0.5 font-data text-[10px] font-semibold tracking-[0.18em] text-white shadow-[0_1px_3px_rgba(31,36,33,0.25)]">
           Nº {String(index + 1).padStart(3, '0')}
         </span>
-        {/* 图片署名（合规） */}
-        <div className="absolute bottom-1.5 right-2.5">
-          <PhotoCredit cityId={city.id} />
-        </div>
       </div>
 
       {/* 内容区 */}
@@ -276,9 +272,6 @@ export function CityDrawer({ city, onClose, formatMoney }: DrawerProps) {
                     {countryName(country)}
                   </span>
                 </h3>
-              </div>
-              <div className="absolute right-3 bottom-3">
-                <PhotoCredit cityId={city.id} />
               </div>
             </div>
 

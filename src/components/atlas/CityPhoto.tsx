@@ -1,6 +1,7 @@
 /**
  * 城市实景照片（自由许可，本地打包，不热链）。
- * 来源：Wikimedia Commons，逐图登记许可与作者（见 public/city-images/credits.json）。
+ * 来源：Wikimedia Commons，逐图登记许可与作者。
+ * 署名与版权鸣谢统一收纳于「数据来源与说明」页（/methodology/），不再叠加在图片上。
  * 容错：无照片或加载失败时，回落到程序化「生活剪影」SVG，保证画面不空白。
  */
 import { useState } from 'react';
@@ -78,24 +79,5 @@ export default function CityPhoto({
       onError={() => setFailed(true)}
       className={className ?? 'h-full w-full object-cover'}
     />
-  );
-}
-
-/** 图片署名（合规展示）：作者 · 许可（可点击到 Commons 原图页） */
-export function PhotoCredit({ cityId }: { cityId: string }) {
-  const credit = CREDITS[cityId];
-  if (!credit) return null;
-  return (
-    <a
-      href={credit.sourceUrl}
-      target="_blank"
-      rel="noopener noreferrer nofollow"
-      className="pointer-events-auto inline-flex items-center gap-1 rounded-[4px] bg-ink/75 px-1.5 py-0.5 font-data text-[8.5px] font-medium leading-tight text-white shadow-[0_1px_2px_rgba(31,36,33,0.3)] transition-colors hover:bg-ink/90"
-      title={`${credit.source} · ${credit.license}`}
-    >
-      <span className="max-w-[150px] truncate">{credit.artist || credit.source}</span>
-      <span className="text-white/60">·</span>
-      <span>{credit.license}</span>
-    </a>
   );
 }

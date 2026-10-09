@@ -705,6 +705,31 @@ ${CONTINENTS.map((r) => { const cs = COUNTRIES.filter((c) => COUNTRY_REGION.get(
   return shell({ lang, title, desc, canonical, hreflang, jsonLd: [breadcrumbJsonLd(lang === 'zh' ? [{ name: '首页', item: page('/') }, { name: '国家索引', item: page(pathZh) }] : [{ name: 'Home', item: page('/en/') }, { name: 'Countries', item: page(pathEn) }])], body });
 }
 
+// 城市实景图版权鸣谢（数据源：public/city-images/credits.json，逐图登记作者与许可）。
+// 图片上不再叠加署名标签，改为在「数据来源与说明」页统一收纳，保证版面纯净且合规可核。
+const PHOTO_CREDITS = (() => {
+  const p = path.join(ROOT, 'public/city-images/credits.json');
+  try { return JSON.parse(fs.readFileSync(p, 'utf8')); } catch { return {}; }
+})();
+
+/** 方法论页：图片版权与鸣谢区块（按城市名排序，链接到 Commons 原图页） */
+function photoCreditsSection(lang) {
+  const entries = Object.entries(PHOTO_CREDITS)
+    .map(([id, c]) => ({ id, c, name: lang === 'zh' ? (CITY_BY_ID.get(id)?.nameZh ?? id) : (CITY_BY_ID.get(id)?.nameEn ?? id) }))
+    .sort((a, b) => a.name.localeCompare(b.name, lang === 'zh' ? 'zh-Hans' : 'en'));
+  if (!entries.length) return '';
+  const items = entries.map(({ c, name }) =>
+    `<li><a href="${esc(c.sourceUrl)}" target="_blank" rel="noopener noreferrer nofollow">${esc(name)}</a><span class="meta">${esc(c.artist || c.source)} · <a href="${esc(c.licenseUrl)}" target="_blank" rel="license noopener">${esc(c.license)}</a></span></li>`,
+  ).join('\n');
+  return `<h2 id="photo-credits">${lang === 'zh' ? '实景图片版权与鸣谢' : 'Photography credits'}</h2>
+<p class="note">${lang === 'zh'
+    ? `城市实景照片均来自 <a href="https://commons.wikimedia.org/" target="_blank" rel="noopener">Wikimedia Commons</a>，采用 CC 或公有领域许可，本地打包、不外链原图。为保持版面纯净，署名不再叠加在图面上，统一在此列示（共 ${entries.length} 张，点击城市名可查看原图页与完整许可）。若你是权利人对某张图片有异议，请来信告知，我们将及时替换。`
+    : `All city photographs come from <a href="https://commons.wikimedia.org/" target="_blank" rel="noopener">Wikimedia Commons</a> under CC or public-domain licences, bundled locally (no hot-linking). To keep the layout clean, attributions are consolidated here rather than overlaid on the images (${entries.length} in total; click a city to view the source file and full licence). Rights holders: contact us and we will replace any image promptly.`}</p>
+<ul class="list">
+${items}
+</ul>`;
+}
+
 // ---------- 方法论页 ----------
 function renderMethodology(lang) {
   const pathZh = '/methodology/', pathEn = '/en/methodology/';
@@ -744,6 +769,7 @@ function renderMethodology(lang) {
 <li>WHO Global Air Quality Guidelines 2021<span class="meta">${lang === 'zh' ? 'PM2.5 年均分档口径（优 ≤10 / 良 ≤15 / 一般 ≤25 / 差 >25）' : 'annual PM2.5 bands (good ≤10 / fair ≤15 / moderate ≤25 / poor >25)'}</span></li>
 <li>${lang === 'zh' ? '字体 Noto Sans SC（SIL OFL 开源黑体）' : 'Typefaces Noto Sans SC (SIL OFL)'}<span class="meta">SIL Open Font License 1.1 · ${lang === 'zh' ? '经 @fontsource 自托管打包，无外部 CDN' : 'self-hosted via @fontsource, no external CDN'}</span></li>
 </ul>
+${photoCreditsSection(lang)}
 <h2>${lang === 'zh' ? '更新频率与免责声明' : 'Update cadence & disclaimer'}</h2>
 <p class="note">${lang === 'zh'
     ? '城市/国家页由构建管道从快照数据生成（本页构建于 ' + BUILD_DATE + '）；公开统计测算按季度复核，气候与空气为 2022–2024 多年均值；签证与税务快照日期逐页标注，政策多变请以官方渠道为准。本站为决策辅助工具，不构成投资、法律或移民建议；测评结果为算法输出，不构成专业心理评估。'
@@ -1261,6 +1287,7 @@ const LEGAL_TERMS = {
         'World Bank / UNDP / Transparency International / IEP 国家指标（开放数据与公开引用排名）',
         'OEJTS 1.2 人格题库（CC BY-NC-SA 4.0，Open Psychometrics）',
         '字体 Noto Sans SC（SIL Open Font License 1.1）',
+        '城市实景照片（Wikimedia Commons，CC / 公有领域许可，逐张署名见方法论页「实景图片版权与鸣谢」）',
       ], after: [
         '本站法律文本自身的结构与措辞，部分参考了 Automattic 以 CC BY-SA 4.0 开放的法律文档（Legalmattic）。',
       ] },
@@ -1337,6 +1364,7 @@ const LEGAL_TERMS = {
         'World Bank / UNDP / Transparency International / IEP country indicators (open data & publicly cited rankings)',
         'OEJTS 1.2 personality questionnaire (CC BY-NC-SA 4.0, Open Psychometrics)',
         'Typefaces Noto Sans SC (SIL Open Font License 1.1)',
+        'City photographs (Wikimedia Commons; CC / public-domain licences; per-photo credits on the Methodology page: "Photography credits")',
       ], after: [
         'The structure and wording of the site\'s own legal documents draw in part on Automattic\'s CC BY-SA 4.0 licensed legal texts (Legalmattic).',
       ] },

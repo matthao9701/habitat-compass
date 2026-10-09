@@ -336,6 +336,16 @@ for (const [tag, html] of [['zh', methZh], ['en', methEn]] as const) {
   check(`方法论页(${tag})：GeoNames/Open-Meteo/World Bank 带 CC BY 4.0 许可链接`, (html.match(/creativecommons\.org\/licenses\/by\/4\.0/g) ?? []).length >= 3);
   check(`方法论页(${tag})：源站链接（geonames/open-meteo，去品牌化）`, html.includes('geonames.org') && html.includes('open-meteo.com') && !html.includes(NB + '.com'));
   check(`方法论页(${tag})：字体 OFL 声明`, html.includes('SIL Open Font License 1.1') && html.includes('Noto Sans SC'));
+  // 图片版权鸣谢：图面署名收敛到方法论页（198 张，逐条链接 Commons 原图页 + 许可）
+  const creditItems = (html.match(/commons\.wikimedia\.org\/wiki\/File:/g) ?? []).length;
+  check(`方法论页(${tag})：实景图片版权鸣谢区块（id=photo-credits，${creditItems} 张）`, html.includes('id="photo-credits"') && creditItems === 198);
+}
+// 9.4b 图面署名组件已移出卡片/抽屉（署名统一收纳于方法论页）
+{
+  const atlasSrc = fs.readFileSync(path.join(ROOT, 'src/components/atlas/AtlasCard.tsx'), 'utf8');
+  const photoSrc = fs.readFileSync(path.join(ROOT, 'src/components/atlas/CityPhoto.tsx'), 'utf8');
+  check('AtlasCard 不再渲染图面署名标签（PhotoCredit）', !atlasSrc.includes('PhotoCredit'));
+  check('CityPhoto 不再导出图面署名组件（PhotoCredit）', !photoSrc.includes('PhotoCredit'));
 }
 // 9.5 法律页 dev 可达（public 同步）
 for (const rel of ['privacy/index.html', 'terms/index.html', 'disclaimer/index.html', 'en/privacy/index.html', 'en/terms/index.html', 'en/disclaimer/index.html']) {
