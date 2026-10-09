@@ -1,4 +1,4 @@
-// ABOUTME: 城市库 Tab——独立浏览 200 城的图集页（大洲筛选 + 轻量过滤 + 速览抽屉）。
+// ABOUTME: 城市库 Tab——独立浏览全城库的图集页（大洲筛选 + 轻量过滤 + 速览抽屉）。
 // 与 Landing 的图集区块共用 AtlasCard / CityDrawer / SentenceFilter，但独立承载「纯浏览」心智，
 // 让首屏专注意向，同时把「按图索骥」拆成常驻入口。
 import { useState } from 'react';

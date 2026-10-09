@@ -127,6 +127,37 @@ const IMAGE_IDS = new Set(
     ? fs.readdirSync(path.join(ROOT, 'public/city-images')).map((f) => f.replace(/\.webp$/, ''))
     : [],
 );
+// WebP 实际像素尺寸（依赖无关的最小解析器）：用于 og:image:width/height 与真实图一致，
+// 否则分享卡/结构化数据声明错尺寸会导致预览裁切异常。支持 VP8（有损）/VP8L（无损）/VP8X（扩展）。
+function webpSize(buf) {
+  if (buf.length < 30 || buf.toString('ascii', 0, 4) !== 'RIFF' || buf.toString('ascii', 8, 12) !== 'WEBP') return null;
+  const fourcc = buf.toString('ascii', 12, 16);
+  if (fourcc === 'VP8 ') {
+    // 帧标签 3B + 起始码 0x9d012a(3B)，其后 2B 宽、2B 高（各取低 14 位）
+    return { w: buf.readUInt16LE(26) & 0x3fff, h: buf.readUInt16LE(28) & 0x3fff };
+  }
+  if (fourcc === 'VP8L') {
+    // 签名 0x2f(1B)，随后 14 位宽-1、14 位高-1（小端位流）
+    const bits = buf.readUInt32LE(21);
+    return { w: (bits & 0x3fff) + 1, h: ((bits >> 14) & 0x3fff) + 1 };
+  }
+  if (fourcc === 'VP8X') {
+    // flags(1B) + reserved(3B)，随后 24 位画布宽-1、24 位高-1
+    const w = (buf.readUInt8(24) | (buf.readUInt8(25) << 8) | (buf.readUInt8(26) << 16)) + 1;
+    const h = (buf.readUInt8(27) | (buf.readUInt8(28) << 8) | (buf.readUInt8(29) << 16)) + 1;
+    return { w, h };
+  }
+  return null;
+}
+const IMAGE_SIZE = new Map();
+for (const id of IMAGE_IDS) {
+  try {
+    const s = webpSize(fs.readFileSync(path.join(ROOT, 'public/city-images', `${id}.webp`)));
+    if (s) IMAGE_SIZE.set(id, s);
+  } catch {
+    // 读取失败则回落品牌封面尺寸，不阻断构建
+  }
+}
 
 // ---------- 工具 ----------
 const esc = (s) =>
@@ -509,16 +540,17 @@ ${faqs.map((f) => `<details><summary>${esc(f.q)}</summary><p>${esc(f.a)}</p></de
     : `${cN}: GDP per capita ~$${Math.round(co.gdpPerCapitaUSD ?? 0).toLocaleString('en-US')} (World Bank), HDI ${co.hdi ?? '—'}${co.gpi ? `, Global Peace Index rank #${co.gpi.rank} (IEP 2024)` : ''}.`) : ''} <a href="${esc(countryLink)}">${lang === 'zh' ? `查看${esc(city.countryZh)}国家页 →` : `Open ${esc(cN)} country page →`}</a></p>
 <a class="cta" href="${lang === 'zh' ? '/' : '/en/'}">${lang === 'zh' ? '免费开始我的定居匹配测评 →' : 'Start my free matching quiz →'}</a>
 <p class="cta-sub">${lang === 'zh' ? '核心测评免费 · 无需注册 · 测评后按 11 维权重输出 Top 5 城市' : 'Free core quiz · no signup · Top 5 cities scored on 11 dimensions'}</p>`;
-  // 城市页 OG 图：优先用该城实景图（city-images 文件名 = 城市 id），否则回落品牌封面。
+  // 城市页 OG 图：优先用该城实景图（city-images 文件名 = 城市 id），否则回落品牌封面（1200×630）。
   const cityImg = IMAGE_IDS.has(id) ? page(`/city-images/${id}.webp`) : undefined;
+  const cityImgSize = cityImg ? IMAGE_SIZE.get(id) : undefined;
   return shell({
     lang, title, desc, canonical, hreflang,
     jsonLd: [faqJsonLd(faqs), breadcrumbJsonLd(crumbs)],
     body,
     image: cityImg,
     imageAlt: lang === 'zh' ? `${city.nameZh} · 数字游民定居指南` : `${city.nameEn} for digital nomads`,
-    imageW: 800,
-    imageH: 512,
+    imageW: cityImgSize?.w,
+    imageH: cityImgSize?.h,
   });
 }
 
@@ -1175,7 +1207,7 @@ const LEGAL_TERMS = {
         '"你"指任何使用本站的个人或主体；若你代表某一主体使用本站，你声明并保证已获授权代表其接受本协议。',
       ] },
       { h: '二、服务描述', ps: [
-        '栖居罗盘为数字游民、自由职业者与远程工作者提供海外城市定居的<strong>决策辅助</strong>：基于你的偏好作答与公开数据快照，对库内 ${CITIES.length} 座城市加权打分并生成报告。',
+        `栖居罗盘为数字游民、自由职业者与远程工作者提供海外城市定居的<strong>决策辅助</strong>：基于你的偏好作答与公开数据快照，对库内 ${CITIES.length} 座城市加权打分并生成报告。`,
         '本站的核心测评（32 项人格量表 + 8 道情景题，另含 16 个兴趣标签）、可选的深度测评、城市对比与税负测算等功能，全部<strong>无需付费</strong>，也<strong>无需注册账号</strong>；不提供订阅、虚拟商品或任何形式的交易。',
         '本站无账号体系，因此不存在"账户安全"义务；你的全部数据仅存于你自己的浏览器（详见<a href="/privacy/">《隐私政策》</a>）。',
       ] },
@@ -1251,7 +1283,7 @@ const LEGAL_TERMS = {
         '"You" means any individual or entity using the site; if you use the site on behalf of an entity, you represent and warrant that you are authorised to accept these Terms on its behalf.',
       ] },
       { h: '2. Service description', ps: [
-        'Habitat Compass provides <strong>decision support</strong> for digital nomads, freelancers and remote workers settling abroad: it scores the ${CITIES.length} cities in its library against your stated preferences and public data snapshots, and generates a report.',
+        `Habitat Compass provides <strong>decision support</strong> for digital nomads, freelancers and remote workers settling abroad: it scores the ${CITIES.length} cities in its library against your stated preferences and public data snapshots, and generates a report.`,
         'The core assessment (a 32-item personality scale plus 8 scenario questions, with 16 interest tags), the optional in-depth assessment, city comparison and the tax planner are entirely <strong>free of charge</strong> and require <strong>no account</strong>. There are no subscriptions, virtual goods or transactions of any kind.',
         'The site has no account system, so there is no "account security" duty; all your data stays in your own browser (see the <a href="/en/privacy/">Privacy Policy</a>).',
       ] },
@@ -1452,7 +1484,7 @@ ${crossLink}`;
 // 因主应用无 URL 路由（纯状态驱动），无需 SPA fallback。
 function renderNotFound() {
   const title = '404 · 页面不存在 | 栖居罗盘';
-  const desc = '你要找的页面不存在或已移动。返回首页重新开始，或浏览 ${CITIES.length} 座城市与 65 国定居指南。';
+  const desc = `你要找的页面不存在或已移动。返回首页重新开始，或浏览 ${CITIES.length} 座城市与 65 国定居指南。`;
   const body = `
 <h1>404<span class="badge">页面不存在 / Page not found</span></h1>
 <p class="sub">你要找的页面不存在或已移动。The page you requested does not exist or has moved.</p>
