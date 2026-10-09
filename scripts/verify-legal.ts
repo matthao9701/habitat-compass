@@ -336,9 +336,9 @@ for (const [tag, html] of [['zh', methZh], ['en', methEn]] as const) {
   check(`方法论页(${tag})：GeoNames/Open-Meteo/World Bank 带 CC BY 4.0 许可链接`, (html.match(/creativecommons\.org\/licenses\/by\/4\.0/g) ?? []).length >= 3);
   check(`方法论页(${tag})：源站链接（geonames/open-meteo，去品牌化）`, html.includes('geonames.org') && html.includes('open-meteo.com') && !html.includes(NB + '.com'));
   check(`方法论页(${tag})：字体 OFL 声明`, html.includes('SIL Open Font License 1.1') && html.includes('Noto Sans SC'));
-  // 图片版权鸣谢：图面署名收敛到方法论页（198 张，逐条链接 Commons 原图页 + 许可）
+  // 图片版权鸣谢：图面署名收敛到方法论页（全部 270 张，逐条链接 Commons 原图页 + 许可）
   const creditItems = (html.match(/commons\.wikimedia\.org\/wiki\/File:/g) ?? []).length;
-  check(`方法论页(${tag})：实景图片版权鸣谢区块（id=photo-credits，${creditItems} 张）`, html.includes('id="photo-credits"') && creditItems === 198);
+  check(`方法论页(${tag})：实景图片版权鸣谢区块（id=photo-credits，${creditItems} 张）`, html.includes('id="photo-credits"') && creditItems === 270);
 }
 // 9.4b 图面署名组件已移出卡片/抽屉（署名统一收纳于方法论页）
 {
