@@ -14,7 +14,7 @@ import { useEffect, useState } from 'react';
 /** 安装提示冷却期：用户手动关闭后，多久内不再展示（毫秒） */
 const DISMISS_COOLDOWN_MS = 30 * 24 * 60 * 60 * 1000;
 /** 首屏稳定后延迟展示，避免与首个动画/数据加载抢注意力 */
-const SHOW_DELAY_MS = 4000;
+const SHOW_DELAY_MS = 8000;
 
 const LS_DISMISSED_AT = 'nomadmatch.v1:pwaInstallDismissedAt';
 const LS_INSTALLED = 'nomadmatch.v1:pwaInstalled';

@@ -215,6 +215,10 @@ check('城市页 FAQPage 结构化数据存在', hz.includes('"@type": "FAQPage"
 const enHome = read('en/index.html') ?? '';
 check('EN 首页含 FAQPage', enHome.includes('"@type": "FAQPage"'));
 check('EN 首页 faqJsonLd 可解析', jsonLdBlocks(enHome).some((b) => (b as { '@type'?: string })['@type'] === 'FAQPage'));
+// 结构化数据去重：同一页不应出现两个 @type:WebPage 节点（法律页此前 shell() 与模板各注入一个）
+const privacyZh = read('privacy/index.html') ?? '';
+const webPageCount = jsonLdBlocks(privacyZh).filter((b) => (b as { '@type'?: string })['@type'] === 'WebPage').length;
+check('法律页 WebPage 节点唯一（无重复）', webPageCount === 1, `实为 ${webPageCount}`);
 // llms.txt 常见问答区块
 check('llms.txt 含常见问答（AEO 直答）', llms.includes('## 常见问答') && llms.includes('匹配分数怎么算'));
 // 版本命名已适配：无旧「核心测评 / 深度测评 / IPIP-NEO 120 题」残留（页面层）

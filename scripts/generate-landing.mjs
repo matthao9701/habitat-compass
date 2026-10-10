@@ -1534,11 +1534,9 @@ function eraseAll() {
 </script>`
     : '';
   const crossLink = `<div class="list">${crossLinks}</div>`;
+  // WebPage 节点由 shell() 统一注入（含 @id / dateModified / isPartOf #website），此处只补面包屑，
+  // 避免同一页出现两个 @type:WebPage 节点造成结构化数据重复。
   const jsonLd = [
-    {
-      '@context': 'https://schema.org', '@type': 'WebPage', name: d.title, description: d.desc,
-      url: canonical, inLanguage: zh ? 'zh-Hans' : 'en', isPartOf: { '@id': `${DOMAIN}/#organization` },
-    },
     {
       '@context': 'https://schema.org', '@type': 'BreadcrumbList',
       itemListElement: [
