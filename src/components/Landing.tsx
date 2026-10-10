@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { AtlasCard, CityDrawer } from './atlas/AtlasCard';
 import { hasPhoto } from './atlas/CityPhoto';
+import HeroChart from './HeroChart';
 import { cities } from '../data';
 import { DEMO_PROFILES } from '../data/demoProfiles';
 import { formatMoney } from '../lib/format';
@@ -42,8 +43,12 @@ export default function Landing({ onStart, onDemo, onBrowse }: LandingProps) {
 
   return (
     <div className="grain min-h-screen bg-paper text-ink">
-      {/* Hero —— 编辑部风：衬线大标题 + 留白 + 主行动点（品牌与导航由全站 TabBar 承载） */}
-      <section className="mx-auto max-w-almanac px-6 pb-10 pt-10 md:px-10 md:pb-14 md:pt-16">
+      {/* Hero —— 编辑部风：大标题 + 留白 + 主行动点；桌面端右侧以海图罗盘花点亮留白（品牌与导航由全站 TabBar 承载） */}
+      <section className="relative mx-auto max-w-almanac px-6 pb-10 pt-10 md:px-10 md:pb-14 md:pt-16">
+        {/* 装饰层：仅 xl+ 显示（窄桌面下大标题会挤占右栏，故 1280px 以下不显示），纯几何 SVG，不占版式、不参与交互 */}
+        <div className="pointer-events-none absolute right-0 top-1/2 hidden -translate-y-1/2 xl:block" aria-hidden="true">
+          <HeroChart className="h-[420px] w-[420px] text-pine/25" />
+        </div>
         <motion.p
           variants={fadeUp}
           initial="hidden"
@@ -157,7 +162,7 @@ export default function Landing({ onStart, onDemo, onBrowse }: LandingProps) {
                 type="button"
                 onClick={() => onDemo(profile.id)}
                 whileTap={{ scale: 0.985 }}
-                className="group rounded-[10px] border hairline bg-card p-5 text-left transition-all duration-300 hover:border-clay/55 hover:shadow-[0_6px_24px_rgba(31,45,40,0.08)] md:p-6"
+                className="group rounded-[10px] border hairline bg-card p-5 text-left transition-all duration-300 hover:border-clay/55 hover:shadow-lift md:p-6"
               >
                 <div className="mb-4 flex items-center justify-between">
                   <span className="font-mono text-[10px] uppercase tracking-eyebrow text-ink-soft">

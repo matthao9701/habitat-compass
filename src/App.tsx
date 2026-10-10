@@ -1,5 +1,5 @@
 import { lazy, Suspense, useEffect, useState } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, MotionConfig, motion } from 'framer-motion';
 import Landing from './components/Landing';
 import TabBar, { type TabId } from './components/TabBar';
 import Footer from './components/Footer';
@@ -216,68 +216,72 @@ export default function App() {
 
   return (
     <I18nProvider>
-      {/* 移动端底部导航为固定层，故在常驻页面为内容预留等高防遮挡间距（含安全区） */}
-      <div
-        className={`min-h-screen bg-paper ${
-          TAB_SCREENS.includes(screen) ? 'pb-[calc(56px+env(safe-area-inset-bottom))] md:pb-0' : ''
-        }`}
-      >
-        {TAB_SCREENS.includes(screen) && (
-          <TabBar active={screen as TabId} onChange={openTab} />
-        )}
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={screen}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-          >
-            <Suspense fallback={<ScreenFallback />}>
-              {screen === 'landing' && (
-                <Landing onStart={startQuiz} onDemo={openDemo} onBrowse={() => go('cities')} />
-              )}
-              {screen === 'cities' && <CityBrowser />}
-              {screen === 'quiz' && (
-                <Quiz onComplete={completeQuiz} onExit={exitQuiz} startDeep={quizVersion === 'pro'} />
-              )}
-              {screen === 'report' && result && (
-                <Report
-                  result={result}
-                  onRestart={restart}
-                  isDemo={isDemo}
-                  onStartQuiz={startQuiz}
-                  onOpenTax={(cityId) => openTax(cityId)}
-                />
-              )}
-              {screen === 'compare' && (
-                <CompareScreen
-                  result={result}
-                  answers={answers}
-                  seedCities={compareSeed}
-                  onOpenQuiz={startQuiz}
-                />
-              )}
-              {screen === 'tax' && (
-                <TaxPlanner initialCityId={taxCityId} onOpenQuiz={startQuiz} />
-              )}
-              {screen === 'profile' && (
-                <ProfileScreen
-                  onOpenQuiz={startQuiz}
-                  onOpenHistory={openHistory}
-                  onOpenCompare={openCompare}
-                />
-              )}
-            </Suspense>
-          </motion.div>
-        </AnimatePresence>
-        {TAB_SCREENS.includes(screen) && <Footer />}
-        {/* 常驻挂载以捕获 beforeinstallprompt（该事件每页只触发一次）；
-            仅在常驻页面展示：测评/报告是专注模式，底部固定操作栏会被浮层遮挡 */}
-        <PwaInstallCard enabled={TAB_SCREENS.includes(screen)} />
-        {/* Ko-fi 打赏悬浮胶囊：仅 SPA 侧注入（静态落地页保持自包含）；单例守卫防重复 */}
-        <KofiWidget />
-      </div>
+      {/* reducedMotion="user"：系统开启「减少动态效果」时，framer-motion 自动跳过位移/缩放/淡入，
+          与 index.css 的 @media (prefers-reduced-motion) 规则协同（DESIGN.md 动效规范要求）。 */}
+      <MotionConfig reducedMotion="user">
+        {/* 移动端底部导航为固定层，故在常驻页面为内容预留等高防遮挡间距（含安全区） */}
+        <div
+          className={`min-h-screen bg-paper ${
+            TAB_SCREENS.includes(screen) ? 'pb-[calc(56px+env(safe-area-inset-bottom))] md:pb-0' : ''
+          }`}
+        >
+          {TAB_SCREENS.includes(screen) && (
+            <TabBar active={screen as TabId} onChange={openTab} />
+          )}
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={screen}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <Suspense fallback={<ScreenFallback />}>
+                {screen === 'landing' && (
+                  <Landing onStart={startQuiz} onDemo={openDemo} onBrowse={() => go('cities')} />
+                )}
+                {screen === 'cities' && <CityBrowser />}
+                {screen === 'quiz' && (
+                  <Quiz onComplete={completeQuiz} onExit={exitQuiz} startDeep={quizVersion === 'pro'} />
+                )}
+                {screen === 'report' && result && (
+                  <Report
+                    result={result}
+                    onRestart={restart}
+                    isDemo={isDemo}
+                    onStartQuiz={startQuiz}
+                    onOpenTax={(cityId) => openTax(cityId)}
+                  />
+                )}
+                {screen === 'compare' && (
+                  <CompareScreen
+                    result={result}
+                    answers={answers}
+                    seedCities={compareSeed}
+                    onOpenQuiz={startQuiz}
+                  />
+                )}
+                {screen === 'tax' && (
+                  <TaxPlanner initialCityId={taxCityId} onOpenQuiz={startQuiz} />
+                )}
+                {screen === 'profile' && (
+                  <ProfileScreen
+                    onOpenQuiz={startQuiz}
+                    onOpenHistory={openHistory}
+                    onOpenCompare={openCompare}
+                  />
+                )}
+              </Suspense>
+            </motion.div>
+          </AnimatePresence>
+          {TAB_SCREENS.includes(screen) && <Footer />}
+          {/* 常驻挂载以捕获 beforeinstallprompt（该事件每页只触发一次）；
+              仅在常驻页面展示：测评/报告是专注模式，底部固定操作栏会被浮层遮挡 */}
+          <PwaInstallCard enabled={TAB_SCREENS.includes(screen)} />
+          {/* Ko-fi 打赏悬浮胶囊：仅 SPA 侧注入（静态落地页保持自包含）；单例守卫防重复 */}
+          <KofiWidget />
+        </div>
+      </MotionConfig>
     </I18nProvider>
   );
 }

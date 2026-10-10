@@ -123,6 +123,22 @@ export default {
       transitionTimingFunction: {
         chart: 'cubic-bezier(0.22, 1, 0.36, 1)',
       },
+      // 投影语义档（编辑部风：一律冷墨投影，从不发亮/发光）。
+      // 收敛原先散落各处的 shadow-[...] 临时值，统一浮层层次：
+      //   pin  < lift < toast < overlay  —— 卡片内小标签 → 卡片悬停 → 提示条 → 弹层/抽屉
+      //   clay / clay-strong —— 测评选项选中态的暖赤陶微光
+      //   glow-pine / glow-clay —— 悬浮操作钮（Ko-fi）静态与悬停
+      boxShadow: {
+        pin: '0 1px 3px rgba(31, 36, 33, 0.20)', // 图片上小胶囊/角标
+        lift: '0 6px 24px rgba(31, 45, 40, 0.10)', // 卡片悬停上浮
+        toast: '0 4px 18px rgba(31, 45, 40, 0.18)', // 底部提示条
+        overlay: '0 12px 40px rgba(31, 36, 33, 0.16)', // 弹层
+        'overlay-left': '-12px 0 40px rgba(31, 36, 33, 0.10)', // 右侧抽屉（向左投）
+        clay: '0 2px 12px rgba(190, 90, 56, 0.18)', // 选项选中（浅）
+        'clay-strong': '0 2px 10px rgba(190, 90, 56, 0.35)', // 选项选中（实底）
+        'glow-pine': '0 6px 20px -6px rgba(29, 53, 87, 0.55)',
+        'glow-clay': '0 10px 26px -8px rgba(201, 106, 82, 0.60)',
+      },
       keyframes: {
         'dash-drift': {
           to: { strokeDashoffset: '-24' },

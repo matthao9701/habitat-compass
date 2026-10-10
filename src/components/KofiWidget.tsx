@@ -60,9 +60,9 @@ export default function KofiWidget() {
         {t('footer.support')}
       </span>
       <span
-        className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-pine text-paper shadow-[0_6px_20px_-6px_rgba(29,53,87,0.55)]
+        className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-pine text-paper shadow-glow-pine
           transition-all duration-300 ease-chart group-hover:-translate-y-0.5 group-hover:bg-clay
-          group-hover:shadow-[0_10px_26px_-8px_rgba(201,106,82,0.6)] group-focus-visible:ring-2 group-focus-visible:ring-clay/50"
+          group-hover:shadow-glow-clay group-focus-visible:ring-2 group-focus-visible:ring-clay/50"
       >
         <CoffeeIcon />
       </span>

@@ -586,7 +586,7 @@ export default function CompareScreen({ result, answers, seedCities, onOpenQuiz 
 
       {/* 保存成功提示 */}
       {savedToast && (
-        <div className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2 rounded-full border border-moss-deep/50 bg-card px-5 py-2.5 font-mono text-[11px] text-moss-deep shadow-[0_4px_18px_rgba(31,45,40,0.18)]">
+        <div className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2 rounded-full border border-moss-deep/50 bg-card px-5 py-2.5 font-mono text-[11px] text-moss-deep shadow-toast">
           {t('cmp.save.done')}
         </div>
       )}

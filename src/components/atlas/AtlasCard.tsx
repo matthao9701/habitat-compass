@@ -20,7 +20,7 @@ import type { City } from '../../data/types';
  */
 function Pill({ children }: { children: React.ReactNode }) {
   return (
-    <span className="inline-flex items-center gap-1 rounded-[5px] border border-ink/10 bg-white px-2 py-0.5 font-data text-[11px] font-semibold leading-tight text-pine shadow-[0_1px_3px_rgba(31,36,33,0.22)]">
+    <span className="inline-flex items-center gap-1 rounded-[5px] border border-ink/10 bg-white px-2 py-0.5 font-data text-[11px] font-semibold leading-tight text-pine shadow-pin">
       {children}
     </span>
   );
@@ -43,7 +43,7 @@ function VisaPill({ tone, children }: { tone: VisaTone; children: React.ReactNod
     hard: 'text-clay-deep',
   };
   return (
-    <span className={`inline-flex items-center gap-1 rounded-[5px] border border-ink/10 bg-white px-2 py-0.5 font-data text-[10.5px] font-medium leading-tight shadow-[0_1px_3px_rgba(31,36,33,0.18)] ${text[tone]}`}>
+    <span className={`inline-flex items-center gap-1 rounded-[5px] border border-ink/10 bg-white px-2 py-0.5 font-data text-[10.5px] font-medium leading-tight shadow-pin ${text[tone]}`}>
       <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${dot[tone]}`} aria-hidden="true" />
       {children}
     </span>
@@ -80,7 +80,7 @@ export function AtlasCard({ city, index, onOpen, formatMoney, badge }: AtlasCard
       viewport={{ once: true, margin: '-40px' }}
       transition={{ duration: 0.5, delay: (index % 3) * 0.07, ease: [0.22, 1, 0.36, 1] }}
       onClick={() => onOpen(city)}
-      className="group flex flex-col overflow-hidden rounded-card border border-line bg-card text-left transition-all duration-300 ease-chart hover:border-ink/25 hover:shadow-[0_10px_32px_rgba(31,36,33,0.07)]"
+      className="group flex flex-col overflow-hidden rounded-card border border-line bg-card text-left transition-all duration-300 ease-chart hover:border-ink/25 hover:shadow-lift"
     >
       {/* 城市实景 + 数据胶囊 */}
       <div className="relative h-[150px] overflow-hidden border-b border-line">
@@ -99,12 +99,12 @@ export function AtlasCard({ city, index, onOpen, formatMoney, badge }: AtlasCard
         </div>
         {/* 空状态「最接近」角标（仅筛选无果时的兜底推荐显示） */}
         {badge && (
-          <span className="absolute left-3 top-2.5 rounded-[4px] bg-clay-deep px-1.5 py-0.5 font-data text-[10px] font-semibold tracking-[0.14em] text-white shadow-[0_1px_3px_rgba(31,36,33,0.22)]">
+          <span className="absolute left-3 top-2.5 rounded-[4px] bg-clay-deep px-1.5 py-0.5 font-data text-[10px] font-semibold tracking-[0.14em] text-white shadow-pin">
             {badge}
           </span>
         )}
         {/* 期号式角标 */}
-        <span className="absolute left-3 bottom-2.5 rounded-[4px] bg-ink/80 px-1.5 py-0.5 font-data text-[10px] font-semibold tracking-[0.18em] text-white shadow-[0_1px_3px_rgba(31,36,33,0.25)]">
+        <span className="absolute left-3 bottom-2.5 rounded-[4px] bg-ink/80 px-1.5 py-0.5 font-data text-[10px] font-semibold tracking-[0.18em] text-white shadow-pin">
           Nº {String(index + 1).padStart(3, '0')}
         </span>
       </div>
@@ -244,7 +244,7 @@ export function CityDrawer({ city, onClose, formatMoney }: DrawerProps) {
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ duration: 0.42, ease: [0.22, 1, 0.36, 1] }}
-            className="fixed inset-y-0 right-0 z-50 flex w-full max-w-[460px] flex-col border-l border-line bg-paper shadow-[-12px_0_40px_rgba(31,36,33,0.10)]"
+            className="fixed inset-y-0 right-0 z-50 flex w-full max-w-[460px] flex-col border-l border-line bg-paper shadow-overlay-left"
             role="dialog"
             aria-modal="true"
             aria-label={t('atlas.drawer.aria', { name: cityName(city) })}

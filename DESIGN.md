@@ -215,3 +215,12 @@
 - 商标边界：人格测评部分为自研映射与开源题库（OEJTS 1.2 结构 CC BY-NC-SA 4.0 / IPIP-NEO 公有领域 / O*NET CC BY 4.0），全站文案不使用 MBTI、Myers-Briggs、16Personalities 等第三方商标词，人格表述统一为「16 型人格画像 / Big Five 五维」。代码内部标识符（mbtiQuestions 等）为技术命名，不出现在任何页面文案。
 - 字体：Noto Sans SC / IBM Plex Mono / Source Serif 4 均为 SIL Open Font License 1.1，经 @fontsource 包自托管（OFL 允许网页嵌入，无需页面署名；许可副本随 node_modules 分发，方法论页另有声明）。
 - 图标/素材：全站图标为自绘几何 SVG（TabBar/CompassMark 等），无第三方图标库文件复制、无外部图片、无 Google Fonts 外链、生产构建无任何第三方脚本外链（verify-legal 第 9 节全 dist 扫描）。
+
+## 第十四轮：动效可访问性 / 投影 token / 焦点态 / Hero 装饰
+
+> 本轮为「编辑部杂志风」的**体系内打磨**，不换色板、不改版式：补齐既有规范里已声明但未落地的一项（prefers-reduced-motion），并把散落的一次性样式收敛为可复用 token。
+
+- **尊重 prefers-reduced-motion（补齐实现）**：`src/index.css` 增加 `@media (prefers-reduced-motion: reduce)`——关停装饰性循环动画（`animate-dash-drift` / `animate-soft-pulse` / `animate-marquee`）、`scroll-behavior: auto`，并把过渡/动画时长压到 0.01ms；`src/App.tsx` 以 framer-motion `<MotionConfig reducedMotion="user">` 包裹全站，系统开启该偏好时自动跳过位移/缩放/淡入。此条对应本文档《动效与交互》既有的「尊重 prefers-reduced-motion」要求。
+- **投影语义 token**：`tailwind.config.js` 新增 `boxShadow` 牌组，替代原先各组件里手写的 `shadow-[...]` 临时值（一律冷墨投影，沿用设计禁忌「不发光」）。档位：`pin`（图片上小胶囊/角标）< `lift`（卡片悬停）< `toast`（底部提示条）< `overlay`（弹层）/ `overlay-left`（右侧抽屉）；暖色 `clay` / `clay-strong`（测评选项选中态）；`glow-pine` / `glow-clay`（悬浮操作钮 Ko-fi 静态/悬停）。全 `src/` 已无 `shadow-[...]` 字面量。
+- **键盘焦点可见态**：`src/index.css` 末尾（utilities 层，晚于各处 `outline-none` 生效）新增 `:where(a, button, input, textarea, select, summary, [tabindex]):focus-visible { outline: 2px solid #1d3557; outline-offset: 2px }`。深海蓝焦点环，与 `.hc-range` 拇指焦点环同色；`:focus-visible` 语义保证鼠标/触摸点击不触发，不干扰现有点按反馈。范围滑块（`.hc-range`）保留其专属拇指焦点环。
+- **首页 Hero 海图装饰（HeroChart）**：新增 `src/components/HeroChart.tsx`——纯几何 SVG「方位罗盘花」（同心方位环 + 5°/30° 刻度 + 八向罗盘 + 陶土虚线航线），依 DESIGN.md 视觉策略「Hero 可纯几何 SVG 装饰」，零图片体积、`aria-hidden`、`pointer-events-none`。**仅 xl（≥1280px）显示**：窄桌面下大标题会挤占右栏故不显示；移动端一律隐藏以保证首屏 CTA 可见。取色 `text-pine/25`（深海蓝低透明）+ clay 指针，克制不喧宾夺主。

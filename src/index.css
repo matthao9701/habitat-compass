@@ -35,6 +35,28 @@
   button {
     -webkit-tap-highlight-color: transparent;
   }
+
+  /* 尊重系统级「减少动态效果」偏好（DESIGN.md 动效规范要求）：
+     关闭装饰性循环动画（航线漂移等）与平滑滚动，并把过渡/动画时长压到近乎瞬时。
+     JS 侧由 framer-motion 的 MotionConfig(reducedMotion="user") 协同处理。 */
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    .animate-dash-drift,
+    .animate-soft-pulse,
+    .animate-marquee {
+      animation: none !important;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
 }
 
 @layer components {
@@ -145,6 +167,17 @@
 
   .hc-range:focus-visible::-moz-range-thumb {
     box-shadow: 0 0 0 3px rgb(29 53 87 / 28%);
+  }
+}
+
+@layer utilities {
+  /* 键盘可见焦点：全站统一深海蓝 outline（与 .hc-range 焦点环同色，补齐 a11y）。
+     放在 utilities 层末位，晚于各处的 outline-none / focus:border-* 生效，保证「键盘焦点」
+     始终可见；:focus-visible 语义确保鼠标/触摸点击不触发，不干扰现有点按反馈。
+     .hc-range:focus-visible（特异性更高）保留其拇指专用焦点环，不受影响。 */
+  :where(a, button, input, textarea, select, summary, [tabindex]):focus-visible {
+    outline: 2px solid #1d3557;
+    outline-offset: 2px;
   }
 }
 

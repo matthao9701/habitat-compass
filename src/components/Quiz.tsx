@@ -950,7 +950,7 @@ function MBTIItem({ question, value, onSelect }: MBTIItemProps) {
               aria-label={t('quiz.mbti.optionAria', { key: opt.key.toUpperCase(), label: opt.label })}
               className={`flex flex-col gap-1.5 rounded-[7px] border px-4 py-3.5 text-left transition-all duration-200 active:scale-[0.99] ${
                 selected
-                  ? 'border-clay bg-clay/[0.08] shadow-[0_2px_12px_rgba(190,90,56,0.18)]'
+                  ? 'border-clay bg-clay/[0.08] shadow-clay'
                   : 'border-ink/15 bg-transparent hover:border-ink/40'
               }`}
             >
@@ -1016,7 +1016,7 @@ function IPIPItem({ question, value, onSelect }: IPIPItemProps) {
               aria-label={t('quiz.mbti.optionAria', { key: opt.key.toUpperCase(), label: opt.text })}
               className={`flex items-center gap-2 rounded-[7px] border px-4 py-3.5 text-left transition-all duration-200 active:scale-[0.99] ${
                 selected
-                  ? 'border-clay bg-clay/[0.08] shadow-[0_2px_12px_rgba(190,90,56,0.18)]'
+                  ? 'border-clay bg-clay/[0.08] shadow-clay'
                   : 'border-ink/15 bg-transparent hover:border-ink/40'
               }`}
             >
@@ -1074,7 +1074,7 @@ function RiasecItem({ question, value, onSelect }: RiasecItemProps) {
               title={scaleLabel}
               className={`flex h-10 flex-1 items-center justify-center rounded-[7px] border font-mono text-[12px] transition-all duration-200 active:scale-95 ${
                 selected
-                  ? 'border-clay bg-clay text-paper shadow-[0_2px_10px_rgba(190,90,56,0.35)]'
+                  ? 'border-clay bg-clay text-paper shadow-clay-strong'
                   : 'border-ink/20 bg-transparent text-ink-soft hover:border-ink/50 hover:text-ink'
               }`}
             >
@@ -1121,7 +1121,7 @@ function RiskItem({ question, value, onSelect }: RiskItemProps) {
               title={scaleLabel}
               className={`flex h-10 flex-1 items-center justify-center rounded-[7px] border font-mono text-[12px] transition-all duration-200 active:scale-95 ${
                 selected
-                  ? 'border-clay bg-clay text-paper shadow-[0_2px_10px_rgba(190,90,56,0.35)]'
+                  ? 'border-clay bg-clay text-paper shadow-clay-strong'
                   : 'border-ink/20 bg-transparent text-ink-soft hover:border-ink/50 hover:text-ink'
               }`}
             >

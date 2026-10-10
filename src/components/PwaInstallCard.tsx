@@ -31,7 +31,7 @@ export default function PwaInstallCard({ enabled = true }: { enabled?: boolean }
           transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
           className="pointer-events-none fixed inset-x-0 bottom-0 z-50 flex justify-center px-4 pb-4 md:pb-6"
         >
-          <div className="pointer-events-auto w-full max-w-md rounded-card border hairline bg-card p-5 shadow-[0_12px_40px_rgba(31,36,33,0.16)] backdrop-blur">
+          <div className="pointer-events-auto w-full max-w-md rounded-card border hairline bg-card p-5 shadow-overlay backdrop-blur">
             <div className="flex items-start gap-3">
               <span className="mt-0.5 shrink-0 text-pine">
                 <CompassMark size={26} />
