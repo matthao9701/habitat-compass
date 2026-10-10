@@ -4,7 +4,7 @@
 // - 数据从权威公共来源提炼：各国税务机关官网（IRD/AADE/IRAS/Porezna uprava/Agenzia delle Entrate/
 //   Revenue Service of Georgia/MDEC-LHDN）与 PwC Worldwide Tax Summaries（公开指南）；
 // - 标准 JSON 结构：币种 currency / 起征点 standardDeduction / 分级税率 brackets / 特惠税制 regimes；
-// - 覆盖数字游民与远程工作者热门目的地（冷启动 Top 20+），其余国家由 taxRules.ts 粗颗粒兜底。
+// - 覆盖数字游民与远程工作者热门目的地（冷启动 Top 20+，2026-10 扩充至约 48 国），其余国家由 taxRules.ts 粗颗粒兜底。
 // 免责：本表为方向性估算用的事实快照（含汇率为近似值），不构成税务建议；实际税负受居留身份、
 // 抵扣、税收协定、社保与申报义务影响，决策前务必核实官方口径。
 //
@@ -57,14 +57,14 @@ export interface CountryTaxProfile {
 }
 
 /** 汇率快照月份（近似值，仅用于展示换算） */
-export const TAX_FX_ASOF = '2025-10';
+export const TAX_FX_ASOF = '2026-10';
 
 const b = (upTo: number | null, ratePct: number): Bracket => ({ upTo, ratePct });
 
 export const TAX_BRACKETS: Record<string, CountryTaxProfile> = {
   // 泰国 · Thailand (THB, 年)
   TH: {
-    code: 'TH', currency: 'THB', usdRate: 0.02778, standardDeduction: 0,
+    code: 'TH', currency: 'THB', usdRate: 0.02979, standardDeduction: 0,
     brackets: [b(150000, 0), b(300000, 5), b(500000, 10), b(750000, 15), b(1000000, 20), b(2000000, 25), b(5000000, 30), b(null, 35)],
     regimes: [{
       id: 'ltr', kind: 'flat', ratePct: 17, capLocal: null,
@@ -81,7 +81,7 @@ export const TAX_BRACKETS: Record<string, CountryTaxProfile> = {
 
   // 格鲁吉亚 · Georgia (GEL, 年)
   GE: {
-    code: 'GE', currency: 'GEL', usdRate: 0.3704, standardDeduction: 0,
+    code: 'GE', currency: 'GEL', usdRate: 0.384742, standardDeduction: 0,
     brackets: [b(null, 20)],
     regimes: [{
       id: 'sb', kind: 'flat', ratePct: 1, capLocal: 500000,
@@ -98,7 +98,7 @@ export const TAX_BRACKETS: Record<string, CountryTaxProfile> = {
 
   // 西班牙 · Spain (EUR, 年；国家档 + 参考大区档)
   ES: {
-    code: 'ES', currency: 'EUR', usdRate: 1.08, standardDeduction: 0,
+    code: 'ES', currency: 'EUR', usdRate: 1.120595, standardDeduction: 0,
     brackets: [b(12450, 19), b(20200, 24), b(35200, 30), b(60000, 37), b(300000, 45), b(null, 47)],
     regimes: [{
       id: 'beckham', kind: 'flat', ratePct: 24, capLocal: 600000,
@@ -114,7 +114,7 @@ export const TAX_BRACKETS: Record<string, CountryTaxProfile> = {
 
   // 葡萄牙 · Portugal (EUR, 年)
   PT: {
-    code: 'PT', currency: 'EUR', usdRate: 1.08, standardDeduction: 0,
+    code: 'PT', currency: 'EUR', usdRate: 1.120595, standardDeduction: 0,
     brackets: [b(7703, 13), b(11623, 16.5), b(16472, 22), b(21321, 25), b(27146, 32), b(39791, 35.5), b(51997, 43.5), b(81199, 45), b(null, 48)],
     regimes: [{
       id: 'ifici', kind: 'flat', ratePct: 20, capLocal: null,
@@ -130,7 +130,7 @@ export const TAX_BRACKETS: Record<string, CountryTaxProfile> = {
 
   // 阿联酋 · United Arab Emirates (AED, 年)
   AE: {
-    code: 'AE', currency: 'AED', usdRate: 0.2723, standardDeduction: 0,
+    code: 'AE', currency: 'AED', usdRate: 0.272294, standardDeduction: 0,
     brackets: [b(null, 0)],
     regimes: [],
     note: '对个人工资与经营所得不征个人所得税（仅个别酋长国对特定企业情形征税）。',
@@ -140,7 +140,7 @@ export const TAX_BRACKETS: Record<string, CountryTaxProfile> = {
 
   // 马来西亚 · Malaysia (MYR, 年)
   MY: {
-    code: 'MY', currency: 'MYR', usdRate: 0.2247, standardDeduction: 0,
+    code: 'MY', currency: 'MYR', usdRate: 0.244646, standardDeduction: 0,
     brackets: [b(5000, 0), b(20000, 1), b(35000, 3), b(50000, 6), b(70000, 11), b(100000, 19), b(400000, 25), b(600000, 26), b(2000000, 28), b(null, 30)],
     regimes: [{
       id: 'derantau', kind: 'exempt', ratePct: null, capLocal: null,
@@ -156,7 +156,7 @@ export const TAX_BRACKETS: Record<string, CountryTaxProfile> = {
 
   // 印度尼西亚 · Indonesia (IDR, 年)
   ID: {
-    code: 'ID', currency: 'IDR', usdRate: 0.0000625, standardDeduction: 54000000,
+    code: 'ID', currency: 'IDR', usdRate: 0.0000559, standardDeduction: 54000000,
     brackets: [b(60000000, 5), b(250000000, 15), b(500000000, 25), b(5000000000, 30), b(null, 35)],
     regimes: [],
     note: '起征点为单身 PTKP 54,000,000 印尼盾/年；已婚另有附加扣除。',
@@ -166,7 +166,7 @@ export const TAX_BRACKETS: Record<string, CountryTaxProfile> = {
 
   // 日本 · Japan (JPY, 年；国税口径)
   JP: {
-    code: 'JP', currency: 'JPY', usdRate: 0.006667, standardDeduction: 480000,
+    code: 'JP', currency: 'JPY', usdRate: 0.00631769, standardDeduction: 480000,
     brackets: [b(1950000, 5), b(3300000, 10), b(6950000, 20), b(9000000, 23), b(18000000, 33), b(40000000, 40), b(null, 45)],
     regimes: [],
     note: '此处为国税口径；另需缴纳约 10% 的地方居民税，实际综合税率更高。',
@@ -176,7 +176,7 @@ export const TAX_BRACKETS: Record<string, CountryTaxProfile> = {
 
   // 克罗地亚 · Croatia (EUR, 年)
   HR: {
-    code: 'HR', currency: 'EUR', usdRate: 1.08, standardDeduction: 0,
+    code: 'HR', currency: 'EUR', usdRate: 1.120595, standardDeduction: 0,
     brackets: [b(60000, 20), b(null, 30)],
     regimes: [{
       id: 'nomad', kind: 'exempt', ratePct: null, capLocal: null,
@@ -192,7 +192,7 @@ export const TAX_BRACKETS: Record<string, CountryTaxProfile> = {
 
   // 希腊 · Greece (EUR, 年；雇佣与经营所得)
   GR: {
-    code: 'GR', currency: 'EUR', usdRate: 1.08, standardDeduction: 0,
+    code: 'GR', currency: 'EUR', usdRate: 1.120595, standardDeduction: 0,
     brackets: [b(10000, 9), b(20000, 22), b(30000, 28), b(40000, 36), b(null, 44)],
     regimes: [{
       id: 'art5c', kind: 'relief', ratePct: 50, capLocal: null,
@@ -208,7 +208,7 @@ export const TAX_BRACKETS: Record<string, CountryTaxProfile> = {
 
   // 意大利 · Italy (EUR, 年)
   IT: {
-    code: 'IT', currency: 'EUR', usdRate: 1.08, standardDeduction: 0,
+    code: 'IT', currency: 'EUR', usdRate: 1.120595, standardDeduction: 0,
     brackets: [b(28000, 23), b(50000, 35), b(null, 43)],
     regimes: [{
       id: 'impatriate', kind: 'flat', ratePct: 15, capLocal: null,
@@ -224,7 +224,7 @@ export const TAX_BRACKETS: Record<string, CountryTaxProfile> = {
 
   // 马耳他 · Malta (EUR, 年，单身)
   MT: {
-    code: 'MT', currency: 'EUR', usdRate: 1.08, standardDeduction: 0,
+    code: 'MT', currency: 'EUR', usdRate: 1.120595, standardDeduction: 0,
     brackets: [b(12000, 0), b(16000, 15), b(60000, 25), b(null, 35)],
     regimes: [],
     note: '单身纳税人档位；已婚与父母档位不同，最高 35%。',
@@ -234,7 +234,7 @@ export const TAX_BRACKETS: Record<string, CountryTaxProfile> = {
 
   // 墨西哥 · Mexico (MXN, 年)
   MX: {
-    code: 'MX', currency: 'MXN', usdRate: 0.05405, standardDeduction: 0,
+    code: 'MX', currency: 'MXN', usdRate: 0.0545498, standardDeduction: 0,
     brackets: [b(8947.8, 1.92), b(75984.55, 6.4), b(133536.07, 10.88), b(155229.8, 16), b(185852.57, 17.92), b(374837.88, 21.36), b(590795.99, 23.52), b(1127926.8, 30), b(1504935.98, 32), b(4514801.99, 34), b(null, 35)],
     regimes: [],
     note: 'ISR 年度税率表；另有雇员劳动补贴等抵扣未单列。',
@@ -244,7 +244,7 @@ export const TAX_BRACKETS: Record<string, CountryTaxProfile> = {
 
   // 哥伦比亚 · Colombia (COP, 年；UVT 口径)
   CO: {
-    code: 'CO', currency: 'COP', usdRate: 0.0002439, standardDeduction: 54280910,
+    code: 'CO', currency: 'COP', usdRate: 0.00030897, standardDeduction: 54280910,
     brackets: [b(84658300, 19), b(204175900, 28), b(431757330, 33), b(944687030, 35), b(1543769000, 37), b(null, 39)],
     regimes: [],
     note: '起征点约为 1,090 UVT（UVT 为按年调整的税收单位，此处按 2025 参考值折算）。',
@@ -254,7 +254,7 @@ export const TAX_BRACKETS: Record<string, CountryTaxProfile> = {
 
   // 越南 · Viet Nam (VND, 年)
   VN: {
-    code: 'VN', currency: 'VND', usdRate: 0.00003937, standardDeduction: 132000000,
+    code: 'VN', currency: 'VND', usdRate: 0.00003867, standardDeduction: 132000000,
     brackets: [b(60000000, 5), b(120000000, 10), b(216000000, 15), b(384000000, 20), b(624000000, 25), b(960000000, 30), b(null, 35)],
     regimes: [],
     note: '起征点为个人减免 1100 万越南盾/月（约合 1.32 亿/年）；受抚养人另有扣除。',
@@ -264,7 +264,7 @@ export const TAX_BRACKETS: Record<string, CountryTaxProfile> = {
 
   // 土耳其 · Turkiye (TRY, 年；雇佣所得)
   TR: {
-    code: 'TR', currency: 'TRY', usdRate: 0.026316, standardDeduction: 0,
+    code: 'TR', currency: 'TRY', usdRate: 0.02026783, standardDeduction: 0,
     brackets: [b(158000, 15), b(330000, 20), b(800000, 27), b(4300000, 35), b(null, 40)],
     regimes: [],
     note: '雇佣所得档位（2025 参考）；最低工资免征，且档位逐年上调。',
@@ -274,7 +274,7 @@ export const TAX_BRACKETS: Record<string, CountryTaxProfile> = {
 
   // 捷克 · Czechia (CZK, 年)
   CZ: {
-    code: 'CZ', currency: 'CZK', usdRate: 0.043478, standardDeduction: 0,
+    code: 'CZ', currency: 'CZK', usdRate: 0.04593597, standardDeduction: 0,
     brackets: [b(1762812, 15), b(null, 23)],
     regimes: [],
     note: '分档为 36 倍月均工资；另有每人每年约 30,840 捷克克朗的税收减免额未单列。',
@@ -284,7 +284,7 @@ export const TAX_BRACKETS: Record<string, CountryTaxProfile> = {
 
   // 匈牙利 · Hungary (HUF, 年)
   HU: {
-    code: 'HU', currency: 'HUF', usdRate: 0.0027778, standardDeduction: 0,
+    code: 'HU', currency: 'HUF', usdRate: 0.00306592, standardDeduction: 0,
     brackets: [b(null, 15)],
     regimes: [],
     note: '个人所得为 15% 单一税率（多数所得类型）。',
@@ -294,7 +294,7 @@ export const TAX_BRACKETS: Record<string, CountryTaxProfile> = {
 
   // 罗马尼亚 · Romania (RON, 年)
   RO: {
-    code: 'RO', currency: 'RON', usdRate: 0.217391, standardDeduction: 0,
+    code: 'RO', currency: 'RON', usdRate: 0.20968603, standardDeduction: 0,
     brackets: [b(null, 10)],
     regimes: [],
     note: '个人所得为 10% 单一税率；社保与医保为另行征收。',
@@ -304,7 +304,7 @@ export const TAX_BRACKETS: Record<string, CountryTaxProfile> = {
 
   // 爱沙尼亚 · Estonia (EUR, 年)
   EE: {
-    code: 'EE', currency: 'EUR', usdRate: 1.08, standardDeduction: 7848,
+    code: 'EE', currency: 'EUR', usdRate: 1.120595, standardDeduction: 7848,
     brackets: [b(null, 22)],
     regimes: [],
     note: '22% 单一税率；2025 年起基本免税额不随收入递减。',
@@ -314,7 +314,7 @@ export const TAX_BRACKETS: Record<string, CountryTaxProfile> = {
 
   // 塞尔维亚 · Serbia (RSD, 年)
   RS: {
-    code: 'RS', currency: 'RSD', usdRate: 0.009259, standardDeduction: 410652,
+    code: 'RS', currency: 'RSD', usdRate: 0.00954632, standardDeduction: 410652,
     brackets: [b(5439096, 10), b(null, 25)],
     regimes: [],
     note: '基本税率 10%；年净收入超过约 6 倍年均工资部分另征 15% 附加税（合 25%）。',
@@ -324,7 +324,7 @@ export const TAX_BRACKETS: Record<string, CountryTaxProfile> = {
 
   // 亚美尼亚 · Armenia (AMD, 年)
   AM: {
-    code: 'AM', currency: 'AMD', usdRate: 0.0025641, standardDeduction: 0,
+    code: 'AM', currency: 'AMD', usdRate: 0.00276276, standardDeduction: 0,
     brackets: [b(null, 20)],
     regimes: [],
     note: '个人所得为 20% 单一税率（居民与非居民同）。',
@@ -334,7 +334,7 @@ export const TAX_BRACKETS: Record<string, CountryTaxProfile> = {
 
   // 新加坡 · Singapore (SGD, 年)
   SG: {
-    code: 'SG', currency: 'SGD', usdRate: 0.746269, standardDeduction: 0,
+    code: 'SG', currency: 'SGD', usdRate: 0.78079372, standardDeduction: 0,
     brackets: [b(20000, 0), b(30000, 2), b(40000, 3.5), b(80000, 7), b(120000, 11.5), b(160000, 15), b(200000, 18), b(240000, 19), b(280000, 19.5), b(320000, 20), b(500000, 22), b(1000000, 23), b(null, 24)],
     regimes: [{
       id: 'territorial', kind: 'exempt', ratePct: null, capLocal: null,
@@ -350,7 +350,7 @@ export const TAX_BRACKETS: Record<string, CountryTaxProfile> = {
 
   // 中国香港 · Hong Kong SAR (HKD, 年)
   HK: {
-    code: 'HK', currency: 'HKD', usdRate: 0.128205, standardDeduction: 132000,
+    code: 'HK', currency: 'HKD', usdRate: 0.12741676, standardDeduction: 132000,
     brackets: [b(50000, 2), b(100000, 6), b(150000, 10), b(200000, 14), b(null, 17)],
     regimes: [{
       id: 'territorial', kind: 'exempt', ratePct: null, capLocal: null,
@@ -366,7 +366,7 @@ export const TAX_BRACKETS: Record<string, CountryTaxProfile> = {
 
   // 韩国 · Korea (KRW, 年；国税口径)
   KR: {
-    code: 'KR', currency: 'KRW', usdRate: 0.00074074, standardDeduction: 1500000,
+    code: 'KR', currency: 'KRW', usdRate: 0.00074538, standardDeduction: 1500000,
     brackets: [b(14000000, 6), b(50000000, 15), b(88000000, 24), b(150000000, 35), b(300000000, 38), b(500000000, 40), b(1000000000, 42), b(null, 45)],
     regimes: [],
     note: '此处为国税口径；另需缴纳约 10% 的地方所得税，实际综合税率更高。',
@@ -376,7 +376,7 @@ export const TAX_BRACKETS: Record<string, CountryTaxProfile> = {
 
   // 中国台湾 · Taiwan (TWD, 年)
   TW: {
-    code: 'TW', currency: 'TWD', usdRate: 0.03125, standardDeduction: 0,
+    code: 'TW', currency: 'TWD', usdRate: 0.03128459, standardDeduction: 0,
     brackets: [b(590000, 5), b(1330000, 12), b(2660000, 20), b(4980000, 30), b(null, 40)],
     regimes: [],
     note: '另有免税额与标准扣除额（单身约 22.8 万新台币）未单列；境外所得有基本税额制度。',
@@ -386,7 +386,7 @@ export const TAX_BRACKETS: Record<string, CountryTaxProfile> = {
 
   // 中国 · China (CNY, 年；综合所得)
   CN: {
-    code: 'CN', currency: 'CNY', usdRate: 0.137931, standardDeduction: 60000,
+    code: 'CN', currency: 'CNY', usdRate: 0.14910985, standardDeduction: 60000,
     brackets: [b(36000, 3), b(144000, 10), b(300000, 20), b(420000, 25), b(660000, 30), b(960000, 35), b(null, 45)],
     regimes: [],
     note: '综合所得年度税率表；起征点为 6 万元/年的基本减除费用。',
@@ -396,7 +396,7 @@ export const TAX_BRACKETS: Record<string, CountryTaxProfile> = {
 
   // 乌拉圭 · Uruguay (UYU, 年；BPC 口径)
   UY: {
-    code: 'UY', currency: 'UYU', usdRate: 0.0238095, standardDeduction: 546000,
+    code: 'UY', currency: 'UYU', usdRate: 0.02496687, standardDeduction: 546000,
     brackets: [b(780000, 10), b(1170000, 15), b(2340000, 24), b(3900000, 25), b(5850000, 27), b(8775000, 31), b(null, 36)],
     regimes: [],
     note: '档位按 BPC（可调整计量单位）折算，此处按 2025 参考值近似；前 84 BPC 免征。',
@@ -406,12 +406,216 @@ export const TAX_BRACKETS: Record<string, CountryTaxProfile> = {
 
   // 柬埔寨 · Cambodia (KHR, 年；工资税)
   KH: {
-    code: 'KH', currency: 'KHR', usdRate: 0.0002439, standardDeduction: 0,
+    code: 'KH', currency: 'KHR', usdRate: 0.00024695, standardDeduction: 0,
     brackets: [b(18000000, 0), b(24000000, 5), b(102000000, 10), b(150000000, 15), b(null, 20)],
     regimes: [],
     note: '按月度工资税档位折算为年度口径；非居民适用 20% 单一税率。',
     noteEn: 'Monthly salary-tax bands annualised; non-residents face a flat 20% rate.',
     sources: ['General Department of Taxation (tax.gov.kh)', 'PwC Worldwide Tax Summaries (Cambodia)'],
+  },
+
+  // 美国 · United States (USD, 年；2025 联邦单身档)
+  US: {
+    code: 'US', currency: 'USD', usdRate: 1, standardDeduction: 15750,
+    brackets: [b(11925, 10), b(48475, 12), b(103350, 22), b(197300, 24), b(250525, 32), b(626350, 35), b(null, 37)],
+    regimes: [],
+    note: '联邦单身档 + 15,750 美元标准扣除；各州另有州所得税（0%–约 13%），此处未单列。',
+    noteEn: 'Federal single brackets + USD 15,750 standard deduction; states add their own income tax (0%–~13%), not itemised here.',
+    sources: ['IRS (irs.gov) · Tax Reform (OBBBA)', 'PwC Worldwide Tax Summaries (United States)'],
+  },
+
+  // 加拿大 · Canada (CAD, 年；2026 联邦档)
+  CA: {
+    code: 'CA', currency: 'CAD', usdRate: 0.701587, standardDeduction: 0,
+    brackets: [b(58523, 14), b(117045, 20.5), b(181440, 26), b(258482, 29), b(null, 33)],
+    regimes: [],
+    note: '联邦档；各省另征省级税（合并最高档约 44%–55%），联邦基本个人免税额（约 1.6 万加元抵免）未单列。',
+    noteEn: 'Federal scale; provinces levy their own tax (combined top ~44%–55%). The federal basic personal amount (~CAD 16,000 credit) is not itemised.',
+    sources: ['Canada Revenue Agency (canada.ca)', 'PwC Worldwide Tax Summaries (Canada)'],
+  },
+
+  // 澳大利亚 · Australia (AUD, 年；2025/26 居民档)
+  AU: {
+    code: 'AU', currency: 'AUD', usdRate: 0.697825, standardDeduction: 0,
+    brackets: [b(18200, 0), b(45000, 16), b(135000, 30), b(190000, 37), b(null, 45)],
+    regimes: [],
+    note: '居民档；另需缴纳 2% Medicare 附加税（高收入者 1%–1.5% 附加）。非居民档与打工度假签档不同。',
+    noteEn: 'Resident scale; a further 2% Medicare levy applies (plus a 1%–1.5% surcharge for some). Non-resident and working-holiday scales differ.',
+    sources: ['Australian Taxation Office (ato.gov.au)', 'PwC Worldwide Tax Summaries (Australia)'],
+  },
+
+  // 新西兰 · New Zealand (NZD, 年)
+  NZ: {
+    code: 'NZ', currency: 'NZD', usdRate: 0.561163, standardDeduction: 0,
+    brackets: [b(15600, 10.5), b(53500, 17.5), b(78100, 30), b(180000, 33), b(null, 39)],
+    regimes: [],
+    note: '自 2024-07-31 起的居民税率；无地方所得税，多数居民还需缴纳 ACC 征费（此处未单列）。',
+    noteEn: 'Resident rates effective 31 Jul 2024; no local income tax. Most residents also pay an ACC levy (not itemised).',
+    sources: ['Inland Revenue (ird.govt.nz)', 'PwC Worldwide Tax Summaries (New Zealand)'],
+  },
+
+  // 德国 · Germany (EUR, 年；2025 单身档)
+  DE: {
+    code: 'DE', currency: 'EUR', usdRate: 1.120595, standardDeduction: 0,
+    brackets: [b(12096, 0), b(68429, 42), b(null, 45)],
+    regimes: [],
+    note: '12,096–68,429 欧元区间为 14%→42% 的几何递进段（此处按 42% 上界近似，中段会高估）；另有团结附加税（高收入约 5.5%）。',
+    noteEn: 'Between EUR 12,096 and 68,429 the rate ramps geometrically from 14% to 42% (approximated here at the 42% ceiling, so mid-range is overstated); a solidarity surcharge (~5.5% for higher incomes) also applies.',
+    sources: ['Bundesministerium der Finanzen (bundesfinanzministerium.de)', 'PwC Worldwide Tax Summaries (Germany)'],
+  },
+
+  // 瑞士 · Switzerland (CHF, 年；联邦档·单身)
+  CH: {
+    code: 'CH', currency: 'CHF', usdRate: 1.203811, standardDeduction: 0,
+    brackets: [b(15200, 0), b(33200, 0.77), b(43500, 0.88), b(58000, 2.64), b(76200, 2.97), b(82100, 5.94), b(108900, 6.6), b(141500, 8.8), b(185100, 11), b(793900, 13.2), b(null, 11.5)],
+    regimes: [],
+    note: '仅联邦直接税（单身档，最高约 11.5%）；各州/市镇税通常为联邦的数倍，在苏黎世等地实际综合最高档可达约 20%–40%。',
+    noteEn: 'Federal direct tax only (single; ~11.5% top), while cantonal and communal taxes typically multiply this several-fold — combined top rates reach ~20%–40% depending on canton.',
+    sources: ['Eidgenössische Steuerverwaltung (estv.admin.ch)', 'PwC Worldwide Tax Summaries (Switzerland)'],
+  },
+
+  // 荷兰 · Netherlands (EUR, 年；2026 Box 1)
+  NL: {
+    code: 'NL', currency: 'EUR', usdRate: 1.120595, standardDeduction: 0,
+    brackets: [b(38883, 8.1), b(78426, 37.56), b(null, 49.5)],
+    regimes: [],
+    note: 'Box 1（工作与自住房）档位；另有一般税收抵免与劳动抵免未单列。Box 2/3（重大利益、储蓄投资）另计。',
+    noteEn: 'Box 1 (work and home) scale; general and labour tax credits are not itemised. Box 2/3 (substantial interest, savings & investment) are separate.',
+    sources: ['Belastingdienst (belastingdienst.nl)', 'PwC Worldwide Tax Summaries (Netherlands)'],
+  },
+
+  // 挪威 · Norway (NOK, 年；22% 一般税 + 阶梯税合并)
+  NO: {
+    code: 'NO', currency: 'NOK', usdRate: 0.104566, standardDeduction: 0,
+    brackets: [b(226100, 22), b(318300, 23.7), b(725050, 26), b(980100, 35.7), b(1467200, 38.8), b(null, 39.8)],
+    regimes: [],
+    note: '合并 22% 一般所得税与阶梯税（trinnskatt，1.7%–17.8%）；非居民短期雇佣可适用 25% 统一 PAYE。',
+    noteEn: 'Combines the 22% general income tax with the bracket tax (trinnskatt, 1.7%–17.8%); short-stay non-residents may use the flat 25% PAYE.',
+    sources: ['Skatteetaten (skatteetaten.no)', 'PwC Worldwide Tax Summaries (Norway)'],
+  },
+
+  // 丹麦 · Denmark (DKK, 年；2026)
+  DK: {
+    code: 'DK', currency: 'DKK', usdRate: 0.149888, standardDeduction: 0,
+    brackets: [b(696956, 37.06), b(845543, 44.56), b(2818152, 52.06), b(null, 57.06)],
+    regimes: [],
+    note: '合并底税 12.01% 与市镇税均值 25.049%，再叠加中/顶/顶顶税；边际上限约 57%（含 8% 劳务市场税则约 60.5%）。资本所得多为 42%。',
+    noteEn: 'Combines the 12.01% bottom tax with the 25.049% average municipal tax, plus middle/top/top-top taxes; the marginal rate caps around 57% (~60.5% including the 8% labour-market tax). Capital income is usually 42%.',
+    sources: ['Skattestyrelsen (skat.dk)', 'PwC Worldwide Tax Summaries (Denmark)'],
+  },
+
+  // 瑞典 · Sweden (SEK, 年；2026)
+  SE: {
+    code: 'SE', currency: 'SEK', usdRate: 0.100084, standardDeduction: 0,
+    brackets: [b(643000, 32), b(null, 52)],
+    regimes: [],
+    note: '合并市镇税均值 32% 与国家税 20%（超过 643,000 瑞典克朗部分）；工作所得另有基本免税额抵减。非居民受雇所得起征 22.5%。',
+    noteEn: 'Combines the 32% average municipal tax with a 20% state tax above SEK 643,000; a basic allowance further reduces tax on earned income. Non-resident employment income is taxed from 22.5%.',
+    sources: ['Skatteverket (skatteverket.se)', 'PwC Worldwide Tax Summaries (Sweden)'],
+  },
+
+  // 奥地利 · Austria (EUR, 年)
+  AT: {
+    code: 'AT', currency: 'EUR', usdRate: 1.120595, standardDeduction: 0,
+    brackets: [b(13539, 0), b(21992, 20), b(36458, 30), b(70365, 40), b(104859, 48), b(1000000, 50), b(null, 55)],
+    regimes: [],
+    note: '13,539 欧元以下免税；超过 100 万欧元部分按 55% 征税。非居民按常规税率并加计 11,077 欧元的虚拟收入。',
+    noteEn: 'Income up to EUR 13,539 is exempt; the portion above EUR 1,000,000 is taxed at 55%. Non-residents are taxed at normal rates plus a fictitious income uplift of EUR 11,077.',
+    sources: ['Bundesministerium für Finanzen (bmf.gv.at)', 'PwC Worldwide Tax Summaries (Austria)'],
+  },
+
+  // 波兰 · Poland (PLN, 年)
+  PL: {
+    code: 'PL', currency: 'PLN', usdRate: 0.255643, standardDeduction: 30000,
+    brackets: [b(120000, 12), b(null, 32)],
+    regimes: [],
+    note: '12% / 32% 两档，30,000 兹罗提免税额（已计入起征点）；年收入超 100 万兹罗提部分另征 4% 团结税。',
+    noteEn: 'Two bands of 12% and 32% with a PLN 30,000 tax-free amount (included in the threshold); income above PLN 1 million bears an extra 4% solidarity tax.',
+    sources: ['Ministerstwo Finansów (podatki.gov.pl)', 'PwC Worldwide Tax Summaries (Poland)'],
+  },
+
+  // 巴西 · Brazil (BRL, 年；2026 月度表年化)
+  BR: {
+    code: 'BR', currency: 'BRL', usdRate: 0.199517, standardDeduction: 0,
+    brackets: [b(29145.6, 0), b(33919.8, 7.5), b(45012.6, 15), b(55976.16, 22.5), b(null, 27.5)],
+    regimes: [],
+    note: '按 2026 年 1 月起的月度累进表年化（月免税额 2,428.80 雷亚尔）；另有简化扣除等未单列。',
+    noteEn: 'Annualised from the monthly scale effective Jan 2026 (monthly exemption BRL 2,428.80); the simplified deduction and other reliefs are not itemised.',
+    sources: ['Receita Federal (gov.br/receitafederal)', 'PwC Worldwide Tax Summaries (Brazil)'],
+  },
+
+  // 印度 · India (INR, 年；新税制 APTR FY2025-26)
+  IN: {
+    code: 'IN', currency: 'INR', usdRate: 0.0103234, standardDeduction: 75000,
+    brackets: [b(400000, 0), b(800000, 5), b(1200000, 10), b(1600000, 15), b(2000000, 20), b(2400000, 25), b(null, 30)],
+    regimes: [],
+    note: '默认新税制（APTR）档位 + 受雇者 75,000 卢比标准扣除；4% 健康与教育附加及高收入附加税未单列。',
+    noteEn: 'Default new regime (APTR) slabs + INR 75,000 standard deduction for salaried; the 4% health & education cess and high-income surcharge are not itemised.',
+    sources: ['Central Board of Direct Taxes (incometax.gov.in)', 'PwC Worldwide Tax Summaries (India)'],
+  },
+
+  // 以色列 · Israel (ILS, 年；2026)
+  IL: {
+    code: 'IL', currency: 'ILS', usdRate: 0.326453, standardDeduction: 0,
+    brackets: [b(84120, 10), b(120720, 14), b(228000, 20), b(301200, 31), b(560280, 35), b(721560, 47), b(null, 50)],
+    regimes: [],
+    note: '超过 721,560 谢克尔部分叠加 3% 附加税，故最高档为 50%；另有税收抵免点未单列。',
+    noteEn: 'A 3% surtax applies above ILS 721,560, giving the 50% top rate; tax credit points are not itemised.',
+    sources: ['Israel Tax Authority (gov.il)', 'PwC Worldwide Tax Summaries (Israel)'],
+  },
+
+  // 南非 · South Africa (ZAR, 年；2026/27)
+  ZA: {
+    code: 'ZA', currency: 'ZAR', usdRate: 0.0604634, standardDeduction: 0,
+    brackets: [b(245100, 18), b(383100, 26), b(530200, 31), b(695800, 36), b(887000, 39), b(1878600, 41), b(null, 45)],
+    regimes: [],
+    note: '2026/27 年度档位；居民与 非居民同表。个人所得税抵免（主要/次要 rebate）与医疗抵免未单列。',
+    noteEn: '2026/27 brackets; residents and non-residents share the same scale. Primary/secondary rebates and medical credits are not itemised.',
+    sources: ['South African Revenue Service (sars.gov.za)', 'PwC Worldwide Tax Summaries (South Africa)'],
+  },
+
+  // 菲律宾 · Philippines (PHP, 年；居民公民)
+  PH: {
+    code: 'PH', currency: 'PHP', usdRate: 0.0159, standardDeduction: 0,
+    brackets: [b(250000, 0), b(400000, 15), b(800000, 20), b(2000000, 25), b(8000000, 30), b(null, 35)],
+    regimes: [{
+      id: 'flat8', kind: 'flat', ratePct: 8, capLocal: null,
+      label: '菲律宾 8% 简易税', labelEn: 'Philippines 8% flat option',
+      note: '年总营收不超过 300 万比索的个体经营者，可对超过 25 万比索的部分选择 8% 统一税，替代累进税率与比例税。',
+      noteEn: 'Self-employed individuals with gross receipts up to PHP 3 million may opt for an 8% flat tax on receipts above PHP 250,000, in lieu of the graduated rates and percentage tax.',
+      source: 'Bureau of Internal Revenue (bir.gov.ph) · PwC Worldwide Tax Summaries (Philippines)',
+      natures: ['freelance', 'founder'],
+    }],
+    note: '居民公民按全球所得累进课税；受雇者另有 9 万比索免征额等额外的免税额度未单列。',
+    noteEn: 'Resident citizens are taxed progressively on worldwide income; the additional PHP 90,000 exemption for certain employees is not itemised.',
+    sources: ['Bureau of Internal Revenue (bir.gov.ph)', 'PwC Worldwide Tax Summaries (Philippines)'],
+  },
+
+  // 埃及 · Egypt (EGP, 年)
+  EG: {
+    code: 'EG', currency: 'EGP', usdRate: 0.019091, standardDeduction: 20000,
+    brackets: [b(40000, 0), b(55000, 10), b(70000, 15), b(200000, 20), b(400000, 22.5), b(1200000, 25), b(null, 27.5)],
+    regimes: [],
+    note: '年起征点 4 万埃镑，另有 2 万埃镑薪金免税额度（已计入标准扣除）。',
+    noteEn: 'Annual threshold of EGP 40,000 plus the EGP 20,000 salary exemption (included in the standard deduction).',
+    sources: ['Egyptian Tax Authority (eta.gov.eg)', 'PwC Worldwide Tax Summaries (Egypt)'],
+  },
+
+  // 芬兰 · Finland (EUR, 年；2026 国家档)
+  FI: {
+    code: 'FI', currency: 'EUR', usdRate: 1.120595, standardDeduction: 0,
+    brackets: [b(21200, 12.64), b(32600, 19), b(40100, 30.25), b(52100, 33.25), b(null, 37.5)],
+    regimes: [{
+      id: 'expert', kind: 'flat', ratePct: 25, capLocal: null,
+      label: '芬兰外国专家税制', labelEn: 'Finland foreign-expert regime',
+      note: '符合条件的外籍专家，其芬兰来源工资可按 25% 统一税率课税，最长 84 个月（回国芬兰人 60 个月）；月现金工资需至少 5,800 欧元。',
+      noteEn: 'Qualifying foreign experts may be taxed at a flat 25% on Finnish-source salary for up to 84 months (60 for returning Finns); cash salary must be at least EUR 5,800/month.',
+      source: 'Verohallinto (vero.fi) · PwC Worldwide Tax Summaries (Finland)',
+      natures: ['employee'],
+    }],
+    note: '国家（国税）进展档；市镇税均值约 7.5% 另计，实际综合税率更高。资本所得 30%/34%。',
+    noteEn: 'National (state) progressive scale; an average municipal tax of about 7.5% applies in addition, raising the combined rate. Capital income is taxed at 30%/34%.',
+    sources: ['Verohallinto (vero.fi)', 'PwC Worldwide Tax Summaries (Finland)'],
   },
 };
 

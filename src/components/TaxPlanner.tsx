@@ -352,6 +352,9 @@ export default function TaxPlanner({ initialCityId, onOpenQuiz }: TaxPlannerProp
             <div className="rounded-card border-l-4 border-clay bg-card px-5 py-4">
               <p className="font-heading text-[13.5px] font-semibold text-ink">{t('tax.disclaimer.title')}</p>
               <p className="mt-1.5 text-[12.5px] leading-[1.8] text-ink-soft">{t('tax.disclaimer.body')}</p>
+              <p className="mt-2 border-t hairline pt-2 text-[12px] leading-[1.75] text-ink-soft/90">
+                {t('tax.disclaimer.card', { country: cityCountryName(city, lang) })}
+              </p>
             </div>
 
             {onOpenQuiz && (
