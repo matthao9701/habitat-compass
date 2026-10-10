@@ -243,7 +243,7 @@ export default function TaxPlanner({ initialCityId, onOpenQuiz }: TaxPlannerProp
                 <p className="text-[13.5px] leading-relaxed text-paper/85">
                   {savedPositive ? t('tax.out.saved', { rate: TAX_BASELINE_EFF_RATE }) : t('tax.out.savedNeg', { rate: TAX_BASELINE_EFF_RATE })}{' '}
                   <span className={`font-data font-semibold ${savedPositive ? 'text-[#9CC79A]' : 'text-[#E8A08C]'}`}>
-                    {savedPositive ? '+' : '−'}
+                    {savedPositive ? '+' : ''}
                     {usd(Math.abs(saved))}
                   </span>
                 </p>

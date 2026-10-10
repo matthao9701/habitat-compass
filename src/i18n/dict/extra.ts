@@ -126,7 +126,7 @@ const zh: Record<string, string> = {
   'pf.funnel.note': '以上计数仅保存在你的浏览器本地（localStorage），不包含任何个人身份信息，也不会被上传或分享；清除浏览器数据后计数会归零。',
 
   // ---- BigFiveSection ----
-  'bf.radar.aria': 'Big Five 五维剖面雷达图',
+  'bf.radar.aria': 'Big Five 人格剖面雷达图',
   'bf.compare.empty': '还没有标准测验记录。完成标准测验（约 8 分钟）后，这里会并排对照标准与深度两次测评的人格类型与兴趣差异。',
   'bf.compare.lite': '标准测验（SJT）',
   'bf.compare.pro': '深度测验（Big Five 迫选映射）',
@@ -246,7 +246,7 @@ const zh: Record<string, string> = {
   'wd.note': '分段宽度 = 引擎权重（人格 30 / 偏好 42 / 兴趣 18，另有 Tier 3 加分层 ≤10%）；段内进度 = 该维度与 Top 1 城市的实际得分。',
 
   // ---- 支付弹层 / 航线图 ----
-  'route.aria': '覆盖全球 39 个海外城市的航线示意图',
+  'route.aria': '覆盖全球主要海外城市的航线示意图',
 
   // ---- 语言切换 ----
   'lang.toZh': '切换到中文',
@@ -312,7 +312,7 @@ const en: Record<string, string> = {
   'rep.demo.cta1': 'This is a sample report — your own answers may point to entirely different cities.',
   'rep.demo.cta2': 'The 3-stage assessment takes ~8 min: a forced-choice personality section, lifestyle scenarios and interest tags. No sign-up needed.',
   'rep.cta.start': 'Start my real assessment',
-  'rep.cta.copyHint': 'Copy the full text summary to share with friends, or retake the quiz for different results.',
+  'rep.cta.copyHint': 'Copy the full text summary to share with friends, or retake the assessment for different results.',
   'rep.cta.restart': 'Retake assessment',
   'rep.disclaimer.1': 'Monthly living costs, visa and residency policies in this report are reference snapshots and change with exchange rates, seasons and policy cycles. Monthly all-in cost and Cost Index (public statistical estimates, NYC=100) are estimates and vary with lifestyle. Income thresholds, duration and tax treatment of digital nomad visas follow the latest information published by the destination\'s official immigration authorities and embassies.',
   'rep.disclaimer.mbti1': 'Personality items come from an {base} ({publisher}), with no third-party scale licence. Personality types are for self-exploration only and do not constitute clinical or career advice.',
@@ -409,9 +409,9 @@ const en: Record<string, string> = {
   'pf.funnel.stages': 'stages · assessment',
   'pf.funnel.note': 'Counters above are stored locally in your browser (localStorage), contain no personally identifiable information, and are never uploaded or shared; clearing browser data resets them.',
 
-  'bf.radar.aria': 'Big Five five-dimension profile radar',
+  'bf.radar.aria': 'Big Five profile radar chart',
   'bf.compare.empty': 'No standard test record yet. After completing the standard test (~8 min), the standard and deep runs\' personality types and interest differences will be compared side by side here.',
-  'bf.compare.lite': 'Core (SJT)',
+  'bf.compare.lite': 'Standard (SJT)',
   'bf.compare.pro': 'Deep (Big Five forced-choice mapping)',
   'bf.compare.diff': 'Types differ across runs: {lite} → {pro}',
   'bf.compare.shared': 'Shared interests ({count}):',
@@ -447,7 +447,7 @@ const en: Record<string, string> = {
   'quiz.interests.refine': 'Refine · selected sub-items reinforce this interest\'s weight',
 
   'cons.safety.threshold': 'Threshold {v} / 100',
-  'cons.footer': 'Constraints are saved locally together with quiz progress; come back anytime to edit and re-run.',
+  'cons.footer': 'Constraints are saved locally together with assessment progress; come back anytime to edit and re-run.',
 
   'an.breakdown.title': 'Breakdown · why {name} ranks first',
   'an.breakdown.desc': 'The weighted composite split into interests and preferences, checked dimension by dimension against the top city\'s real data.',
@@ -475,7 +475,7 @@ const en: Record<string, string> = {
   'cn.head2': 'cities',
   'cn.relaxed1': ', of which',
   'cn.relaxed2': 'over-budget cities were kept due to an insufficient remaining pool (down-weighted, marked "over budget")',
-  'cn.rule': 'Hard constraints veto before scoring and don\'t participate in the v3 layered weights (core 42/30/18 + bonus layer <=10%); go back to the "Hard constraints" step before the quiz to edit and re-run.',
+  'cn.rule': 'Hard constraints veto before scoring and don\'t participate in the v3 layered weights (core 42/30/18 + bonus layer <=10%); go back to the "Hard constraints" step before the assessment to edit and re-run.',
   'cn.relaxedRule': 'Relaxation rule: if fewer than 5 cities remain after budget filtering, cities "over the cap but within a < 15% gap" enter scoring with a 3-point deduction and an "over budget" marker.',
   'cn.passportSkipped': 'Downgraded: the "visa-free / VOA preferred" bottom line was not enforced because the selected passport has no entry snapshot; visa tiers are still shown in details as reference.',
   'cn.reason.costMissing': 'Monthly cost estimate missing — cannot verify it is within the ${cap} cap',
@@ -523,7 +523,7 @@ const en: Record<string, string> = {
   'wd.segWeight': 'Weight {pct}%',
   'wd.note': 'Segment width = engine weights (personality 30 / preferences 42 / interests 18, plus a Tier 3 bonus layer <=10%); inner progress = actual score against the top city.',
 
-  'route.aria': 'Route map covering 39 overseas cities worldwide',
+  'route.aria': 'Route map covering major overseas cities worldwide',
 
   'lang.toZh': 'Switch to Chinese',
   'lang.toEn': 'Switch to English',

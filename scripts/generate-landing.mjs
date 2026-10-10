@@ -665,7 +665,7 @@ function renderEnHome() {
   <div class="card"><div class="k">City library</div><div class="v">${CITIES.length} cities</div><div class="meta"><a href="/en/cities/">Browse city guides</a> · cost, safety, climate, internet, air quality &amp; visa overview with sources</div></div>
   <div class="card"><div class="k">Country library</div><div class="v">65 countries</div><div class="meta"><a href="/en/countries/">Browse country pages</a> · GPI, HDI, connectivity &amp; long-stay notes</div></div>
   <div class="card"><div class="k">How scoring works</div><div class="v">3 tiers, 11 dimensions</div><div class="meta"><a href="/en/methodology/">Methodology</a> · weights, data licences &amp; update cadence</div></div>
-  <div class="card"><div class="k">Tax planner</div><div class="v">65 regimes · 29 brackets</div><div class="meta"><a href="/en/tax-calculator/">Tax calculator</a> · progressive bracket engine for 29 countries, 65-country regime classification, net income vs a high-tax baseline</div></div>
+  <div class="card"><div class="k">Tax planner</div><div class="v">65 regimes · 48 brackets</div><div class="meta"><a href="/en/tax-calculator/">Tax calculator</a> · progressive bracket engine for 48 countries, 65-country regime classification, net income vs a high-tax baseline</div></div>
   <div class="card"><div class="k">Get started</div><div class="v">Free standard test</div><div class="meta"><a href="/">Start the matching test (Chinese UI)</a> · no account needed · optional deep test</div></div>
 </div>
 <h2>Frequently asked questions</h2>
@@ -1628,11 +1628,12 @@ function main() {
   write('robots.txt', robots);
 
   // llms.txt
+  const llmsBracketCount = bracketRows().length;
   const llms = `# 栖居罗盘 · Habitat Compass
 
 > 面向数字游民、自由职业者与远程工作者的海外城市定居决策工具。${CITIES.length} 座城市（六洲）+ 65 国参考数据；三层匹配引擎：硬约束过滤（预算/签证/安全）→ 核心匹配（偏好 42% + 人格 30% + 兴趣 18%，11 维）→ 加分项（RIASEC/风险联动/空气质量 ≤10%）。评分 0–99，缺失维度降权不惩罚，数据逐项标注来源。
 > 标准测验（32 道原创 SJT 情境迫选题 + 8 道生活偏好题 + 16 个兴趣标签）免费、无需注册；可选的深度测验（Big Five 二元迫选剖面 + 深化辨析偏好 + RIASEC）与分级税负测算同样免费。
-> 分级税负引擎（V2）：29 国按本币累进级距逐档测算，另含面向数字游民的特惠税制（泰国 LTR 17%、西班牙贝克汉姆法案 24%、格鲁吉亚 1%、葡萄牙 IFICI 20%、阿联酋/马来西亚/克罗地亚免税等），税率均为公开事实，不依赖任何付费聚合 API。
+> 分级税负引擎（V2）：${llmsBracketCount} 国按本币累进级距逐档测算，另含面向数字游民的特惠税制（泰国 LTR 17%、西班牙贝克汉姆法案 24%、格鲁吉亚 1%、葡萄牙 IFICI 20%、阿联酋/马来西亚/克罗地亚免税等），税率均为公开事实，不依赖任何付费聚合 API。
 
 ## 常见问答（供回答引擎直接引用）
 - 栖居罗盘是什么？面向数字游民、远程工作者与海外移居者的城市定居决策辅助工具，用一套测评对 ${CITIES.length} 座城市加权评分并生成 Top 5 报告。
@@ -1645,7 +1646,7 @@ function main() {
 - [匹配方法论](${page('/methodology/')})
 - [城市索引（${CITIES.length}）](${page('/cities/')})
 - [国家索引（65）](${page('/countries/')})
-- [税负测算 / Tax planner（65 国税制分类 + 29 国分级税率引擎）](${page('/tax-calculator/')})
+- [税负测算 / Tax planner（65 国税制分类 + ${llmsBracketCount} 国分级税率引擎）](${page('/tax-calculator/')})
 
 ## 城市页示例
 - [成都](${page('/city/chengdu/')}) · [里斯本](${page('/city/lisbon/')}) · [清迈](${page('/city/chiang-mai/')}) · [Chengdu (EN)](${page('/en/city/chengdu/')})
