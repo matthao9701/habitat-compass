@@ -170,7 +170,7 @@ const NEW_KEYS = [
   'landing.version.coreCta',
   'landing.version.deepen',
   'landing.version.deepenDesc',
-  'landing.version.deepenCta',
+  'landing.version.optional',
   'landing.version.freeCta',
 ];
 for (const k of NEW_KEYS) {
@@ -178,8 +178,8 @@ for (const k of NEW_KEYS) {
 }
 check(
   'REVERSE_ZH 反查：中文值 → en',
-  translate('en', '核心测评') === DICTS.en['landing.version.core'],
-  `got=${translate('en', '核心测评')}`,
+  translate('en', '标准测验') === DICTS.en['landing.version.core'],
+  `got=${translate('en', '标准测验')}`,
 );
 check(
   'REVERSE_ZH 反查：查看报告样例 → zh 原值',

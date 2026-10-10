@@ -13,7 +13,7 @@ import {
 import type { Pole } from '../data/questions';
 import { scenarioQuestions, lifestyleQuestions } from '../data/questions';
 import {
-  ipipQuestions,
+  ipipPairs,
   proLifestyleQuestions,
   RANK_ORDINALS,
   IPIP_FACETS,
@@ -35,8 +35,8 @@ export interface UserAnswers {
   version?: QuizVersion;
   /** 核心段人格：SJT 二元迫选场景题作答（'a' | 'b'，见 questions.ts） */
   mbti: Record<string, string>;
-  /** 深化段人格：IPIP-NEO 五点量表（1-5）。存在即视为「深化版」，人格以 IPIP 为准 */
-  ipip?: Record<string, number>;
+  /** 深度人格：IPIP 二元迫选配对作答（'a' | 'b'，见 questionsPro.ts）。存在即视为「深度版」，人格以它为准 */
+  ipip?: Record<string, string>;
   /** 生活偏好作答：核心段 8 题单选；深化段另有滑杆/排序/二选一（见 questionsPro.ts） */
   lifestyle: Record<string, string>;
   /** 兴趣标签多选（核心段 16 个；深化段可扩到 28 个一级标签 id） */
@@ -446,47 +446,45 @@ function isPositivePole(pole: Pole, axis: AxisName): boolean {
 
 
 // ---------------------------------------------------------------------------
-// 标准版人格：IPIP-NEO 五点计分 → Big Five → 16 型映射（McCrae & Costa 对应）
+// 深度人格：IPIP 二元迫选配对计分 → Big Five → 16 型映射（McCrae & Costa 对应）
 // ---------------------------------------------------------------------------
 
-const IPIP_FACET_ITEMS = new Map<string, typeof ipipQuestions>();
+const IPIP_FACET_PAIRS = new Map<string, typeof ipipPairs>();
 for (const f of IPIP_FACETS) {
-  IPIP_FACET_ITEMS.set(
+  IPIP_FACET_PAIRS.set(
     f.key,
-    ipipQuestions.filter((q) => q.facet === f.key),
+    ipipPairs.filter((p) => p.facet === f.key),
   );
 }
 
-const clamp5 = (v: number): number => Math.min(5, Math.max(1, Math.round(v)));
-
 /**
- * 标准版计分（IPIP 官方口径）：
- * +keyed 得分 = 原始值；-keyed 得分 = 6 - 原始值（1-5）。
- * facet 分 = 4 题均值 → 域分 = 6 facet 均值 → 百分位 = (score - 1) / 4 * 100。
- * Big Five → 16 型（McCrae & Costa 1989 经典对应，中位 50 分界，恰为 50 归正向字母）：
+ * 深度计分（二元迫选口径）：
+ * 每 facet 由 2 组迫选对构成，A = 正向陈述、B = 反向陈述。
+ * 选 A → 该对记 1（偏正向），选 B → 记 0；未作答对记 0.5（中性）。
+ * facet 百分位 = 该 facet 全部对的均值 × 100（0 / 50 / 100 三档）。
+ * 域分 = 6 facet 均值 → 16 型映射（中位 50 分界，恰为 50 归正向字母）：
  *   E/I ← Extraversion；S/N ← Openness（高开放 → N）；T/F ← Agreeableness（高宜人 → F）；
  *   J/P ← Conscientiousness（高尽责 → J）。Neuroticism 无对应字母，作为独立补充维度。
  * traitVector 对齐引擎语义（正 = E/N/F/P）：
  *   ei = (E-50)·2；sn = (O-50)·2；tf = (A-50)·2；jp = (50-C)·2。
  */
-export function derivePersonalityPro(ipipAnswers: Record<string, number>): BigFiveProfile {
+export function derivePersonalityPro(ipipAnswers: Record<string, string>): BigFiveProfile {
   const facetPct = new Map<string, number>();
 
   for (const f of IPIP_FACETS) {
-    const items = IPIP_FACET_ITEMS.get(f.key) ?? [];
-    let sum = 0;
-    let count = 0;
-    for (const q of items) {
-      const raw = ipipAnswers[q.id];
-      if (typeof raw !== 'number') continue;
-      const v = clamp5(raw);
-      sum += q.keyed === 1 ? v : 6 - v;
-      count += 1;
+    const pairs = IPIP_FACET_PAIRS.get(f.key) ?? [];
+    if (pairs.length === 0) {
+      facetPct.set(f.key, 50);
+      continue;
     }
-    // 未作答的题按量表中值 3 计（facet 不因此缺分）
-    sum += (items.length - count) * 3;
-    const mean = sum / items.length;
-    facetPct.set(f.key, ((mean - 1) / 4) * 100);
+    let sum = 0;
+    for (const p of pairs) {
+      const raw = ipipAnswers[p.id];
+      if (raw === 'a') sum += 1; // A = 正向陈述
+      else if (raw === 'b') sum += 0; // B = 反向陈述
+      else sum += 0.5; // 未作答按中值
+    }
+    facetPct.set(f.key, (sum / pairs.length) * 100);
   }
 
   const domainMean = (domain: BigFiveDomain): number => {
@@ -537,10 +535,13 @@ export type PreferenceOrdinals = Record<UserDimKey, number>;
 const clamp15 = (v: number): number => Math.min(5, Math.max(1, v));
 
 /**
- * 聚合标准版偏好作答 → 每维 1-5 序数（多题均值，四舍五入到 0.1）。
- * - choice / forced：按选项 ordinalMap 贡献
- * - slider：作答编码 'p1-p2-p3-p4'（与 dims 顺序一致，和 = total）→ 每维 1 + 4·pct
- * - rank：作答编码 'a>b>c>d' → RANK_ORDINALS（5 / 3.5 / 2.5 / 1）
+ * 聚合生活偏好作答 → 每维 1-5 序数（多题均值，四舍五入到 0.1）。
+ * 深度段 = 核心段 8 题（二元迫选经 ORDINAL_MAP）+ 深度段深化辨析题，两级信号叠加。
+ * - 核心段 choice（pace/size/social/language/visa/remote）：由选项 value 经 ORDINAL_MAP 贡献
+ * - 深度段 choice / forced：按选项 ordinalMap 贡献
+ * - 深度段 slider：作答编码 'p1-p2-p3-p4'（与 dims 顺序一致，和 = total）→ 每维 1 + 4·pct
+ * - 深度段 rank：作答编码 'a>b>c>d' → RANK_ORDINALS（5 / 3.5 / 2.5 / 1）
+ * （budget / climate 不走序数维，由 costFit / climateFit 专用函数处理）
  */
 export function derivePreferenceOrdinals(lifestyle: Record<string, string>): PreferenceOrdinals {
   const sums: Record<UserDimKey, { sum: number; count: number }> = {
@@ -552,6 +553,20 @@ export function derivePreferenceOrdinals(lifestyle: Record<string, string>): Pre
     remote: { sum: 0, count: 0 },
   };
 
+  const add = (key: UserDimKey, v: number): void => {
+    sums[key].sum += clamp15(v);
+    sums[key].count += 1;
+  };
+
+  // 1) 核心段 8 题：6 个序数维由二元迫选选项经 ORDINAL_MAP 映射
+  for (const q of lifestyleQuestions) {
+    const raw = lifestyle[q.id];
+    if (!raw) continue;
+    const mapped = ORDINAL_MAP[q.id]?.[raw];
+    if (typeof mapped === 'number') add(q.id as UserDimKey, mapped);
+  }
+
+  // 2) 深度段深化辨析题：追加贡献
   for (const q of proLifestyleQuestions) {
     const raw = lifestyle[q.id];
     if (!raw) continue;
@@ -576,8 +591,7 @@ export function derivePreferenceOrdinals(lifestyle: Record<string, string>): Pre
     for (const [k, v] of Object.entries(contrib)) {
       const key = k as UserDimKey;
       if (typeof v !== 'number') continue;
-      sums[key].sum += clamp15(v);
-      sums[key].count += 1;
+      add(key, v);
     }
   }
 

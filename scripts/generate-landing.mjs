@@ -567,7 +567,7 @@ ${faqs.map((f) => `<details><summary>${esc(f.q)}</summary><p>${esc(f.a)}</p></de
     ? `${esc(city.countryZh)}：人均 GDP 约 $${Math.round(co.gdpPerCapitaUSD ?? 0).toLocaleString('en-US')}（World Bank），人类发展指数 ${co.hdi ?? '—'}${co.gpi ? `，和平指数排名 #${co.gpi.rank}（IEP 2024）` : ''}。`
     : `${cN}: GDP per capita ~$${Math.round(co.gdpPerCapitaUSD ?? 0).toLocaleString('en-US')} (World Bank), HDI ${co.hdi ?? '—'}${co.gpi ? `, Global Peace Index rank #${co.gpi.rank} (IEP 2024)` : ''}.`) : ''} <a href="${esc(countryLink)}">${lang === 'zh' ? `查看${esc(city.countryZh)}国家页 →` : `Open ${esc(cN)} country page →`}</a></p>
 <a class="cta" href="${lang === 'zh' ? '/' : '/en/'}">${lang === 'zh' ? '免费开始我的定居匹配测评 →' : 'Start my free matching quiz →'}</a>
-<p class="cta-sub">${lang === 'zh' ? '核心测评免费 · 无需注册 · 测评后按 11 维权重输出 Top 5 城市' : 'Free core quiz · no signup · Top 5 cities scored on 11 dimensions'}</p>`;
+<p class="cta-sub">${lang === 'zh' ? '标准测验免费 · 无需注册 · 测评后按 11 维权重输出 Top 5 城市' : 'Free standard test · no signup · Top 5 cities scored on 11 dimensions'}</p>`;
   // 城市页 OG 图：优先用该城实景图（city-images 文件名 = 城市 id），否则回落品牌封面（1200×630）。
   const cityImg = IMAGE_IDS.has(id) ? page(`/city-images/${id}.webp`) : undefined;
   const cityImgSize = cityImg ? IMAGE_SIZE.get(id) : undefined;
@@ -765,7 +765,7 @@ function renderMethodology(lang) {
 <li>GeoNames cities15000<span class="meta">${lang === 'zh' ? '城市底座' : 'city base'} · <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="license noopener">CC BY 4.0</a> · <a href="https://www.geonames.org/" target="_blank" rel="noopener">geonames.org</a></span></li>
 <li>Open-Meteo Historical / Air Quality<span class="meta">${lang === 'zh' ? '气候十年均值 + PM2.5' : '10-yr climate means + PM2.5'} · <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="license noopener">CC BY 4.0</a> · <a href="https://open-meteo.com/" target="_blank" rel="noopener">open-meteo.com</a> · CAMS ${lang === 'zh' ? '再分析' : 'reanalysis'}</span></li>
 <li>${lang === 'zh' ? '公开英语熟练度排名 / World Bank / UNDP / Transparency International / IEP' : 'Public English-proficiency ranking / World Bank / UNDP / Transparency International / IEP'}<span class="meta">${lang === 'zh' ? '国家级参考 · 官方开放数据与公开统计' : 'country-level reference · official open data & public statistics'} · <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="license noopener">CC BY 4.0</a> / ${lang === 'zh' ? '手工快照' : 'hand snapshot'}</span></li>
-<li>${lang === 'zh' ? '原创 SJT 情境迫选题库' : 'Original SJT situational-judgment question bank'}<span class="meta">${lang === 'zh' ? '核心测评 16 型人格题库（Jungian 双极结构，栖居罗盘自研）' : 'core 16-type personality test (Jungian bipolar structure, in-house)'} · ${lang === 'zh' ? '本产品自研，无第三方量表许可依赖' : 'in-house, no third-party scale licence'}</span></li>
+<li>${lang === 'zh' ? '原创 SJT 情境迫选题库' : 'Original SJT situational-judgment question bank'}<span class="meta">${lang === 'zh' ? '标准测验 16 型人格题库（Jungian 双极结构，栖居罗盘自研）' : 'standard-test 16-type personality bank (Jungian bipolar structure, in-house)'} · ${lang === 'zh' ? '本产品自研，无第三方量表许可依赖' : 'in-house, no third-party scale licence'}</span></li>
 <li>WHO Global Air Quality Guidelines 2021<span class="meta">${lang === 'zh' ? 'PM2.5 年均分档口径（优 ≤10 / 良 ≤15 / 一般 ≤25 / 差 >25）' : 'annual PM2.5 bands (good ≤10 / fair ≤15 / moderate ≤25 / poor >25)'}</span></li>
 <li>${lang === 'zh' ? '字体 Noto Sans SC（SIL OFL 开源黑体）' : 'Typefaces Noto Sans SC (SIL OFL)'}<span class="meta">SIL Open Font License 1.1 · ${lang === 'zh' ? '经 @fontsource 自托管打包，无外部 CDN' : 'self-hosted via @fontsource, no external CDN'}</span></li>
 </ul>
@@ -1262,7 +1262,7 @@ const LEGAL_TERMS = {
       ] },
       { h: '二、服务描述', ps: [
         `栖居罗盘为数字游民、自由职业者与远程工作者提供海外城市定居的<strong>决策辅助</strong>：基于你的偏好作答与公开数据快照，对库内 ${CITIES.length} 座城市加权打分并生成报告。`,
-        '本站的核心测评（32 道原创 SJT 情境迫选题 + 8 道生活情景题，另含 16 个兴趣标签）、可选的深度测评、城市对比与税负测算等功能，全部<strong>无需付费</strong>，也<strong>无需注册账号</strong>；不提供订阅、虚拟商品或任何形式的交易。',
+        '本站的标准测验（32 道原创 SJT 情境迫选题 + 8 道生活情景题，另含 16 个兴趣标签）、可选的深度测验、城市对比与税负测算等功能，全部<strong>无需付费</strong>，也<strong>无需注册账号</strong>；不提供订阅、虚拟商品或任何形式的交易。',
         '本站无账号体系，因此不存在"账户安全"义务；你的全部数据仅存于你自己的浏览器（详见<a href="/privacy/">《隐私政策》</a>）。',
       ] },
       { h: '三、使用资格与你的内容', ps: [
@@ -1285,7 +1285,7 @@ const LEGAL_TERMS = {
         '官方开放数据（Open Data）与公开统计测算：成本 / 安全 / 医疗 / 生活质量 / 英语排名 / 宽带网速等（NYC=100 口径，完整口径与更新频率见方法论页）',
         'GeoNames（CC BY 4.0）、Open-Meteo Historical 与 Air Quality（CC BY 4.0）',
         'World Bank / UNDP / Transparency International / IEP 国家指标（开放数据与公开引用排名）',
-        '原创 SJT 情境迫选题库（核心测评 16 型人格题库，栖居罗盘自研，无第三方量表许可依赖）',
+        '原创 SJT 情境迫选题库（标准测验 16 型人格题库，栖居罗盘自研，无第三方量表许可依赖）',
         '字体 Noto Sans SC（SIL Open Font License 1.1）',
         '城市实景照片（Wikimedia Commons，CC / 公有领域许可，逐张署名见方法论页「实景图片版权与鸣谢」）',
       ], after: [
@@ -1362,7 +1362,7 @@ const LEGAL_TERMS = {
         'Official open data & public statistical estimates: cost / safety / healthcare / quality of life / English-proficiency rank / broadband speeds (NYC=100 basis; full methodology on the Methodology page)',
         'GeoNames (CC BY 4.0), Open-Meteo Historical & Air Quality (CC BY 4.0)',
         'World Bank / UNDP / Transparency International / IEP country indicators (open data & publicly cited rankings)',
-        'Original SJT situational-judgment question bank (core 16-type personality test, in-house; no third-party scale licence)',
+        'Original SJT situational-judgment question bank (standard-test 16-type personality bank, in-house; no third-party scale licence)',
         'Typefaces Noto Sans SC (SIL Open Font License 1.1)',
         'City photographs (Wikimedia Commons; CC / public-domain licences; per-photo credits on the Methodology page: "Photography credits")',
       ], after: [
@@ -1609,7 +1609,7 @@ function main() {
   const llms = `# 栖居罗盘 · Habitat Compass
 
 > 面向数字游民、自由职业者与远程工作者的海外城市定居决策工具。${CITIES.length} 座城市（六洲）+ 65 国参考数据；三层匹配引擎：硬约束过滤（预算/签证/安全）→ 核心匹配（偏好 42% + 人格 30% + 兴趣 18%，11 维）→ 加分项（RIASEC/风险联动/空气质量 ≤10%）。评分 0–99，缺失维度降权不惩罚，数据逐项标注来源。
-> 核心测评（32 道原创 SJT 情境迫选题 + 8 道生活情景题 + 16 个兴趣标签）免费、无需注册；可选的深度测评（IPIP-NEO 120 题 Big Five + RIASEC）与分级税负测算同样免费。
+> 标准测验（32 道原创 SJT 情境迫选题 + 8 道生活偏好题 + 16 个兴趣标签）免费、无需注册；可选的深度测验（IPIP 二元迫选 Big Five + 深化辨析偏好 + RIASEC）与分级税负测算同样免费。
 > 分级税负引擎（V2）：29 国按本币累进级距逐档测算，另含面向数字游民的特惠税制（泰国 LTR 17%、西班牙贝克汉姆法案 24%、格鲁吉亚 1%、葡萄牙 IFICI 20%、阿联酋/马来西亚/克罗地亚免税等），税率均为公开事实，不依赖任何付费聚合 API。
 
 ## 主要页面

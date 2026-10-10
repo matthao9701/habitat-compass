@@ -256,48 +256,51 @@ export default function Landing({ onStart, onDemo, onBrowse }: LandingProps) {
           {t('landing.version.desc')}
         </p>
 
-        <div className="mx-auto mt-12 grid max-w-3xl gap-5 text-left md:grid-cols-2">
-          {/* 核心段：人人先答 */}
-          <div className="flex flex-col rounded-xl border border-line bg-card p-6 md:p-7">
-            <p className="eyebrow mb-2">core · free</p>
-            <h3 className="font-heading text-xl font-semibold text-ink">{t('landing.version.core')}</h3>
-            <p className="mt-2 text-sm leading-relaxed text-ink-soft">
-              {t('landing.version.coreDesc')}
-            </p>
-            <div className="mt-5 flex-1" />
-            <p className="mb-4 font-data text-2xl font-semibold text-pine">{t('landing.version.litePrice')}</p>
-            <button type="button" onClick={onStart} className="btn-clay w-full">
-              {t('landing.version.coreCta')}
-            </button>
-          </div>
+        {/* 单一入口卡：标准测验 →（可选）深度测验，一段流程讲清两个层级，只留一个行动点 */}
+        <div className="mx-auto mt-12 max-w-xl rounded-xl border hairline bg-card p-6 text-left md:p-7">
+          <ol className="space-y-5">
+            <li className="flex gap-4">
+              <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-clay font-data text-[11px] font-semibold text-paper">
+                1
+              </span>
+              <div>
+                <p className="font-heading text-base font-semibold text-ink">
+                  {t('landing.version.core')}
+                  <span className="ml-2 font-data text-[10px] font-normal uppercase tracking-wide text-pine">
+                    {t('landing.version.litePrice')}
+                  </span>
+                </p>
+                <p className="mt-1 text-[13px] leading-relaxed text-ink-soft">
+                  {t('landing.version.coreDesc')}
+                </p>
+              </div>
+            </li>
+            <li className="flex gap-4">
+              <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-ochre font-data text-[11px] font-semibold text-ochre-deep">
+                2
+              </span>
+              <div>
+                <p className="font-heading text-base font-semibold text-ink">
+                  {t('landing.version.deepen')}
+                  <span className="ml-2 rounded-full bg-ochre px-2 py-0.5 font-data text-[9px] font-medium tracking-[0.16em] text-paper">
+                    {t('landing.version.optional')}
+                  </span>
+                </p>
+                <p className="mt-1 text-[13px] leading-relaxed text-ink-soft">
+                  {t('landing.version.deepenDesc')}
+                </p>
+              </div>
+            </li>
+          </ol>
 
-          {/* 深化段：核心段结束后可选 */}
-          <div className="relative flex flex-col rounded-xl border-2 border-ochre bg-card p-6 md:p-7">
-            <span className="absolute -top-2.5 right-5 rounded-full bg-ochre px-2.5 py-0.5 font-data text-[10px] font-medium tracking-[0.2em] text-paper">
-              PRO
-            </span>
-            <p className="eyebrow mb-2">deepen · free</p>
-            <h3 className="font-heading text-xl font-semibold text-ink">{t('landing.version.deepen')}</h3>
-            <p className="mt-2 text-sm leading-relaxed text-ink-soft">
-              {t('landing.version.deepenDesc')}
-            </p>
-            <div className="mt-5 flex-1" />
-            <p className="mb-4 font-data text-2xl font-semibold text-clay">
-              {t('landing.version.proPrice')}
-            </p>
-            <button
-              type="button"
-              onClick={onStart}
-              className="w-full rounded-lg border border-clay px-4 py-2.5 text-sm font-medium text-clay transition-colors hover:bg-clay/10"
-            >
-              {t('landing.version.deepenCta')}
-            </button>
-          </div>
+          <button type="button" onClick={onStart} className="btn-clay mt-6 w-full">
+            {t('landing.version.coreCta')}
+            <span className="font-data text-xs opacity-80">→</span>
+          </button>
+          <p className="mt-3 text-center text-[12.5px] text-ink-soft">
+            {t('landing.version.freeCta')}
+          </p>
         </div>
-
-        <p className="mt-8 text-sm text-ink-soft">
-          {t('landing.version.freeCta')}
-        </p>
       </section>
     </div>
   );

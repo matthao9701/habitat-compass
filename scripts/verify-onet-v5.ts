@@ -17,6 +17,7 @@ import { riasecQuestions, RIASEC_DIMS, RIASEC_PER_DIM, RIASEC_SCALE } from '../s
 import { riskQuestions } from '../src/data/riskTaking';
 import { RIASEC_TAG_BOOST } from '../src/data/riasecMap';
 import { interestTagsPro } from '../src/data/interestsPro';
+import { interestTags } from '../src/data/interests';
 import {
   deriveRiasec,
   deriveRisk,
@@ -86,7 +87,7 @@ check('量表 5 档（1-5）', RIASEC_SCALE.length === 5 && RIASEC_SCALE[0].valu
 // ── 3. 六维→标签映射 ──────────────────────────────────────────────────
 section('3. RIASEC → 标签映射');
 {
-  const poolIds = new Set(interestTagsPro.map((t) => t.id));
+  const poolIds = new Set([...interestTagsPro, ...interestTags].map((t) => t.id));
   const keys = Object.keys(RIASEC_TAG_BOOST);
   check('映射键覆盖六维', RIASEC_DIMS.every((d) => keys.includes(d)), `实际 ${keys.join(',')}`);
   check(
@@ -94,7 +95,7 @@ section('3. RIASEC → 标签映射');
     RIASEC_DIMS.every((d) => RIASEC_TAG_BOOST[d].length > 0),
   );
   const bad = RIASEC_DIMS.flatMap((d) => RIASEC_TAG_BOOST[d]).filter((id) => !poolIds.has(id));
-  check('映射标签全部存在于 28 标签池', bad.length === 0, bad.join(','));
+  check('映射标签全部存在于核心 16 + 深度 12 标签池', bad.length === 0, bad.join(','));
 }
 
 // ── 4. IPIP Risk-Taking 10 题 ─────────────────────────────────────────

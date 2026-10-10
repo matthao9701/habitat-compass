@@ -23,10 +23,13 @@ import { NEUTRAL_ANSWERS } from '../src/lib/compare';
 import { tagRepeats, riasecBoostedTags, deriveRisk } from '../src/lib/riasec';
 import { riskQuestions } from '../src/data/riskTaking';
 import { riasecQuestions } from '../src/data/riasec';
-import { ipipQuestions } from '../src/data/questionsPro';
+import { ipipPairs } from '../src/data/questionsPro';
 
 // 融合题库后，深化段由「是否作答 IPIP」派生（不再看 version 字段）
-const IPIP_MID: Record<string, number> = Object.fromEntries(ipipQuestions.map((q) => [q.id, 3]));
+// 中性作答：每 facet 的 p1 选 A、p2 选 B → facet 均值 50 → 五域 50（人格中性）
+const IPIP_MID: Record<string, string> = Object.fromEntries(
+  ipipPairs.map((p) => [p.id, p.id.endsWith('-p1') ? 'a' : 'b']),
+);
 
 let pass = 0;
 let fail = 0;

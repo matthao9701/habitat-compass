@@ -20,6 +20,7 @@ import {
 } from '../src/data/questions';
 import {
   ipipQuestions,
+  ipipPairs,
   proLifestyleQuestions,
   IPIP_FACETS,
 } from '../src/data/questionsPro';
@@ -115,10 +116,12 @@ console.log('== [2] 题目双语完整性 ==');
   }
   ok(`简易偏好 8 题词典全双语（title/hint/选项）`, lsMiss.length === 0, lsMiss.slice(0, 5).join(','));
 
-  // 2.3 IPIP 120：ref 英文原句非空（en 模式渲染 ref，见 Quiz.tsx IPIPItem）
-  const refShort = ipipQuestions.filter((q) => q.ref.trim().length < 4).length;
+  // 2.3 IPIP 二元迫选 60 对：a/b 双语 + 英文原句非空（en 模式渲染 ref，见 Quiz.tsx IPIPItem）
+  const pairRefShort = ipipPairs.filter((p) => p.a.ref.trim().length < 4 || p.b.ref.trim().length < 4).length;
+  const pairTextShort = ipipPairs.filter((p) => p.a.text.trim().length < 2 || p.b.text.trim().length < 2).length;
   const quizSrc = readFileSync(join(ROOT, 'src/components/Quiz.tsx'), 'utf-8');
-  ok(`IPIP ${ipipQuestions.length} 题 ref 英文原句完整`, ipipQuestions.length === 120 && refShort === 0, `ref 过短 ${refShort}`);
+  ok(`IPIP ${ipipPairs.length} 对 a/b 双语完整`, ipipPairs.length === 60 && pairRefShort === 0 && pairTextShort === 0, `ref 过短 ${pairRefShort} / text 过短 ${pairTextShort}`);
+  ok('IPIP 120 题来源保留', ipipQuestions.length === 120);
   // 第八轮：RIASEC / 风险偏好双语键
   const r8Miss: string[] = [];
   for (const lang of ['zh', 'en'] as const) {
@@ -136,10 +139,10 @@ console.log('== [2] 题目双语完整性 ==');
     for (const i of [1, 2, 3, 4, 5]) if (!DICTS[lang][`quiz.riasec.${i}`]) r8Miss.push(`${lang}:quiz.riasec.${i}`);
   }
   ok('第八轮 RIASEC/风险键双语完整（dim/combo×16/量表档位/风险卡）', r8Miss.length === 0, r8Miss.slice(0, 4).join(', '));
-  ok('IPIP 渲染层 en 模式使用 ref（lang === \'en\' ? question.ref）', quizSrc.includes("question.ref : question.text"));
-  ok('IPIP 量表档位 quiz.ipip.1-5 双语', !!DICTS.en['quiz.ipip.1'] && !!DICTS.zh['quiz.ipip.5']);
+  ok('IPIP 渲染层 en 模式使用 ref（lang === \'en\' ? question.a.ref）', quizSrc.includes('question.a.ref'));
+  ok('IPIP 量表档位 quiz.ipip.1-5 双语（风险自陈复用）', !!DICTS.en['quiz.ipip.1'] && !!DICTS.zh['quiz.ipip.5']);
 
-  // 2.4 pro 偏好 20 题
+  // 2.4 深度段偏好 12 题
   const proMiss: string[] = [];
   for (const q of proLifestyleQuestions) {
     for (const lang of ['zh', 'en'] as const) {
@@ -154,7 +157,7 @@ console.log('== [2] 题目双语完整性 ==');
       }
     }
   }
-  ok(`pro 偏好 ${proLifestyleQuestions.length} 题 title+选项双语`, proLifestyleQuestions.length === 20 && proMiss.length === 0, proMiss.slice(0, 5).join(','));
+  ok(`深度段偏好 ${proLifestyleQuestions.length} 题 title+选项双语`, proLifestyleQuestions.length === 12 && proMiss.length === 0, proMiss.slice(0, 5).join(','));
 
   // 2.5 兴趣标签（lite 16 + pro 28）与二级子项
   const tagMiss: string[] = [];

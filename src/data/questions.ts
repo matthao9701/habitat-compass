@@ -81,7 +81,10 @@ export const scenarioQuestions: ScenarioQuestion[] = [
 ];
 
 // ---------------------------------------------------------------------------
-// 核心段 · 生活偏好：8 道情景选择题（选项 value 供匹配引擎使用，勿改）
+// 核心段 · 生活偏好：8 道题
+// 预算 / 气候为「区间选择」（各 5 档，权重最高，保留粒度）；其余 6 维
+// （节奏 / 规模 / 社交 / 语言 / 签证 / 网络）统一为二元迫选卡片，与人格段同构。
+// 选项 value 供匹配引擎的 ORDINAL_MAP / BUDGET_TIERS / CLIMATE_COMPAT 使用，勿改。
 // ---------------------------------------------------------------------------
 
 export const lifestyleQuestions: LifestyleQuestion[] = [
@@ -110,55 +113,55 @@ export const lifestyleQuestions: LifestyleQuestion[] = [
   },
   {
     id: 'pace',
-    title: '你理想中的一周，更接近哪幅画面？',
+    title: '你理想中的生活节奏，更接近哪一边？',
+    hint: '二选一',
     options: [
-      { value: 'slow', label: '午后才真正醒来的小城', desc: '午休、散步、不赶时间' },
-      { value: 'balanced', label: '工作与生活各有节拍', desc: '高效工作，也认真生活' },
-      { value: 'fast', label: '会议与活动连轴转', desc: '机会密度与刺激感' },
+      { value: 'slow', label: '慢下来', desc: '午休、散步、不赶时间' },
+      { value: 'fast', label: '快起来', desc: '会议与活动连轴转，机会密度高' },
     ],
   },
   {
     id: 'size',
     title: '傍晚出门散步，你更想走进哪种街区？',
+    hint: '二选一',
     options: [
       { value: 'small', label: '十分钟步行到田野的小城', desc: '步行可达、邻里相熟' },
-      { value: 'mid', label: '咖啡馆与超市密集的中型城市', desc: '配套齐全又不压迫' },
       { value: 'metro', label: '地铁纵横、霓虹不熄的都会', desc: '国际大都市的资源密度' },
     ],
   },
   {
     id: 'social',
-    title: '搬进新城市的第一个月，你理想中的社交状态是？',
+    title: '搬进新城市的第一个月，你理想中的社交状态更接近？',
+    hint: '二选一',
     options: [
       { value: 'low', label: '独来独往，把城市泡熟', desc: '独处为主，社交随缘' },
-      { value: 'mid', label: '认识三五熟人，偶尔小聚', desc: '有固定小圈子' },
       { value: 'high', label: '周周有局，持续认识新朋友', desc: '社交密度拉满' },
     ],
   },
   {
     id: 'language',
-    title: '在一家只有当地语菜单的餐厅点菜，你的期望是？',
+    title: '在一家只有当地语菜单的餐厅点菜，你更接受哪一边？',
+    hint: '二选一',
     options: [
       { value: 'high-english', label: '最好全程英语无障碍', desc: '办事、就医都希望能用英语' },
-      { value: 'basic', label: '愿意学几句基本用语', desc: '日常打招呼没问题' },
       { value: 'no-barrier', label: '翻译软件加手势就够', desc: '基本不介意语言障碍' },
     ],
   },
   {
     id: 'visa',
-    title: '研究签证政策时，哪句话最让你安心？',
+    title: '研究签证政策时，哪句话更让你安心？',
+    hint: '二选一',
     options: [
       { value: 'high', label: '「有现成的数字游民签证」', desc: '免签、落地签或游民签证优先' },
-      { value: 'mid', label: '「材料清晰，流程顺畅」', desc: '手续明确即可接受' },
       { value: 'low', label: '「为理想城市折腾长签也值」', desc: '愿意为居留投入时间' },
     ],
   },
   {
     id: 'remote',
-    title: '视频会议突然卡成幻灯片——你的底线是？',
+    title: '视频会议突然卡成幻灯片——你的底线更接近哪一边？',
+    hint: '二选一',
     options: [
       { value: 'high', label: '完全不能忍', desc: '稳定高速网络与成熟联合办公' },
-      { value: 'mid', label: '偶尔卡顿可以接受', desc: '视频会议不卡即可' },
       { value: 'basic', label: '能发消息查资料就行', desc: '基础网络即可' },
     ],
   },

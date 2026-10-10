@@ -13,14 +13,14 @@ import {
 } from '../data/questions';
 import { interestTags } from '../data/interests';
 import {
-  ipipQuestions,
+  ipipPairs,
   proLifestyleQuestions,
   IPIP_SCALE,
   RANK_ORDINALS,
-  type IpipQuestion,
+  type IpipPair,
   type ProLifestyleQuestion,
 } from '../data/questionsPro';
-import { interestTagsPro, interestSubs } from '../data/interestsPro';
+import { interestTagsPro, interestSubs, EXTRA_TAGS } from '../data/interestsPro';
 import {
   riasecQuestions,
   RIASEC_SCALE,
@@ -46,7 +46,7 @@ function firstIncompletePage(pages: Page[], draft: UserAnswers | null, deep: boo
       if (item.kind === 'mbti')
         return draft.mbti[item.question.id] !== 'a' && draft.mbti[item.question.id] !== 'b';
       if (item.kind === 'ipip')
-        return typeof (draft.ipip ?? {})[item.question.id] !== 'number';
+        return draft.ipip?.[item.question.id] !== 'a' && draft.ipip?.[item.question.id] !== 'b';
       if (item.kind === 'lifestyle' || item.kind === 'proLifestyle')
         return !draft.lifestyle[item.question.id];
       if (item.kind === 'riasec')
@@ -66,7 +66,7 @@ function firstIncompletePage(pages: Page[], draft: UserAnswers | null, deep: boo
 //
 // 融合题库（统一入口）：所有用户都先完成「核心段」（32 道 SJT 人格 + 8 情景偏好 +
 // 16 兴趣标签，即原简易版）；核心段结束后出现一个「是否继续深化」选择页：
-//   - 继续深化 → 追加 IPIP 人格 + 进阶偏好 + 风险自陈 + 28 标签细化 + RIASEC
+//   - 继续深化 → 追加 IPIP 二元迫选 Big Five + 深化辨析偏好 + 风险自陈 + 12 标签细化 + RIASEC
 //   - 直接看报告 → 立即以核心段作答出报告
 // 两条路径产出同一份全城库匹配报告，仅深度不同。
 // ---------------------------------------------------------------------------
@@ -75,7 +75,7 @@ type ModuleId = 'mbti' | 'lifestyle' | 'interests';
 
 type PageItem =
   | { kind: 'mbti'; question: ScenarioQuestion }
-  | { kind: 'ipip'; question: IpipQuestion }
+  | { kind: 'ipip'; question: IpipPair }
   | { kind: 'lifestyle'; question: LifestyleQuestion }
   | { kind: 'proLifestyle'; question: ProLifestyleQuestion }
   | { kind: 'interests'; ids: string[] }
@@ -102,9 +102,9 @@ type Page = DataPage | TransitionPage | DeepenPage;
 const MBTI_CHUNK = 4;
 const LIFESTYLE_CHUNK = 4;
 const INTEREST_CHUNK = 8;
-const IPIP_CHUNK = 6;
+const IPIP_CHUNK = 4;
 const PRO_LIFESTYLE_CHUNK = 4;
-const PRO_INTEREST_CHUNK = 10;
+const PRO_INTEREST_CHUNK = 9;
 const RIASEC_CHUNK = 6;
 const RISK_CHUNK = 5;
 
@@ -163,13 +163,13 @@ function buildDeepenPages(): Page[] {
   const pages: Page[] = [];
   let dataPageNo = 0;
 
-  for (let i = 0; i < ipipQuestions.length; i += IPIP_CHUNK) {
+  for (let i = 0; i < ipipPairs.length; i += IPIP_CHUNK) {
     pages.push({
       kind: 'data',
       module: 'mbti',
       eyebrow: L('quiz.stage.ipip.eyebrow'),
       dataPageNo: dataPageNo++,
-      items: ipipQuestions
+      items: ipipPairs
         .slice(i, i + IPIP_CHUNK)
         .map((question) => ({ kind: 'ipip' as const, question })),
     });
@@ -202,7 +202,7 @@ function buildDeepenPages(): Page[] {
 
   pages.push({ kind: 'transition', to: 'interests', variant: 'deep' });
 
-  for (let i = 0; i < interestTagsPro.length; i += PRO_INTEREST_CHUNK) {
+  for (let i = 0; i < EXTRA_TAGS.length; i += PRO_INTEREST_CHUNK) {
     pages.push({
       kind: 'data',
       module: 'interests',
@@ -211,7 +211,7 @@ function buildDeepenPages(): Page[] {
       items: [
         {
           kind: 'proInterests',
-          ids: interestTagsPro.slice(i, i + PRO_INTEREST_CHUNK).map((t) => t.id),
+          ids: EXTRA_TAGS.slice(i, i + PRO_INTEREST_CHUNK).map((t) => t.id),
         },
       ],
     });
@@ -379,10 +379,10 @@ export default function Quiz({ onComplete, onExit, startDeep = false }: QuizProp
     Object.keys(answers.riasec ?? {}).length +
     Object.keys(answers.risk ?? {}).length;
   // 分母随深化段开启而切换（兴趣标签按并集去重计一次，与 answeredCount 口径一致）：
-  // 核心段 = 32 道 SJT + 8 情景 + 16 标签；深化段 = 上述 + IPIP/进阶偏好/风险/RIASEC + 28 标签
-  const interestCount = deep ? interestTagsPro.length : interestTags.length;
+  // 核心段 = 32 道 SJT + 8 情景 + 16 标签；深化段 = 上述 + IPIP(60 对)/进阶偏好/风险/RIASEC + 12 标签
+  const interestCount = interestTags.length + (deep ? EXTRA_TAGS.length : 0);
   const deepAnswerable =
-    ipipQuestions.length +
+    ipipPairs.length +
     proLifestyleQuestions.length +
     riskQuestions.length +
     riasecQuestions.length;
@@ -398,7 +398,7 @@ export default function Quiz({ onComplete, onExit, startDeep = false }: QuizProp
       if (item.kind === 'mbti')
         return answers.mbti[item.question.id] === 'a' || answers.mbti[item.question.id] === 'b';
       if (item.kind === 'ipip')
-        return typeof (answers.ipip ?? {})[item.question.id] === 'number';
+        return (answers.ipip ?? {})[item.question.id] === 'a' || (answers.ipip ?? {})[item.question.id] === 'b';
       if (item.kind === 'lifestyle') return Boolean(answers.lifestyle[item.question.id]);
       if (item.kind === 'proLifestyle')
         return proLifestyleAnswered(item.question, answers.lifestyle);
@@ -464,7 +464,7 @@ export default function Quiz({ onComplete, onExit, startDeep = false }: QuizProp
     setAnswers((prev) => ({ ...prev, mbti: { ...prev.mbti, [id]: value } }));
   }
 
-  function setIPIPAnswer(id: string, value: number): void {
+  function setIPIPAnswer(id: string, value: 'a' | 'b'): void {
     setAnswers((prev) => ({ ...prev, ipip: { ...(prev.ipip ?? {}), [id]: value } }));
   }
 
@@ -592,7 +592,7 @@ export default function Quiz({ onComplete, onExit, startDeep = false }: QuizProp
   };
   const transitionMeta = page.kind === 'transition' ? getTransitionMeta(page.variant) : null;
   const pageMarker =
-    page.kind === 'data' && page.items[0]?.kind === 'ipip' ? 'RATE 1-5' : null;
+    page.kind === 'data' && page.items[0]?.kind === 'ipip' ? 'FORCED CHOICE' : null;
 
   return (
     <div className="flex min-h-screen flex-col bg-paper">
@@ -603,7 +603,7 @@ export default function Quiz({ onComplete, onExit, startDeep = false }: QuizProp
             <div className="flex items-center gap-2.5">
               <CompassMark size={22} />
               <span className="font-mono text-[10px] uppercase tracking-eyebrow text-ink-soft">
-                {deep ? 'STANDARD · PRO' : 'LITE'}
+                {deep ? 'STANDARD · DEEP' : 'STANDARD'}
               </span>
             </div>
             {stage === 'constraints' ? (
@@ -977,25 +977,25 @@ function MBTIItem({ question, value, onSelect }: MBTIItemProps) {
 }
 
 // ---------------------------------------------------------------------------
-// 标准版：IPIP-NEO 五点量表
+// 深度测验：IPIP 二元迫选（每个 facet 正/反向陈述配对，A/B 二选一）
 // ---------------------------------------------------------------------------
 
-/** IPIP 五点量表两端提示（工厂：渲染期取当前语言） */
-function ipipScaleHint(): Record<number, string> {
-  const { t } = useI18n();
-  const L = (k: string): string => translate(getCurrentLang(), k);
-  return { 1: L('quiz.ipip.1'), 2: L('quiz.ipip.2'), 3: L('quiz.ipip.3'), 4: L('quiz.ipip.4'), 5: L('quiz.ipip.5') };
-}
-
 interface IPIPItemProps {
-  question: IpipQuestion;
-  value?: number;
-  onSelect: (value: number) => void;
+  question: IpipPair;
+  value?: string;
+  onSelect: (value: 'a' | 'b') => void;
 }
 
+/** 二元迫选：题干 + A/B 两张对等选项卡；A = 正向陈述、B = 反向陈述 */
 function IPIPItem({ question, value, onSelect }: IPIPItemProps) {
   const { t, lang } = useI18n();
-  const stem = lang === 'en' ? question.ref : question.text;
+  const stem = lang === 'en' ? `Forced choice · ${question.facetZh}` : `${question.facetZh} · 二选一`;
+
+  const options = [
+    { key: 'a' as const, text: lang === 'en' ? question.a.ref : question.a.text },
+    { key: 'b' as const, text: lang === 'en' ? question.b.ref : question.b.text },
+  ];
+
   return (
     <div className="rounded-[8px] border hairline bg-card/70 px-4 py-5 md:px-6">
       <p className="mb-4 flex items-start gap-3 text-[14px] leading-[1.75]">
@@ -1004,33 +1004,36 @@ function IPIPItem({ question, value, onSelect }: IPIPItemProps) {
         </span>
         <span className="text-ink">{stem}</span>
       </p>
-      <div className="flex items-center justify-between gap-1.5 md:gap-2.5">
-        {IPIP_SCALE.map((opt) => {
-          const selected = value === opt.value;
-          const scaleLabel = t(`quiz.ipip.${opt.value}`);
+      <div className="grid gap-3 md:grid-cols-2">
+        {options.map((opt) => {
+          const selected = value === opt.key;
           return (
             <button
-              key={opt.value}
+              key={opt.key}
               type="button"
-              aria-label={t('quiz.ipip.aria', { text: stem, label: scaleLabel })}
-              onClick={() => onSelect(opt.value)}
+              onClick={() => onSelect(opt.key)}
               data-selected={selected}
-              title={scaleLabel}
-              className={`flex h-10 flex-1 items-center justify-center rounded-[7px] border font-mono text-[12px] transition-all duration-200 active:scale-95 ${
+              aria-pressed={selected}
+              aria-label={t('quiz.mbti.optionAria', { key: opt.key.toUpperCase(), label: opt.text })}
+              className={`flex items-center gap-2 rounded-[7px] border px-4 py-3.5 text-left transition-all duration-200 active:scale-[0.99] ${
                 selected
-                  ? 'border-clay bg-clay text-paper shadow-[0_2px_10px_rgba(190,90,56,0.35)]'
-                  : 'border-ink/20 bg-transparent text-ink-soft hover:border-ink/50 hover:text-ink'
+                  ? 'border-clay bg-clay/[0.08] shadow-[0_2px_12px_rgba(190,90,56,0.18)]'
+                  : 'border-ink/15 bg-transparent hover:border-ink/40'
               }`}
             >
-              {opt.value}
+              <span
+                className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border font-mono text-[10px] ${
+                  selected ? 'border-clay bg-clay text-paper' : 'border-ink/30 text-ink-soft'
+                }`}
+              >
+                {opt.key.toUpperCase()}
+              </span>
+              <span className={`text-[13.5px] leading-[1.5] ${selected ? 'font-medium text-ink' : 'text-ink'}`}>
+                {opt.text}
+              </span>
             </button>
           );
         })}
-      </div>
-      <div className="mt-2 flex items-center justify-between text-[10px] text-ink-soft/80">
-        <span>{ipipScaleHint()[1]}</span>
-        <span className="font-mono text-[9px]">{value ? ipipScaleHint()[value] : ''}</span>
-        <span>{ipipScaleHint()[5]}</span>
       </div>
     </div>
   );
@@ -1234,7 +1237,7 @@ function InterestItem({ ids, selected, onToggle }: InterestItemProps) {
 }
 
 // ---------------------------------------------------------------------------
-// 标准版：生活偏好混编题型（choice / forced / slider / rank）
+// 深度段：生活偏好混编题型（choice / forced / slider / rank）
 // ---------------------------------------------------------------------------
 
 /** 混编题型标签（工厂：渲染期取当前语言） */
@@ -1440,7 +1443,7 @@ function ProLifestyleBody({
 }
 
 // ---------------------------------------------------------------------------
-// 标准版：兴趣 28 标签 + 二级细化
+// 深度段：兴趣 12 标签 + 二级细化
 // ---------------------------------------------------------------------------
 
 interface InterestItemProProps {

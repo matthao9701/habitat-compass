@@ -1,32 +1,13 @@
-// 标准版兴趣标签池：28 个一级标签（16 个与简易版共用）+ 每类 3-4 个二级细化子项
-// - 一级标签与城市 tags 使用同一套 id（新增 12 个标签已同步标注进城市库管道）
+// 深度段兴趣标签池：12 个「深化」一级标签 + 每类 3 个二级细化子项
+// - 核心段已选 16 个基础标签，深度段不再重复，仅补充 12 个更细的兴趣方向（去重后合并）
+// - 一级标签与城市 tags 使用同一套 id（12 个标签已同步标注进城市库管道）
 // - 二级子项仅用于「强化」所属一级标签的兴趣权重（引擎侧：选中子项的一级标签计双倍权重），
 //   不新增城市侧数据结构，不改变召回计算口径。
 
 import type { InterestTag } from './interests';
 
-/** 简易版共用的 16 个一级标签（id/label/desc 与 interests.ts 保持一致） */
-const CORE_TAGS: InterestTag[] = [
-  { id: 'outdoor', label: '户外徒步', desc: '登山 · 骑行 · 露营' },
-  { id: 'watersports', label: '水上运动', desc: '冲浪 · 潜水 · 帆船' },
-  { id: 'beach', label: '海滩生活', desc: '日落 · 沙滩 · 海风' },
-  { id: 'food', label: '美食探索', desc: '街巷小吃 · 在地料理' },
-  { id: 'coffee', label: '咖啡文化', desc: '精品咖啡 · 咖啡馆办公' },
-  { id: 'arts', label: '艺术文化', desc: '博物馆 · 画廊 · 设计' },
-  { id: 'nightlife', label: '夜生活', desc: '音乐现场 · 酒吧 · 俱乐部' },
-  { id: 'fitness', label: '健身', desc: '健身房 · 跑步 · 运动社群' },
-  { id: 'wellness', label: '瑜伽冥想', desc: '身心灵 · 慢下来' },
-  { id: 'pets', label: '宠物友好', desc: '带毛孩子一起生活' },
-  { id: 'startup', label: '创业社区', desc: '独立开发者 · 共创空间' },
-  { id: 'lgbtq', label: '多元包容', desc: 'LGBTQ+ 友好环境' },
-  { id: 'history', label: '历史古迹', desc: '老城 · 遗址 · 文明层叠' },
-  { id: 'nature', label: '自然生态', desc: '雨林 · 野生动物 · 国家公园' },
-  { id: 'shopping', label: '都市消费', desc: '商圈 · 买手店 · 便利生活' },
-  { id: 'festivals', label: '节庆活动', desc: '音乐祭 · 文化庆典' },
-];
-
-/** 标准版新增 12 个一级标签（城市库已同步标注） */
-const EXTRA_TAGS: InterestTag[] = [
+/** 深度段新增 12 个一级标签（城市库已同步标注）；与核心段 16 个基础标签无重叠 */
+export const EXTRA_TAGS: InterestTag[] = [
   { id: 'photo', label: '摄影创作', desc: '扫街 · 风光 · 相机生活' },
   { id: 'skiing', label: '滑雪冬运', desc: '雪场 · 单板双板 · 冰雪季' },
   { id: 'market', label: '市集淘货', desc: '古着 · 跳蚤市场 · 手作' },
@@ -41,7 +22,7 @@ const EXTRA_TAGS: InterestTag[] = [
   { id: 'crypto', label: 'Web3 社区', desc: '加密 · DAO · 线上协作' },
 ];
 
-export const interestTagsPro: InterestTag[] = [...CORE_TAGS, ...EXTRA_TAGS];
+export const interestTagsPro: InterestTag[] = [...EXTRA_TAGS];
 
 export interface InterestSub {
   id: string;

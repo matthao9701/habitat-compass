@@ -32,6 +32,8 @@ const NEUTRAL_MBTI: Record<string, string> = Object.fromEntries(
 
 export const NEUTRAL_ANSWERS: UserAnswers = {
   mbti: NEUTRAL_MBTI,
+  // 中性基准：核心段二元迫选无中档选项，这里沿用 ORDINAL_MAP 里的中值键
+  // （balanced/mid/basic → 序数 3），仅供未测评时的对比基准，不作为可选题出现。
   lifestyle: {
     budget: '1500-2500',
     climate: 'any',
