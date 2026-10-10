@@ -191,6 +191,9 @@ console.log('\n=== 9. 主站 index.html JSON-LD ===');
 const idx = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
 const idxLd = idx.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/);
 check('主站含 ld+json 块', !!idxLd);
+// SPA 壳的静态 H1：不执行 JS 的爬虫/站点扫描（如 Bing Webmaster 网站扫描）依赖它判定页面主题；
+// React createRoot 挂载时会替换 #app 子节点，故运行时不会出现重复标题。
+check('主站含静态 <h1>（SPA 兜底，供 Bing 扫描识别）', /<h1[\s>]/.test(idx), '缺少静态 <h1> 会被 Bing 报 NOTICE: H1 tag missing');
 if (idxLd) {
   const graph = JSON.parse(idxLd[1]) as { '@graph': { '@type': string }[] };
   check('主站 JSON-LD 含 Organization + WebApplication', Array.isArray(graph['@graph']) && graph['@graph'].some((g) => g['@type'] === 'Organization') && graph['@graph'].some((g) => g['@type'] === 'WebApplication'));
