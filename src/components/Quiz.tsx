@@ -64,7 +64,7 @@ function firstIncompletePage(pages: Page[], draft: UserAnswers | null, deep: boo
 // ---------------------------------------------------------------------------
 // 页面模型：核心段数据页 + 深化选择页 + 阶段过渡引导页
 //
-// 融合题库（统一入口）：所有用户都先完成「核心段」（16 道 SJT 人格 + 8 情景偏好 +
+// 融合题库（统一入口）：所有用户都先完成「核心段」（32 道 SJT 人格 + 8 情景偏好 +
 // 16 兴趣标签，即原简易版）；核心段结束后出现一个「是否继续深化」选择页：
 //   - 继续深化 → 追加 IPIP 人格 + 进阶偏好 + 风险自陈 + 28 标签细化 + RIASEC
 //   - 直接看报告 → 立即以核心段作答出报告
@@ -379,7 +379,7 @@ export default function Quiz({ onComplete, onExit, startDeep = false }: QuizProp
     Object.keys(answers.riasec ?? {}).length +
     Object.keys(answers.risk ?? {}).length;
   // 分母随深化段开启而切换（兴趣标签按并集去重计一次，与 answeredCount 口径一致）：
-  // 核心段 = 16 道 SJT + 8 情景 + 16 标签；深化段 = 上述 + IPIP/进阶偏好/风险/RIASEC + 28 标签
+  // 核心段 = 32 道 SJT + 8 情景 + 16 标签；深化段 = 上述 + IPIP/进阶偏好/风险/RIASEC + 28 标签
   const interestCount = deep ? interestTagsPro.length : interestTags.length;
   const deepAnswerable =
     ipipQuestions.length +

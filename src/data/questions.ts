@@ -3,14 +3,14 @@
 // 题目来源与许可（IMPORTANT）：
 // 核心段人格题库为原创 SJT（Situational Judgment Test）二元迫选场景题，
 // 由本产品自研设计，无第三方量表许可依赖。场景扎根真实远程办公/旅居摩擦，
-// A/B 选项在道德与体面感上中立对等，每轴 4 题共 16 题，映射 E/I · S/N · T/F · J/P 四轴。
+// A/B 选项在道德与体面感上中立对等，每轴 8 题共 32 题，映射 E/I · S/N · T/F · J/P 四轴。
 
 export type Pole = 'E' | 'I' | 'S' | 'N' | 'T' | 'F' | 'J' | 'P';
 export type Axis = 'EI' | 'SN' | 'TF' | 'JP';
 
 export const MBTI_SOURCE = {
   base: '原创 SJT 情境迫选题库',
-  publisher: 'Habitat Compass 自研',
+  publisher: 'Habitat Compass',
   license: '本产品自研，无第三方量表许可依赖',
   note: '核心段人格题库为原创 SJT 二元迫选场景题，由本产品自研设计',
 };
@@ -37,31 +37,47 @@ export interface LifestyleQuestion {
 }
 
 // ---------------------------------------------------------------------------
-// 核心段 · 人格：SJT 情境迫选题，四维度各 4 题，共 16 题
+// 核心段 · 人格：SJT 情境迫选题，四维度各 8 题，共 32 题
 // 正向字母：EI 正向 = E；SN 正向 = N；TF 正向 = F；JP 正向 = P
 // ---------------------------------------------------------------------------
 
 export const scenarioQuestions: ScenarioQuestion[] = [
-  // ---- EI 轴（正向 = E）：高强度远程周后如何回血 / 联合办公 vs 私人工位 / 初到新城社交 / 超长视频会后 ----
+  // ---- EI 轴（正向 = E）：高强度远程周后如何回血 / 联合办公 vs 私人工位 / 初到新城社交 / 超长视频会后 / 跨时区协作姿态 / 房东临时变卦求助 / 独居孤独感应对 / 社交邀约取舍 ----
   { id: 'ei1', axis: 'EI', a: { pole: 'E' }, b: { pole: 'I' } },
   { id: 'ei2', axis: 'EI', a: { pole: 'E' }, b: { pole: 'I' } },
   { id: 'ei3', axis: 'EI', a: { pole: 'E' }, b: { pole: 'I' } },
   { id: 'ei4', axis: 'EI', a: { pole: 'E' }, b: { pole: 'I' } },
-  // ---- SN 轴（正向 = N）：选城市先看什么 / 街区吸引力 / 行程计划方式 / 走在街上先注意什么 ----
+  { id: 'ei5', axis: 'EI', a: { pole: 'E' }, b: { pole: 'I' } },
+  { id: 'ei6', axis: 'EI', a: { pole: 'E' }, b: { pole: 'I' } },
+  { id: 'ei7', axis: 'EI', a: { pole: 'E' }, b: { pole: 'I' } },
+  { id: 'ei8', axis: 'EI', a: { pole: 'E' }, b: { pole: 'I' } },
+  // ---- SN 轴（正向 = N）：选城市先看什么 / 街区吸引力 / 行程计划方式 / 走在街上先注意什么 / 陌生街区问路 / 联合办公续费决策 / 选长期旅居城市 / 跨境收款工具 ----
   { id: 'sn1', axis: 'SN', a: { pole: 'N' }, b: { pole: 'S' } },
   { id: 'sn2', axis: 'SN', a: { pole: 'N' }, b: { pole: 'S' } },
   { id: 'sn3', axis: 'SN', a: { pole: 'N' }, b: { pole: 'S' } },
   { id: 'sn4', axis: 'SN', a: { pole: 'N' }, b: { pole: 'S' } },
-  // ---- TF 轴（正向 = F）：冷漠高效城市能否长留 / 团体分歧裁决 / 复盘城市看什么 / 朋友倾诉时先做什么 ----
+  { id: 'sn5', axis: 'SN', a: { pole: 'N' }, b: { pole: 'S' } },
+  { id: 'sn6', axis: 'SN', a: { pole: 'N' }, b: { pole: 'S' } },
+  { id: 'sn7', axis: 'SN', a: { pole: 'N' }, b: { pole: 'S' } },
+  { id: 'sn8', axis: 'SN', a: { pole: 'N' }, b: { pole: 'S' } },
+  // ---- TF 轴（正向 = F）：冷漠高效城市能否长留 / 团体分歧裁决 / 复盘城市看什么 / 朋友倾诉时先做什么 / 预算超支反应 / 共享空间关闭应对 / 突发医疗第一反应 / 长期旅居回顾城市 ----
   { id: 'tf1', axis: 'TF', a: { pole: 'F' }, b: { pole: 'T' } },
   { id: 'tf2', axis: 'TF', a: { pole: 'F' }, b: { pole: 'T' } },
   { id: 'tf3', axis: 'TF', a: { pole: 'F' }, b: { pole: 'T' } },
   { id: 'tf4', axis: 'TF', a: { pole: 'F' }, b: { pole: 'T' } },
-  // ---- JP 轴（正向 = P）：落地前准备程度 / 计划被打断反应 / 工作台与日程风格 / 截止日期习惯 ----
+  { id: 'tf5', axis: 'TF', a: { pole: 'F' }, b: { pole: 'T' } },
+  { id: 'tf6', axis: 'TF', a: { pole: 'F' }, b: { pole: 'T' } },
+  { id: 'tf7', axis: 'TF', a: { pole: 'F' }, b: { pole: 'T' } },
+  { id: 'tf8', axis: 'TF', a: { pole: 'F' }, b: { pole: 'T' } },
+  // ---- JP 轴（正向 = P）：落地前准备程度 / 计划被打断反应 / 工作台与日程风格 / 截止日期习惯 / 签证窗口变化 / 打包行李方式 / 雨季困在室内 / 联合办公工位选择 ----
   { id: 'jp1', axis: 'JP', a: { pole: 'P' }, b: { pole: 'J' } },
   { id: 'jp2', axis: 'JP', a: { pole: 'P' }, b: { pole: 'J' } },
   { id: 'jp3', axis: 'JP', a: { pole: 'P' }, b: { pole: 'J' } },
   { id: 'jp4', axis: 'JP', a: { pole: 'P' }, b: { pole: 'J' } },
+  { id: 'jp5', axis: 'JP', a: { pole: 'P' }, b: { pole: 'J' } },
+  { id: 'jp6', axis: 'JP', a: { pole: 'P' }, b: { pole: 'J' } },
+  { id: 'jp7', axis: 'JP', a: { pole: 'P' }, b: { pole: 'J' } },
+  { id: 'jp8', axis: 'JP', a: { pole: 'P' }, b: { pole: 'J' } },
 ];
 
 // ---------------------------------------------------------------------------

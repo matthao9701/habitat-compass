@@ -381,8 +381,8 @@ export function weightedUserTags(
 
 /**
  * 核心段人格计分（SJT 二元迫选场景题）：
- * 每轴 4 题，每题选 a 或 b，统计选中「正向字母」的次数 positiveCount；
- * axisScore = Math.round(positiveCount / 4 * 100)；
+ * 每轴 8 题，每题选 a 或 b，统计选中「正向字母」的次数 positiveCount；
+ * axisScore = Math.round(positiveCount / 8 * 100)（按该轴实际题数归一）；
  * typeCode 各轴 axisScore >= 50 取正向字母（E/N/F/P），否则反向（I/S/T/J）；
  * traitVector = { ei, sn, tf, jp } = axisScore * 2 - 100。
  * 未作答项按 0.5（中性）计入。
@@ -422,7 +422,8 @@ export function derivePersonality(mbtiAnswers: Record<string, string>): {
   };
 
   for (const axis of AXES) {
-    const count = totalCount[axis] || 4;
+    // 每轴题数（默认 8）；分数 = 选中正向字母题数 / 题数 × 100
+    const count = totalCount[axis] || 8;
     const score = Math.round((positiveCount[axis] / count) * 100);
     axisScores[axis] = score;
     vector[axis.toLowerCase() as 'ei' | 'sn' | 'tf' | 'jp'] = score * 2 - 100;

@@ -86,7 +86,7 @@ console.log('== [1] 语言包键完整性（zh/en 键集合一致） ==');
 
 console.log('== [2] 题目双语完整性 ==');
 {
-  // 2.1 SJT 16 题：stem + a/b 的 label/desc 双语齐全
+  // 2.1 SJT 32 题：stem + a/b 的 label/desc 双语齐全
   const mbtiMiss: string[] = [];
   for (const q of scenarioQuestions) {
     for (const part of ['stem', 'a.label', 'a.desc', 'b.label', 'b.desc'] as const) {
@@ -96,7 +96,7 @@ console.log('== [2] 题目双语完整性 ==');
       }
     }
   }
-  ok(`SJT ${scenarioQuestions.length} 题 × stem+a/b label/desc × zh/en 全覆盖（${scenarioQuestions.length * 10} 词条）`, scenarioQuestions.length === 16 && mbtiMiss.length === 0, mbtiMiss.slice(0, 5).join(','));
+  ok(`SJT ${scenarioQuestions.length} 题 × stem+a/b label/desc × zh/en 全覆盖（${scenarioQuestions.length * 10} 词条）`, scenarioQuestions.length === 32 && mbtiMiss.length === 0, mbtiMiss.slice(0, 5).join(','));
 
   // 2.2 简易版偏好 8 题
   const lsMiss: string[] = [];

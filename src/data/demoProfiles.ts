@@ -102,12 +102,12 @@ export const DEMO_PROFILES: DemoProfile[] = [
 /** 正向字母（引擎正向 = E/N/F/P）；与 questions.ts 的 a 选项一致 */
 const POSITIVE_POLES = new Set<Pole>(['E', 'N', 'F', 'P']);
 
-/** 强度 → 该轴 4 题中选中「正向字母」的题数 */
+/** 强度 → 该轴 8 题中选中「正向字母」的题数 */
 const POSITIVE_TARGET_COUNT: Record<number, Record<'pos' | 'neg', number>> = {
-  0: { pos: 2, neg: 2 },
-  1: { pos: 3, neg: 1 },
-  2: { pos: 3, neg: 1 },
-  3: { pos: 4, neg: 0 },
+  0: { pos: 4, neg: 4 },
+  1: { pos: 6, neg: 2 },
+  2: { pos: 7, neg: 1 },
+  3: { pos: 8, neg: 0 },
 };
 
 /**

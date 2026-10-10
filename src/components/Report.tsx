@@ -119,23 +119,34 @@ export default function Report({ result, onRestart, isDemo = false, onStartQuiz,
                 {t('rep.demo.badge')}
               </span>
             ) : null}
-            assessment complete · {result.version === 'pro' ? 220 : 40} answers
+            assessment complete · {result.version === 'pro' ? 236 : 56} answers
           </motion.p>
-          <div className="mt-6 max-w-2xl">
+          <div className="mt-6 max-w-3xl">
+            <p className="font-mono text-[10px] uppercase tracking-eyebrow text-clay">
+              {t('rep.header.topCity')}
+            </p>
             <motion.h1
               initial={{ opacity: 0, y: 18 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, ease }}
-              className="font-display text-[34px] font-black leading-tight tracking-tight md:text-[44px]"
+              className="mt-3 font-display text-[40px] font-black leading-tight tracking-tight md:text-[56px]"
             >
-              {hasProfile ? t(`type.${result.typeCode}.name`) : t('rep.persona.title')}
+              {top ? cityName(top.city) : t('rep.persona.title')}
             </motion.h1>
-            <p className="mt-3 font-heading text-base font-medium text-paper/70">
-              {hasProfile ? t(`type.${result.typeCode}.motto`) : ''}
-            </p>
+            {top ? (
+              <p className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[11px] uppercase tracking-wide text-paper/50">
+                <span>{cityCountryName(top.city)}</span>
+                <span className="text-clay">{t('rep.header.match', { n: top.match })}</span>
+              </p>
+            ) : null}
             {hasProfile ? (
-              <p className="mt-2 font-mono text-[10.5px] uppercase tracking-wide text-paper/40">
-                {result.typeCode}
+              <p className="mt-5 border-l-2 border-clay pl-4 text-[15px] font-light leading-relaxed text-paper/80">
+                {t(`type.${result.typeCode}.name`)}
+                <span className="mx-2 text-paper/30">·</span>
+                {t(`type.${result.typeCode}.motto`)}
+                <span className="ml-2 font-mono text-[10px] uppercase tracking-wide text-paper/40">
+                  {result.typeCode}
+                </span>
               </p>
             ) : null}
           </div>
@@ -750,6 +761,11 @@ function buildSummaryText(result: AssessmentResult): string {
   ).join(' · ');
   const lines: string[] = [
     t('report.copy.header'),
+    t('report.copy.topCity', {
+      name: result.matches[0] ? cityName(result.matches[0].city) : '',
+      country: result.matches[0] ? cityCountryName(result.matches[0].city) : '',
+      match: result.matches[0]?.match ?? 0,
+    }),
     t('report.copy.persona', {
       code: result.typeCode,
       name: hasProfile ? t(`type.${result.typeCode}.name`) : '',

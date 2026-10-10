@@ -3,6 +3,10 @@
 type Lang = 'zh' | 'en';
 
 const zh: Record<string, string> = {
+  // ---- 报告头条：最佳定居城市 ----
+  'rep.header.topCity': '你的最佳定居城市',
+  'rep.header.match': '契合度 {n}%',
+
   // ---- 第一层：游牧生活形态原型 ----
   'rep.persona.eyebrow': 'layer 01 · 你的游牧生活形态原型',
   'rep.persona.title': '你的空间定居原型',
@@ -67,6 +71,10 @@ const zh: Record<string, string> = {
 };
 
 const en: Record<string, string> = {
+  // ---- Report header: best-fit city ----
+  'rep.header.topCity': 'Your best-fit city',
+  'rep.header.match': '{n}% fit',
+
   // ---- Layer 1 ----
   'rep.persona.eyebrow': 'layer 01 · your nomad archetype',
   'rep.persona.title': 'Your Settlement Archetype',

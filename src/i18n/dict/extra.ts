@@ -23,7 +23,7 @@ const zh: Record<string, string> = {
   'rep.dataNote':
     '数据口径 · 月均综合生活成本为「市区一居室租金 + 水电网 + 餐饮 + 交通」的估算值（USD），成本指数采用公开统计测算口径（NYC=100），宽带速度为固定宽带中位数；气候指标为 Open-Meteo 历史再分析 2015–2024 十年均值；安全/医疗/污染/通勤/气候等指数沿用公开统计测算的生活质量口径（0–100，NYC=100）。城市缺数据的维度以「—」标示，不参与打分。签证信息为 2026 年初政策快照，出行前请以官方最新信息为准。',
   'rep.demo.cta1': '这是示例报告 —— 你的答案，可能指向完全不同的城市。',
-  'rep.demo.cta2': '三段测评约 8 分钟：性格问卷七级量表、生活情景选择、兴趣标签，无需注册。',
+  'rep.demo.cta2': '三段测评约 8 分钟：人格倾向二元迫选、生活情景选择、兴趣标签，无需注册。',
   'rep.cta.start': '开始我的正式测试',
   'rep.cta.copyHint': '复制完整文字摘要发给朋友，或重新测一次看看不同选择的结果。',
   'rep.cta.restart': '重新测评',
@@ -310,7 +310,7 @@ const en: Record<string, string> = {
   'rep.dataNote':
     'Data notes · Monthly all-in living cost = estimated rent (1BR city center) + utilities + internet + dining + transport (USD). Cost Index follows public statistical estimates (NYC=100); broadband = fixed broadband median; climate metrics are Open-Meteo reanalysis 2015-2024 ten-year means; safety/healthcare/pollution/traffic/comfort follow public statistical estimates (0-100, NYC=100). Dimensions without data are shown as "—" and excluded from scoring. Visa info is an early-2026 snapshot — always verify with official sources before travelling.',
   'rep.demo.cta1': 'This is a sample report — your own answers may point to entirely different cities.',
-  'rep.demo.cta2': 'The 3-stage assessment takes ~8 min: a personality questionnaire (7-point scale), lifestyle scenarios and interest tags. No sign-up needed.',
+  'rep.demo.cta2': 'The 3-stage assessment takes ~8 min: a forced-choice personality section, lifestyle scenarios and interest tags. No sign-up needed.',
   'rep.cta.start': 'Start my real assessment',
   'rep.cta.copyHint': 'Copy the full text summary to share with friends, or retake the quiz for different results.',
   'rep.cta.restart': 'Retake assessment',

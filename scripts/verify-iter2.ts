@@ -107,8 +107,8 @@ check('均分份额合计 100%', shares.reduce((s, v) => s + v, 0) === 100, shar
 
 // ---- 6. 演示答案完整性（进入对比的个性化输入） ----
 check(
-  '演示答案 16+8+兴趣 完整',
-  Object.keys(answers.mbti).length === 16 &&
+  '演示答案 32+8+兴趣 完整',
+  Object.keys(answers.mbti).length === 32 &&
     Object.keys(answers.lifestyle).length === 8 &&
     answers.interests.length > 0,
   `${Object.keys(answers.mbti).length}/${Object.keys(answers.lifestyle).length}/${answers.interests.length}`,

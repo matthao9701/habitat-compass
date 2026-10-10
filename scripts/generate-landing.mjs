@@ -1262,7 +1262,7 @@ const LEGAL_TERMS = {
       ] },
       { h: '二、服务描述', ps: [
         `栖居罗盘为数字游民、自由职业者与远程工作者提供海外城市定居的<strong>决策辅助</strong>：基于你的偏好作答与公开数据快照，对库内 ${CITIES.length} 座城市加权打分并生成报告。`,
-        '本站的核心测评（16 道原创 SJT 情境迫选题 + 8 道生活情景题，另含 16 个兴趣标签）、可选的深度测评、城市对比与税负测算等功能，全部<strong>无需付费</strong>，也<strong>无需注册账号</strong>；不提供订阅、虚拟商品或任何形式的交易。',
+        '本站的核心测评（32 道原创 SJT 情境迫选题 + 8 道生活情景题，另含 16 个兴趣标签）、可选的深度测评、城市对比与税负测算等功能，全部<strong>无需付费</strong>，也<strong>无需注册账号</strong>；不提供订阅、虚拟商品或任何形式的交易。',
         '本站无账号体系，因此不存在"账户安全"义务；你的全部数据仅存于你自己的浏览器（详见<a href="/privacy/">《隐私政策》</a>）。',
       ] },
       { h: '三、使用资格与你的内容', ps: [
@@ -1339,7 +1339,7 @@ const LEGAL_TERMS = {
       ] },
       { h: '2. Service description', ps: [
         `Habitat Compass provides <strong>decision support</strong> for digital nomads, freelancers and remote workers settling abroad: it scores the ${CITIES.length} cities in its library against your stated preferences and public data snapshots, and generates a report.`,
-        'The core assessment (16 original SJT situational-judgment items plus 8 lifestyle scenario questions, with 16 interest tags), the optional in-depth assessment, city comparison and the tax planner are entirely <strong>free of charge</strong> and require <strong>no account</strong>. There are no subscriptions, virtual goods or transactions of any kind.',
+        'The core assessment (32 original SJT situational-judgment items plus 8 lifestyle scenario questions, with 16 interest tags), the optional in-depth assessment, city comparison and the tax planner are entirely <strong>free of charge</strong> and require <strong>no account</strong>. There are no subscriptions, virtual goods or transactions of any kind.',
         'The site has no account system, so there is no "account security" duty; all your data stays in your own browser (see the <a href="/en/privacy/">Privacy Policy</a>).',
       ] },
       { h: '3. Eligibility and your content', ps: [
@@ -1609,7 +1609,7 @@ function main() {
   const llms = `# 栖居罗盘 · Habitat Compass
 
 > 面向数字游民、自由职业者与远程工作者的海外城市定居决策工具。${CITIES.length} 座城市（六洲）+ 65 国参考数据；三层匹配引擎：硬约束过滤（预算/签证/安全）→ 核心匹配（偏好 42% + 人格 30% + 兴趣 18%，11 维）→ 加分项（RIASEC/风险联动/空气质量 ≤10%）。评分 0–99，缺失维度降权不惩罚，数据逐项标注来源。
-> 核心测评（16 道原创 SJT 情境迫选题 + 8 道生活情景题 + 16 个兴趣标签）免费、无需注册；可选的深度测评（IPIP-NEO 120 题 Big Five + RIASEC）与分级税负测算同样免费。
+> 核心测评（32 道原创 SJT 情境迫选题 + 8 道生活情景题 + 16 个兴趣标签）免费、无需注册；可选的深度测评（IPIP-NEO 120 题 Big Five + RIASEC）与分级税负测算同样免费。
 > 分级税负引擎（V2）：29 国按本币累进级距逐档测算，另含面向数字游民的特惠税制（泰国 LTR 17%、西班牙贝克汉姆法案 24%、格鲁吉亚 1%、葡萄牙 IFICI 20%、阿联酋/马来西亚/克罗地亚免税等），税率均为公开事实，不依赖任何付费聚合 API。
 
 ## 主要页面
