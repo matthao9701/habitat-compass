@@ -49,8 +49,8 @@ const zh: D = {
   'landing.atlas.browseAll': '浏览全部 {count} 座城市（含筛选与对比）',
   // 信任锚点：数据时效 + 社群纠错
   'trust.dataUpdated': '数据更新至 2026 年 Q4',
-  'trust.contactLead': '发现租金或网速数据有误？写信给',
-  'trust.contactTail': '，帮助更多同路人。',
+  'trust.contactLead': '发现数据有误？欢迎随时来信',
+  'trust.contactTail': ' 反馈校准。我们也开放生态共建、品牌赞助与各类商业合作，期待连接更多同行者。',
   'trust.contactLabel': '联系邮箱',
   'region.europe': '欧洲',
   'region.asia': '亚洲',
@@ -684,8 +684,8 @@ const en: D = {
   'landing.atlas.closestAction': 'See the closest cities ↓',
   // Trust anchors: data freshness + community correction
   'trust.dataUpdated': 'Data updated for Q4 2026',
-  'trust.contactLead': 'Spotted inaccurate rent or internet speed? Drop a note to',
-  'trust.contactTail': ' and help fellow nomads.',
+  'trust.contactLead': 'Spotted an inaccuracy? Write to us anytime at',
+  'trust.contactTail': ' to help us recalibrate. We also welcome ecosystem collaboration, brand sponsorship and commercial partnerships of all kinds — we look forward to connecting with more fellow travellers.',
   'trust.contactLabel': 'Contact email',
   'region.europe': 'Europe',
   'region.asia': 'Asia',

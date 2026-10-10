@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useState } from 'react';
+import { Component, lazy, Suspense, useEffect, useState, type ReactNode } from 'react';
 import { AnimatePresence, MotionConfig, motion } from 'framer-motion';
 import Landing from './components/Landing';
 import TabBar, { type TabId } from './components/TabBar';
@@ -14,38 +14,80 @@ import KofiWidget from './components/KofiWidget';
 // 产生 4xx。这里包装 import()：失败时自动整页刷新一次拉取新版本；用 sessionStorage
 // 标记防止在真正故障（如离线）时陷入刷新死循环。
 const RELOAD_FLAG = 'hc:chunk-reload';
+/** 单个 chunk 的加载上限：超时即视为失败（网络挂起时避免无限 Loading），走恢复流程 */
+const CHUNK_TIMEOUT_MS = 12000;
+
 function lazyWithReload<P>(factory: () => Promise<{ default: React.ComponentType<P> }>) {
-  return lazy(() =>
-    factory()
-      .then((mod) => {
-        // 加载成功：清除标记，使后续（新的）发版仍能触发一次自动恢复
-        try {
-          sessionStorage.removeItem(RELOAD_FLAG);
-        } catch {
-          /* 忽略 */
-        }
-        return mod;
-      })
-      .catch((err: unknown) => {
-        try {
-          if (!sessionStorage.getItem(RELOAD_FLAG)) {
-            sessionStorage.setItem(RELOAD_FLAG, '1');
-            window.location.reload();
+  // 暴露原始 factory：供首屏后预取（见 prefetchRoutes），提前把 chunk 拉进内存。
+  const loader = factory;
+  return {
+    loader,
+    Component: lazy(() =>
+      // 竞速：chunk 加载 vs 超时。任一先完成即定型；超时则 reject 进入恢复流程。
+      Promise.race([
+        loader(),
+        new Promise<never>((_, reject) =>
+          setTimeout(() => reject(new Error('chunk-load-timeout')), CHUNK_TIMEOUT_MS),
+        ),
+      ])
+        .then((mod) => {
+          // 加载成功：清除标记，使后续（新的）发版仍能触发一次自动恢复
+          try {
+            sessionStorage.removeItem(RELOAD_FLAG);
+          } catch {
+            /* 忽略 */
           }
-        } catch {
-          // 隐私模式等禁用 sessionStorage 时忽略，直接抛出交由错误边界/上层处理
-        }
-        throw err;
-      }),
-  );
+          return mod as { default: React.ComponentType<P> };
+        })
+        .catch((err: unknown) => {
+          try {
+            if (!sessionStorage.getItem(RELOAD_FLAG)) {
+              sessionStorage.setItem(RELOAD_FLAG, '1');
+              window.location.reload();
+            }
+          } catch {
+            // 隐私模式等禁用 sessionStorage 时忽略，直接抛出交由错误边界处理
+          }
+          throw err;
+        }),
+    ),
+  };
 }
 
-const Quiz = lazyWithReload(() => import('./components/Quiz'));
-const Report = lazyWithReload(() => import('./components/Report'));
-const CompareScreen = lazyWithReload(() => import('./components/compare/CompareScreen'));
-const ProfileScreen = lazyWithReload(() => import('./components/ProfileScreen'));
-const TaxPlanner = lazyWithReload(() => import('./components/TaxPlanner'));
-const CityBrowser = lazyWithReload(() => import('./components/CityBrowser'));
+const quizMod = lazyWithReload(() => import('./components/Quiz'));
+const reportMod = lazyWithReload(() => import('./components/Report'));
+const compareMod = lazyWithReload(() => import('./components/compare/CompareScreen'));
+const profileMod = lazyWithReload(() => import('./components/ProfileScreen'));
+const taxMod = lazyWithReload(() => import('./components/TaxPlanner'));
+const citiesMod = lazyWithReload(() => import('./components/CityBrowser'));
+
+const Quiz = quizMod.Component;
+const Report = reportMod.Component;
+const CompareScreen = compareMod.Component;
+const ProfileScreen = profileMod.Component;
+const TaxPlanner = taxMod.Component;
+const CityBrowser = citiesMod.Component;
+
+/**
+ * 首屏可交互后（浏览器空闲时）预取全部按需路由 chunk，写入模块缓存。
+ * 这样用户点 Tab 切换时 import() 已在内存中即时解析，基本不再出现「Loading…」占位。
+ * 失败静默忽略：真正打开该页时仍会正常按需加载并被 lazyWithReload 兜底。
+ */
+function prefetchRoutes(): void {
+  const load = (): void => {
+    for (const m of [citiesMod, taxMod, compareMod, profileMod, quizMod, reportMod]) {
+      m.loader().catch(() => {
+        /* 预取失败忽略，改用按需加载 */
+      });
+    }
+  };
+  const w = window as Window & {
+    requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number;
+  };
+  if (typeof w.requestIdleCallback === 'function') w.requestIdleCallback(load, { timeout: 3000 });
+  else window.setTimeout(load, 1200);
+}
+
 import { assess, type UserAnswers, type AssessmentResult, type QuizVersion, isDeep } from './lib/engine';
 import { DEMO_PROFILES, buildDemoAnswers } from './data/demoProfiles';
 import * as storage from './lib/storage';
@@ -57,13 +99,40 @@ import { I18nProvider } from './i18n';
 
 type Screen = 'landing' | 'cities' | 'quiz' | 'report' | 'compare' | 'profile' | 'tax';
 
-/** 懒加载页面的占位：保持版式稳定，避免布局跳动 */
+/** 懒加载页面的占位：保持版式稳定，避免布局跳动（仅在 chunk 尚未就绪的极短瞬间出现） */
 function ScreenFallback() {
   return (
     <div className="flex min-h-[60vh] items-center justify-center">
       <span className="font-data text-[11px] uppercase tracking-[0.22em] text-ink-soft">Loading…</span>
     </div>
   );
+}
+
+/** 错误边界：chunk 加载失败且自动刷新未生效时，给出可重试的提示，而非无限 Loading。
+ *  重试走整页刷新——React.lazy 会缓存被拒的 promise，仅重渲染同一 lazy 组件无法重新拉取。 */
+class RouteErrorBoundary extends Component<{ children: ReactNode }, { failed: boolean }> {
+  state = { failed: false };
+  static getDerivedStateFromError(): { failed: boolean } {
+    return { failed: true };
+  }
+  retry = (): void => {
+    window.location.reload();
+  };
+  render(): ReactNode {
+    if (this.state.failed) {
+      return (
+        <div className="flex min-h-[60vh] flex-col items-center justify-center gap-4 px-6 text-center">
+          <p className="text-[14px] leading-relaxed text-ink-soft">
+            页面加载失败，可能是网络不稳或版本已更新。
+          </p>
+          <button type="button" onClick={this.retry} className="btn-clay">
+            重新加载
+          </button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
 }
 
 /** Tab 栏仅在常驻页面显示（quiz / report 为专注模式） */
@@ -82,6 +151,11 @@ export default function App() {
   // PWA：注册 Service Worker（仅支持原生安装事件的浏览器；见 lib/pwa.ts 说明）
   useEffect(() => {
     registerServiceWorker();
+  }, []);
+
+  // 首屏空闲后预取按需路由 chunk，消除切换 Tab 时的「Loading…」占位
+  useEffect(() => {
+    prefetchRoutes();
   }, []);
 
   /** 读取 URL 查询参数（静态子页面 /tax-calculator/ 直达时携带 ?city=<id> 预置城市） */
@@ -236,42 +310,44 @@ export default function App() {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
             >
-              <Suspense fallback={<ScreenFallback />}>
-                {screen === 'landing' && (
-                  <Landing onStart={startQuiz} onDemo={openDemo} onBrowse={() => go('cities')} />
-                )}
-                {screen === 'cities' && <CityBrowser />}
-                {screen === 'quiz' && (
-                  <Quiz onComplete={completeQuiz} onExit={exitQuiz} startDeep={quizVersion === 'pro'} />
-                )}
-                {screen === 'report' && result && (
-                  <Report
-                    result={result}
-                    onRestart={restart}
-                    isDemo={isDemo}
-                    onStartQuiz={startQuiz}
-                    onOpenTax={(cityId) => openTax(cityId)}
-                  />
-                )}
-                {screen === 'compare' && (
-                  <CompareScreen
-                    result={result}
-                    answers={answers}
-                    seedCities={compareSeed}
-                    onOpenQuiz={startQuiz}
-                  />
-                )}
-                {screen === 'tax' && (
-                  <TaxPlanner initialCityId={taxCityId} onOpenQuiz={startQuiz} />
-                )}
-                {screen === 'profile' && (
-                  <ProfileScreen
-                    onOpenQuiz={startQuiz}
-                    onOpenHistory={openHistory}
-                    onOpenCompare={openCompare}
-                  />
-                )}
-              </Suspense>
+              <RouteErrorBoundary>
+                <Suspense fallback={<ScreenFallback />}>
+                  {screen === 'landing' && (
+                    <Landing onStart={startQuiz} onDemo={openDemo} onBrowse={() => go('cities')} />
+                  )}
+                  {screen === 'cities' && <CityBrowser />}
+                  {screen === 'quiz' && (
+                    <Quiz onComplete={completeQuiz} onExit={exitQuiz} startDeep={quizVersion === 'pro'} />
+                  )}
+                  {screen === 'report' && result && (
+                    <Report
+                      result={result}
+                      onRestart={restart}
+                      isDemo={isDemo}
+                      onStartQuiz={startQuiz}
+                      onOpenTax={(cityId) => openTax(cityId)}
+                    />
+                  )}
+                  {screen === 'compare' && (
+                    <CompareScreen
+                      result={result}
+                      answers={answers}
+                      seedCities={compareSeed}
+                      onOpenQuiz={startQuiz}
+                    />
+                  )}
+                  {screen === 'tax' && (
+                    <TaxPlanner initialCityId={taxCityId} onOpenQuiz={startQuiz} />
+                  )}
+                  {screen === 'profile' && (
+                    <ProfileScreen
+                      onOpenQuiz={startQuiz}
+                      onOpenHistory={openHistory}
+                      onOpenCompare={openCompare}
+                    />
+                  )}
+                </Suspense>
+              </RouteErrorBoundary>
             </motion.div>
           </AnimatePresence>
           {TAB_SCREENS.includes(screen) && <Footer />}
