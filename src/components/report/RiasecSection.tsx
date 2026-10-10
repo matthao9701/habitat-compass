@@ -2,7 +2,6 @@ import { motion } from 'framer-motion';
 import RadarChart from '../RadarChart';
 import type { AssessmentResult } from '../../lib/engine';
 import type { RiasecProfile, RiskProfile } from '../../lib/riasec';
-import { riskBandOf } from '../../lib/riasec';
 import { RIASEC_DIMS } from '../../data/riasec';
 import { RIASEC_TAG_BOOST } from '../../data/riasecMap';
 import { useI18n } from '../../i18n';

@@ -16,7 +16,6 @@ import {
   ipipPairs,
   proLifestyleQuestions,
   IPIP_SCALE,
-  RANK_ORDINALS,
   type IpipPair,
   type ProLifestyleQuestion,
 } from '../data/questionsPro';
@@ -1201,7 +1200,6 @@ interface InterestItemProps {
 }
 
 function InterestItem({ ids, selected, onToggle }: InterestItemProps) {
-  const { t } = useI18n();
   return (
     <div className="grid gap-2.5 md:grid-cols-2">
       {ids.map((id) => {
@@ -1242,7 +1240,6 @@ function InterestItem({ ids, selected, onToggle }: InterestItemProps) {
 
 /** 混编题型标签（工厂：渲染期取当前语言） */
 function proKindLabel(): Record<ProLifestyleQuestion['kind'], string> {
-  const { t } = useI18n();
   const L = (k: string): string => translate(getCurrentLang(), k);
   return { choice: L('quiz.type.choice'), forced: L('quiz.type.forced'), slider: L('quiz.type.slider'), rank: L('quiz.type.rank') };
 }

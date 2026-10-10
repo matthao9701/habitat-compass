@@ -195,6 +195,30 @@ if (idxLd) {
   const graph = JSON.parse(idxLd[1]) as { '@graph': { '@type': string }[] };
   check('主站 JSON-LD 含 Organization + WebApplication', Array.isArray(graph['@graph']) && graph['@graph'].some((g) => g['@type'] === 'Organization') && graph['@graph'].some((g) => g['@type'] === 'WebApplication'));
 }
+// 主站第二个 ld+json 块 = 首页 FAQPage（AEO 直答）
+const idxLdBlocks = idx.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g) ?? [];
+check('主站含第二个 ld+json（首页 FAQPage）', idxLdBlocks.length >= 2);
+check('主站首页 FAQPage 结构化数据', idx.includes('"@type": "FAQPage"') && idx.includes('匹配分数是怎么算的'));
+
+console.log('\n=== 10. AEO：og:locale / WebPage 新鲜度 / EN 首页 FAQ ===');
+// og:locale 双语标注（城市页 zh / en）
+const hz = read('city/hanoi/index.html') ?? '';
+const hzEn = read('en/city/hanoi/index.html') ?? '';
+check('城市页 og:locale=zh_CN + alternate=en_US', hz.includes('og:locale" content="zh_CN"') && hz.includes('og:locale:alternate" content="en_US"'));
+check('城市页 EN og:locale=en_US + alternate=zh_CN', hzEn.includes('og:locale" content="en_US"') && hzEn.includes('og:locale:alternate" content="zh_CN"'));
+// WebPage + dateModified（新鲜度信号）
+check('城市页含 WebPage + dateModified', hz.includes('"@type": "WebPage"') && /"dateModified": "\d{4}-\d{2}-\d{2}"/.test(hz));
+check('城市页含 WebSite 节点', hz.includes('"@type": "WebSite"'));
+// 城市页 FAQPage 仍在（AEO 直答）
+check('城市页 FAQPage 结构化数据存在', hz.includes('"@type": "FAQPage"'));
+// EN 首页 FAQPage
+const enHome = read('en/index.html') ?? '';
+check('EN 首页含 FAQPage', enHome.includes('"@type": "FAQPage"'));
+check('EN 首页 faqJsonLd 可解析', jsonLdBlocks(enHome).some((b) => (b as { '@type'?: string })['@type'] === 'FAQPage'));
+// llms.txt 常见问答区块
+check('llms.txt 含常见问答（AEO 直答）', llms.includes('## 常见问答') && llms.includes('匹配分数怎么算'));
+// 版本命名已适配：无旧「核心测评 / 深度测评 / IPIP-NEO 120 题」残留（页面层）
+check('落地页无旧版命名残留（核心测评/深度测评）', !hz.includes('核心测评') && !llms.includes('核心测评') && !llms.includes('深度测评') && !(read('methodology/index.html') ?? '').includes('核心测评'));
 
 console.log(`\n════════ verify-seo-v9: ${passed} passed, ${failed.length} failed ════════`);
 if (failed.length > 0) {

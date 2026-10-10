@@ -155,10 +155,6 @@ export interface BigFiveProfile {
 
 const AXES = ['EI', 'SN', 'TF', 'JP'] as const;
 
-const POLE_SIGN: Record<Pole, number> = {
-  E: 1, I: -1, N: 1, S: -1, F: 1, T: -1, P: 1, J: -1,
-};
-
 /**
  * 引擎 v3 分层权重表（第十轮重构；设计依据见 DESIGN.md「引擎 v3 权重依据」）：
  *

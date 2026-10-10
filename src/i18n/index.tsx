@@ -12,8 +12,6 @@ export type Lang = 'zh' | 'en';
 
 const LANG_KEY = 'nomadmatch.v1:lang';
 
-type Dict = Record<string, string>;
-
 function readStoredLang(): Lang | null {
   try {
     const v = window.localStorage.getItem(LANG_KEY);

@@ -309,12 +309,22 @@ table.tbl a:hover{text-decoration:underline}
 @media(max-width:560px){h1{font-size:24px}.card .v{font-size:19px}}
 `;
 
-function shell({ lang, title, desc, canonical, hreflang, jsonLd = [], body, image, imageAlt, imageW, imageH, robots }) {
+function shell({ lang, title, desc, canonical, hreflang, jsonLd = [], body, image, imageAlt, imageW, imageH, robots, lastmod }) {
   const alt = hreflang ? (lang === 'zh' ? hreflang.en : hreflang.zh) : null;
   const ogImage = image || page('/og-cover.jpg');
   const ogAlt = imageAlt || (lang === 'zh' ? '栖居罗盘 · Habitat Compass' : 'Habitat Compass');
   const ogW = imageW || (image ? 800 : 1200);
   const ogH = imageH || (image ? 512 : 630);
+  // AEO：把页面的 WebSite 与 WebPage（含 dateModified 新鲜度信号）节点并入结构化数据。
+  // 问答引擎偏好可解析的"最近更新"事实；日期取该页数据文件的 git 提交日（见 fileLastModified）。
+  const ldNodes = [...jsonLd];
+  if (canonical) {
+    const url = canonical;
+    ldNodes.unshift(
+      { '@context': 'https://schema.org', '@type': 'WebSite', '@id': `${page('/')}#website`, name: '栖居罗盘 · Habitat Compass', url: page('/'), inLanguage: ['zh-Hans', 'en'], publisher: { '@type': 'Organization', '@id': `${page('/')}#organization`, name: '栖居罗盘 · Habitat Compass', url: page('/') } },
+      { '@context': 'https://schema.org', '@type': 'WebPage', '@id': `${url}#webpage`, url, name: title, description: desc, inLanguage: lang === 'zh' ? 'zh-Hans' : 'en', isPartOf: { '@id': `${page('/')}#website` }, ...(lastmod ? { dateModified: lastmod } : {}) },
+    );
+  }
   const langSwitch = alt
     ? (lang === 'zh'
       ? `<span class="lang"><a href="${esc(alt)}" hreflang="en" rel="alternate">English</a></span>`
@@ -347,6 +357,8 @@ ${seoHead}
 <meta property="og:description" content="${esc(desc)}">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="栖居罗盘 · Habitat Compass">
+<meta property="og:locale" content="${lang === 'zh' ? 'zh_CN' : 'en_US'}">
+<meta property="og:locale:alternate" content="${lang === 'zh' ? 'en_US' : 'zh_CN'}">
 <meta property="og:image" content="${esc(ogImage)}">
 <meta property="og:image:width" content="${ogW}">
 <meta property="og:image:height" content="${ogH}">
@@ -357,7 +369,7 @@ ${seoHead}
 <meta name="twitter:image" content="${esc(ogImage)}">
 <meta name="twitter:image:alt" content="${esc(ogAlt)}">
 <style>${CSS}</style>
-${jsonLd.map((j) => `<script type="application/ld+json">\n${JSON.stringify(j, null, 1)}\n</script>`).join('\n')}
+${ldNodes.map((j) => `<script type="application/ld+json">\n${JSON.stringify(j, null, 1)}\n</script>`).join('\n')}
 </head>
 <body>
 <header><div class="wrap hd">
@@ -579,6 +591,7 @@ ${faqs.map((f) => `<details><summary>${esc(f.q)}</summary><p>${esc(f.a)}</p></de
     imageAlt: lang === 'zh' ? `${city.nameZh} · 数字游民定居指南` : `${city.nameEn} for digital nomads`,
     imageW: cityImgSize?.w,
     imageH: cityImgSize?.h,
+    lastmod: CITY_DATA_DATE,
   });
 }
 
@@ -637,24 +650,28 @@ ${faqs.map((f) => `<details><summary>${esc(f.q)}</summary><p>${esc(f.a)}</p></de
 <ul class="list">${cityList}</ul>
 <a class="cta" href="${lang === 'zh' ? '/' : '/en/'}">${lang === 'zh' ? '免费开始我的定居匹配测评 →' : 'Start my free matching quiz →'}</a>
 <p class="cta-sub">${lang === 'zh' ? '签证/预算/安全硬约束过滤 + 分层匹配引擎' : 'Hard-constraint filtering + tiered matching engine'}</p>`;
-  return shell({ lang, title, desc, canonical, hreflang, jsonLd: [faqJsonLd(faqs), breadcrumbJsonLd(crumbs)], body });
+  return shell({ lang, title, desc, canonical, hreflang, jsonLd: [faqJsonLd(faqs), breadcrumbJsonLd(crumbs)], body, lastmod: co.updatedAt ?? COUNTRY_DATA_DATE });
 }
 
 // ---------- 索引页 ----------
 // 英文本地化首页（sitemap 一直声明 /en/，此前缺文件 → 404；现补齐精简英文版）
 function renderEnHome() {
   const title = `Habitat Compass — Where should you live next? ${CITIES.length} city guides for remote workers`;
-  const desc = `Free personality & lifestyle quiz that scores ${CITIES.length} cities across cost, safety, climate, internet and visa friendliness — with per-item sources and dates.`;
+  const desc = `Free standard test (32 SJT items + 8 lifestyle questions + 16 interest tags; optional deep test adds a Big Five forced-choice profile) that scores ${CITIES.length} cities across cost, safety, climate, internet and visa friendliness — with per-item sources and dates.`;
   const body = `
 <h1>Habitat Compass</h1>
-<p class="sub">A decision-support tool for remote workers, freelancers and digital nomads. Take a free personality &amp; lifestyle quiz, get a weighted score for every city in the library, and compare your shortlist.</p>
+<p class="sub">A decision-support tool for remote workers, freelancers and digital nomads. Take a free standard test, optionally go deeper with a Big Five forced-choice profile, get a weighted score for every city in the library, and compare your shortlist.</p>
 <div class="grid">
   <div class="card"><div class="k">City library</div><div class="v">${CITIES.length} cities</div><div class="meta"><a href="/en/cities/">Browse city guides</a> · cost, safety, climate, internet, air quality &amp; visa overview with sources</div></div>
   <div class="card"><div class="k">Country library</div><div class="v">65 countries</div><div class="meta"><a href="/en/countries/">Browse country pages</a> · GPI, HDI, connectivity &amp; long-stay notes</div></div>
   <div class="card"><div class="k">How scoring works</div><div class="v">3 tiers, 11 dimensions</div><div class="meta"><a href="/en/methodology/">Methodology</a> · weights, data licences &amp; update cadence</div></div>
   <div class="card"><div class="k">Tax planner</div><div class="v">65 regimes · 29 brackets</div><div class="meta"><a href="/en/tax-calculator/">Tax calculator</a> · progressive bracket engine for 29 countries, 65-country regime classification, net income vs a high-tax baseline</div></div>
-  <div class="card"><div class="k">Get started</div><div class="v">Free quiz</div><div class="meta"><a href="/">Start the matching quiz (Chinese UI)</a> · no account needed</div></div>
+  <div class="card"><div class="k">Get started</div><div class="v">Free standard test</div><div class="meta"><a href="/">Start the matching test (Chinese UI)</a> · no account needed · optional deep test</div></div>
 </div>
+<h2>Frequently asked questions</h2>
+<details><summary>How does Habitat Compass pick cities for me?</summary><p>A free standard test (32 original situational-judgment personality items, 8 lifestyle questions and 16 interest tags) feeds a three-tier engine — hard-constraint filtering, then preference 42% + personality 30% + interest 18%, plus boosters — which scores all ${CITIES.length} cities on 11 dimensions and returns your Top 5.</p></details>
+<details><summary>How much does it cost, and do I need an account?</summary><p>It is entirely free with no signup. Everything runs in your browser; no data leaves your device.</p></details>
+<details><summary>Can I go deeper than the standard test?</summary><p>Yes — after the standard test you can optionally continue with a deep test: a Big Five forced-choice profile (30 facets), 12 extra lifestyle items, a risk profile and a RIASEC interest portrait, for a richer report.</p></details>
 <h2>Legal</h2>
 <ul class="list">
   <li><a href="/en/terms/">Terms of Service</a></li>
@@ -662,16 +679,22 @@ function renderEnHome() {
   <li><a href="/en/disclaimer/">Disclaimer</a> <span class="meta">information only — not professional advice</span></li>
 </ul>
 <p class="meta">The full interactive app is available in Chinese at <a href="/">the homepage</a>.</p>`;
+  const enFaqs = [
+    { q: 'How does Habitat Compass pick cities for me?', a: `A free standard test (32 original situational-judgment personality items, 8 lifestyle questions and 16 interest tags) feeds a three-tier engine — hard-constraint filtering, then preference 42% + personality 30% + interest 18%, plus boosters — scoring all ${CITIES.length} cities on 11 dimensions and returning your Top 5.` },
+    { q: 'How much does it cost, and do I need an account?', a: 'It is entirely free with no signup. Everything runs in your browser; no data leaves your device.' },
+    { q: 'Can I go deeper than the standard test?', a: 'Yes — after the standard test you can optionally continue with a deep test: a Big Five forced-choice profile (30 facets), 12 extra lifestyle items, a risk profile and a RIASEC interest portrait.' },
+  ];
   return shell({
     lang: 'en', title, desc,
     canonical: page('/en/'),
     hreflang: { zh: page('/'), en: page('/en/') },
     jsonLd: [
-      { '@context': 'https://schema.org', '@type': 'Organization', '@id': page('/#organization'), name: '栖居罗盘 · Habitat Compass', url: page('/'), logo: page('/og-cover.jpg'), description: 'Decision-support tool for remote workers and digital nomads choosing where to settle abroad.' },
-      { '@context': 'https://schema.org', '@type': 'WebSite', '@id': page('/#website'), name: '栖居罗盘 · Habitat Compass', url: page('/'), inLanguage: ['zh-Hans', 'en'], publisher: { '@id': page('/#organization') } },
+      { '@context': 'https://schema.org', '@type': 'Organization', '@id': `${page('/')}#organization`, name: '栖居罗盘 · Habitat Compass', url: page('/'), logo: page('/og-cover.jpg'), description: 'Decision-support tool for remote workers and digital nomads choosing where to settle abroad.' },
+      faqJsonLd(enFaqs),
       breadcrumbJsonLd([{ name: 'Home', item: page('/en/') }]),
     ],
     body,
+    lastmod: SCRIPT_DATE,
   });
 }
 
@@ -687,7 +710,7 @@ function renderCitiesIndex(lang) {  const pathZh = '/cities/', pathEn = '/en/cit
 ${byRegion.map(({ r, cities }) => `<h2>${esc(REGION_LABEL[lang][r] ?? r)}（${cities.length}）</h2><ul class="list">${cities.map((c) => `<li><a href="${lang === 'zh' ? `/city/${c.id}/` : `/en/city/${c.id}/`}">${esc(lang === 'zh' ? c.nameZh : c.nameEn)}</a><span class="meta">${esc(lang === 'zh' ? c.countryZh : (COUNTRY_BY_CODE.get(c.countryCode)?.nameEn ?? c.countryZh))}${c.monthlyCostUSD != null ? ` · $${Math.round(c.monthlyCostUSD)}/mo` : ''}</span></li>`).join('\n')}</ul>`).join('\n')}
 <p style="font-size:12.5px;opacity:.72;margin-top:18px">Career interest framework: O*NET Interest Profiler Short Form — <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="license noopener">CC BY 4.0</a>, O*NET OnLine (sponsored by the U.S. Department of Labor).</p>
 <a class="cta" href="${lang === 'zh' ? '/' : '/en/'}">${lang === 'zh' ? '免费开始我的定居匹配测评 →' : 'Start my free matching quiz →'}</a>`;
-  return shell({ lang, title, desc, canonical, hreflang, jsonLd: [breadcrumbJsonLd(lang === 'zh' ? [{ name: '首页', item: page('/') }, { name: '城市索引', item: page(pathZh) }] : [{ name: 'Home', item: page('/en/') }, { name: 'Cities', item: page(pathEn) }])], body });
+  return shell({ lang, title, desc, canonical, hreflang, jsonLd: [breadcrumbJsonLd(lang === 'zh' ? [{ name: '首页', item: page('/') }, { name: '城市索引', item: page(pathZh) }] : [{ name: 'Home', item: page('/en/') }, { name: 'Cities', item: page(pathEn) }])], body, lastmod: CITY_DATA_DATE });
 }
 
 function renderCountriesIndex(lang) {
@@ -702,7 +725,7 @@ function renderCountriesIndex(lang) {
 ${CONTINENTS.map((r) => { const cs = COUNTRIES.filter((c) => COUNTRY_REGION.get(c.code) === r); if (!cs.length) return ''; return `<h2>${esc(REGION_LABEL[lang][r] ?? r)}（${cs.length}）</h2><ul class="list">${cs.map((c) => `<li><a href="${lang === 'zh' ? `/country/${c.code.toLowerCase()}/` : `/en/country/${c.code.toLowerCase()}/`}">${esc(lang === 'zh' ? c.nameZh : c.nameEn)}</a><span class="meta">${c.internetMbpsFixed != null ? `${c.internetMbpsFixed} Mbps` : ''}${c.gpi ? ` · ${lang === 'zh' ? '和平' : 'peace'} #${c.gpi.rank}` : ''} · ${c.cityCount ?? 0} ${lang === 'zh' ? '城' : 'cities'}</span></li>`).join('\n')}</ul>`; }).join('\n')}
 <p style="font-size:12.5px;opacity:.72;margin-top:18px">Career interest framework: O*NET Interest Profiler Short Form — <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="license noopener">CC BY 4.0</a>, O*NET OnLine (sponsored by the U.S. Department of Labor).</p>
 <a class="cta" href="${lang === 'zh' ? '/' : '/en/'}">${lang === 'zh' ? '免费开始我的定居匹配测评 →' : 'Start my free matching quiz →'}</a>`;
-  return shell({ lang, title, desc, canonical, hreflang, jsonLd: [breadcrumbJsonLd(lang === 'zh' ? [{ name: '首页', item: page('/') }, { name: '国家索引', item: page(pathZh) }] : [{ name: 'Home', item: page('/en/') }, { name: 'Countries', item: page(pathEn) }])], body });
+  return shell({ lang, title, desc, canonical, hreflang, jsonLd: [breadcrumbJsonLd(lang === 'zh' ? [{ name: '首页', item: page('/') }, { name: '国家索引', item: page(pathZh) }] : [{ name: 'Home', item: page('/en/') }, { name: 'Countries', item: page(pathEn) }])], body, lastmod: COUNTRY_DATA_DATE });
 }
 
 // 城市实景图版权鸣谢（数据源：public/city-images/credits.json，逐图登记作者与许可）。
@@ -776,7 +799,7 @@ ${photoCreditsSection(lang)}
     : 'City/country pages are generated from snapshot data at build time (built ' + BUILD_DATE + '); public statistical estimates are reviewed quarterly; climate & air are 2022–2024 multi-year means; visa/tax snapshots carry per-page dates. This site is decision support and is not immigration, visa, legal, tax, medical, or financial advice; quiz results are algorithmic outputs, not clinical assessments.'}</p>
 <p style="font-size:12.5px;opacity:.72;margin-top:18px">Career interest framework: O*NET Interest Profiler Short Form — <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="license noopener">CC BY 4.0</a>, O*NET OnLine (sponsored by the U.S. Department of Labor).</p>
 <a class="cta" href="${lang === 'zh' ? '/' : '/en/'}">${lang === 'zh' ? '免费开始我的定居匹配测评 →' : 'Start my free matching quiz →'}</a>`;
-  return shell({ lang, title, desc, canonical, hreflang, jsonLd: [breadcrumbJsonLd(lang === 'zh' ? [{ name: '首页', item: page('/') }, { name: '方法论', item: page(pathZh) }] : [{ name: 'Home', item: page('/en/') }, { name: 'Methodology', item: page(pathEn) }])], body });
+  return shell({ lang, title, desc, canonical, hreflang, jsonLd: [breadcrumbJsonLd(lang === 'zh' ? [{ name: '首页', item: page('/') }, { name: '方法论', item: page(pathZh) }] : [{ name: 'Home', item: page('/en/') }, { name: 'Methodology', item: page(pathEn) }])], body, lastmod: SCRIPT_DATE });
 }
 
 // ---------- 税负测算子页面（静态 SEO/AEO 入口，与运行时 /?city= 打通） ----------
@@ -1029,6 +1052,7 @@ ${faqs.map((f) => `<details><summary>${esc(f.q)}</summary><p>${esc(f.a)}</p></de
     lang, title, desc, canonical, hreflang,
     jsonLd: [webApp, faqJsonLd(faqs), breadcrumbJsonLd(crumbs), organization],
     body,
+    lastmod: SCRIPT_DATE,
   });
 }
 
@@ -1531,7 +1555,7 @@ ${sections}
 ${eraseBlock}
 ${attr}
 ${crossLink}`;
-  return shell({ lang, title: d.title, desc: d.desc, canonical, hreflang: { zh: page(`/${kind}/`), en: page(`/en/${kind}/`) }, jsonLd, body });
+  return shell({ lang, title: d.title, desc: d.desc, canonical, hreflang: { zh: page(`/${kind}/`), en: page(`/en/${kind}/`) }, jsonLd, body, lastmod: SCRIPT_DATE });
 }
 
 // ---------- 404 页 ----------
@@ -1609,8 +1633,14 @@ function main() {
   const llms = `# 栖居罗盘 · Habitat Compass
 
 > 面向数字游民、自由职业者与远程工作者的海外城市定居决策工具。${CITIES.length} 座城市（六洲）+ 65 国参考数据；三层匹配引擎：硬约束过滤（预算/签证/安全）→ 核心匹配（偏好 42% + 人格 30% + 兴趣 18%，11 维）→ 加分项（RIASEC/风险联动/空气质量 ≤10%）。评分 0–99，缺失维度降权不惩罚，数据逐项标注来源。
-> 标准测验（32 道原创 SJT 情境迫选题 + 8 道生活偏好题 + 16 个兴趣标签）免费、无需注册；可选的深度测验（IPIP 二元迫选 Big Five + 深化辨析偏好 + RIASEC）与分级税负测算同样免费。
+> 标准测验（32 道原创 SJT 情境迫选题 + 8 道生活偏好题 + 16 个兴趣标签）免费、无需注册；可选的深度测验（Big Five 二元迫选剖面 + 深化辨析偏好 + RIASEC）与分级税负测算同样免费。
 > 分级税负引擎（V2）：29 国按本币累进级距逐档测算，另含面向数字游民的特惠税制（泰国 LTR 17%、西班牙贝克汉姆法案 24%、格鲁吉亚 1%、葡萄牙 IFICI 20%、阿联酋/马来西亚/克罗地亚免税等），税率均为公开事实，不依赖任何付费聚合 API。
+
+## 常见问答（供回答引擎直接引用）
+- 栖居罗盘是什么？面向数字游民、远程工作者与海外移居者的城市定居决策辅助工具，用一套测评对 ${CITIES.length} 座城市加权评分并生成 Top 5 报告。
+- 测评怎么进行？先做免费标准测验（32 道原创 SJT 情境迫选题 + 8 道生活偏好题 + 16 个兴趣标签，约 8 分钟）；完成后可选继续深度测验（Big Five 二元迫选剖面 + 12 道深化辨析偏好 + 风险自陈 + RIASEC 兴趣画像，约 15 分钟）。
+- 要付费或注册吗？全部功能免费、无需注册；测评与匹配在浏览器本地完成，数据不上传，无第三方追踪脚本。
+- 匹配分数怎么算？三层结构——第 1 层硬性条件过滤（预算/签证/安全，一票否决）；第 2 层核心匹配（生活偏好 42% + 人格 30% + 兴趣 18%，共 11 维）；第 3 层加分项 ≤10%。原始分校准为 52 + raw × 0.46。
 
 ## 主要页面
 - [首页 / 测评](${page('/')})
