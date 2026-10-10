@@ -1,20 +1,17 @@
 import { assess, derivePersonality, type UserAnswers } from '../src/lib/engine';
-import { mbtiQuestions } from '../src/data/questions';
+import { scenarioQuestions } from '../src/data/questions';
 
 type Letter = 'E' | 'I' | 'S' | 'N' | 'T' | 'F' | 'J' | 'P';
 
 /**
- * 构造七级量表作答：目标字母侧给 2/6（接近端点），中立混入 4 模拟真实作答强度。
+ * 构造 SJT 二元迫选作答：目标字母侧选对应选项。
  */
 function buildMBTIAnswers(want: { EI: Letter; SN: Letter; TF: Letter; JP: Letter }): UserAnswers['mbti'] {
   const mbti: UserAnswers['mbti'] = {};
-  let step = 0;
-  for (const q of mbtiQuestions) {
-    step += 1;
+  for (const q of scenarioQuestions) {
     const target = want[q.axis];
-    const leftIsTarget = q.left.pole === target;
-    // 少量题目保持中立（4），模拟真实用户的犹豫
-    mbti[q.id] = step % 7 === 0 ? 4 : leftIsTarget ? 2 : 6;
+    // 选择指向目标字母的选项
+    mbti[q.id] = (q.a.pole === target) ? 'a' : 'b';
   }
   return mbti;
 }
@@ -70,26 +67,21 @@ const PROFILES: Array<{
   },
 ];
 
-// ---- 七级计分单元验证：全 1 / 全 7 / 全 4 ----
-const allLeft: Record<string, number> = {};
-const allRight: Record<string, number> = {};
-const allNeutral: Record<string, number> = {};
-for (const q of mbtiQuestions) {
-  allLeft[q.id] = 1;
-  allRight[q.id] = 7;
-  allNeutral[q.id] = 4;
+// ---- SJT 计分单元验证：全 a / 全 b / 混合 ----
+const allA: Record<string, string> = {};
+const allB: Record<string, string> = {};
+for (const q of scenarioQuestions) {
+  allA[q.id] = 'a';
+  allB[q.id] = 'b';
 }
-const edgeLeft = derivePersonality(allLeft);
-const edgeRight = derivePersonality(allRight);
-const edgeNeutral = derivePersonality(allNeutral);
+const edgeA = derivePersonality(allA);
+const edgeB = derivePersonality(allB);
 console.log(
-  'edge cases -> all-1:', edgeLeft.typeCode,
-  '| all-7:', edgeRight.typeCode,
-  '| all-4:', edgeNeutral.typeCode,
+  'edge cases -> all-a:', edgeA.typeCode,
+  '| all-b:', edgeB.typeCode,
 );
-console.log('all-1 axisScores:', JSON.stringify(edgeLeft.axisScores));
-console.log('all-7 axisScores:', JSON.stringify(edgeRight.axisScores));
-console.log('all-4 axisScores:', JSON.stringify(edgeNeutral.axisScores));
+console.log('all-a axisScores:', JSON.stringify(edgeA.axisScores));
+console.log('all-b axisScores:', JSON.stringify(edgeB.axisScores));
 
 for (const profile of PROFILES) {
   const result = assess({ mbti: buildMBTIAnswers(profile.want), ...profile.answers });

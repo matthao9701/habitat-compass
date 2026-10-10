@@ -6,6 +6,7 @@ import { questionsDict } from './questions';
 import { interestsDict } from './interests';
 import { mbtiDict } from './mbti';
 import { extraDict } from './extra';
+import { reportTiersDict } from './reportTiers';
 
 type Lang = 'zh' | 'en';
 
@@ -17,6 +18,7 @@ export const DICTS: Record<Lang, Record<string, string>> = {
     ...interestsDict.zh,
     ...mbtiDict.zh,
     ...extraDict.zh,
+    ...reportTiersDict.zh,
   },
   en: {
     ...UI_DICT.en,
@@ -25,6 +27,7 @@ export const DICTS: Record<Lang, Record<string, string>> = {
     ...interestsDict.en,
     ...mbtiDict.en,
     ...extraDict.en,
+    ...reportTiersDict.en,
   },
 };
 

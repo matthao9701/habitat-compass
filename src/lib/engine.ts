@@ -10,8 +10,8 @@ import {
   type RiasecProfile,
   type RiskProfile,
 } from './riasec';
-import type { MBTIQuestion, Pole } from '../data/questions';
-import { mbtiQuestions, lifestyleQuestions } from '../data/questions';
+import type { Pole } from '../data/questions';
+import { scenarioQuestions, lifestyleQuestions } from '../data/questions';
 import {
   ipipQuestions,
   proLifestyleQuestions,
@@ -33,8 +33,8 @@ export type AxisName = 'EI' | 'SN' | 'TF' | 'JP';
 export interface UserAnswers {
   /** 作答版本（派生字段，保留以兼容历史存档）：含深化段 = pro，仅核心段 = lite */
   version?: QuizVersion;
-  /** 核心段人格：OEJTS 七级双极量表（1-7） */
-  mbti: Record<string, number>;
+  /** 核心段人格：SJT 二元迫选场景题作答（'a' | 'b'，见 questions.ts） */
+  mbti: Record<string, string>;
   /** 深化段人格：IPIP-NEO 五点量表（1-5）。存在即视为「深化版」，人格以 IPIP 为准 */
   ipip?: Record<string, number>;
   /** 生活偏好作答：核心段 8 题单选；深化段另有滑杆/排序/二选一（见 questionsPro.ts） */
@@ -55,7 +55,7 @@ export interface UserAnswers {
  * 是否包含深化段（IPIP 人格已作答）。
  * 融合题库后不再由入口选择版本，改由「是否答了深化段」派生：
  * 有 IPIP 作答 → 深化版（BigFive / RIASEC / 风险 / 进阶偏好全部参与）；
- * 无 IPIP 作答 → 基础版（OEJTS 人格 + 核心偏好 + 核心兴趣）。
+ * 无 IPIP 作答 → 基础版（SJT 人格 + 核心偏好 + 核心兴趣）。
  */
 export function isDeep(answers: UserAnswers): boolean {
   return !!answers.ipip && Object.keys(answers.ipip).length > 0;
@@ -105,7 +105,10 @@ export interface AssessmentResult {
   preferences: UserAnswers['lifestyle'];
   interests: string[];
   profileTags: string[];
+  /** 展示用 Top 5（保持 slice(0,5)，兼容既有断言） */
   matches: CityMatch[];
+  /** 全部参与城市的降序完整列表（报告「加权梯队」从完整池挑性价比/惊喜项） */
+  allMatches?: CityMatch[];
   /** pro 专有：Big Five 完整剖面（五域百分位 + 30 facets） */
   proProfile?: BigFiveProfile;
   /** 第八轮 pro 专有：RIASEC 六维剖面（未作答时缺省） */
@@ -376,32 +379,36 @@ export function weightedUserTags(
 // 人格（16 型，Jungian 传统四轴）
 // ---------------------------------------------------------------------------
 
-function axisQuestionCount(axis: AxisName): number {
-  return mbtiQuestions.filter((q: MBTIQuestion) => q.axis === axis).length;
-}
-
 /**
- * 阶段一计分（OEJTS 七级双极量表）：
- * 每题 1-7（1 = 完全符合左特征，4 = 中立，7 = 完全符合右特征），
- * 每维度 8 题求和换算为 8~56 的维度分与偏好百分比，得出 16 型。
- *
- * 口径：先把每题作答按「正向字母 = E/N/F/P」对齐——
- *   alignedPlus = (value - 4) * POLE_SIGN[right.pole] ∈ [-3, 3]，
- * 求和 rawPlus ∈ [-24, 24]，plusSum = rawPlus + 24 ∈ [0, 48]，
- * 维度 8~56 分 = plusSum + 8；偏好百分比 = plusSum / 48。
+ * 核心段人格计分（SJT 二元迫选场景题）：
+ * 每轴 4 题，每题选 a 或 b，统计选中「正向字母」的次数 positiveCount；
+ * axisScore = Math.round(positiveCount / 4 * 100)；
+ * typeCode 各轴 axisScore >= 50 取正向字母（E/N/F/P），否则反向（I/S/T/J）；
+ * traitVector = { ei, sn, tf, jp } = axisScore * 2 - 100。
+ * 未作答项按 0.5（中性）计入。
  */
-export function derivePersonality(mbtiAnswers: Record<string, number>): {
+export function derivePersonality(mbtiAnswers: Record<string, string>): {
   typeCode: string;
   traitVector: CityTraitVector;
   axisScores: Record<AxisName, number>;
 } {
-  const rawPlus: Record<AxisName, number> = { EI: 0, SN: 0, TF: 0, JP: 0 };
+  const positiveCount: Record<AxisName, number> = { EI: 0, SN: 0, TF: 0, JP: 0 };
+  const totalCount: Record<AxisName, number> = { EI: 0, SN: 0, TF: 0, JP: 0 };
 
-  for (const q of mbtiQuestions) {
-    const value = mbtiAnswers[q.id];
-    if (typeof value !== 'number') continue;
-    const v = clamp(Math.round(value), 1, 7);
-    rawPlus[q.axis] += (v - 4) * POLE_SIGN[q.right.pole];
+  for (const q of scenarioQuestions) {
+    const answer = mbtiAnswers[q.id];
+    totalCount[q.axis]++;
+
+    if (answer === 'a') {
+      // a 选项指向的极
+      positiveCount[q.axis] += isPositivePole(q.a.pole, q.axis) ? 1 : 0;
+    } else if (answer === 'b') {
+      // b 选项指向的极
+      positiveCount[q.axis] += isPositivePole(q.b.pole, q.axis) ? 1 : 0;
+    } else {
+      // 未作答按 0.5 中性计入
+      positiveCount[q.axis] += 0.5;
+    }
   }
 
   const vector: CityTraitVector = { ei: 0, sn: 0, tf: 0, jp: 0 };
@@ -415,21 +422,27 @@ export function derivePersonality(mbtiAnswers: Record<string, number>): {
   };
 
   for (const axis of AXES) {
-    const count = axisQuestionCount(axis);
-    const halfRange = count * 3; // 每题最大偏移 3
-    const plusSum = rawPlus[axis] + halfRange; // 0 .. 2*halfRange
-    axisScores[axis] = Math.round((plusSum / (halfRange * 2)) * 100);
-    vector[axis.toLowerCase() as 'ei' | 'sn' | 'tf' | 'jp'] = Math.round(
-      ((plusSum - halfRange) / halfRange) * 100,
-    );
-    // 恰好中立（plusSum == halfRange）时归入正向字母，向量取 0
-    letters.push(
-      plusSum >= halfRange ? positiveLetter[axis][0] : positiveLetter[axis][1],
-    );
+    const count = totalCount[axis] || 4;
+    const score = Math.round((positiveCount[axis] / count) * 100);
+    axisScores[axis] = score;
+    vector[axis.toLowerCase() as 'ei' | 'sn' | 'tf' | 'jp'] = score * 2 - 100;
+    letters.push(score >= 50 ? positiveLetter[axis][0] : positiveLetter[axis][1]);
   }
 
   return { typeCode: letters.join(''), traitVector: vector, axisScores };
 }
+
+/** 判断某极是否为该轴的正向字母 */
+function isPositivePole(pole: Pole, axis: AxisName): boolean {
+  const positivePoles: Record<AxisName, Pole> = {
+    EI: 'E',
+    SN: 'N',
+    TF: 'F',
+    JP: 'P',
+  };
+  return pole === positivePoles[axis];
+}
+
 
 // ---------------------------------------------------------------------------
 // 标准版人格：IPIP-NEO 五点计分 → Big Five → 16 型映射（McCrae & Costa 对应）
@@ -581,7 +594,7 @@ export function derivePreferenceOrdinals(lifestyle: Record<string, string>): Pre
 /**
  * 人格计算（融合题库统一口径）：
  * - 深化段已作答（answers.ipip）→ 以 IPIP-NEO 计分为准，附 Big Five 剖面；
- * - 否则 → OEJTS 七级量表计分。
+ * - 否则 → SJT 二元迫选情境题计分。
  */
 export function getPersonality(answers: UserAnswers): {
   typeCode: string;
@@ -997,6 +1010,7 @@ export function assess(answers: UserAnswers, cityPool?: City[]): AssessmentResul
     interests: answers.interests,
     profileTags,
     matches: matches.slice(0, 5),
+    allMatches: matches,
     proProfile: personality.proProfile,
     ...(deep && answers.riasec
       ? { riasecProfile: deriveRiasec(answers.riasec) }

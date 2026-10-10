@@ -5,10 +5,10 @@ import ConstraintsStep from './quiz/ConstraintsStep';
 import { track, trackStage } from '../lib/telemetry';
 import { hasAnyConstraint, DEFAULT_CONSTRAINTS, type HardConstraints } from '../lib/constraints';
 import {
-  mbtiQuestions,
+  scenarioQuestions,
   lifestyleQuestions,
   MBTI_SOURCE,
-  type MBTIQuestion,
+  type ScenarioQuestion,
   type LifestyleQuestion,
 } from '../data/questions';
 import { interestTags } from '../data/interests';
@@ -44,7 +44,7 @@ function firstIncompletePage(pages: Page[], draft: UserAnswers | null, deep: boo
     if (p.kind === 'transition' || p.kind === 'deepen') return false;
     return p.items.some((item) => {
       if (item.kind === 'mbti')
-        return typeof draft.mbti[item.question.id] !== 'number';
+        return draft.mbti[item.question.id] !== 'a' && draft.mbti[item.question.id] !== 'b';
       if (item.kind === 'ipip')
         return typeof (draft.ipip ?? {})[item.question.id] !== 'number';
       if (item.kind === 'lifestyle' || item.kind === 'proLifestyle')
@@ -64,7 +64,7 @@ function firstIncompletePage(pages: Page[], draft: UserAnswers | null, deep: boo
 // ---------------------------------------------------------------------------
 // 页面模型：核心段数据页 + 深化选择页 + 阶段过渡引导页
 //
-// 融合题库（统一入口）：所有用户都先完成「核心段」（OEJTS 人格 + 8 情景偏好 +
+// 融合题库（统一入口）：所有用户都先完成「核心段」（16 道 SJT 人格 + 8 情景偏好 +
 // 16 兴趣标签，即原简易版）；核心段结束后出现一个「是否继续深化」选择页：
 //   - 继续深化 → 追加 IPIP 人格 + 进阶偏好 + 风险自陈 + 28 标签细化 + RIASEC
 //   - 直接看报告 → 立即以核心段作答出报告
@@ -74,7 +74,7 @@ function firstIncompletePage(pages: Page[], draft: UserAnswers | null, deep: boo
 type ModuleId = 'mbti' | 'lifestyle' | 'interests';
 
 type PageItem =
-  | { kind: 'mbti'; question: MBTIQuestion }
+  | { kind: 'mbti'; question: ScenarioQuestion }
   | { kind: 'ipip'; question: IpipQuestion }
   | { kind: 'lifestyle'; question: LifestyleQuestion }
   | { kind: 'proLifestyle'; question: ProLifestyleQuestion }
@@ -114,13 +114,13 @@ function buildCorePages(): Page[] {
   const pages: Page[] = [];
   let dataPageNo = 0;
 
-  for (let i = 0; i < mbtiQuestions.length; i += MBTI_CHUNK) {
+  for (let i = 0; i < scenarioQuestions.length; i += MBTI_CHUNK) {
     pages.push({
       kind: 'data',
       module: 'mbti',
       eyebrow: L('quiz.stage.mbti.eyebrow'),
       dataPageNo: dataPageNo++,
-      items: mbtiQuestions
+      items: scenarioQuestions
         .slice(i, i + MBTI_CHUNK)
         .map((question) => ({ kind: 'mbti' as const, question })),
     });
@@ -379,7 +379,7 @@ export default function Quiz({ onComplete, onExit, startDeep = false }: QuizProp
     Object.keys(answers.riasec ?? {}).length +
     Object.keys(answers.risk ?? {}).length;
   // 分母随深化段开启而切换（兴趣标签按并集去重计一次，与 answeredCount 口径一致）：
-  // 核心段 = OEJTS + 8 情景 + 16 标签；深化段 = 上述 + IPIP/进阶偏好/风险/RIASEC + 28 标签
+  // 核心段 = 16 道 SJT + 8 情景 + 16 标签；深化段 = 上述 + IPIP/进阶偏好/风险/RIASEC + 28 标签
   const interestCount = deep ? interestTagsPro.length : interestTags.length;
   const deepAnswerable =
     ipipQuestions.length +
@@ -387,7 +387,7 @@ export default function Quiz({ onComplete, onExit, startDeep = false }: QuizProp
     riskQuestions.length +
     riasecQuestions.length;
   const totalAnswerable =
-    mbtiQuestions.length + lifestyleQuestions.length + interestCount + (deep ? deepAnswerable : 0);
+    scenarioQuestions.length + lifestyleQuestions.length + interestCount + (deep ? deepAnswerable : 0);
   const progress = Math.min(100, Math.round((answeredCount / totalAnswerable) * 100));
 
   // 当前页是否全部作答（兴趣页允许 0 选择，因此始终可通过；深化岔口页始终可通过）
@@ -395,7 +395,8 @@ export default function Quiz({ onComplete, onExit, startDeep = false }: QuizProp
     page.kind === 'transition' ||
     page.kind === 'deepen' ||
     page.items.every((item) => {
-      if (item.kind === 'mbti') return typeof answers.mbti[item.question.id] === 'number';
+      if (item.kind === 'mbti')
+        return answers.mbti[item.question.id] === 'a' || answers.mbti[item.question.id] === 'b';
       if (item.kind === 'ipip')
         return typeof (answers.ipip ?? {})[item.question.id] === 'number';
       if (item.kind === 'lifestyle') return Boolean(answers.lifestyle[item.question.id]);
@@ -459,7 +460,7 @@ export default function Quiz({ onComplete, onExit, startDeep = false }: QuizProp
   const activePhase: ModuleId | null =
     page.kind === 'data' ? page.module : null;
 
-  function setMBTIAnswer(id: string, value: number): void {
+  function setMBTIAnswer(id: string, value: 'a' | 'b'): void {
     setAnswers((prev) => ({ ...prev, mbti: { ...prev.mbti, [id]: value } }));
   }
 
@@ -913,67 +914,63 @@ function DeepenStage({
 }
 
 // ---------------------------------------------------------------------------
-// 人格七级双极量表
+// 人格核心段 · SJT 二元迫选情境题
 // ---------------------------------------------------------------------------
 
-const SCALE = [1, 2, 3, 4, 5, 6, 7] as const;
-
 interface MBTIItemProps {
-  question: MBTIQuestion;
-  value?: number;
-  onSelect: (value: number) => void;
+  question: ScenarioQuestion;
+  value?: string;
+  onSelect: (value: 'a' | 'b') => void;
 }
 
+/** 二元迫选：题干 + A/B 两张对等选项卡，选中即高亮；A/B 在道德与体面感上中立对等 */
 function MBTIItem({ question, value, onSelect }: MBTIItemProps) {
   const { t } = useI18n();
-  const leftActive = typeof value === 'number' && value < 4;
-  const rightActive = typeof value === 'number' && value > 4;
+  const stem = t(`mbti.${question.id}.stem`);
+
+  const options = (
+    [
+      { key: 'a' as const, label: t(`mbti.${question.id}.a.label`), desc: t(`mbti.${question.id}.a.desc`) },
+      { key: 'b' as const, label: t(`mbti.${question.id}.b.label`), desc: t(`mbti.${question.id}.b.desc`) },
+    ]
+  );
 
   return (
     <div className="rounded-[8px] border hairline bg-card/70 px-4 py-5 md:px-6">
-      <div className="mb-4 flex items-start justify-between gap-4">
-        <p
-          className={`max-w-[47%] text-[13.5px] leading-[1.65] transition-colors ${
-            leftActive ? 'font-medium text-ink' : 'text-ink-soft'
-          }`}
-        >
-          {question.left.text}
-        </p>
-        <p
-          className={`max-w-[47%] text-right text-[13.5px] leading-[1.65] transition-colors ${
-            rightActive ? 'font-medium text-ink' : 'text-ink-soft'
-          }`}
-        >
-          {question.right.text}
-        </p>
-      </div>
-
-      <div className="flex items-center justify-between gap-1 md:gap-1.5">
-        {SCALE.map((v) => {
-          const selected = value === v;
+      <p className="mb-4 text-[14px] font-medium leading-[1.7] text-ink">{stem}</p>
+      <div className="grid gap-3 md:grid-cols-2">
+        {options.map((opt) => {
+          const selected = value === opt.key;
           return (
             <button
-              key={v}
+              key={opt.key}
               type="button"
-              aria-label={t('quiz.mbti.aria', { left: question.left.text, right: question.right.text, v })}
-              onClick={() => onSelect(v)}
+              onClick={() => onSelect(opt.key)}
               data-selected={selected}
-              className={`h-8 w-8 shrink-0 rounded-[7px] border font-mono text-[11px] transition-all duration-200 active:scale-95 md:h-9 md:w-9 ${
+              aria-pressed={selected}
+              aria-label={t('quiz.mbti.optionAria', { key: opt.key.toUpperCase(), label: opt.label })}
+              className={`flex flex-col gap-1.5 rounded-[7px] border px-4 py-3.5 text-left transition-all duration-200 active:scale-[0.99] ${
                 selected
-                  ? 'border-clay bg-clay text-paper shadow-[0_2px_10px_rgba(190,90,56,0.35)]'
-                  : 'border-ink/20 bg-transparent text-ink-soft hover:border-ink/50 hover:text-ink'
+                  ? 'border-clay bg-clay/[0.08] shadow-[0_2px_12px_rgba(190,90,56,0.18)]'
+                  : 'border-ink/15 bg-transparent hover:border-ink/40'
               }`}
             >
-              {v}
+              <span className="flex items-center gap-2">
+                <span
+                  className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border font-mono text-[10px] ${
+                    selected ? 'border-clay bg-clay text-paper' : 'border-ink/30 text-ink-soft'
+                  }`}
+                >
+                  {opt.key.toUpperCase()}
+                </span>
+                <span className={`text-[13.5px] leading-[1.5] ${selected ? 'font-medium text-ink' : 'text-ink'}`}>
+                  {opt.label}
+                </span>
+              </span>
+              <span className="pl-7 text-[12px] leading-[1.6] text-ink-soft">{opt.desc}</span>
             </button>
           );
         })}
-      </div>
-
-      <div className="mt-2 flex items-center justify-between font-mono text-[9px] uppercase tracking-wider text-ink-soft/70">
-        <span>{t('quiz.mbti.left')}</span>
-        <span>{t('quiz.mbti.mid')}</span>
-        <span>{t('quiz.mbti.right')}</span>
       </div>
     </div>
   );

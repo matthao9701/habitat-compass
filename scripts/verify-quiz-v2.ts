@@ -15,7 +15,7 @@ import { riasecQuestions, RIASEC_DIMS, RIASEC_PER_DIM } from '../src/data/riasec
 import { riskQuestions } from '../src/data/riskTaking';
 import { interestTagsPro, interestSubs, reinforcedTags } from '../src/data/interestsPro';
 import { assess, isDeep, derivePersonalityPro, type UserAnswers, type BigFiveDomain } from '../src/lib/engine';
-import { mbtiQuestions } from '../src/data/questions';
+import { scenarioQuestions } from '../src/data/questions';
 
 let pass = 0;
 let fail = 0;
@@ -265,7 +265,7 @@ section('6. 融合题库：统一入口 + 深度派生');
 {
   // 6.1 lite 计分（无 IPIP）→ version=lite，无 proProfile
   const liteAnswers: UserAnswers = {
-    mbti: Object.fromEntries(mbtiQuestions.map((q) => [q.id, 4])),
+    mbti: Object.fromEntries(scenarioQuestions.map((q) => [q.id, 'a'])),
     lifestyle: {
       pl_budget: '1500-2500', pl_climate: 'temperate', pl_pace: '3', pl_size: '4',
       pl_social: '4', pl_language: '3', pl_visa: '4', pl_remote: '5',
@@ -287,7 +287,7 @@ section('6. 融合题库：统一入口 + 深度派生');
   check('含 IPIP 作答 → version = pro', deepResult.version === 'pro', deepResult.version);
   check('深化段附带 BigFive proProfile', deepResult.proProfile != null);
 
-  // 6.4 核心段人格沿用 OEJTS，深化段改用 IPIP（同一份题库两种口径）
+  // 6.4 核心段人格沿用 SJT 情境迫选，深化段改用 IPIP（同一份题库两种口径）
   check('核心段人格为合法 16 型码', /^[EI][SN][TF][JP]$/.test(liteResult.typeCode), liteResult.typeCode);
   check('深化段人格来自 IPIP（全中位 → 与 derivePersonalityPro 一致）', deepResult.typeCode === derivePersonalityPro(answersBy('mid')).typeCode, deepResult.typeCode);
 }

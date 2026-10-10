@@ -1,28 +1,26 @@
-// 测评题目：阶段一 人格七级双极量表（OEJTS 结构）+ 阶段二 生活偏好情景选择题
+// 城市测评题库：核心段人格 SJT 情境迫选题 + 生活偏好情景选择题
 //
 // 题目来源与许可（IMPORTANT）：
-// 阶段一题目结构基于 OEJTS 1.2（Open Extended Jungian Type Scales 1.2，
-// Open Psychometrics 出品，https://openpsychometrics.org），原作许可
-// CC BY-NC-SA 4.0。本文件在保留其双极特征对（bipolar item pairs）与
-// 四维度（EI/SN/TF/JP）结构的基础上选取、改编并译为简体中文，
-// 部分题目为按原结构补充的同型题目；本产品为非商业用途，署名共享。
+// 核心段人格题库为原创 SJT（Situational Judgment Test）二元迫选场景题，
+// 由本产品自研设计，无第三方量表许可依赖。场景扎根真实远程办公/旅居摩擦，
+// A/B 选项在道德与体面感上中立对等，每轴 4 题共 16 题，映射 E/I · S/N · T/F · J/P 四轴。
 
 export type Pole = 'E' | 'I' | 'S' | 'N' | 'T' | 'F' | 'J' | 'P';
 export type Axis = 'EI' | 'SN' | 'TF' | 'JP';
 
 export const MBTI_SOURCE = {
-  base: 'OEJTS 1.2 · Open Extended Jungian Type Scales',
-  publisher: 'Open Psychometrics',
-  license: 'CC BY-NC-SA 4.0',
-  note: '题目依据 OEJTS 1.2 双极量表结构改编并译为简体中文（非商业用途）',
+  base: '原创 SJT 情境迫选题库',
+  publisher: 'Habitat Compass 自研',
+  license: '本产品自研，无第三方量表许可依赖',
+  note: '核心段人格题库为原创 SJT 二元迫选场景题，由本产品自研设计',
 };
 
-/** 七级双极量表题：value = 1 完全符合左特征，4 中立，7 完全符合右特征 */
-export interface MBTIQuestion {
+/** SJT 二元迫选场景题：a/b 两选项各指向一个极，用户二选一 */
+export interface ScenarioQuestion {
   id: string;
   axis: Axis;
-  left: { text: string; pole: Pole };
-  right: { text: string; pole: Pole };
+  a: { pole: Pole };
+  b: { pole: Pole };
 }
 
 export interface LifestyleOption {
@@ -39,54 +37,35 @@ export interface LifestyleQuestion {
 }
 
 // ---------------------------------------------------------------------------
-// 阶段一 · 人格：四维度各 8 题，共 32 题（页面内按 EI→SN→TF→JP 轮转交错排列）
+// 核心段 · 人格：SJT 情境迫选题，四维度各 4 题，共 16 题
+// 正向字母：EI 正向 = E；SN 正向 = N；TF 正向 = F；JP 正向 = P
 // ---------------------------------------------------------------------------
 
-export const mbtiQuestions: MBTIQuestion[] = [
-  // ---- 第 1 轮：每维 1 题 ----
-  { id: 'ei1', axis: 'EI', left: { text: '热闹的聚会让我越待越有劲', pole: 'E' }, right: { text: '安静的小圈子让我最自在', pole: 'I' } },
-  { id: 'sn1', axis: 'SN', left: { text: '我更容易注意到具体的细节与事实', pole: 'S' }, right: { text: '我更容易联想到背后的模式与可能', pole: 'N' } },
-  { id: 'tf1', axis: 'TF', left: { text: '做决定时，我先看逻辑和效率', pole: 'T' }, right: { text: '做决定时，我先看人的感受和价值', pole: 'F' } },
-  { id: 'jp1', axis: 'JP', left: { text: '制定清单，按部就班', pole: 'J' }, right: { text: '依靠记忆，随遇而安', pole: 'P' } },
-  // ---- 第 2 轮 ----
-  { id: 'ei2', axis: 'EI', left: { text: '和陌生人也能很快聊开', pole: 'E' }, right: { text: '只在熟人面前才放得开', pole: 'I' } },
-  { id: 'sn2', axis: 'SN', left: { text: '我先讲它让我联想到什么', pole: 'N' }, right: { text: '我先讲实际发生了什么', pole: 'S' } },
-  { id: 'tf2', axis: 'TF', left: { text: '朋友倾诉烦恼，我先安慰和共情', pole: 'F' }, right: { text: '朋友倾诉烦恼，我先帮他分析问题', pole: 'T' } },
-  { id: 'jp2', axis: 'JP', left: { text: '我的生活随兴致自然展开', pole: 'P' }, right: { text: '我的生活按日程表运转', pole: 'J' } },
-  // ---- 第 3 轮 ----
-  { id: 'ei3', axis: 'EI', left: { text: '想清楚了再说出口', pole: 'I' }, right: { text: '边说边想，越聊越清楚', pole: 'E' } },
-  { id: 'sn3', axis: 'SN', left: { text: '我更信任验证过的经验', pole: 'S' }, right: { text: '我更信任自己的直觉', pole: 'N' } },
-  { id: 'tf3', axis: 'TF', left: { text: '更糟糕的是冷漠无情', pole: 'F' }, right: { text: '更糟糕的是评判苛刻', pole: 'T' } },
-  { id: 'jp3', axis: 'JP', left: { text: '出发前把住宿与行程订好', pole: 'J' }, right: { text: '只订大交通，其余随缘', pole: 'P' } },
-  // ---- 第 4 轮 ----
-  { id: 'ei4', axis: 'EI', left: { text: '工作之余总想约人一起', pole: 'E' }, right: { text: '工作之余只想一个人待着', pole: 'I' } },
-  { id: 'sn4', axis: 'SN', left: { text: '学新东西，我从具体步骤入手', pole: 'S' }, right: { text: '学新东西，我先抓整体概念', pole: 'N' } },
-  { id: 'tf4', axis: 'TF', left: { text: '先看方案是否合理', pole: 'T' }, right: { text: '先看它会如何影响人', pole: 'F' } },
-  { id: 'jp4', axis: 'JP', left: { text: '截止日期前我会提前完成', pole: 'J' }, right: { text: '最后关头我的效率最高', pole: 'P' } },
-  // ---- 第 5 轮 ----
-  { id: 'ei5', axis: 'EI', left: { text: '长时间安静会让我憋得慌', pole: 'E' }, right: { text: '长时间热闹会让我累垮', pole: 'I' } },
-  { id: 'sn5', axis: 'SN', left: { text: '忽略现实条件更让我惋惜', pole: 'S' }, right: { text: '错过新的可能性更让我惋惜', pole: 'N' } },
-  { id: 'tf5', axis: 'TF', left: { text: '辩论时我更在意关系有没有受伤', pole: 'F' }, right: { text: '辩论时我更在意论点站不站得住', pole: 'T' } },
-  { id: 'jp5', axis: 'JP', left: { text: '计划被打乱，我顺势换方案', pole: 'P' }, right: { text: '计划被打乱，我想尽快恢复秩序', pole: 'J' } },
-  // ---- 第 6 轮 ----
-  { id: 'ei6', axis: 'EI', left: { text: '在团队里我更多是倾听者', pole: 'I' }, right: { text: '在团队里我常是发起话题的人', pole: 'E' } },
-  { id: 'sn6', axis: 'SN', left: { text: '看说明书，大概扫一眼就动手试', pole: 'N' }, right: { text: '看说明书，我逐条照做', pole: 'S' } },
-  { id: 'tf6', axis: 'TF', left: { text: '朋友说我客观理性', pole: 'T' }, right: { text: '朋友说我温暖体贴', pole: 'F' } },
-  { id: 'jp6', axis: 'JP', left: { text: '我更享受事情收尾完结的踏实', pole: 'J' }, right: { text: '我更享受保留多种可能的余地', pole: 'P' } },
-  // ---- 第 7 轮 ----
-  { id: 'ei7', axis: 'EI', left: { text: '周末喜欢呼朋唤友出门', pole: 'E' }, right: { text: '周末喜欢留给自己或一两个密友', pole: 'I' } },
-  { id: 'sn7', axis: 'SN', left: { text: '我的念头大多关于当下的实际事务', pole: 'S' }, right: { text: '我的念头大多关于未来与关联', pole: 'N' } },
-  { id: 'tf7', axis: 'TF', left: { text: '最打动我的是人物的情感与命运', pole: 'F' }, right: { text: '最打动我的是缜密的结构与逻辑', pole: 'T' } },
-  { id: 'jp7', axis: 'JP', left: { text: '我的桌面有点乱，但自己找得到', pole: 'P' }, right: { text: '我的桌面整洁有序', pole: 'J' } },
-  // ---- 第 8 轮 ----
-  { id: 'ei8', axis: 'EI', left: { text: '朋友常说我沉静内敛', pole: 'I' }, right: { text: '朋友常说我热情外向', pole: 'E' } },
-  { id: 'sn8', axis: 'SN', left: { text: '朋友说我天马行空', pole: 'N' }, right: { text: '朋友说我脚踏实地', pole: 'S' } },
-  { id: 'tf8', axis: 'TF', left: { text: '夸人时我常夸能力强', pole: 'T' }, right: { text: '夸人时我常夸用心善良', pole: 'F' } },
-  { id: 'jp8', axis: 'JP', left: { text: '要做的事尽早敲定', pole: 'J' }, right: { text: '要做的决定再等等看', pole: 'P' } },
+export const scenarioQuestions: ScenarioQuestion[] = [
+  // ---- EI 轴（正向 = E）：高强度远程周后如何回血 / 联合办公 vs 私人工位 / 初到新城社交 / 超长视频会后 ----
+  { id: 'ei1', axis: 'EI', a: { pole: 'E' }, b: { pole: 'I' } },
+  { id: 'ei2', axis: 'EI', a: { pole: 'E' }, b: { pole: 'I' } },
+  { id: 'ei3', axis: 'EI', a: { pole: 'E' }, b: { pole: 'I' } },
+  { id: 'ei4', axis: 'EI', a: { pole: 'E' }, b: { pole: 'I' } },
+  // ---- SN 轴（正向 = N）：选城市先看什么 / 街区吸引力 / 行程计划方式 / 走在街上先注意什么 ----
+  { id: 'sn1', axis: 'SN', a: { pole: 'N' }, b: { pole: 'S' } },
+  { id: 'sn2', axis: 'SN', a: { pole: 'N' }, b: { pole: 'S' } },
+  { id: 'sn3', axis: 'SN', a: { pole: 'N' }, b: { pole: 'S' } },
+  { id: 'sn4', axis: 'SN', a: { pole: 'N' }, b: { pole: 'S' } },
+  // ---- TF 轴（正向 = F）：冷漠高效城市能否长留 / 团体分歧裁决 / 复盘城市看什么 / 朋友倾诉时先做什么 ----
+  { id: 'tf1', axis: 'TF', a: { pole: 'F' }, b: { pole: 'T' } },
+  { id: 'tf2', axis: 'TF', a: { pole: 'F' }, b: { pole: 'T' } },
+  { id: 'tf3', axis: 'TF', a: { pole: 'F' }, b: { pole: 'T' } },
+  { id: 'tf4', axis: 'TF', a: { pole: 'F' }, b: { pole: 'T' } },
+  // ---- JP 轴（正向 = P）：落地前准备程度 / 计划被打断反应 / 工作台与日程风格 / 截止日期习惯 ----
+  { id: 'jp1', axis: 'JP', a: { pole: 'P' }, b: { pole: 'J' } },
+  { id: 'jp2', axis: 'JP', a: { pole: 'P' }, b: { pole: 'J' } },
+  { id: 'jp3', axis: 'JP', a: { pole: 'P' }, b: { pole: 'J' } },
+  { id: 'jp4', axis: 'JP', a: { pole: 'P' }, b: { pole: 'J' } },
 ];
 
 // ---------------------------------------------------------------------------
-// 阶段二 · 生活偏好：8 道情景选择题（选项 value 供匹配引擎使用，勿改）
+// 核心段 · 生活偏好：8 道情景选择题（选项 value 供匹配引擎使用，勿改）
 // ---------------------------------------------------------------------------
 
 export const lifestyleQuestions: LifestyleQuestion[] = [

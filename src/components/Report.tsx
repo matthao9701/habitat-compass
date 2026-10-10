@@ -16,6 +16,10 @@ import RiasecSection from './report/RiasecSection';
 import ConstraintsNotice from './report/ConstraintsNotice';
 import CountryCards from './report/CountryCards';
 import VerificationChecklist from './report/VerificationChecklist';
+import ArchetypeSection from './report/ArchetypeSection';
+import DealBreakerSection from './report/DealBreakerSection';
+import TierSection from './report/TierSection';
+import LedgerSection from './report/LedgerSection';
 import { MBTI_SOURCE } from '../data/questions';
 import { useI18n, translate, getCurrentLang } from '../i18n';
 import { cityName, cityCountryName, profileTagLabel, tagLabel, climateSummary, formatMoneyShort } from '../lib/format';
@@ -115,28 +119,25 @@ export default function Report({ result, onRestart, isDemo = false, onStartQuiz,
                 {t('rep.demo.badge')}
               </span>
             ) : null}
-            assessment complete · {result.version === 'pro' ? 208 : 56} answers
+            assessment complete · {result.version === 'pro' ? 220 : 40} answers
           </motion.p>
-          <div className="mt-8 flex flex-col gap-10 md:flex-row md:items-end md:justify-between">
-            <div>
-              <motion.h1
-                initial={{ opacity: 0, y: 18 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, ease }}
-                className="font-display text-[54px] font-black leading-none tabular-nums md:text-[84px]"
-              >
+          <div className="mt-6 max-w-2xl">
+            <motion.h1
+              initial={{ opacity: 0, y: 18 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, ease }}
+              className="font-display text-[34px] font-black leading-tight tracking-tight md:text-[44px]"
+            >
+              {hasProfile ? t(`type.${result.typeCode}.name`) : t('rep.persona.title')}
+            </motion.h1>
+            <p className="mt-3 font-heading text-base font-medium text-paper/70">
+              {hasProfile ? t(`type.${result.typeCode}.motto`) : ''}
+            </p>
+            {hasProfile ? (
+              <p className="mt-2 font-mono text-[10.5px] uppercase tracking-wide text-paper/40">
                 {result.typeCode}
-              </motion.h1>
-              <p className="mt-4 font-heading text-xl font-semibold text-paper/85">
-                {hasProfile ? t(`type.${result.typeCode}.name`) : ''} · {hasProfile ? t(`type.${result.typeCode}.motto`) : ''}
               </p>
-            </div>
-            <div className="max-w-sm">
-              <p className="text-[14px] leading-[1.9] text-paper/75">{hasProfile ? t(`type.${result.typeCode}.desc`) : ''}</p>
-              <p className="mt-4 border-l-2 border-clay pl-4 text-[15px] font-light leading-relaxed text-paper/85">
-                {hasProfile ? t(`type.${result.typeCode}.style`) : ''}
-              </p>
-            </div>
+            ) : null}
           </div>
 
           {/* 用户画像标签 */}
@@ -204,6 +205,18 @@ export default function Report({ result, onRestart, isDemo = false, onStartQuiz,
           passportSkipped={result.constraints.passportSkipped}
         />
       ) : null}
+
+      {/* 四层深度诊断 · 第一层：游牧生活形态原型 */}
+      <ArchetypeSection result={result} />
+
+      {/* 四层深度诊断 · 第二层：核心决策张力与雷区警示 */}
+      <DealBreakerSection result={result} />
+
+      {/* 四层深度诊断 · 第三层：加权推荐梯队 */}
+      <TierSection allMatches={result.allMatches ?? result.matches} />
+
+      {/* 四层深度诊断 · 第四层：现实落地账本 */}
+      {top ? <LedgerSection top={top} /> : null}
 
       {/* 雷达图 */}
       <section className="mx-auto max-w-almanac px-6 py-14 md:px-10 md:py-20">

@@ -9,7 +9,7 @@ import {
   type UserAnswers,
 } from './engine';
 import type { City } from '../data/types';
-import { mbtiQuestions } from '../data/questions';
+import { scenarioQuestions } from '../data/questions';
 
 export const COMPARE_CITY_LIMIT = 4;
 
@@ -26,8 +26,8 @@ function clamp(v: number, lo: number, hi: number): number {
 
 // ---- 中性基准档案（未测评时的对比基准，页面需注明） ----
 
-const NEUTRAL_MBTI: Record<string, number> = Object.fromEntries(
-  mbtiQuestions.map((q) => [q.id, 4]),
+const NEUTRAL_MBTI: Record<string, string> = Object.fromEntries(
+  scenarioQuestions.map((q) => [q.id, '']),
 );
 
 export const NEUTRAL_ANSWERS: UserAnswers = {

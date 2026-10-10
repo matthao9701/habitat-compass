@@ -15,7 +15,7 @@ import { questionsDict } from '../src/i18n/dict/questions';
 import { mbtiDict } from '../src/i18n/dict/mbti';
 import { interestsDict } from '../src/i18n/dict/interests';
 import {
-  mbtiQuestions,
+  scenarioQuestions,
   lifestyleQuestions,
 } from '../src/data/questions';
 import {
@@ -86,17 +86,17 @@ console.log('== [1] 语言包键完整性（zh/en 键集合一致） ==');
 
 console.log('== [2] 题目双语完整性 ==');
 {
-  // 2.1 MBTI 32 题
+  // 2.1 SJT 16 题：stem + a/b 的 label/desc 双语齐全
   const mbtiMiss: string[] = [];
-  for (const q of mbtiQuestions) {
-    for (const side of ['left', 'right'] as const) {
+  for (const q of scenarioQuestions) {
+    for (const part of ['stem', 'a.label', 'a.desc', 'b.label', 'b.desc'] as const) {
       for (const lang of ['zh', 'en'] as const) {
-        const key = `mbti.${q.id}.${side}`;
+        const key = `mbti.${q.id}.${part}`;
         if (!questionsDict[lang][key]) mbtiMiss.push(`${lang}:${key}`);
       }
     }
   }
-  ok(`MBTI 32 题 × left/right × zh/en 全覆盖（${mbtiQuestions.length * 4} 词条）`, mbtiQuestions.length === 32 && mbtiMiss.length === 0, mbtiMiss.slice(0, 5).join(','));
+  ok(`SJT ${scenarioQuestions.length} 题 × stem+a/b label/desc × zh/en 全覆盖（${scenarioQuestions.length * 10} 词条）`, scenarioQuestions.length === 16 && mbtiMiss.length === 0, mbtiMiss.slice(0, 5).join(','));
 
   // 2.2 简易版偏好 8 题
   const lsMiss: string[] = [];
@@ -185,17 +185,23 @@ console.log('== [2] 题目双语完整性 ==');
   }
   ok(`Big Five ${IPIP_FACETS.length} facets 双语`, IPIP_FACETS.length === 30 && facMiss.length === 0, facMiss.slice(0, 5).join(','));
 
-  // 2.7 16 型人格
+  // 2.7 16 型空间定居原型（name/motto/desc/style/env×4/traits×3/deal×2）
   const typeCodes = [...MBTI_TYPE_CODES];
+  const suffixes = [
+    'name', 'motto', 'desc', 'style',
+    'env.0', 'env.1', 'env.2', 'env.3',
+    'traits.0', 'traits.1', 'traits.2',
+    'deal.0', 'deal.1',
+  ] as const;
   const typeMiss: string[] = [];
   for (const lang of ['zh', 'en'] as const) {
     for (const code of typeCodes) {
-      for (const suffix of ['name', 'motto', 'desc', 'style'] as const) {
+      for (const suffix of suffixes) {
         if (!mbtiDict[lang][`type.${code}.${suffix}`]) typeMiss.push(`type.${code}.${suffix}`);
       }
     }
   }
-  ok(`16 型 × name/motto/desc/style 双语`, typeCodes.length === 16 && typeMiss.length === 0, typeMiss.slice(0, 5).join(','));
+  ok(`16 型 × name/motto/desc/style/env×4/traits×3/deal×2 双语（${typeCodes.length * suffixes.length} 键/语言）`, typeCodes.length === 16 && typeMiss.length === 0, typeMiss.slice(0, 5).join(','));
 }
 
 console.log('== [3] HTML lang 同步 ==');

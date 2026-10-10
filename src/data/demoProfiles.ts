@@ -1,10 +1,8 @@
 // 演示档案：预设测评答案，让访客跳过答题直接查看完整报告。
-// 答案按人设构造，与引擎七级量表口径严格自洽（正向字母 = E/N/F/P）。
+// 答案按人设构造，与引擎 SJT 二元迫选口径自洽（正向字母 = E/N/F/P）。
 
-import { mbtiQuestions, type Pole } from './questions';
+import { scenarioQuestions, type Pole } from './questions';
 import type { UserAnswers } from '../lib/engine';
-
-const POSITIVE_POLES = new Set<Pole>(['E', 'N', 'F', 'P']);
 
 interface AxisTarget {
   axis: 'EI' | 'SN' | 'TF' | 'JP';
@@ -101,24 +99,40 @@ export const DEMO_PROFILES: DemoProfile[] = [
   },
 ];
 
+/** 正向字母（引擎正向 = E/N/F/P）；与 questions.ts 的 a 选项一致 */
+const POSITIVE_POLES = new Set<Pole>(['E', 'N', 'F', 'P']);
+
+/** 强度 → 该轴 4 题中选中「正向字母」的题数 */
+const POSITIVE_TARGET_COUNT: Record<number, Record<'pos' | 'neg', number>> = {
+  0: { pos: 2, neg: 2 },
+  1: { pos: 3, neg: 1 },
+  2: { pos: 3, neg: 1 },
+  3: { pos: 4, neg: 0 },
+};
+
 /**
- * 按「目标字母 + 强度」构造七级量表作答。
- * 引擎口径：alignedPlus = (value - 4) * POLE_SIGN[right.pole]（正向字母 E/N/F/P），
- * 解出 value = 4 + k * POLE_SIGN[right.pole]，其中
- * k = strength * (目标字母为正向 ? 1 : -1)。
+ * 按「目标字母 + 强度」构造 SJT 二元迫选作答（'a' | 'b'）。
+ * 每题 a/b 各指向一个极，选中「正向字母」的题数由强度决定：
+ * 目标为正向字母（E/N/F/P）时取 POSITIVE_TARGET_COUNT[strength].pos，
+ * 目标为反向字母（I/S/T/J）时取 .neg；据此逐题挑选指向对应极的选项。
  */
 export function buildDemoAnswers(profile: DemoProfile): UserAnswers {
   const targetByAxis = new Map(profile.mbtiTargets.map((t) => [t.axis, t]));
-  const mbti: Record<string, number> = {};
-  for (const q of mbtiQuestions) {
+  const mbti: Record<string, string> = {};
+  for (const q of scenarioQuestions) {
     const target = targetByAxis.get(q.axis);
+    const aIsPositive = POSITIVE_POLES.has(q.a.pole);
     if (!target) {
-      mbti[q.id] = 4;
+      // 无目标：选指向正向极的选项（中性）
+      mbti[q.id] = aIsPositive ? 'a' : 'b';
       continue;
     }
-    const k = target.strength * (POSITIVE_POLES.has(target.letter) ? 1 : -1);
-    const poleSign = POSITIVE_POLES.has(q.right.pole) ? 1 : -1;
-    mbti[q.id] = Math.min(7, Math.max(1, 4 + k * poleSign));
+    const wantPositive = POSITIVE_POLES.has(target.letter);
+    const wantCount = POSITIVE_TARGET_COUNT[target.strength][wantPositive ? 'pos' : 'neg'];
+    const seen = scenarioQuestions.filter((s) => s.axis === q.axis);
+    const idx = seen.findIndex((s) => s.id === q.id);
+    const choosePositive = idx < wantCount;
+    mbti[q.id] = (aIsPositive === choosePositive) ? 'a' : 'b';
   }
   return {
     mbti,
